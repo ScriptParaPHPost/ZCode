@@ -1,10 +1,16 @@
+![GitHub repo size](https://img.shields.io/github/repo-size/ScriptParaPHPost/ZCode?style=plastic)
+![GitHub forks](https://img.shields.io/github/forks/ScriptParaPHPost/ZCode?style=plastic)
+![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic)
+![Discord](https://img.shields.io/discord/1150516717617938543?style=plastic&logo=discord&logoColor=%23FFF&label=Discord&color=%237289DA)
+
+
 # zCode
 PHPost Risus es un sistema de compartimiento de enlaces que permite crear un sitio web similar a Taringa!
 > Esta versión solo funcionará bien con PHP 8.2, se puede llegar a usar PHP 7+, pero tendrá algunos errores!
 
 ### Actualizaciones
  * PHP 8.2+ (obligatorio)
- * Smarty 3.5.2
+ * Smarty 4.5.3
  * jQuery 3.7.1
  * Plugins de jQuery
 
