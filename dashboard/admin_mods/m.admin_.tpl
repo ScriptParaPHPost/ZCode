@@ -26,8 +26,8 @@
 						<h4>Último commit en Github</h4>
 					</div>
 					<div class="up-tabs">
-						<label for="main"><input type="radio" name="branch" id="main" checked><span>Main</span></label>
-						<label for="dev"><input type="radio" name="branch" id="dev"><span>Dev</span></label>
+						<label for="alpha"><input type="radio" name="branch" id="alpha" checked><span>Alpha</span></label>
+						<!-- <label for="main"><input type="radio" name="branch" id="main"><span>Dev</span></label> -->
 					</div>
 				</div>
 				<ul id="lastCommit" class="pp_list up-card--body list-unstyled">

@@ -6,10 +6,10 @@ class UpdateGithub {
 	private $user = 'ScriptParaPHPost';
 
 	// Nombre del repositorio
-	private $repo = 'PHPost';
+	private $repo = 'ZCode';
 
 	// main | experimental
-	private $branch = 'main';
+	private $branch = 'alpha';
 
 	public $ruta;
 

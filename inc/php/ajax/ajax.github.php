@@ -31,9 +31,9 @@ switch($action){
 	case 'github-api':
 		$token = (file_exists(TS_ROOT . '.env')) ? getenv('USER_GITHUB_TOKEN') : '';
 
-		$branch = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'main';
+		$branch = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'alpha';
 
-		$url = "https://api.github.com/repos/ScriptParaPHPost/PHPost/commits/$branch";
+		$url = "https://api.github.com/repos/ScriptParaPHPost/ZCode/commits/$branch";
 
 		$ch = curl_init($url);
 
