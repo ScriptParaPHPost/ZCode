@@ -1,0 +1,30 @@
+section {
+	width: 60%;
+	position: relative;
+	box-sizing: content-box;
+}
+section h1 {
+	margin-top: 1rem;
+	position: absolute;
+	color: #444;
+	font-size: 4rem;
+}
+section h1 strong {
+	color: var(--main-bg);
+}
+.error_image_show {
+ 	background: var(--body-bg) url('../images/error404.gif') no-repeat top center / contain;
+}
+.contant_box {
+   margin-top: 350px;
+}
+.btn {
+	color: var(--main-color);
+	background: var(--main-bg);
+}
+.btn:hover {
+	background: var(--main-bg-hover);
+}
+.btn:active {
+	background: var(--main-bg-active);
+}

@@ -1,0 +1,182 @@
+## Manejo de errores de Apache. 
+ErrorDocument 401 /401.html
+ErrorDocument 403 /403.html
+ErrorDocument 404 /404.html
+ErrorDocument 500 /404.html
+  
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+#RewriteBase /
+#RewriteCond %{SERVER_PORT} 80 
+#RewriteCond %{HTTP_HOST} ^http://TU_SITIO_WEB.com[NC,OR]
+#RewriteRule ^(.*)$ https://TU_SITIO_WEB.com/$1 [L,R=301,NC]
+ 
+Options +FollowSymLinks
+# Evitar escaneos y cualquier intento de manipulación malintencionada
+# de la URL. Con esta regla es imposible lanzar ataques de inyección (SQL, XSS, etc)
+RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+RewriteCond %{HTTP_USER_AGENT} ^(-|\.|') [OR]
+RewriteCond %{HTTP_USER_AGENT} ^(.*)(<|>|%3C|%3E)(.*) [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} ^(java|curl|wget)(.*) [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} ^(.*)(libwww-perl|libwwwperl|snoopy|curl|wget|winhttp|python|nikto|scan|clshttp|archiver|loader|email|harvest|fetch|extract|grab|miner|suck|reaper|leach)(.*) [NC,OR]
+ 
+RewriteCond %{REQUEST_URI} ^(/,|/;|/<|/>|/'|/`|/%2C|/%3C|/%3E|/%27|/////) [NC,OR]
+RewriteCond %{HTTP_REFERER} ^(.*)(%00|%08|%09|%0A|%0B|%0C|%0D|%0E|%0F|%2C|<|>|'|%3C|%3E|%26%23|%27|%60)(.*) [NC,OR]
+RewriteCond %{QUERY_STRING} ^(.*)(%00|%08|%09|%0A|%0B|%0C|%0D|%0E|%0F|%2C|%3C|%3E|%27|%26%23|%60)(.*) [NC,OR]
+RewriteCond %{QUERY_STRING} ^(.*)('|-|<|>|,|/|\\|\.a|\.c|\.t|\.d|\.p|\.i|\.e|\.j)(.*) [NC,OR]
+RewriteCond %{HTTP_COOKIE} ^(.*)(<|>|'|%3C|%3E|%27)(.*) [NC]
+ 
+## Evitar que se liste el contenido de los directorios
+Options All -Indexes
+## Lo mismo que lo anterior
+IndexIgnore *
+# Protegerse contra los ataques DOS limitando el tamaño de subida de archivos
+LimitRequestBody 10240000
+
+# INDEX
+RewriteRule ^$ index.php?do=home [QSA,L]
+RewriteRule ^pagina([0-9]+)$ index.php?page=$1 [QSA,L]
+RewriteRule ^index.php$ index.php?do=home [QSA,L]
+RewriteRule ^cuenta/$ inc/php/cuenta.php [QSA,L]
+RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ inc/php/cuenta.php?accion=$1 [QSA,L]
+RewriteRule ^agregar.php$ inc/php/agregar.php [QSA,L]
+
+# CALLBACK PARA REDES SOCIALES
+RewriteRule ^(github.php|discord.php|google.php|facebook.php)$ inc/callback/$1 [QSA,L]
+
+#PERFIL
+RewriteRule ^perfil/([A-Za-z0-9_-]+)$ inc/php/perfil.php?user=$1 [QSA,L]
+RewriteRule ^perfil/([A-Za-z0-9_-]+)/$ inc/php/perfil.php?user=$1 [QSA,L]
+RewriteRule ^perfil/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/perfil.php?user=$1&pid=$2 [QSA,L]
+
+# PORTAL
+RewriteRule ^mi/$ index.php?do=portal [QSA,L]
+
+# POSTS
+RewriteRule ^posts/$ index.php?do=posts [QSA,L]
+RewriteRule ^posts/([a-z]+)$ index.php?do=posts&action=$1 [QSA,L]
+RewriteRule ^posts/pagina([0-9]+)$ index.php?do=posts&page=$1 [QSA,L]
+RewriteRule ^posts/([A-Za-z0-9_-]+)/$ index.php?do=posts&cat=$1 [QSA,L]
+RewriteRule ^posts/([A-Za-z0-9_-]+)/pagina([0-9]+)$ index.php?do=posts&cat=$1&page=$2 [QSA,L]
+RewriteRule ^posts/([A-Za-z0-9_-]+)/([0-9]+)/(.*).html$ index.php?do=posts&cat=$1&post_id=$2&title=$3 [QSA,L]
+RewriteRule ^posts/editar/([0-9]+)$ inc/php/agregar.php?action=editar&pid=$1 [QSA,L]
+
+# POSTS SHORTEN
+RewriteRule ^p/([0-9]+)$ index.php?do=posts&p=$1 [QSA,L]
+
+# RECUPERAR PASS Y VALIDAR CUENTA
+RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ inc/php/password.php?hash=$1&type=$2&email=$3
+RewriteRule ^validar/(.+)$ inc/php/validar.php?encode=$1 [QSA,L]
+
+# FOTOS
+RewriteRule ^fotos/([A-Za-z0-9_-]+).php$ inc/php/fotos.php?action=$1 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)$ inc/php/fotos.php?action=album&user=$1 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/fotos.php?action=album&user=$1&page=$2 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ inc/php/fotos.php?action=ver&user=$1&fid=$2 [QSA,L]
+
+# MODERACIÓN
+RewriteRule ^moderacion/buscador/([0-2]+)/([0-2]+)/([A-Za-z0-90.9.:a_zA_z_+_%20_¿?¡!@,'-]+)$ inc/php/moderacion.php?action=buscador&act=search&m=$1&t=$2&texto=$3 [QSA,L]
+
+#HISTORIAL DE MODERACIÓN
+RewriteRule ^mod-history/([A-Za-z0-9_-]+)/ inc/php/mod-history.php?ver=$1 [QSA,L]
+
+# SITEMAP & RSS
+RewriteRule ^rss/([A-Za-z0-9_-]+)/$ inc/php/rss.php?type=$1 [L,NC,QSA]
+RewriteRule ^rss/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$ inc/php/rss.php?type=$1&user=$2 [L,NC,QSA]
+
+# COMUNIDADES
+RewriteRule ^comunidades/pagina.([0-9]+)$ inc/php/comunidades.php?action=home&page=$1 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/agregar/([0-9]+)$ inc/php/comunidades.php?action=$1&act=agregar&bid=$2 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/editar-tema/([0-9]+)/$ inc/php/comunidades.php?action=$1&act=editar-tema&temaid=$2 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/miembros.([0-9]+)/$ inc/php/comunidades.php?action=$1&act=miembros&page=$2 [QSA,L]
+RewriteRule ^comunidades/mis-comunidades/([A-Za-z0-9_-]+)$ inc/php/comunidades.php?action=mis-comunidades&orden=$1 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/pagina.([0-9]+)$ inc/php/comunidades.php?action=$1&page=$2 [QSA,L]
+RewriteRule ^comunidades/dir/([A-Za-z0-9_-]+)/$ inc/php/comunidades.php?action=dir&pais=$1 [QSA,L]
+RewriteRule ^comunidades/dir/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$ inc/php/comunidades.php?action=dir&pais=$1&c_seo=$2 [QSA,L]
+RewriteRule ^comunidades/dir/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$ inc/php/comunidades.php?action=dir&pais=$1&c_seo=$2&s_seo=$3 [QSA,L]
+RewriteRule ^comunidades/dir/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/comunidades.php?action=dir&pais=$1&c_seo=$2&s_seo=$3&page=$4 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ inc/php/comunidades.php?action=$1&act=$2 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/pagina.([0-9]+)$ inc/php/comunidades.php?action=$1&act=$2&page=$3 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ inc/php/comunidades.php?action=$1&temaid=$2&act=tema [QSA,L]
+
+RewriteRule ^(login|registro)/$ inc/php/access.php?action=$1 [QSA,L]
+
+# ADMIN
+RewriteRule ^admin/database/([A-Za-z_-]+) inc/php/admin.php?action=database&act=$1 [QSA,L]
+
+#EXTRAS
+RewriteRule ^([A-Za-z0-9_-]+).php$ inc/php/ajax_files.php?action=$1 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/$ inc/php/$1.php [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$ inc/php/$1.php?action=$2 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ inc/php/$1.php?action=$2 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/$1.php?action=$2&id=$3 [QSA,L]
+
+
+#NO PERMITIR LA DESCARGA DE ARCHIVOS .TPL
+<FilesMatch "\.(htaccess|ini|log|cfg|tpl|env)$">
+	Order Allow,Deny
+	Deny from all
+</FilesMatch>
+
+# m0n.co/9
+RewriteCond %{QUERY_STRING} PHP[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} [NC]
+RewriteRule .* - [F]
+
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|js|css)$">
+	Header set Cache-Control "max-age=31536000, public"
+</FilesMatch>
+
+<ifModule mod_gzip.c>  
+	mod_gzip_on Yes  
+	mod_gzip_dechunk Yes  
+	mod_gzip_item_include file .(html?|txt|css|js|php|pl)$  
+	mod_gzip_item_include handler ^cgi-script$  
+	mod_gzip_item_include mime ^text/.*  
+	mod_gzip_item_include mime ^application/x-javascript.*  
+	mod_gzip_item_exclude mime ^image/.*  
+	mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*  
+</ifModule>
+
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file .(html?|txt|css|js|php|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifModule>
+
+<IfModule mod_deflate.c>
+  # Compress HTML, CSS, JavaScript, Text, XML and fonts
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font
+  AddOutputFilterByType DEFLATE application/x-font-opentype
+  AddOutputFilterByType DEFLATE application/x-font-otf
+  AddOutputFilterByType DEFLATE application/x-font-truetype
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml  
+
+  # Remove browser bugs (only needed for ancient browsers)
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  Header append Vary User-Agent
+</IfModule>

@@ -1,0 +1,24 @@
+# Ignorar directorios
+assets/images/avatar
+assets/images/portadas
+assets/images/uploads
+backup/
+cache/
+
+# Themes
+!themes/default
+themes/*
+
+# Update
+update/
+
+# Ignorar archivos
+inc/ext/Avatar.php
+inc/ext/UUID.php
+inc/ext/xsl-sitemap.xml
+.env
+.lock
+changelog.txt
+config.inc.php
+pasos.txt
+robots.txt
