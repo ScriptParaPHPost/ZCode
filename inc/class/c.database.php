@@ -113,6 +113,11 @@ class tsDatabase {
       return "0: Error al ejecutar la operación $action.";
    }
 
+   /**
+    * Crea la carpeta de respaldo si no existe y devuelve la ruta de la misma.
+    *
+    * @return string Ruta de la carpeta de respaldo.
+   */
    private function backupFolder() {
    	$backup = TS_ROOT . 'backup' . TS_PATH;
    	if(!is_dir($backup)) {
@@ -122,6 +127,11 @@ class tsDatabase {
    	return $backup;
    }
 
+   /**
+    * Crea un respaldo de las tablas de la base de datos seleccionadas.
+    *
+    * @return string Mensaje indicando el éxito de la operación.
+   */
    public function createBackup() {
    	$tables = $_POST['tablas'];
    	// Obtener todas las tablas de la base de datos
@@ -169,6 +179,12 @@ class tsDatabase {
    	return "1: Se creo correctamente $backup_file";
    }
 
+   /**
+    * Obtiene la lista de archivos de respaldo disponibles.
+    *
+    * @global object $tsCore Contiene la configuración principal del sistema.
+    * @return array Arreglo de archivos de respaldo con sus respectivos detalles.
+   */
    public function getBackups() {
    	global $tsCore;
    	$folder = $this->backupFolder();
