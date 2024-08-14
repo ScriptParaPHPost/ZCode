@@ -16,6 +16,7 @@
 <h4>Control</h4>
 <ul class="cat-list">
 	<li id="a_database"><a class="nav-item{if $tsAction == 'database'} active{/if}" href="{$tsConfig.url}/admin/database">Base de datos</a></li>
+	<li id="a_favicon"><a class="nav-item{if $tsAction == 'favicon'} active{/if}" href="{$tsConfig.url}/admin/favicon">Generar favicon</a></li>
 	<li id="a_medals"><a class="nav-item{if $tsAction == 'medals'} active{/if}" href="{$tsConfig.url}/admin/medals">Medallas</a></li>
 	<li id="a_afs"><a class="nav-item{if $tsAction == 'afs'} active{/if}" href="{$tsConfig.url}/admin/afs">Afiliados</a></li>
 	<li id="a_stats"><a class="nav-item{if $tsAction == 'stats'} active{/if}" href="{$tsConfig.url}/admin/stats">Estad&iacute;sticas</a></li>

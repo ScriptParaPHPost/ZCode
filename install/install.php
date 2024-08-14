@@ -413,8 +413,10 @@ if( $step === 0 ) {
 	$data = $mysqli->query("SELECT titulo, slogan, url, version_code FROM {$db['prefix']}configuracion WHERE tscript_id = 1")->fetch_assoc();
 	if (isset($_POST['save'])) header("Location: {$data['url']}");
 	// CONSULTA
+	$time = time();
    $uid = (int)$_GET['uid'];
    $user = $mysqli->query("SELECT user_id, user_name FROM {$db['prefix']}miembros WHERE user_id = $uid")->fetch_assoc();
+  	$mysqli->query("UPDATE {$db['prefix']}configuracion SET update_id = $time WHERE tscript_id = 1");
    // ESTADISTICAS
    $code = [
       'title' => $data['titulo'], 
@@ -425,8 +427,8 @@ if( $step === 0 ) {
    ];
    $key = base64_encode(serialize($code));
    $key .= '&verification=' . base64_encode("{$data['url']} - $version - $keygen");
-	$tsAction = $data['url'];
-	# $tsAction = "https://feed.phpost.es/?from=$name&type=install&key=$key";
+	#$tsAction = $data['url'];
+	$tsAction = "https://zcode.newluckies.com/feed/?from=$name&type=install&key=$key";
    // Abrir el archivo en modo de escritura ("w")
    $handle = fopen(LOCK, "w");
    // Escribir los datos en el archivo

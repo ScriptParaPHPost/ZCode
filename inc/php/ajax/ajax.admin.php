@@ -29,6 +29,7 @@
 		'admin-ordenar-categorias' => array('n' => 4, 'p' => ''),
 		'admin-eliminar-noticia' => array('n' => 4, 'p' => ''),
 		'admin-system-update' => array('n' => 4, 'p' => ''),
+		'admin-upload-favicon' => array('n' => 4, 'p' => ''),
 	);
 
 /**********************************\
@@ -138,6 +139,11 @@
 			require_once TS_CLASS . "c.lastCommit.php";
 			$gh = new UpdateGithub;
 			echo $gh->updateTable(false);
+		break;
+		case 'admin-upload-favicon':
+			require_once TS_CLASS . "c.favicon.php";
+    		$tsFavicon = new tsFavicon;
+			echo $tsFavicon->uploadFavicon();
 		break;
       default:
          die('0: Este archivo no existe.');

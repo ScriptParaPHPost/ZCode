@@ -73,6 +73,13 @@
     	if($act === 'lista') {
     		$smarty->assign('tsBackupSQL', $tsDatabase->getBackups());
     	}
+   // Generador de favicon
+   } elseif($action === 'favicon') {
+		$tsTitle = 'Generador de favicon';
+    	require_once TS_CLASS . "c.favicon.php";
+    	$tsFavicon = new tsFavicon;
+    	
+    	$smarty->assign('tsAllFavicons', $tsFavicon->getAllFavicons());
    // Configuraciones y Registro
 	} elseif(in_array($action, ['configs', 'registro'])){
 		$tsTitle = ($action === 'configs') ? 'Configuraci&oacute;n' : 'Registro de ' . $tsTitle;

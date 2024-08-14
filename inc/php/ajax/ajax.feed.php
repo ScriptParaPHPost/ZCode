@@ -37,7 +37,7 @@
 	$key = base64_encode(serialize($code));
 	$key .= '&verification=' . $tsCore->verification();
 	#$conexion = "https://phpost.es/feed/";
-	$conexion = "http://localhost/feed/";
+	$conexion = "https://zcode.newluckies.com/feed/";
 	// CODIGO
 	switch($action){
 		case 'feed-support':

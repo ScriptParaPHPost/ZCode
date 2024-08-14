@@ -8,20 +8,6 @@
 
 class tsDatabase {
 
-   /**
-    * Convierte bytes a un formato legible (KB, MB, GB, etc.).
-    *
-    * @param int $bytes       El tamaño en bytes que se desea formatear.
-    * @param int $decimales   El número de decimales para mostrar.
-    * @return string          El tamaño formateado en la unidad más apropiada.
-   */
-	private function formatBytes($bytes, $decimales = 2) {
-      $unidad = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-      $factor = floor((strlen($bytes) - 1) / 3);
-      $formatted = sprintf("%.{$decimales}f", $bytes / pow(1024, $factor));
-      
-      return $formatted . ' ' . $unidad[$factor];
-   }
  	/**
     * Convierte una fecha en formato de cadena a un timestamp.
     *
@@ -68,6 +54,7 @@ class tsDatabase {
     * @return array          Un array de arrays asociativos que contiene la información de cada tabla.
    */
 	public function getAllTables() {
+      global $tsCore;
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SHOW TABLE STATUS"));
 		$tables = [];
 		foreach($data as $key => $array) {
@@ -76,8 +63,8 @@ class tsDatabase {
 				'name' => $array['Name'],
 				'engine' => $array['Engine'],
 				'rows' => (int)$array['Rows'],
-				'size' => $this->formatBytes($array['Index_length']),
-				'cache' => ((int)$array['Data_free'] === 0 ? 0 : $this->formatBytes($array['Data_free'])),
+				'size' => $tsCore->formatBytes($array['Index_length']),
+				'cache' => ((int)$array['Data_free'] === 0 ? 0 : $tsCore->formatBytes($array['Data_free'])),
 				'collation' => $array['Collation'],
 				'create' => $this->formatedDate($array['Create_time']),
 				'update' => $this->formatedDate($array['Update_time'])
@@ -193,7 +180,7 @@ class tsDatabase {
    	foreach($files as $f => $file) {
    		if(in_array($file, ['.', '..'])) continue;
    		$file_route = $folder . $file;
-   		$size = $this->formatBytes(filesize($file_route));
+   		$size = $tsCore->formatBytes(filesize($file_route));
    		$filename = pathinfo($file, PATHINFO_FILENAME);
    		$allFiles[$f] = [
    			'id' => $f,

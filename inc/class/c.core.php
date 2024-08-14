@@ -51,7 +51,7 @@ class tsCore extends tsZCode {
 		$this->settings['categorias'] = $this->getCategorias();
 		//
 		$this->settings['logos'] = [
-			'big' => $this->settings['favicon'] . '/phpost2.webp',
+			'big' => $this->settings['favicon'] . '/'.$this->setSEO($this->settings['titulo']).'.webp',
 			'64' => $this->settings['favicon'] . '/logo-64.webp',
 			'128' => $this->settings['favicon'] . '/logo-128.webp',
 			'256' => $this->settings['favicon'] . '/logo-256.webp'
@@ -810,5 +810,20 @@ class tsCore extends tsZCode {
 
 		return ($differenceInSeconds < $twoDaysInSeconds) ? '&iexcl;Nuevo!' : '';
 	}
+
+   /**
+    * Convierte bytes a un formato legible (KB, MB, GB, etc.).
+    *
+    * @param int $bytes       El tamaño en bytes que se desea formatear.
+    * @param int $decimales   El número de decimales para mostrar.
+    * @return string          El tamaño formateado en la unidad más apropiada.
+   */
+	public function formatBytes($bytes, $decimales = 2) {
+      $unidad = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+      $factor = floor((strlen($bytes) - 1) / 3);
+      $formatted = sprintf("%.{$decimales}f", $bytes / pow(1024, $factor));
+      
+      return $formatted . ' ' . $unidad[$factor];
+   }
 
 }
