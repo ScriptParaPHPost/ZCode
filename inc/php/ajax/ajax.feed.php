@@ -29,7 +29,7 @@
 	//
 	$code = [
       'title' => $tsCore->settings['titulo'],
-      'url' => str_replace(['https://','http://'], '', $tsCore->settings['url']),
+      'url' => $tsCore->settings['url'],
       'version' => $tsCore->settings['version'],
       'admin' => $tsUser->nick,
       'id' => $tsUser->uid

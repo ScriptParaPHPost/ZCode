@@ -52,6 +52,7 @@ class tsCore extends tsZCode {
 		//
 		$this->settings['logos'] = [
 			'big' => $this->settings['favicon'] . '/'.$this->setSEO($this->settings['titulo']).'.webp',
+			'32' => $this->settings['favicon'] . '/logo-32.webp',
 			'64' => $this->settings['favicon'] . '/logo-64.webp',
 			'128' => $this->settings['favicon'] . '/logo-128.webp',
 			'256' => $this->settings['favicon'] . '/logo-256.webp'

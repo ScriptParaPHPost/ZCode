@@ -44,10 +44,11 @@
 
 \*********************************/
     // PORTAL
-    include(TS_CLASS."c.portal.php");
+    include TS_CLASS . "c.portal.php";
     $tsPortal = new tsPortal();
+
     // AFILIADOS
-    include("inc/class/c.afiliado.php");
+    include TS_CLASS . "c.afiliado.php";
     $tsAfiliado = new tsAfiliado();
     // NOS HAN REFERIDO?
     if(!empty($_GET['ref'])) $tsAfiliado->urlIn();

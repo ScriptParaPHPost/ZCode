@@ -14,7 +14,7 @@
 				{foreach $SocialMager key=i item=social}
 					<a class="btn btn--{$i} btn-active" href="{$social}">
 						{uicon name="$i" folder="prime" class="btn--icon"}
-						<span class="btn--text">Crear con {$i}</span>
+						<span class="btn--text d-none d-lg-block">Crear con {$i}</span>
 					</a>
 				{/foreach}
 			</div>

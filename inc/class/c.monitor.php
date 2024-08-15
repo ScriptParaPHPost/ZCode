@@ -695,13 +695,20 @@ class tsMonitor {
 		$data['pages'] = $pages;
 		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "$query LIMIT {$pages['limit']}"));
 		//
-		if($type === 'seguidores') {
+		if($type === 'seguidores' OR $type === 'siguiendo') {
+			foreach($data['data'] as $uid => $user) {
+				$data['data'][$uid]['avatar'] = $tsCore->getAvatar($user['user_id'], 'use');
+				$data['data'][$uid]['pais'] = strtolower($user['user_pais'] ?? 'xx');
+				$data['data'][$uid]['pais_image'] = $tsCore->settings['assets'] . "/icons/flags/{$data['data'][$uid]['pais']}.svg";
+			}
+		}
+	/*	if($type === 'seguidores') {
 			foreach($data['data'] as $key => $val) {
 				$siguiendo = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM @follows WHERE f_user = $user_id AND f_id = {$val['user_id']} AND f_type = 1"));
 				$val['follow'] = (!empty($siguiendo['follow_id'])) ? 1 : 0;
 				$data['data'][] = $val;
 			}
-		}
+		}*/
 		//
 		return $data;
 	}

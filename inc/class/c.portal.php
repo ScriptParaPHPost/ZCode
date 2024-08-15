@@ -86,64 +86,72 @@ class tsPortal {
     * @return array
    */
 	public function getLastPosts($type = 'visited'){
-		global $tsUser;
-        //
-      $dato = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT `last_posts_'.$type.'` FROM @portal WHERE `user_id` = \''.$tsUser->uid.'\' LIMIT 1'));
+		global $tsCore, $tsUser, $tsImages;
+      //
+      $dato = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT last_posts_$type FROM @portal WHERE user_id = {$tsUser->uid} LIMIT 1"));
+     
       $visited = safe_unserialize($dato['last_posts_'.$type]);
       if($visited[0] === null) return;
       krsort($visited);
 		// LO HAGO ASI PARA ORDENAR SIN NECESITAR OTRA VARIABLE
-      foreach($visited as $key => $id){
-         $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_date, p.post_puntos, p.post_private, u.user_name, c.c_nombre, c.c_seo, c.c_img FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category WHERE p.post_status = 0 AND p.post_id = '.$id.' LIMIT 1');
-         $data[] = db_exec('fetch_assoc', $query);
+      foreach($visited as $key => $id) {
+         $req = db_exec('fetch_assoc',db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_portada, p.post_body, p.post_date, p.post_puntos, p.post_private, u.user_id, u.user_name, c.c_nombre, c.c_seo, c.c_img FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category WHERE p.post_status = 0 AND p.post_id = $id LIMIT 1"));
+
+         $req['post_portada'] = $tsImages->setImageCover($req['post_id'], $req['post_portada'], $req['post_body']);
+         $req['post_title'] = stripslashes($req['post_title']);
+         $req["post_url"] = $tsCore->createLink('post', [
+            'c_seo' => $req['c_seo'],
+            'post_id' => $req['post_id'],
+            'post_title' => $req['post_title']
+         ]);
+         $req['c_img'] = $tsCore->imageCat($req['c_img']);
+         $data[] = $req;
           
       }
 		//
 		return $data;
 	}
-     /** getFavorites()
-     * @access public
-     * @param
-     * @return array
-     */
-     public function getFavorites(){
-        global $tsCore, $tsUser;
+
+   /** getFavorites()
+    * @access public
+    * @param
+    * @return array
+   */
+   public function getFavorites(){
+      global $tsCore, $tsUser;
         //
-        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(fav_id) AS total FROM @posts_favoritos WHERE `fav_user` = \''.$tsUser->uid.'\'');
-        $total = db_exec('fetch_assoc', $query);
+      $total = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(fav_id) AS total FROM @posts_favoritos WHERE `fav_user` = {$tsUser->uid}"));
         
-        if($total['total'] > 0)
-            $pages = $tsCore->getPagination($total['total'], 20);
-        else return false;
+      if($total['total'] > 0) {
+         $pages = $tsCore->getPagination($total['total'], 20);
+      } else return false;
         //
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT f.fav_id, f.fav_date, p.post_id, p.post_title, p.post_date, p.post_puntos, p.post_category, p.post_private, COUNT(p_c.c_post_id) as post_comments,  c.c_nombre, c.c_seo, c.c_img FROM @posts_favoritos AS f LEFT JOIN @posts AS p ON p.post_id = f.fav_post_id LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category LEFT JOIN @posts_comentarios AS p_c ON p.post_id = p_c.c_post_id && p_c.c_status = \'0\' WHERE f.fav_user = \''.$tsUser->uid.'\' && p.post_status = \'0\' GROUP BY c_post_id ORDER BY f.fav_date DESC LIMIT '.$pages['limit']);
-		$data['data'] = result_array($query);
-		
-        //
-        $data['pages'] = $pages;
-        //
-        return $data;
-     }
-     /** getFotos()
-     * @access public
-     * @param
-     * @return array
-     */
-     public function getFotos(){
-        // FOTOS
-    	include(TS_CLASS."c.fotos.php");
-    	$tsFotos = new tsFotos();
-        return $tsFotos->getLastFotos();
-     }
-     /** getStats()
-     * @access public
-     * @param
-     * @return array
-     */
-     public function getStats(){
+		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT f.fav_id, f.fav_date, p.post_id, p.post_title, p.post_date, p.post_puntos, p.post_category, p.post_private, COUNT(p_c.c_post_id) as post_comments,  c.c_nombre, c.c_seo, c.c_img FROM @posts_favoritos AS f LEFT JOIN @posts AS p ON p.post_id = f.fav_post_id LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category LEFT JOIN @posts_comentarios AS p_c ON p.post_id = p_c.c_post_id && p_c.c_status = 0 WHERE f.fav_user = {$tsUser->uid} && p.post_status = 0 GROUP BY c_post_id ORDER BY f.fav_date DESC LIMIT {$pages['limit']}"));
+		$data['pages'] = $pages;
+      return $data;
+   }
+
+   /** getFotos()
+    * @access public
+    * @param
+    * @return array
+   */
+   public function getFotos() {
+      // FOTOS
+      include TS_CLASS . "c.fotos.php";
+   	$tsFotos = new tsFotos();
+      return $tsFotos->getLastFotos();
+   }
+
+   /** getStats()
+    * @access public
+    * @param
+    * @return array
+   */
+   public function getStats() {
     	// CLASE TOPS
-    	include(TS_CLASS."c.tops.php");
+    	include TS_CLASS . "c.tops.php";
     	$tsTops = new tsTops();
-        return $tsTops->getStats();
-     }
+      return $tsTops->getStats();
+   }
 }

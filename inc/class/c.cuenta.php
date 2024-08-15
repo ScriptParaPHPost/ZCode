@@ -210,9 +210,17 @@ class tsCuenta {
       loadPosts($user_id)
    */
    public function loadPosts(int $user_id = 0){
-      global $tsUser;
-      $data['posts'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_title, p.post_puntos, c.c_seo, c.c_img FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category WHERE p.post_status = 0 AND p.post_user = $user_id ORDER BY p.post_date DESC LIMIT 18"));
+      global $tsUser, $tsCore;
+      $data['posts'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_title, p.post_puntos, c.c_seo, c.c_img, c.c_nombre FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category WHERE p.post_status = 0 AND p.post_user = $user_id ORDER BY p.post_date DESC LIMIT 18"));
       $data['total'] = safe_count($data['posts']);
+      foreach($data['posts'] as $pid => $post) {
+      	$data['posts'][$pid]["post_url"] = $tsCore->createLink('post', [
+	         'c_seo' => $post['c_seo'],
+	         'post_id' => $post['post_id'],
+	         'post_title' => $post['post_title']
+	      ]);
+         $data['posts'][$pid]['c_img'] = $tsCore->imageCat($post['c_img']);
+      }
       // USUARIO
       $data['username'] = $tsUser->getUserName($user_id);
       //
@@ -222,8 +230,12 @@ class tsCuenta {
       loadMedallas($user_id)
    */
    public function loadMedallas(int $user_id = 0){
+   	global $tsCore;
       $data['medallas'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT m.*, a.* FROM @medallas AS m LEFT JOIN @medallas_assign AS a ON a.medal_id = m.medal_id WHERE a.medal_for = $user_id AND m.m_type = 1 ORDER BY a.medal_date DESC"));
       $data['total'] = safe_count($data['medallas']);
+      foreach($data['medallas'] as $mid => $medalla) {
+      	$data['medallas'][$mid]['m_image'] = $tsCore->settings['assets'] . "/images/medallas/{$medalla['m_image']}";
+      }
       return $data;
    }
    public function saveAvatarGif() {

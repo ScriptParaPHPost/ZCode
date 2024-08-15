@@ -86,8 +86,8 @@ class tsVisitas {
 			db_exec([__FILE__, __LINE__], 'query', $this->action('update', $type, $id));
 		}
 		// Actualización de visitas en el portal
-		if($type === 2) {
-			$this->sumPortal($uid);
+		if($type === 3) {
+			$this->sumPortal($uid, $id);
 		}
 		return $visitado;
 	}
@@ -120,17 +120,19 @@ class tsVisitas {
 	 * Actualiza la lista de últimas visitas en el portal
 	 * 
 	 * @param int $uid ID del usuario que realiza la visita
+	 * @param int $id ID del post 
 	*/
-	private function sumPortal(int $uid = 0) {
+	private function sumPortal(int $uid = 0, int $id = 0) {
 		if($this->isCore->settings['c_allow_portal']) {
 			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT last_posts_visited FROM @portal WHERE user_id = $uid LIMIT 1"));
 			$visited = safe_unserialize($data['last_posts_visited']);
 			$total = safe_count($visited);
+			
 			if($total > 10) {
 				array_splice($visited, 0, 1);
 			}
-			if(!in_array($postData['post_id'],$visited)) {
-				$visited = [...$visited ,$postData['post_id']];
+			if(!in_array($id, $visited)) {
+				$visited = [...$visited ,$id];
 			}
 			$visitedSerialized = serialize($visited);
 			db_exec([__FILE__, __LINE__], 'query', "UPDATE @portal SET last_posts_visited = '$visitedSerialized' WHERE user_id = $uid");

@@ -383,9 +383,9 @@ class tsUser  {
 		  
 		$pages = $tsCore->getPagination($total, 12);
 		// CONSULTA
-		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, LOWER(p.user_pais), p.user_sexo, p.p_avatar, p.p_mensaje, u.user_rango, u.user_puntos, u.user_comentarios, u.user_posts, u.user_lastactive, u.user_baneado, r.r_name, r.r_color, r.r_image FROM @miembros AS u LEFT JOIN @perfil AS p ON u.user_id = p.user_id LEFT JOIN @rangos AS r ON r.rango_id = u.user_rango WHERE u.user_activo = 1 && u.user_baneado = 0 $filter ORDER BY u.user_id DESC LIMIT {$pages['limit']}");
+		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, p.user_pais, p.user_sexo, p.p_avatar, p.p_mensaje, u.user_rango, u.user_puntos, u.user_comentarios, u.user_posts, u.user_lastactive, u.user_baneado, r.r_name, r.r_color, r.r_image FROM @miembros AS u LEFT JOIN @perfil AS p ON u.user_id = p.user_id LEFT JOIN @rangos AS r ON r.rango_id = u.user_rango WHERE u.user_activo = 1 && u.user_baneado = 0 $filter ORDER BY u.user_id DESC LIMIT {$pages['limit']}");
 		// PARA ASIGNAR SI ESTA ONLINE HACEMOS LO SIGUIENTE
-		while($row = db_exec('fetch_assoc', $query)){
+		while($row = db_exec('fetch_assoc', $query)) {
 			$row['status'] = $tsCore->statusUser($row['user_id']);
 			// RANGO
 			$row['rango'] = [
@@ -393,7 +393,8 @@ class tsUser  {
 				'color' => $row['r_color'], 
 				'image' => $tsCore->settings['assets'] . "/images/rangos/{$row['r_image']}"
 			];
-			$row['pais_image'] = $tsCore->settings['assets'] . "/icons/flags/{$row['user_pais']}.svg";
+			$row['pais'] = strtolower($row['user_pais'] ?? 'xx');
+			$row['pais_image'] = $tsCore->settings['assets'] . "/icons/flags/{$row['pais']}.svg";
 			$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
 			// CARGAMOS
 			$data[] = $row;

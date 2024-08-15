@@ -140,31 +140,37 @@ class tsTops {
 		return $data;
 	}
 
+	private function getStatsWithoutTable(&$return) {
+		$sentencias = [
+			'miembros' => "SELECT COUNT(user_id) FROM @miembros WHERE user_activo = 1 AND user_baneado = 0",
+			'posts' => "SELECT COUNT(post_id) FROM @posts WHERE post_status = 0",
+			'fotos' => "SELECT COUNT(foto_id) FROM @fotos WHERE f_status = 0",
+			'comments' => "SELECT COUNT(cid) FROM @posts_comentarios WHERE c_status = 0",
+			'foto_comments' => "SELECT COUNT(cid) FROM @fotos_comentarios"
+		];
+		foreach($sentencias as $who => $sql) {
+			$return['stats_' . $who] = (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', $sql))[0];
+		}
+		return $return;
+	}
+
 	/*
 		getStats() : NADA QUE VER CON LA CLASE PERO BUENO PARA AHORRAR ESPACIO...
 		: ESTADISTICAS DE LA WEB
 	*/
-	public function getStats(){
+	public function getStats() {
 		global $tsCore;
 		$time = time();
 		// OBTENEMOS LAS ESTADISTICAS
 		$return = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT stats_max_online, stats_max_time, stats_time, stats_time_cache, stats_miembros, stats_posts, stats_fotos, stats_comments, stats_foto_comments FROM @stats WHERE stats_no = 1"));
-		if((int)$return['stats_time_cache'] < time() - ((int)$tsCore->settings['c_stats_cache'] * 60)) {
+		if((int)$return['stats_time_cache'] > $time - ((int)$tsCore->settings['c_stats_cache'] * 60)) {
 			// MIEMBROS
-			$return['stats_miembros'] = (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(user_id) AS u FROM @miembros WHERE user_activo = 1 && user_baneado = 0'))[0];
-			// POSTS
-			$return['stats_posts'] = (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(post_id) AS p FROM @posts WHERE post_status = 0'))[0];
-			// FOTOS
-		  $return['stats_fotos'] = (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(foto_id) AS f FROM @fotos WHERE f_status = 0'))[0];
-			// COMENTARIOS
-		  $return['stats_comments'] = (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(cid) AS c FROM @posts_comentarios WHERE c_status = 0'))[0];
-			// COMENTARIOS EN FOTOS
-		  $return['stats_foto_comments'] = (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(cid) AS fc FROM @fotos_comentarios'))[0];
+			$this->getStatsWithoutTable($return);
 
 		  $ndat = ", stats_time_cache = {$time}, stats_miembros = {$return['stats_miembros']}, stats_posts = {$return['stats_posts']}, stats_fotos = {$return['stats_fotos']}, stats_comments = {$return['stats_comments']}, stats_foto_comments = {$return['stats_foto_comments']}";
 		}
 		// PARA SABER SI ESTA ONLINE
-		$is_online = (time() - ((int)$tsCore->settings['c_last_active'] * 60));
+		$is_online = ($time - ((int)$tsCore->settings['c_last_active'] * 60));
 		// USUARIOS ONLINE - COMPROBAMOS SI CONTAMOS A TODOS LOS USUARIOS O SOLO A REGISTRADOS
 		if((int)$tsCore->settings['c_count_guests']) {
 			$sentencia = "COUNT(user_id) AS u FROM @miembros WHERE `user_lastactive`";
@@ -172,11 +178,11 @@ class tsTops {
 		  $sentencia = "COUNT(DISTINCT `session_ip`) AS s FROM @sessions WHERE `session_time`";
 		}
 		$return['stats_online'] = (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT $sentencia > $is_online"))[0];
-		  
+	
 		if($return['stats_online'] > (int)$return['stats_max_online']) {
 			$timen = ", stats_max_online = {$return['stats_online']}, stats_max_time = $time";
 		}
-				
+
 		db_exec([__FILE__, __LINE__], 'query', "UPDATE @stats SET stats_time = $time $ndat $timen");
 		//
 		return $return;
@@ -186,37 +192,37 @@ class tsTops {
 		setTime($fecha)
 	*/
 	public function setTime($fecha){
-    	// Obtiene la fecha actual en formato UNIX
-    	$tiempo = strtotime('now');
+		// Obtiene la fecha actual en formato UNIX
+		$tiempo = strtotime('now');
 
-    	switch($fecha){
-        // HOY
-        case 1: 
-            $data['start'] = strtotime('midnight today');
-            $data['end'] = strtotime('tomorrow -1 second');
-         break;
-        // AYER
-        case 2: 
-            $data['start'] = strtotime('midnight -1 day');
-    			$data['end'] = strtotime('midnight');
-	      break;
-	     	// SEMANA
-	     	case 3: 
-            $data['start'] = strtotime('-1 week');
-            $data['end'] = strtotime('tomorrow -1 second');
-	     	break;
-	     	// MES
-	     	case 4: 
-            $data['start'] = strtotime('first day of this month', $tiempo);
-            $data['end'] = strtotime('tomorrow', $tiempo) - 1;
-	     	break;
-	     	// TODO EL TIEMPO
-	     	case 5: 
-	     	default: 
-	     	   $data['start'] = 0;
-	     	   $data['end'] = $tiempo;
-	     	break;
-	   }
-	   return $data;
+		switch($fecha){
+		  // HOY
+		  case 1: 
+				$data['start'] = strtotime('midnight today');
+				$data['end'] = strtotime('tomorrow -1 second');
+			break;
+		  // AYER
+		  case 2: 
+				$data['start'] = strtotime('midnight -1 day');
+				$data['end'] = strtotime('midnight');
+			break;
+			// SEMANA
+			case 3: 
+				$data['start'] = strtotime('-1 week');
+				$data['end'] = strtotime('tomorrow -1 second');
+			break;
+			// MES
+			case 4: 
+				$data['start'] = strtotime('first day of this month', $tiempo);
+				$data['end'] = strtotime('tomorrow', $tiempo) - 1;
+			break;
+			// TODO EL TIEMPO
+			case 5: 
+			default: 
+				$data['start'] = 0;
+				$data['end'] = $tiempo;
+			break;
+		}
+		return $data;
 	}
 }
