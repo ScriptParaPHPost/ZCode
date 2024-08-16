@@ -136,9 +136,9 @@
 			//--->
 		break;
 		case 'admin-system-update':
-			require_once TS_CLASS . "c.lastCommit.php";
-			$gh = new UpdateGithub;
-			echo $gh->updateTable(false);
+			require_once TS_CLASS . "c.actualizacion.php";
+			$tsActualizacion = new tsActualizacion;
+			echo $tsActualizacion->updateTable(false);
 		break;
 		case 'admin-upload-favicon':
 			require_once TS_CLASS . "c.favicon.php";

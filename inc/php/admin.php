@@ -54,16 +54,18 @@
 	$act = htmlspecialchars($_GET['act'] ?? '');
 	// CLASE POSTS
 	$tsAdmin = new tsAdmin();
-	
+
 	// Bienvenida
 	if($action === '') {
 		$tsTitle = 'Centro de Administración';
 		$smarty->assign("tsAdmins", $tsAdmin->getAdmins());
       $smarty->assign("tsInst", $tsAdmin->getInst());
+
 	// Creditos
 	} elseif($action === 'creditos') {
 		$tsTitle = 'Soporte y Cr&eacute;ditos';
 		$smarty->assign("tsVersion", $tsAdmin->getVersions());
+
 	// Base de datos
 	} elseif($action === 'database') {
 		$tsTitle = 'Base de datos';
@@ -73,13 +75,40 @@
     	if($act === 'lista') {
     		$smarty->assign('tsBackupSQL', $tsDatabase->getBackups());
     	}
+
    // Generador de favicon
    } elseif($action === 'favicon') {
 		$tsTitle = 'Generador de favicon';
     	require_once TS_CLASS . "c.favicon.php";
     	$tsFavicon = new tsFavicon;
-    	
     	$smarty->assign('tsAllFavicons', $tsFavicon->getAllFavicons());
+
+   // Generador de actualizacion
+   } elseif($action === 'actualizacion') {
+		$tsTitle = 'Generador de actualizacion';
+    	require_once TS_CLASS . "c.actualizacion.php";
+    	$tsActualizacion = new tsActualizacion;
+    	$tsActualizacion->createToken();
+    	$commits = $tsActualizacion->getLastCommit();
+    	$getUpdated = $tsActualizacion->saveIDUpdate('get');
+    	$smarty->assign([
+    		'tsFileENV' => $tsActualizacion->getFileENV(),
+    		'tsUpdated' => $getUpdated,
+    		'tsLastCommit' => $commits
+    	]);
+    	if(is_string($commits) AND !empty($getUpdated)) {
+    		$smarty->assign('tsLastCommitFiles', $tsActualizacion->getLastCommitFiles());
+    		$files = $tsActualizacion->filesStatus();
+    		$smarty->assign('tsFilesStatus', $files);
+    		$smarty->assign('tsFilesTotal', safe_count($files));
+    		if($act === 'actualizar') {
+    			if($tsActualizacion->getFilesUpdate()) {
+    				$tsActualizacion->saveIDUpdate('save', '');
+    				$tsCore->redireccionar('admin', $action);
+    			}
+    		}
+    	}
+
    // Configuraciones y Registro
 	} elseif(in_array($action, ['configs', 'registro'])){
 		$tsTitle = ($action === 'configs') ? 'Configuraci&oacute;n' : 'Registro de ' . $tsTitle;
@@ -87,6 +116,7 @@
 		if(!empty($_POST['titulo']) OR (!empty($_POST['pkey']) AND !empty($_POST['skey']))) {
 			if($tsAdmin->saveConfig()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
+
 	// Redes sociales
 	} elseif($action === 'socials') {
     	// CLASE MEDAL
@@ -112,7 +142,8 @@
 				if($act === 'nuevo') $smarty->assign("tsError", $tsSocials->newSocial());
 			} 
 		}
-	// Redes sociales
+
+	// Seo
 	} elseif($action === 'seo') {
     	// CLASE MEDAL
     	require_once TS_CLASS . "c.seo.php";
@@ -123,6 +154,7 @@
 		if(!empty($_POST['titulo'])) {
 			if($tsSeo->saveSEO()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
+
 	// Control de mensajes
 	} elseif($action == 'mensajes') {
 		include_once TS_CLASS . "c.mensajes.php";
@@ -133,6 +165,7 @@
 			$smarty->assign("tsDatamp", $tsMensajes->getDataMensajePrivado());
 			$smarty->assign("tsLeermp", $tsMensajes->getLeerMensajePrivado());
 		}
+
 	// Temas
 	} elseif($action === 'temas') {
 		$tsTitle = 'Diseños / Temas';
@@ -165,6 +198,7 @@
 			}
 			$smarty->assign("tt", $_GET['tt']);
 		}
+
 	// Noticias
    } elseif($action === 'news'){
 		$tsTitle = 'Noticias';
@@ -178,28 +212,34 @@
       }  elseif($act === 'borrar'){
          if($tsAdmin->delNoticia()) $tsCore->redireccionar('admin', $action, 'borrar=true');
 		}
+
 	// Publicidades
 	} elseif($action === 'ads'){
 		$tsTitle = 'Publicidades';
 		if(!empty($_POST['save'])){
 			if($tsAdmin->saveAds()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
+
 	// POSTS
 	} elseif($action === 'posts'){
 		$tsTitle = 'Todos los posts';
 		if(!$act) $smarty->assign("tsAdminPosts", $tsAdmin->GetAdminPosts());
+
 	//FOTOS
 	} elseif($action === 'fotos') {
 		$tsTitle = 'Todas las fotos';
 		if(!$act) $smarty->assign("tsAdminFotos", $tsAdmin->GetAdminFotos());
+
 	// ESTADÍSTICAS
 	} elseif($action === 'stats'){
 		$tsTitle = 'Estad&iacute;sticas';
 		$smarty->assign("tsAdminStats", $tsAdmin->GetAdminStats());	
+
 	// CAMBIOS DE NOMBRE DE USUARIO
 	} elseif($action === 'nicks'){
 		$tsTitle = 'Nicks';
 		$smarty->assign("tsAdminNicks", $tsAdmin->getChangeNicks($act));
+
    // LISTA NEGRA
    } elseif($action === 'blacklist') {
 		$tsTitle = 'Lista negra';
@@ -218,6 +258,7 @@
 				$smarty->assign("tsBL", $block);
          } else $smarty->assign("tsBL", $tsAdmin->getBlock());
 		}
+
    // CENSURAS
    } elseif($action === 'badwords'){
 		$tsTitle = 'Todas las censuras';
@@ -238,10 +279,12 @@
 				$smarty->assign("tsBW", $tsBWA);
          } else $smarty->assign("tsBW", $tsAdmin->getBadWord());
 		}
+
 	// Sesiones
 	} elseif($action === 'sesiones'){
 		$tsTitle = 'Todos las sesiones';
 		if(!$act) $smarty->assign("tsAdminSessions",$tsAdmin->GetSessions());
+
    // Medallas
    } elseif($action === 'medals') {
 		$tsTitle = 'Todas las medallas';
@@ -280,6 +323,7 @@
 			$tsTitle = 'Mostrar las asignaciones';
 			$smarty->assign("tsAsignaciones", $tsMedal->adGetAssign());
 		}
+
 	// Afiliados
 	} elseif($action === 'afs'){
       // CLASS
@@ -294,6 +338,7 @@
          }
          $smarty->assign("tsAf", $tsAfiliado->getAfiliado('admin'));
       }
+
    // Categorías
 	} elseif($action === 'cats'){
 		$tsTitle = 'Todas las categor&iacute;as';
@@ -330,6 +375,7 @@
 			$smarty->assign("tsCID", $_GET['cid']);
 			$smarty->assign("tsSID", $_GET['sid']);
 		}
+
 	// Rangos
 	} elseif($action === 'rangos') {
 		$tsTitle = 'Todos los Rangos';
@@ -362,6 +408,7 @@
 		} elseif($act === 'setdefault') {
 			if($tsAdmin->SetDefaultRango()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
+
 	// Usuarios
 	} elseif($action === 'users'){
 		$tsTitle = 'Todos los Usuarios';

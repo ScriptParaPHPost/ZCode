@@ -26,35 +26,25 @@ if($tsLevelMsg != 1):
 	die();
 endif;
 
+include TS_CLASS . 'c.actualizacion.php';
+$tsActualizacion = new tsActualizacion;
+
 // CODIGO
 switch($action){
 	case 'github-api':
-		$token = (file_exists(TS_ROOT . '.env')) ? getenv('USER_GITHUB_TOKEN') : '';
 
 		$branch = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'alpha';
 
-		$url = "https://api.github.com/repos/ScriptParaPHPost/ZCode/commits/$branch";
+		$url = $tsActualizacion->getApiGithub() . "/$branch";
 
 		$ch = curl_init($url);
-
-		if(file_exists(TS_ROOT . '.env')) $header[] = 'Authorization: token ' . $token;
-		$header[] = 'User-Agent: PHPost App';
-
-		// Configura la cabecera de autenticación con el token
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-
-		// Establece algunas opciones adicionales de cURL si es necesario
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-		// Ejecuta la solicitud y obtiene la respuesta
+		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
 		$response = curl_exec($ch);
-
-		// Verifica si hubo un error en la solicitud o La respuesta de la API se encuentra en $response
-		echo (curl_errno($ch)) ? curl_error($ch) : $response;
-
-		// Cierra la sesión cURL
 		curl_close($ch);
+
+		echo $response;
 
 	break;
 }

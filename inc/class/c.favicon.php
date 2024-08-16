@@ -51,7 +51,7 @@ class tsFavicon {
 	   global $tsCore;
 	   // Si el tamaño está vacío, usa el tamaño original de la imagen
 	   if (empty($size)) {
-	      $newSize = imagesx($image);
+	      $newSize = (imagesx($image) > 1024 ? 1024 : imagesx($image));
 	      $newName = $tsCore->setSEO($tsCore->settings['titulo']);
 	   } else {
 	      $newSize = $size;

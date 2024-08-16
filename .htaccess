@@ -106,6 +106,8 @@ RewriteRule ^(login|registro)/$ inc/php/access.php?action=$1 [QSA,L]
 # ADMIN
 RewriteRule ^admin/database/([A-Za-z_-]+) inc/php/admin.php?action=database&act=$1 [QSA,L]
 
+RewriteRule ^update/index.php$ update/index.php [QSA,L]
+
 #EXTRAS
 RewriteRule ^([A-Za-z0-9_-]+).php$ inc/php/ajax_files.php?action=$1 [QSA,L]
 RewriteRule ^([A-Za-z0-9_-]+)/$ inc/php/$1.php [QSA,L]

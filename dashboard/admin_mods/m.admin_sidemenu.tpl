@@ -2,6 +2,7 @@
 <ul class="cat-list">
 	<li id="a_main"><a class="nav-item{if $tsAction == ''} active{/if}" href="{$tsConfig.url}/admin/">Centro de Administraci&oacute;n</a></li>
 	<li id="a_creditos"><a class="nav-item{if $tsAction == 'creditos'} active{/if}" href="{$tsConfig.url}/admin/creditos">Soporte y Cr&eacute;ditos</a></li>
+	<li id="a_creditos"><a class="nav-item d-flex justify-content-between align-items-center{if $tsAction == 'actualizacion'} active{/if}" href="{$tsConfig.url}/admin/actualizacion">Sistema de actualización <span class="fw-bold">{$tsFilesTotal}</span></a></li>
 </ul>
 <h4>Configuraci&oacute;n</h4>
 <ul class="cat-list">

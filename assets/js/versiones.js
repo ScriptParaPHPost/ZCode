@@ -19,7 +19,6 @@ $.getJSON(ZCodeApp.url + "/feed-support.php", response => {
 
 //
 $.getJSON(ZCodeApp.url + "/feed-version.php?v=risus", response => {
-	console.log(response)
 	const { version, status, color } = response;
 	// Clonamos
   	let clonar = $('.list-clone').first().clone();
