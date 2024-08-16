@@ -104,6 +104,8 @@
     		if($act === 'actualizar') {
     			if($tsActualizacion->getFilesUpdate()) {
     				$tsActualizacion->saveIDUpdate('save', '');
+    				$unset = ['sha', 'commit', 'files'];
+    				foreach($unset as $del) unset($_SESSION[$del]);
     				$tsCore->redireccionar('admin', $action);
     			}
     		}

@@ -1,5 +1,0 @@
-[16-Aug-2024 13:56:51 America/Argentina/Buenos_Aires] PHP Fatal error:  Uncaught Error: Call to undefined method tsActualizacion::getApiGithub() in C:\xampp\htdocs\ZCode\inc\php\ajax\ajax.github.php:38
-Stack trace:
-#0 C:\xampp\htdocs\ZCode\inc\php\ajax_files.php(48): include()
-#1 {main}
-  thrown in C:\xampp\htdocs\ZCode\inc\php\ajax\ajax.github.php on line 38

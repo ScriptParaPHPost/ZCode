@@ -16,6 +16,7 @@ update/
 inc/ext/Avatar.php
 inc/ext/UUID.php
 inc/ext/xsl-sitemap.xml
+.log
 .env
 .lock
 changelog.txt

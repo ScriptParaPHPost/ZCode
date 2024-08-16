@@ -25,7 +25,7 @@ class tsActualizacion {
 	/**
 	 * Acceso limitado a lectura
 	*/
-	protected $GITHUB_USER_TOKEN = "zJBE2HbWnZY3OITjiQIVzln7HCySCM389WK1";
+	protected $GITHUB_USER_TOKEN = "vvB2VBjcdOVBqrVqYk43btWsKQamP23Cqmtf";
 
 	protected $GITHUB_USER_AGENT = "Updates for files";
 
@@ -101,12 +101,14 @@ class tsActualizacion {
 
 	public function getLastCommit() {
 		$response = $this->api_response('api');
-		if(isset($_SESSION["sha"]) && $response[0]->sha === $_SESSION['sha']) {
-			return $_SESSION['sha'];
-		} else {
-			$_SESSION['sha'] = $response[0]->sha;
-			$this->saveIDUpdate('save', substr($_SESSION['sha'], 0, 20));
-			return $_SESSION['sha'];
+		if(is_array($response)) {
+			if(isset($_SESSION["sha"]) && $response[0]->sha === $_SESSION['sha']) {
+				return $_SESSION['sha'];
+			} else {
+				$_SESSION['sha'] = $response[0]->sha;
+				$this->saveIDUpdate('save', substr($_SESSION['sha'], 0, 20));
+				return $_SESSION['sha'];
+			}
 		}
 	}
 
