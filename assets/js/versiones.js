@@ -60,12 +60,12 @@ function changeBranch(branch = 'alpha') {
 	$.post(ZCodeApp.url + '/github-api.php', { branch }, response => {
 		const { 
 			sha: commit_sha_code, 
+			html_url: link_last_commit,
 			commit: { 
 				message, 
-				author: { date: AuthorDate }, 
-				verification: { reason, verified } 
-			}, 
-			html_url: link_last_commit
+				author: { date: AuthorDate },
+				verification: { reason, verified }
+			} 
 		} = response;
 		//
 		$('#lastCommit').html('');

@@ -197,18 +197,6 @@ class tsUser  {
 		return $data;
 	}
 
-	/**
-	 * Se repiten en 3 funciones diferentes
-	*/
-	public function sessionUpdate(int $id = 0, bool $rem = true) {
-		// Actualizamos la session
-		$this->session->update($id, $rem, TRUE);
-		// Cargamos la información del usuario
-		$this->loadUser(true);
-		// COMPROBAMOS SI TENEMOS QUE ASIGNAR MEDALLAS
-		$this->DarMedalla();
-	}
-
 	/*
 	 * 
 	*/
@@ -229,6 +217,21 @@ class tsUser  {
 		}
 	}
 
+	/**
+	 * Se repiten en 3 funciones diferentes
+	*/
+	public function sessionUpdate(int $id = 0, bool $rem = true, string $twofactor = '') {
+		// Si no tiene el 2fa activo, iniciamos sesión
+		if(empty($twofactor)) {
+			// Actualizamos la session
+			$this->session->update($id, $rem, TRUE);
+		}
+		// Cargamos la información del usuario
+		$this->loadUser(true);
+		// COMPROBAMOS SI TENEMOS QUE ASIGNAR MEDALLAS
+		$this->DarMedalla();
+	}
+
 	/*
 		HACEMOS LOGIN
 		loginUser($username, $password, $remember = false, $redirectTo = NULL);
@@ -237,30 +240,47 @@ class tsUser  {
 		global $tsCore;
 		/* ARMAR VARIABLES */
 		$filter = filter_var($username, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
-		if($filter === 'email') $where = "LOWER(user_email)";
-		else {
-			$upperkey = ((int)$tsCore->settings['c_upperkey'] === 1);
-			$where = $upperkey ? "user_name" : "LOWER(user_name)";
-			$username = $upperkey ? $username : strtolower($username);
-		}
-		$where .= " = '$username'";
+		$where = ($filter === 'email') ? 'email' : 'name';
 		/* CONSULTA */  
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_activo, user_baneado FROM @miembros WHERE $where LIMIT 1"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_secret_2fa, user_activo, user_baneado FROM @miembros WHERE user_$where = '$username' LIMIT 1"));
 		// Existe el usuario
 		if(empty($data)) return '0: El usuario no existe.';
 		// Solo cuando inicia sesion, no cuando activa la cuenta
-		if(!$tsCore->createPassword($data['user_name'], $password, $data['user_password'])) {
-			return '2: Tu contrase&ntilde;a es incorrecta.';
-		} else {
-			if((int)$data['user_activo'] === 1) {
-				self::sessionUpdate($data['user_id'], $remember);
-				/* REDERIGIR */
-				if($redirectTo) {
-					$tsCore->redirectTo(true);
-				} 
-				return TRUE;
-			} else return '3: Debes activar tu cuenta';
-		}
+		if(!$tsCore->createPassword($data['user_name'], $password, $data['user_password'])) return '2: Tu contrase&ntilde;a es incorrecta.';
+		// El usuario esta activo
+		if((int)$data['user_activo'] === 0) return '3: Debes activar tu cuenta';
+		// Comprobando 2FA
+		$this->sessionUpdate($data['user_id'], $remember, $data['user_secret_2fa']);
+		if(empty($data['user_secret_2fa'])) {
+	   	// Redireccionamos en caso que contenga ?redirectTo=xxxx
+	   	if(isset(parse_url($_SERVER["HTTP_REFERER"])["query"])) {
+	   		parse_str(parse_url($_SERVER["HTTP_REFERER"])["query"], $e);
+	   		return "5: " . urldecode(base64_decode($e["redirectTo"]));
+	   	} 
+	   	if($redirectTo) $tsCore->redirectTo(true);
+			else return TRUE;
+	   } else return '4: Ingrese el código de autentificación.';
+	}
+
+	/**
+	 * Función para validar el código de autentificación 
+	*/
+	public function validateTwoFactor() {
+		global $tsCore;
+
+		include GOOGLE2FA . "GoogleAuthStart.php";
+		$authenticator = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+
+		$nick = $tsCore->setSecure($_POST['nick']);
+		$rem = ($_POST['rem'] === 'true');
+		# Buscar datos del usuario
+		$data = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', "SELECT user_id, user_secret_2fa, user_recovery FROM @miembros WHERE user_name = '$nick'"));
+		$recovery = json_decode(base64_decode($data["user_recovery"]), true);
+		if($authenticator->checkCode($data['user_secret_2fa'], $_POST['code']) || in_array($_POST['code'], $recovery)) {
+		   $this->session->update($data['user_id'], $rem, TRUE);
+		   return '1: Código 2FA correcto.';
+		} 
+		return '0: No se pudo comprobar la doble autentificación.';		
 	}
 
 	/*

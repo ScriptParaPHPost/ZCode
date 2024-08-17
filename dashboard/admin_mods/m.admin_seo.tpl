@@ -87,6 +87,11 @@
                border-radius: .325rem;
                line-height: 1.25rem;
             }
+            @media (width <= 768px) {
+               .search-results {
+                  width: 100%;
+               }
+            }
             .search-results img {
             	width: 100%;
             	height: 200px;

@@ -22,11 +22,6 @@ class tsActualizacion {
 		'config.inc.php'
 	];
 
-	/**
-	 * Acceso limitado a lectura
-	*/
-	protected $GITHUB_USER_TOKEN = "vvB2VBjcdOVBqrVqYk43btWsKQamP23Cqmtf";
-
 	protected $GITHUB_USER_AGENT = "Updates for files";
 
 	protected $GITHUB_VARIABLE = "USER_GITHUB_TOKEN";
@@ -37,45 +32,14 @@ class tsActualizacion {
 
 	protected $commitSha, $modifiedFiles;
 
-	//commits
+	public $BRANCH;
 
-	private function envFile() {
-		return TS_ROOT . '.env';
-	}
 
-	public function getFileENV() {
-		if(file_exists($this->envFile())) {
-			$this->GITHUB_USER_TOKEN = getenv($this->GITHUB_VARIABLE);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public function createToken() {
-		global $tsCore;
-		$env = $this->envFile();
-		if(!file_exists($this->envFile())) {
-			copy(TS_ROOT . '.env.example', $env);
-			$get = file_get_contents($env);
-			$add = explode("\n", $get);
-			$add[0] = "{$this->GITHUB_VARIABLE}=" . $this->GITHUB_USER_TOKEN;
-			file_put_contents($env, implode("\n", $add));
-			return true;
-		}
-		return false;
-	}
-
-	private function setHeader() {
-		return ['http' => [
-			'header' => "Authorization: token {$this->GITHUB_USER_TOKEN}\r\n" .
-			"User-Agent: {$this->GITHUB_USER_AGENT}\r\n"
-		]];
-	}
-
-	private function api_response(string $type = '', string $commit = '') {
+	public function api_response(string $type = '', string $commit = '') {
 		$user_repo = "{$this->USER}/{$this->REPO}";
-		$curl['api'] = "https://api.github.com/repos/$user_repo/commits";
+		$repos = "https://api.github.com/repos";
+		$curl['api'] = "$repos/$user_repo/commits";
+		$curl['info'] = "$repos/$user_repo/branches/{$this->BRANCH}";
 		$curl['raw'] = "https://raw.githubusercontent.com/$user_repo/{$this->commitSha}/";
 
 		if(!empty($commit)) $curl[$type] .= "/$commit" . ($type === 'api' ? '' : "/");
@@ -83,7 +47,11 @@ class tsActualizacion {
 		$ch = curl_init($curl[$type]);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0'); // GitHub requiere un User-Agent válido
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $this->setHeader());
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+			'http' => [
+				'header' => "User-Agent: {$this->GITHUB_USER_AGENT}"
+			]
+		]);
 
 		$response = curl_exec($ch);
 		curl_close($ch);
@@ -105,6 +73,8 @@ class tsActualizacion {
 			if(isset($_SESSION["sha"]) && $response[0]->sha === $_SESSION['sha']) {
 				return $_SESSION['sha'];
 			} else {
+				$unset = ['sha', 'commit', 'files'];
+    			foreach($unset as $del) unset($_SESSION[$del]);
 				$_SESSION['sha'] = $response[0]->sha;
 				$this->saveIDUpdate('save', substr($_SESSION['sha'], 0, 20));
 				return $_SESSION['sha'];
@@ -166,10 +136,6 @@ class tsActualizacion {
 	public function getFilesUpdate() {
 		$files = [];
 		$msg = '';
-		$permisos = [
-			'original' => ['file' => 0644, 'dir' => 0755],
-			'cambiar' => ['file' => 0666, 'dir' => 0777],
-		];
 		
 		$permisos = $this->cambiarPermisos();
 		foreach($this->filesStatus() as $k => $file) {
@@ -177,7 +143,10 @@ class tsActualizacion {
 			$root_filename = TS_ROOT . $filename;
 			# Empezando la descarga de los archivos
 			$contenido = file_get_contents($file->raw_url);
-			if ($contenido !== false) {
+			if($file->status === 'removed') {
+				unlink($root_filename);
+			}
+			if ($contenido !== false AND $file->status !== 'removed') {
 				// Crea la carpeta si no existe
 				$directorio = dirname($root_filename);
 				if (!is_dir($directorio)) mkdir($directorio, 0777, true);

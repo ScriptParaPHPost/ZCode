@@ -15,9 +15,6 @@ function isYoutube(linkVideo) {
 	const match = linkVideo.match(regExp); 
 	return (match && match[7].length === 11) ? match[7] : false;
 }
-function loadScript(url) {
-	return new Promise((resolve, reject) => $.getScript(url).done(resolve).fail(reject));
-}
 function generarCadenaAleatoria(longitud) {
 	const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	let resultado = '';
@@ -47,11 +44,15 @@ $('input').on('keyup', function() {
 	$(this).parent().parent().find('.upform-status').removeClass('error ok loading info').html('')
 });
 
+/**
+ * Imported v1.0
+ * Lo que hace es cargar el código cuando es necesario
+ * y que no se cargue cuando no se usa
+*/
 async function imported(fileroute = '', execFunction = '', objects) {
 	try {
 		const { theme } = ZCodeApp;
 		javascriptFile = `${theme}/js/${fileroute}?v` + generarCadenaAleatoria(4);
-	
 		const module = await import(javascriptFile);
 		if (module[execFunction]) {
 			module[execFunction](objects);
@@ -69,9 +70,7 @@ async function imported(fileroute = '', execFunction = '', objects) {
  * Cookie v1.0
  * Loading v1.0
  * UPPassword v1.1
- * UPIcons v1.1
- * UPModal v3.3
- * UPEffects v1
+ * UPModal v3.4.2
 */
 const toast = {
 	createContainer() {
@@ -187,51 +186,9 @@ const UPPassword = {
 	}
 }
 
-/**
- * UltraIcons v1.1 - jQuery 3.7.1
- * @author Miguel92 - 2024
- * Agregar icono svg desde etiqueta
-*/
-const UIcons = {
-	folder: 'system-uicons',
-	searchIcon(name = '', folder = this.folder) {
-		const { url: linkOfSite } = ZCodeApp;
-		image = (folder === 'spinner') ? name : name.replace(/-/g, '_');
-		return `${linkOfSite}/assets/icons/${folder}/${image}.svg`;
-	},
-	applyStyles(iconElement) {
-		const color = iconElement.attr('var') ? `var(${iconElement.attr('var')})` : iconElement.attr('color') || 'inherit';
-		iconElement.css({ color });
-	},
-	createIcons() {
-		$('*[uicon]').each(function() {
-			const iconElement = $(this);
-			$.get(UIcons.searchIcon(iconElement.attr('uicon'), iconElement.attr('folder')), function(data) {
-				const svg = $(data).find('svg');
-				const size = iconElement.attr('size') ?? '1.5rem';
-				iconElement.width(size).height(size);
-				svg.attr({ width: size, height: size });
-				UIcons.applyStyles(iconElement);
-				iconElement.html(svg);
-			}, 'xml');
-		});
-	},
-	createOneIcon({ name, folder, html }) {
-      const url = UIcons.searchIcon(name, folder);
-      const data = $.ajax({
-         url: url,
-         async: false,
-         dataType: 'xml'
-      }).responseXML;
-
-      const svg = $(data).find('svg');
-      console.log(data)
-      //return svg[0].outerHTML;
-	}
-}
 
 /**
- * UltraModal v3.3 - jQuery 3.7.1
+ * UltraModal v3.4.2 - jQuery 3.7.1
  * @author Miguel92 - 2024
  * @status => success | danger | warning | default
  * @optional => icons
@@ -244,6 +201,7 @@ const UPModal = {
 	close_button: true,
 	scrolleable: false,
 	isShow: false,
+	folder: 'system-uicons',
 	buttons: {
 		confirmShow: true,
 		confirmTxt: 'Continuar',
@@ -261,7 +219,8 @@ const UPModal = {
 		info: 'info-circle',
 		question: 'question-circle',
 		password: 'lock',
-		email: 'mail'
+		email: 'mail',
+		opt: 'fingerprint'
 	},
 	template: `<div class="UPModal">
 		<div class="UPModal-mask"></div>
@@ -277,6 +236,21 @@ const UPModal = {
 			<div class="UPModal-buttons"></div>
 		<div>
 	</div>`,
+	searchIcon(name = '', folder = this.folder) {
+		const { url: linkOfSite } = ZCodeApp;
+		image = (folder === 'spinner') ? name : name.replace(/-/g, '_');
+		return `${linkOfSite}/assets/icons/${folder}/${image}.svg`;
+	},
+	createOneIcon({ name, folder, html }) {
+      const url = this.searchIcon(name, folder);
+      const data = $.ajax({
+         url: url,
+         async: false,
+         dataType: 'xml'
+      }).responseXML;
+      const svg = $(data).find('svg');
+      return svg[0].outerHTML;
+	},
 	show() {
 		if(this.isShow) return;
 		this.isShow = true;
@@ -294,8 +268,6 @@ const UPModal = {
 		// Centrar modal
 		this.centerModal();
 		$(window).on('resize', this.centerModal);
-		//
-		$('[data-modal-close="true"]').on('click', () => this.close());
 	},
 	applyStatus() {
 		if (this.status) {
@@ -306,7 +278,7 @@ const UPModal = {
 	setIcon( status ) {
 		let icon = this.statusIcons[status] || status;
 		if (status) {
-			$('.UPModal-icon').html(UIcons.createOneIcon({ name: icon }));
+			$('.UPModal-icon').html(this.createOneIcon({ name: icon }));
 			$('.UPModal-dialog').attr('data-modal-icon', true);
 		} else {
 			$('.UPModal-icon').remove();
@@ -314,9 +286,7 @@ const UPModal = {
 	},
 	addCloseButton() {
 		if(this.close_button) {
-			$('.UPModal-title').before(`<div class="UPModal-close" data-modal-close="true">
-				<div uicon="system-uicons:cross"></div>
-			</div>`);
+			$('.UPModal-title').before(`<div role="button" onclick="UPModal.close()" class="UPModal-close" data-modal-close="true">&times;</div>`);
 		}
 	},
 	centerModal() {
@@ -410,22 +380,17 @@ const UPModal = {
 			$('.UPModal-message').fadeOut('fast');
 		}, timeout * 1000);
 	},
-	setInput({ label, type, name, placeholder, maxlength, id, required }) {
+	setInput({ label, type, name, placeholder, maxlength, id, required, inputmode }) {
 		let isRequired = required ? ' required' : '';
 		let appendIconForm = '';
-		if(this.statusIcons[type]) {
-			appendIconForm += `<div class="upform-input-icon">
-				<iconify-icon icon="${this.statusIcons[type]}"></iconify-icon>
-			</div>`;
+		let isMax = ' maxlength="'+maxlength+'"';
+		let isInputMode = !empty(inputmode) ? ' inputmode="'+inputmode+'"' : '';
+		let iconType = !empty(inputmode) ? 'opt' : type;
+		if(this.statusIcons[iconType]) {
+			let inputicon = this.createOneIcon({ name: this.statusIcons[iconType] })
+			appendIconForm += `<div class="upform-input-icon">${inputicon}</div>`;
 		}
-		const temp = `<div class="upform-group">
-			<label class="upform-label" for="${name}">${label}</label>
-			<div class="upform-group-input">
-				${appendIconForm}
-				<input class="upform-input" type="${type}" name="${name}" id="${name}" placeholder="${placeholder}"${isRequired}>
-			</div>
-		</div>`;
-		return temp;
+		return `<div class="upform-group"><label class="upform-label" for="${name}">${label}</label><div class="upform-group-input upform-icon">${appendIconForm}<input class="upform-input" type="${type}" name="${name}" id="${name}" placeholder="${placeholder}"${isMax}${isInputMode}${isRequired}></div></div>`;
 	},
 	setModal({ icon, status, close, mask, size, title, body, buttons, input }) {
 		this.status = status ?? '';
@@ -433,92 +398,11 @@ const UPModal = {
 		this.close_mask = mask ?? true;
 		this.close_button = close ?? false;
 		body = body ?? this.setInput(input);
-		this.setupModal({
-			title: title, 
-			body: body, 
-			buttons: buttons
-		});
+		this.setupModal({ title, body, buttons });
 		this.setIcon(icon);
 		this.applyStatus();
 	}
 };
-
-/**
- * Abrevia un número grande usando sufijos como 'K' para miles, 'M' para millones, etc.
- * @param {number} value - El número a abreviar.
- * @returns {string} - El número abreviado como una cadena de texto.
-*/
-function UPAbbr(value) {
-   let newValue = value;
-   if (value >= 1000) {
-      const suffixes = ["", "K", "M", "B", "T"];
-      const suffixNum = Math.floor(("" + value).length / 3);
-      let shortValue = '';
-      for (let precision = 2; precision >= 1; precision--) {
-         shortValue = parseFloat((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value).toPrecision(precision));
-         const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '');
-         if (dotLessShortValue.length <= 2) break;
-      }
-      if (shortValue % 1 !== 0) shortValue = shortValue.toFixed(1);
-      newValue = shortValue + suffixes[suffixNum];
-   }
-   return newValue;
-}
-
-/**
- * UltraEffects v1.0 - jQuery 3.7.1
- * @author Miguel92 - 2024
- * Añadiendo efectos practicos
-*/
-const UPEffects = {
-	duration: 1000,
-	easing: 'linear',
-	element: '.up-effect.',
-	frameRate: 30,
-  	dataCount(object) {
-   	return parseInt(object.attr('data-count'), 10);
-  	},
-  	mathFloor(countTo, random = false) {
-  		let numberFloor = random ? Math.random() * countTo : countTo;
-   	return Math.floor(numberFloor);
-  	},
-  	counter(object, changes = {}) {
-   	const { duration, easing } = { ...this, ...changes };
-   	const elements = $(this.element + object);
-   	elements.each(function() {
-   		const Counter = $(this);
-   		const countTo = UPEffects.dataCount(Counter);
-   		$({ countNum: Counter.text() }).animate({ countNum: countTo }, {
-   			duration,
-   			easing,
-   			step() { Counter.text(UPEffects.mathFloor(this.countNum)); },
-   			complete() { Counter.text(UPAbbr(this.countNum)); }
-   		});
-   	});
-  	},
-	decrypt(object, changes = {}) {
-		const { duration, easing, frameRate } = { ...this, ...changes };
-		const elements = $(this.element + object);
-		const frameDuration = 1000 / frameRate;
-		elements.each(function() {
-			const Counter = $(this);
-			const countTo = UPEffects.dataCount(Counter);
-			const frames = duration / frameDuration;
-			const increment = countTo / frames;
-			let currentCount = 0;
-
-			const interval = setInterval(() => {
-				Counter.text(UPEffects.mathFloor(countTo, true));
-				currentCount += increment;
-				if (currentCount >= countTo) {
-				  	clearInterval(interval);
-				  	Counter.text(UPAbbr(countTo));
-				}
-			}, frameDuration);
-		});
-	}
-};
-
 
 $(document).on('keyup keydown', function(event) {
    if(event.type === 'keydown') {
@@ -529,8 +413,8 @@ $(document).on('keyup keydown', function(event) {
    }
 });
 
+
 $(() => {
-	UIcons.createIcons();
 	// Ejecutamos LazyLoad - by Miguel92
 	if (typeof LazyLoad !== 'undefined') {
 	   const lazyLoadSelectors = ['img[src]', '[data-src]', '[data-bg]'];
@@ -591,19 +475,5 @@ $(() => {
          if(SAVE.length === 1) SAVE.click();
       }
    });
-
-   const anchor = window.location.hash;
-   if (anchor) {
-      // Obtener el elemento por el id del ancla
-      const element = $(anchor);
-      if (element) {
-         // Agregar la clase de resaltado
-         element.addClass("highlight");
-			// Eliminar el resaltado después de un tiempo (opcional)
-         setTimeout(() => {
-            element.removeClass("highlight");
-         }, 3000); // Quitar el resaltado después de 3 segundos
-      }
-   }
 
 });

@@ -280,6 +280,8 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros` (
   `user_comentarios` int(11) NOT NULL DEFAULT 0,
   `user_email` varchar(80) NOT NULL DEFAULT '',
   `user_chat` int(12) NOT NULL DEFAULT 0,
+  `user_secret_2fa` text NULL,
+  `user_recovery` text NULL,
   `user_last_ip` varchar(38) NOT NULL DEFAULT 0,
   `user_lastactive` int(10) NOT NULL DEFAULT 0,
   `user_lastlogin` int(10) NOT NULL DEFAULT 0,
@@ -295,6 +297,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros` (
   `user_registro` int(10) NOT NULL DEFAULT 0,
   `user_seguidores` bigint NOT NULL DEFAULT 0,
   `user_seguidos` bigint NOT NULL DEFAULT 0,
+  `user_socials` tinytext NOT NULL DEFAULT '{\"discord\":false,\"facebook\":false,\"github\":false,\"google\":false,\"twitter\":false}',
   `user_socials` tinytext NOT NULL DEFAULT '{\"discord\":false,\"facebook\":false,\"github\":false,\"google\":false,\"twitter\":false}',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
@@ -743,3 +746,11 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}chat_lobby` (
   `lobby_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`lid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+
+$zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}chat_blacklist` (
+  `chat_ban_id` int(12) NOT NULL AUTO_INCREMENT,
+  `chat_ban_user` int(12) NOT NULL DEFAULT 0,
+  `chat_ban_expire` int(12) NOT NULL DEFAULT 0,
+  `chat_ban_date` int(12) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`chat_ban_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";

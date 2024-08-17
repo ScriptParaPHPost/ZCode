@@ -6,57 +6,59 @@
 	{if $tsAct == ''}
    	<a href="{$tsConfig.url}/admin/database/backup" class="btn">Crear copia de seguridad</a>
    	<a href="{$tsConfig.url}/admin/database/lista" class="btn">Lista de backups</a>
-	   <table class="admin_table mt-3">
-			<thead>
-				<th class="body-bg"><input type="checkbox" class="up-checkbox" name="tables[all]" value="all"></th>
-				<th>Tabla</th>
-				<th>Filas</th>
-				<th>Tamaño</th>
-				<th>Caché</th>
-				<th>Creado</th>
-				<th>Actualizado</th>
-				<th>Acciones</th>
-			</thead>
-			<tbody>
-				{foreach $tsTablesSQL key=t item=table}
-					<tr data-id="{$table.id}">
-						<td class="text-center">
-							<input type="checkbox" class="up-checkbox" name="tables[{$table.name}]" value="{$table.name}">
-						</td>
-						<td>{$table.name} <small class="d-block"><strong>{$table.engine}</strong> - <strong>{$table.collation}</strong></small></td>
-						<td class="text-center">{$table.rows}</td>
-						<td class="text-center">{$table.size}</td>
-						<td class="text-center" data-cache="{$table.id}">{if $table.cache === 0}Vacio{else}{$table.cache}{/if}</td>
-						<td>{$table.create|hace:true}</td>
-						<td data-update="{$table.id}">{$table.update|hace:true}</td>
-						<td>
-							<div class="admin_actions d-flex justify-content-center align-items-center column-gap-2">
-								<span role="button" onclick="database.table_action('analyze', '{$table.name}')" title="Analizar {$table.name}">
-									{uicon name="gauge" class="pe-none" size="1.325rem"}
-								</span>
-								{if $table.cache != 0}
-						   	<span role="button" data-remove="{$table.id}" onclick="database.table_action('optimize', '{$table.name}', {$table.id})" title="Limpiar {$table.name}">
-						   		{uicon name="database" class="pe-none" size="1.325rem"}
-						   	</span>
-						   	{/if}
-						   	<span role="button" onclick="database.table_action('repair', '{$table.name}', {$table.id})" title="Reparar {$table.name}">
-						   		{uicon name="nut" class="pe-none" size="1.325rem"}
-						   	</span>
-						   	<span role="button" onclick="database.table_action('check', '{$table.name}')" title="Comprobar {$table.name}">
-						   		{uicon name="search" class="pe-none" size="1.325rem"}
-						   	</span>
-							</div>
-						</td>
-					</tr>
-				{/foreach}
-			</tbody>
-		</table>
+   	<div style="overflow-x:auto;">
+		   <table class="admin_table mt-3">
+				<thead>
+					<th class="body-bg"><input type="checkbox" class="up-checkbox" name="tables[all]" value="all"></th>
+					<th>Tabla</th>
+					<th>Filas</th>
+					<th>Tamaño</th>
+					<th>Caché</th>
+					<th>Creado</th>
+					<th>Actualizado</th>
+					<th>Acciones</th>
+				</thead>
+				<tbody>
+					{foreach $tsTablesSQL key=t item=table}
+						<tr data-id="{$table.id}">
+							<td class="text-center">
+								<input type="checkbox" class="up-checkbox" name="tables[{$table.name}]" value="{$table.name}">
+							</td>
+							<td>{$table.name} <small class="d-block"><strong>{$table.engine}</strong> - <strong>{$table.collation}</strong></small></td>
+							<td class="text-center">{$table.rows}</td>
+							<td class="text-center">{$table.size}</td>
+							<td class="text-center" data-cache="{$table.id}">{if $table.cache === 0}Vacio{else}{$table.cache}{/if}</td>
+							<td>{$table.create|hace:true}</td>
+							<td data-update="{$table.id}">{$table.update|hace:true}</td>
+							<td>
+								<div class="admin_actions d-flex justify-content-center align-items-center column-gap-2">
+									<span role="button" onclick="database.table_action('analyze', '{$table.name}')" title="Analizar {$table.name}">
+										{uicon name="gauge" class="pe-none" size="1.325rem"}
+									</span>
+									{if $table.cache != 0}
+							   	<span role="button" data-remove="{$table.id}" onclick="database.table_action('optimize', '{$table.name}', {$table.id})" title="Limpiar {$table.name}">
+							   		{uicon name="database" class="pe-none" size="1.325rem"}
+							   	</span>
+							   	{/if}
+							   	<span role="button" onclick="database.table_action('repair', '{$table.name}', {$table.id})" title="Reparar {$table.name}">
+							   		{uicon name="nut" class="pe-none" size="1.325rem"}
+							   	</span>
+							   	<span role="button" onclick="database.table_action('check', '{$table.name}')" title="Comprobar {$table.name}">
+							   		{uicon name="search" class="pe-none" size="1.325rem"}
+							   	</span>
+								</div>
+							</td>
+						</tr>
+					{/foreach}
+				</tbody>
+			</table>
+		</div>
 		<h4>Solo las tablas seleccionadas</h4>
-	   <div class="d-flex justify-content-start align-items-center column-gap-3">
-	   	<span role="button" onclick="database.table_all('analyze')" class="btn">Analizar</span>
-	   	<span role="button" onclick="database.table_all('optimize')" class="btn">Limpiar caché</span>
-	   	<span role="button" onclick="database.table_all('repair')" class="btn">Reparar</span>
-	   	<span role="button" onclick="database.table_all('check')" class="btn">Comprobar</span>
+	   <div class="d-block d-lg-flex justify-content-start align-items-center column-gap-3">
+	   	<span role="button" onclick="database.table_all('analyze')" class="btn d-block mb-3">Analizar</span>
+	   	<span role="button" onclick="database.table_all('optimize')" class="btn d-block mb-3">Limpiar caché</span>
+	   	<span role="button" onclick="database.table_all('repair')" class="btn d-block mb-3">Reparar</span>
+	   	<span role="button" onclick="database.table_all('check')" class="btn d-block mb-3">Comprobar</span>
 	   </div>
 	{elseif $tsAct === 'backup'} 
 		<h3>Crear copia de seguridad</h3>

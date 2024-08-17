@@ -18,7 +18,7 @@
 		  	<dl>
 		  		<dt><label for="ai_edad">Edad requerida:</label><span>A partir de que edad los usuarios pueden registrarse.</span></dt>
             <dd>
-               <div class="input-group" style="width:15%!important">
+               <div class="input-group"  style="width:150px!important">
                   <input type="text" id="ai_edad" name="c_allow_edad" maxlength="2" value="{$tsConfig.c_allow_edad}" /> 
                   <span>a&ntilde;os.</span>
                </div>

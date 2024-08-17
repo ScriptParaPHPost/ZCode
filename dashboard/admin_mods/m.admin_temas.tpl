@@ -5,14 +5,14 @@
 	{if $tsSave}<div class="empty empty-success">Tus cambios han sido guardados.</div>{/if}
 	{if $tsAct == ''}
 		{foreach from=$tsTemas item=tema}
-			<div class="d-grid border mb-3 rounded shadow overflow-hidden position-relative" style="grid-template-columns: 340px 1fr;">
+			<div class="d-block d-lg-grid border mb-3 rounded shadow overflow-hidden position-relative" style="grid-template-columns: 340px 1fr;">
 				<div style="width: 100%;height: 180px;">
-					<img src="{$tema.t_url}/screenshot.png" class="w-100 h-100 rounded shadow" />
+					<img src="{$tsConfig.logos.128}" data-src="{$tema.t_url}/screenshot.png" loading="lazy" class="w-100 h-100 rounded shadow object-fit-cover" />
 				</div>
 				<div class="p-3">
 					<h4 class="d-flex justify-content-start align-items-center">{if $tsConfig.tema_id == $tema.tid}{uicon name="star" class="pe-none me-2"} {/if}{$tema.t_name}{if !empty($tema.t_other)} <a href="{$tema.t_other}" target="_blank" rel="external" style="color:var(--main-bg)">{uicon name="external"}</a>{/if}</h4>
 					<span class="d-block my-2">{$tema.t_description}</span>
-					<span>
+					<span class="d-none d-lg-block">
 						{foreach $tema.t_tags item=tag}
 							<small class="badge main-bg">#{$tag}</small>
 						{/foreach}

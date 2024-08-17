@@ -13,9 +13,10 @@
 
 	// NIVELES DE ACCESO Y PLANTILLAS DE CADA ACCIÓN
 	$files = array(
-		'login-user' => array('n' => 1, 'p' => ''),
-		'login-activar' => array('n' => 1, 'p' => ''),
-		'login-form' => array('n' => 1, 'p' => 'form'),
+		'login-user' => ['n' => 1, 'p' => ''],
+		'login-activar' => ['n' => 1, 'p' => ''],
+		'login-form' => ['n' => 1, 'p' => 'form'],
+		'login-validar' => ['n' => 1, 'p' => ''],
 	);
 
 /**********************************\
@@ -75,5 +76,8 @@
 			//<---
 			$tsUser->logoutUser($tsUser->uid, true);
 			//--->
+		break;
+		case 'login-validar':
+			echo $tsUser->validateTwoFactor();
 		break;
 	}

@@ -17,6 +17,10 @@ $files = [
    'cuenta-avatar-change' => ['n' => 2, 'p' => ''],
    'cuenta-desvincular' => ['n' => 2, 'p' => ''],
    'cuenta-customizer' => ['n' => 2, 'p' => ''],
+	'cuenta-qr-regenerate' => ['n' => 2, 'p' => 'regenerate'],
+	'cuenta-two-factor' => ['n' => 2, 'p' => ''],
+	'cuenta-delete-2fa' => ['n' => 2, 'p' => ''],
+	'cuenta-desactivate' => ['n' => 2, 'p' => '']
 ];
 
 // REDEFINIR VARIABLES
@@ -58,5 +62,30 @@ switch($action){
 	break;
 	case 'cuenta-customizer':
 		echo $tsCuenta->saveColorCustomizer();
+	break;
+	case 'cuenta-desactivate':
+		if(!empty($_POST['validar'])) echo $tsCuenta->desCuenta();
+	break;
+	case 'cuenta-qr-regenerate':
+		include GOOGLE2FA . "GoogleAuthStart.php";
+		$authenticator = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+
+		# Comprobamos que tenga el 2FA desactivado
+		$secret = $authenticator->generateSecret();
+
+	   # Generamos el código QR
+	   $issuer = trim($tsCore->settings['titulo']);
+	   $accountName = rawurlencode("{$tsCore->settings['titulo']} [{$tsUser->nick}]");
+
+	   $generate = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate($accountName, $secret, $issuer, 250);
+	   # Asignamos una variable para mostrar la imagen
+	   $smarty->assign("tsGenerateNewQR", $generate);
+	   $smarty->assign("tsSecret", $secret);
+	break;
+	case 'cuenta-two-factor':
+		echo $tsCuenta->activeTwoFactor();
+	break;
+	case 'cuenta-delete-2fa':
+		echo $tsCuenta->removeTwoFactor();
 	break;
 }

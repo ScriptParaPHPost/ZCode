@@ -19,6 +19,7 @@ inc/ext/xsl-sitemap.xml
 .log
 .env
 .lock
+error.log
 changelog.txt
 config.inc.php
 pasos.txt

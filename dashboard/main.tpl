@@ -22,7 +22,7 @@
 		  		{else}
 		  			{assign "pagina" "admin"}
 		  		{/if}
-		  		<aside class="up-sidebar">
+		  		<aside class="up-sidebar body-bg">
 		  			{include "m.{$pagina}_sidemenu.tpl"}
 		  		</aside>
 		  		<div class="boxy">
@@ -32,15 +32,15 @@
 			<footer class="py-3">
 				<div class="links p-2">
 					<div class="links-left d-flex justify-content-center align-items-center gap-2">
-						<a rel="internal" href="{$tsConfig.url}/pages/ayuda/" title="Ayuda">Ayuda</a>
-						<a rel="internal" href="{$tsConfig.url}/pages/chat/" title="Chat">Chat</a>
-						<a rel="internal" href="{$tsConfig.url}/pages/contacto/" title="Contacto">Contacto</a>  
-						<a rel="internal" href="{$tsConfig.url}/pages/protocolo/" title="Protocolo">Protocolo</a>
+						<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/ayuda/" title="Ayuda">Ayuda</a>
+						<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/chat/" title="Chat">Chat</a>
+						<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/contacto/" title="Contacto">Contacto</a>  
+						<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/protocolo/" title="Protocolo">Protocolo</a>
 					</div>
 					<div class="links-right d-flex justify-content-center align-items-center gap-2">
-						<a rel="internal" href="{$tsConfig.url}/pages/terminos-y-condiciones/" title="T&eacute;rminos y condiciones">T&eacute;rminos y condiciones</a>
-						<a rel="internal" href="{$tsConfig.url}/pages/privacidad/" title="Privacidad de datos">Privacidad de datos</a>
-						<a rel="internal" href="{$tsConfig.url}/pages/dmca/" title="Report Abuse - DMCA">Report Abuse - DMCA</a>
+						<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/terminos-y-condiciones/" title="T&eacute;rminos y condiciones">T&eacute;rminos y condiciones</a>
+						<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/privacidad/" title="Privacidad de datos">Privacidad de datos</a>
+						<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/dmca/" title="Report Abuse - DMCA">Report Abuse - DMCA</a>
 					</div>
 				</div>
 				<div class="footer-copyright text-center">

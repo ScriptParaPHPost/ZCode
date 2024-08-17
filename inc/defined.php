@@ -25,6 +25,7 @@ define('TS_AVATARES', TS_IMAGES . 'avatares' . TS_PATH);
 define('TS_UPLOADS',  TS_IMAGES . 'uploads' . TS_PATH);
 define('TS_PORTADAS', TS_IMAGES . 'portadas' . TS_PATH);
 
+define('GOOGLE2FA', 		 TS_EXTRA . 'google' . TS_PATH);
 define('DATABASE', 		 TS_EXTRA . 'database.php');
 define('CONFIG_EXAMPLE', TS_INCLUDES . 'example.config.php');
 define('CONFIG', 			 TS_ROOT . 'config.inc.php');

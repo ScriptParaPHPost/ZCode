@@ -50,6 +50,12 @@ if($tsContinue){
 		$smarty->assign('tsAvatarSelect', $tsCuenta->getAvatarImages());
 	}
 
+	# Comprobamos que tenga el 2FA activado
+	$user_secret_2fa = empty($tsUser->info['user_secret_2fa']) ? false : true;
+
+	$smarty->assign("tsG2FA", $user_secret_2fa);
+	
+
 	if(empty($action)){
 		include_once TS_EXTRA . 'geodata.php';
 		// SOLO MENORES DE 84 AÑOS xD Y MAYORES DE...

@@ -45,17 +45,14 @@ function smarty_function_uicon($params, &$smarty) {
          $new_attr = " $attr_name=\"$attr_val\"";
          $icon_content = substr_replace($icon_content, $new_attr, $insert_pos, 0);
       }
-   }
-
-   // Buscamos los atributos 'width' y 'height' y los actualizamos
-   if (!empty($size) AND !empty($params['size'])) {
-      // Usamos expresiones regulares para buscar y reemplazar los valores de width y height
-      $icon_content = preg_replace('/<svg([^>]*)\bwidth=["\'][^"\']*["\']/i', '<svg$1width="' . $size . '"', $icon_content);
-      $icon_content = preg_replace('/<svg([^>]*)\bheight=["\'][^"\']*["\']/i', '<svg$1height="' . $size . '"', $icon_content);
+      // Buscamos los atributos 'width' y 'height' y los actualizamos
+      if (isset($params['size'])) {
+         $size_attr = ' width="' . trim(htmlspecialchars($params['size'])) . '"';
+         $size_attr .= ' height="' . trim(htmlspecialchars($params['size'])) . '"';
+         $icon_content = substr_replace($icon_content, $size_attr, $insert_pos, 0);
+      }
    }
    $icon_content = preg_replace('/(stroke)="[^"]*"/', '$1="' . $stroke . '"', $icon_content);
-   
 
 	return $icon_content;
-
 }

@@ -48,11 +48,11 @@
 		break;
 		case 'feed-version':
 			/**
-			 * Versión a 11 de julio de 2024 *
-			 * ZCode 1.0.0 *
+			 * Versión a 17 de agosto de 2024 *
+			 * ZCode 1.6.0 *
 			*/
 			$time = time();
-			$version_now = 'ZCode 1.0.0';
+			$version_now = 'ZCode 1.6.0';
 			$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 			# ACTUALIZAR VERSIÓN
 			if($tsCore->settings['version'] != $version_now){

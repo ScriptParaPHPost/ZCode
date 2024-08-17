@@ -30,7 +30,7 @@
          <dl>
             <dt><label for="ai_active">Usuario online:</label><span>Tiempo que debe trascurrir para considerar que un usuario est&aacute; en linea.</span></dt>
             <dd>
-               <div class="input-group" style="width:15%!important">
+               <div class="input-group" style="width:100px!important">
                   <input type="text" id="ai_active" name="c_last_active" maxlength="2" value="{$tsConfig.c_last_active}" /> 
                   <span>min.</span>
                </div>
@@ -39,7 +39,7 @@
          <dl>
             <dt><label for="ai_stats_cache">Estad&iacute;sticas en buffer:</label><span>Tiempo que debe trascurrir para actualizar las estad&iacute;sticas del sitio.</span></dt>
             <dd>
-               <div class="input-group" style="width:15%!important">
+               <div class="input-group" style="width:100px!important">
                   <input type="text" id="ai_stats_cache" name="c_stats_cache" maxlength="2" value="{$tsConfig.c_stats_cache}" /> 
                   <span>min.</span>
                </div>
@@ -124,26 +124,26 @@
          <dl>
             <dt><label for="ai_max_nots">M&aacute;ximo de notificaciones:</label><span>Cuantas notificaciones puede recibir un usuario.</span></dt>
             <dd>
-               <input type="text" id="ai_max_nots" name="c_max_nots" style="width:10%" maxlength="3" value="{$tsConfig.c_max_nots}" />
+               <input type="text" id="ai_max_nots" name="c_max_nots" style="width:100px!important" maxlength="3" value="{$tsConfig.c_max_nots}" />
             </dd>
          </dl>
          <dl>
             <dt><label for="ai_max_acts">M&aacute;ximo de actividades:</label><span>Cuantas actividades puede registrar un usuario.</span></dt>
             <dd>
-               <input type="text" id="ai_max_acts" name="c_max_acts" style="width:10%" maxlength="3" value="{$tsConfig.c_max_acts}" />
+               <input type="text" id="ai_max_acts" name="c_max_acts" style="width:100px!important" maxlength="3" value="{$tsConfig.c_max_acts}" />
             </dd>
          </dl>
          <hr />
          <dl>
             <dt><label for="ai_max_post">Posts por p&aacute;gina:</label><span>N&uacute;mero m&aacute;ximo de posts a mostrar en cada p&aacute;gina de la portada.</span></dt>
             <dd>
-               <input type="text" id="ai_max_post" name="c_max_posts" style="width:10%" maxlength="3" value="{$tsConfig.c_max_posts}" />
+               <input type="text" id="ai_max_post" name="c_max_posts" style="width:100px!important" maxlength="3" value="{$tsConfig.c_max_posts}" />
             </dd>
          </dl>
          <dl>
             <dt><label for="ai_max_com">Comentarios por post:</label><span>N&uacute;mero m&aacute;ximo de comentarios por p&aacute;gina en los post.</span></dt>
             <dd>
-               <input type="text" id="ai_max_com" name="c_max_com" style="width:10%" maxlength="3" value="{$tsConfig.c_max_com}" />
+               <input type="text" id="ai_max_com" name="c_max_com" style="width:100px!important" maxlength="3" value="{$tsConfig.c_max_com}" />
             </dd>
          </dl>
          <dl>
@@ -151,7 +151,7 @@
                <label for="ai_allow_points" class="qtip" title="Si introducimos '0', se permitir&aacute; dar los puntos definidos por el rango del usuario. <br /> <br />  Si introducimos '-1', se podr&aacute;n dar todos los puntos que el usuario tenga para dar hoy. <br /> <br /> Introduciendo un n&uacute;mero superior a 0, todos los usuarios sin importar su rango, tend&aacute;n esa cantidad para dar.">Puntos por post:</label><span>N&uacute;mero m&aacute;ximo de puntos que permitimos dar en los posts. </span>
             </dt>
             <dd>
-               <input type="text" id="ai_allow_points" name="c_allow_points" style="width:10%" maxlength="3" value="{$tsConfig.c_allow_points}" />
+               <input type="text" id="ai_allow_points" name="c_allow_points" style="width:100px!important" maxlength="3" value="{$tsConfig.c_allow_points}" />
              </dd>
          </dl>
          <dl>

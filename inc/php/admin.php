@@ -88,11 +88,10 @@
 		$tsTitle = 'Generador de actualizacion';
     	require_once TS_CLASS . "c.actualizacion.php";
     	$tsActualizacion = new tsActualizacion;
-    	$tsActualizacion->createToken();
+    
     	$commits = $tsActualizacion->getLastCommit();
     	$getUpdated = $tsActualizacion->saveIDUpdate('get');
     	$smarty->assign([
-    		'tsFileENV' => $tsActualizacion->getFileENV(),
     		'tsUpdated' => $getUpdated,
     		'tsLastCommit' => $commits
     	]);

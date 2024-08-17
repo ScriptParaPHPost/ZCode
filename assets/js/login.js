@@ -65,6 +65,16 @@ const login = (() => {
 		UPModal.alert('Error', 'Error al intentar procesar lo solicitado', false);
 	}
 
+	function comprobarOPT(params) {
+		params += '&code=' + $('input[name="one_password_time"]').val();
+		$.post(`${ZCodeApp.url}/login-validar.php`, params, req => {
+			let INPUT_NUMBER = parseInt(req.charAt(0));
+			const CONTENT_SHOW = req.substring(3);
+			let CONTENT_TITLE = (INPUT_NUMBER === 1) ? 'Bien' : 'Oops';
+			UPModal.alert(CONTENT_TITLE, CONTENT_SHOW, (INPUT_NUMBER === 1));
+		});
+	}
+
 	const iniciarSesion = () => {
 	
 		let params = [
@@ -88,9 +98,26 @@ const login = (() => {
 					$(`#${TYPE_INPUT_EXECUTE}`).focus();
 				}
 				btnLoad();
+			} else if (INPUT_NUMBER === 4) {
+				UPModal.proccess_end(2);
+				UPModal.setModal({
+					input: {
+						label: 'Código 2FA (OPT)',
+						type: 'text',
+						name: 'one_password_time',
+						maxlength: 6,
+						placeholder: '000000',
+						required: true,
+						inputmode: 'numeric'
+					},
+					buttons: {
+						confirmAction: `login.comprobarOPT('${params}')`,
+						cancelShow: false
+					}
+				});
 			}
 			if(INPUT_NUMBER === 1) location.reload();
-			loading.end()
+			loading.end();
 		})
 		.fail(() => iniciarSesionFail())
 		.done(() => $('#loading').fadeOut(350))
@@ -113,6 +140,7 @@ const login = (() => {
 	}
 
 	return {
+		comprobarOPT: comprobarOPT,
 		multiOptions: multiOptions,
 		constrasena: showhidePassword,
 		iniciarSesion: iniciarSesion

@@ -6567,12 +6567,13 @@ lite-youtube.lyt-activated > .lty-playbtn {
 	height: 3rem;
 	color: var(--color-icon);
 }
-.UPModal-dialog .UPModal-close svg {
+.UPModal-dialog .UPModal-header .UPModal-close {
 	position: absolute;
 	top: 0.5rem;
 	right: 0.5rem;
 	width: 1.5rem;
 	height: 1.5rem;
+	line-height: 1.5rem;
 	font-size: 1.5rem;
 	cursor: pointer;
 }
@@ -6621,7 +6622,7 @@ lite-youtube.lyt-activated > .lty-playbtn {
 	text-transform: uppercase;
 	font-weight: 500;
 	border: var(--btn-border);
-	width: 100%;
+	width: max-content;
 }
 .UPModal-dialog.UPModal-alert .UPModal-body {
 	text-align: center;
@@ -6857,7 +6858,31 @@ lite-youtube.lyt-activated > .lty-playbtn {
 .upform-buttons {
 	margin: 0.875rem 0;
 }
-
+.OPT__inputs {
+	display: grid;
+	column-gap: .5rem;
+	grid-template-columns: repeat(6, 1fr);
+	padding: 0.5rem;
+	input {
+		width: 100%;
+		border: none;
+		background-color: #CCC3;
+		border-radius: var(--border-radius);
+		border-bottom: 3px solid rgba(0, 0, 0, 0.5);
+		text-align: center;
+		font-size: 1.5rem;
+		cursor: not-allowed;
+		pointer-events: none;
+		&:focus {
+			border-bottom: 3px solid var(--main-bg);
+   		outline: none;
+		}
+		&:nth-child(1) {
+			cursor: pointer;
+   		pointer-events: all;
+		}
+	}
+}
 .up-checkbox,
 .up-radio {
 	display: inline-block;
