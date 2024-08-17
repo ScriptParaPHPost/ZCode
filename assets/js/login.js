@@ -105,7 +105,7 @@ const login = (() => {
 						label: 'Código 2FA (OPT)',
 						type: 'text',
 						name: 'one_password_time',
-						maxlength: 6,
+						maxlength: 11,
 						placeholder: '000000',
 						required: true,
 						inputmode: 'numeric'

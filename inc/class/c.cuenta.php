@@ -248,6 +248,23 @@ class tsCuenta {
       return '0: Hubo un error.';
    }
 
+   public function regenerateToken() {
+   	global $tsUser;
+   	$cadena = '0123456789abcdef';
+   	$limit = 3;
+   	$count = 0;
+   	for ($count = 0; $count < 9; $count++) { 
+			$key1 = substr(str_shuffle($cadena), 0, $limit);
+			$key2 = substr(str_shuffle($cadena), 0, $limit);
+		   $block_code[] = "{$key1}{$key2}";
+   	}
+		$codes = base64_encode(json_encode($block_code));
+	  	if(db_exec([__FILE__, __LINE__], "query", "UPDATE @miembros SET user_recovery = '{$codes}' WHERE user_id = {$tsUser->uid}")) {
+	  		return json_encode(["status" => true, "message" => implode(',', $block_code)]);
+	  	}
+	  	return json_encode(["status" => false, "message" => "No se pudo generar nuevos token"]);
+   }
+
    # Para activar el doble factor
 	public function activeTwoFactor() {
 		global $tsUser;
@@ -258,16 +275,7 @@ class tsCuenta {
 	  		return json_encode(["status" => false, "message" => "No se pudo activar 2FA"]);
 	  	}
 	  	if(db_exec([__FILE__, __LINE__], "query", "UPDATE @miembros SET user_secret_2fa = '{$_POST['secret']}' WHERE user_id = {$tsUser->uid}")) {
-	  		$count = 0;
-			while($count < 8) {
-				$key1 = substr(str_shuffle('0123456789abcdef'), 0, 5);
-				$key2 = substr(str_shuffle('0123456789abcdef'), 0, 5);
-			   $block_code[] = "{$key1}-{$key2}";
-			   $count++;
-			}
-			$codes = base64_encode(json_encode($block_code));
-	  		db_exec([__FILE__, __LINE__], "query", "UPDATE @miembros SET user_recovery = '{$codes}' WHERE user_id = {$tsUser->uid}");
-	  		return json_encode(["status" => true, "message" => implode(',', $block_code)]);
+	  		$this->regenerateToken();
 	  	} else return json_encode(["status" => false, "message" => "No se guardar"]);
 	}
 

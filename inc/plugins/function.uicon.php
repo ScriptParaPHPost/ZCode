@@ -39,10 +39,8 @@ function smarty_function_uicon($params, &$smarty) {
          $role_attr = ' role="' . trim(htmlspecialchars($params['role'])) . '"';
          $icon_content = substr_replace($icon_content, $role_attr, $insert_pos, 0);
       }
-      if(isset($params['attrs'])) {
-         $attr_name = trim($params['attrs'][0]);
-         $attr_val = trim($params['attrs'][1]);
-         $new_attr = " $attr_name=\"$attr_val\"";
+      if(isset($params['style'])) {
+         $new_attr = " style=\"{$params['style']}\"";
          $icon_content = substr_replace($icon_content, $new_attr, $insert_pos, 0);
       }
       // Buscamos los atributos 'width' y 'height' y los actualizamos

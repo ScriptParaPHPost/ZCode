@@ -51,7 +51,7 @@ class tsActividad {
 			// POSTS
 			1 => ['text' => 'Cre&oacute; un nuevo post', 'css' => 'post'],
 			2 => ['text' => 'Agreg&oacute; a favoritos el post', 'css' => 'star'],
-			3 => ['text' => ['Dej&oacute;', 'puntos en el post'], 'css' => 'points'],
+			3 => ['text' => ['Vot&oacute;', 'el post'], 'css' => 'voto_'],
 			4 => ['text' => 'Recomend&oacute; el post', 'css' => 'share'],
 			5 => ['text' => ['Coment&oacute;', 'el post'], 'css' => 'comment_post'],
 			6 => ['text' => ['Vot&oacute;', 'un comentario en el post'], 'css' => 'voto_'],
@@ -305,7 +305,7 @@ class tsActividad {
 			case 5:
 			case 6:
 				//
-				if($ac_type == 3) $extra_text = $data['obj_dos'];
+				if($ac_type == 3) $extra_text = ($data['obj_dos'] == 2) ? 'negativo' : 'positivo';
 				elseif($ac_type == 5) $extra_text = ($data['obj_dos'] == 0) ? '' : ($data['obj_dos']+1).' veces';
 				else $extra_text = ($data['obj_dos'] == 0) ? 'negativo' : 'positivo';
 				//
@@ -317,7 +317,7 @@ class tsActividad {
 				]);
 				$oracion['ltext'] = $data['post_title'];
 				// ESTILO
-				$oracion['style'] = ($ac_type == 6) ? 'voto_'.$extra_text : $oracion['style'];
+				$oracion['style'] = ($ac_type === 3 || $ac_type === 6) ? 'voto_'.$extra_text : $oracion['style']; 
 			break;
 			# ESTA SIGUIENDO A..
 			case 8:

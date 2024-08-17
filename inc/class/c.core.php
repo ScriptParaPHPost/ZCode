@@ -691,7 +691,7 @@ class tsCore extends tsZCode {
 	public function executeIP() {
 		$myIP = $this->validarIP();
 		if(!filter_var($myIP, FILTER_VALIDATE_IP)) die('Su ip no se pudo validar.');
-		return $myIP;
+		return $myIP ?? $this->getIP();
 	}
 
 	/**

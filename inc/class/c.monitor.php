@@ -62,7 +62,7 @@ class tsMonitor {
 		$this->monitor = [
 			1 => ['text' => 'agreg&oacute; a favoritos tu', 'ln_text' => 'post', 'css' => 'star'],
 			2 => ['text' => ['coment&oacute; tu','_REP_ nuevos comentarios en tu'], 'ln_text' => 'post', 'css' => 'comment_post'],
-			3 => ['text' => 'dej&oacute; _REP_ puntos en tu', 'ln_text' => 'post', 'css' => 'points'],
+			3 => ['text' => 'vot&oacute; _REP_ tu', 'ln_text' => 'post', 'css' => 'voto_'],
 			4 => ['text' => 'te est&aacute; siguiendo', 'ln_text' => 'Seguir a este usuario', 'css' => 'follow'],
 			5 => ['text' => 'cre&oacute; un nuevo', 'ln_text' => 'post', 'css' => 'post'],
 			6 => ['text' => ['te recomienda un', '_REP_ usuarios te recomiendan un'], 'ln_text' => 'post', 'css' => 'share'],
@@ -460,8 +460,11 @@ class tsMonitor {
 			case 5:
 				// 
 				$oracion['text'] = $this->monitor[$no_type]['text'].$txt_extra;
-				if($no_type == 3) $oracion['text'] = $this->setReplace($data['obj_dos'], $oracion['text']);
-
+				if($no_type == 3) {
+					$voto_type = ($data['obj_dos'] === 2) ? 'negativo' : 'positivo';
+					$oracion['text'] = $this->setReplace($voto_type, $oracion['text']);
+					$oracion['style'] .= $voto_type;
+				} 
 				$oracion['link'] = $this->linkMonitorOfPost($data);
 				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : $data['post_title'];
 				$oracion['ltit'] = ($this->show_type == 1) ? $data['post_title'] : '';

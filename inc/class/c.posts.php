@@ -248,7 +248,7 @@ class tsPosts {
 		}
 		//PUNTOS
 		if($postData['post_user'] == $tsUser->uid || $tsUser->is_admod) {
-			$postData['puntos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT p.*, u.user_id, u.user_name FROM @posts_votos AS p LEFT JOIN @miembros AS u ON p.tuser = u.user_id WHERE p.tid = {$postData['post_id']} && p.type = 1 ORDER BY p.cant DESC"));
+			$postData['puntos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT p.*, u.user_id, u.user_name FROM @posts_votos AS p LEFT JOIN @miembros AS u ON p.tuser = u.user_id WHERE p.tid = {$postData['post_id']} && p.type = 1 ORDER BY p.voto_id DESC"));
 		}
 		// CATEGORIAS
 		$postData['categoria'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_nombre, c.c_seo FROM @posts_categorias AS c WHERE c.cid = {$postData['post_category']}"));
@@ -274,6 +274,9 @@ class tsPosts {
 		// Portada
 		$postData['post_portada'] = $tsImages->setImageCover($postData['post_id'], $postData['post_portada'], $postData['post_body']);
 		$postData['post_ip'] = $postData['post_ip'] ?? $tsCore->getIP();
+		// YA LO VOTE?
+      $vote = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(voto_id) FROM @posts_votos WHERE tid = {$postData['post_id']} AND tuser = {$tsUser->uid} LIMIT 1"))[0];
+      $postData['post_vote'] = !empty($vote) ? true : false;
 		// NUEVA VISITA
 		include_once TS_CLASS . "c.visitas.php";
 		$tsVisitas = new tsVisitas;
@@ -429,72 +432,63 @@ class tsPosts {
 	/*
 		votarPost()
 	*/
-	function votarPost(){
+	public function votarPost() {
 		global $tsCore, $tsUser, $tsMonitor, $tsActividad;
 		#GLOBALES
-		
-		if($tsUser->is_admod || $tsUser->permisos['godp']){
-		
-		  // Comprobamos que sean números válidos.
-		  if(!ctype_digit($_POST['puntos'])) { return '0: S&oacute;lo puedes votar con n&uacute;meros.'; }
-		//Comprobamos si otro usuario ha votado un post con esta ip
-		$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-		  if(!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) { return '0: Su ip no se pudo validar.'; }
-		if($tsUser->is_admod != 1){
-		if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id FROM @miembros WHERE user_last_ip =  \''.$_SERVER['REMOTE_ADDR'].'\' AND user_id != \''.$tsUser->uid.'\'')) || db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT session_id FROM @sessions WHERE session_ip =  \''.$tsCore->setSecure($_SERVER['REMOTE_ADDR']).'\' AND session_user_id != \''.$tsUser->uid.'\''))) return '0: Has usado otra cuenta anteriormente, deber&aacute;s contactar con la administraci&oacute;n.';
-		}
-		$post_id = intval($_POST['postid']);
-		$puntos = intval($_POST['puntos']);
-		  $puntos = abs($puntos); // Numérico negativo se convierte a numérico positivo		
-		// SUMAR PUNTOS
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT post_user FROM @posts WHERE post_id = \''.(int)$post_id.'\' LIMIT 1');
-		$data = db_exec('fetch_assoc', $query);
-		
-		// ES MI POST?
-		$is_mypost = ($data['post_user'] == $tsUser->uid) ? true : false;
-		// NO ES MI POST, PUEDO VOTAR
-		if(!$is_mypost){
+		if($tsUser->is_admod || $tsUser->permisos['godp']) {
+			//Comprobamos si otro usuario ha votado un post con esta ip
+		  	$myIP = $tsCore->executeIP();
+		  	$time = time();
+			if($tsUser->is_admod != 1) {
+				if(
+					db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM @miembros WHERE user_last_ip =  '$myIP' AND user_id != {$tsUser->uid}")) || 
+					db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT session_id FROM @sessions WHERE session_ip = '$myIP' AND session_user_id != {$tsUser->uid}"))
+				) return '0: Has usado otra cuenta anteriormente, deber&aacute;s contactar con la administraci&oacute;n.';
+			}
+			$post_id = (int)$_POST['postid'];
+			$puntos  = (int)$_POST['puntos'] === 2 ? 2 : 1;
+			// SUMAR PUNTOS
+			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_user FROM @posts WHERE post_id = $post_id LIMIT 1"));
+			$userPost = (int)$data['post_user'];
+			// NO ES MI POST, PUEDO VOTAR
+			if($userPost === $tsUser->uid) return '0: No puedes votar tu propio post.';
 			// YA LO VOTE?
-			$votado = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT tid FROM @posts_votos WHERE tid = \''.(int)$post_id.'\' AND tuser = \''.$tsUser->uid.'\' AND type = \'1\' LIMIT 1'));
-			if(empty($votado)){
-			
-				// COMPROBAMOS LOS PUNTOS QUE PODEMOS DAR
-		  if($tsCore->settings['c_allow_points'] > 0) {
-		  $max_points = $tsCore->settings['c_allow_points'];
-		}elseif($tsCore->settings['c_allow_points'] == '-1') { //TRUCO, podrás dar todos los puntos que tengas disponibles
-		$max_points = $tsUser->info['user_puntosxdar']; 
-		}elseif($tsCore->settings['c_allow_points'] == '-2') { //TRUCO, podrás dar todos los puntos que quieras (sin abusar ¬¬), se restarán igual, si tienes puesto mantener puntos, estarás debiendo puntos durante una temporada.
-		$max_points = 999999999;
-		  }else{
-		$max_points = $tsUser->permisos['gopfp'];
-		}
-				  // TENGO SUFICIENTES PUNTOS
-				if($tsUser->info['user_puntosxdar'] >= $puntos){
-					 if($puntos > 0) { // Votar sin dar puntos? No, gracias.				
-				if($puntos <= $max_points) { // seroo churra XD ._. No alteraciones de javascript para sumar más de lo que se permite (? LOL ¬¬
-					// SUMAR PUNTOS AL POST
-					db_exec([__FILE__, __LINE__], 'query', 'UPDATE @posts SET post_puntos = post_puntos + '.(int)$puntos.' WHERE post_id = \''.(int)$post_id.'\'');
-					// SUMAR PUNTOS AL DUEÑO DEL POST
-					db_exec([__FILE__, __LINE__], 'query', 'UPDATE @miembros SET user_puntos = user_puntos + \''.(int)$puntos.'\' WHERE user_id = \''.(int)$data['post_user'].'\'');
-					// RESTAR PUNTOS AL VOTANTE
-					db_exec([__FILE__, __LINE__], 'query', 'UPDATE @miembros SET user_puntosxdar = user_puntosxdar - \''.(int)$puntos.'\' WHERE user_id = \''.$tsUser->uid.'\'');
-					// INSERTAR EN TABLA
-					db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO @posts_votos (tid, tuser, cant, type, date) VALUES (\''.(int)$post_id.'\', \''.$tsUser->uid.'\', \''.(int)$puntos.'\', \'1\', \''.time().'\')');
-					// AGREGAR AL MONITOR
-					$tsMonitor->setNotificacion(3, $data['post_user'], $tsUser->uid, $post_id, $puntos);
-						  // ACTIVIDAD
-						  $tsActividad->setActividad(3, $post_id, $puntos);
-					// SUBIR DE RANGO
-					$this->subirRango($data['post_user'], $post_id);
-					//
-					return '1: Puntos agregados!';					                  
-				}else return '0: Voto no v&aacute;lido. No puedes dar '.$puntos.' puntos, s&oacute;lo se permiten '.$max_points .' <img src="http://i.imgur.com/doCpk.gif">';													
-				} else return '0: Voto no v&aacute;lido. No puedes no dar puntos.';
-			  } else return '0: Voto no v&aacute;lido. No puedes dar '.$puntos.' puntos, s&oacute;lo te quedan '.$tsUser->info['user_puntosxdar'].'.';
-			} return '0: No es posible votar a un mismo post m&aacute;s de una vez.';
-		  } else return '0: No puedes votar tu propio post.';			
+			$votado = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT tid FROM @posts_votos WHERE tid = $post_id AND tuser = {$tsUser->uid} AND type = 1 LIMIT 1"));
+			if (!empty($votado)) return '0: No es posible votar a un mismo post m&aacute;s de una vez.';
+			// COMPROBAMOS LOS PUNTOS QUE PODEMOS DAR
+			if($tsCore->settings['c_allow_points'] > 0) {
+				$max_points = $tsCore->settings['c_allow_points'];
+			} elseif($tsCore->settings['c_allow_points'] == '-1') {
+				$max_points = $tsUser->info['user_puntosxdar']; 
+			} elseif($tsCore->settings['c_allow_points'] == '-2') {
+				$max_points = 999;
+		 	} else {
+				$max_points = $tsUser->permisos['gopfp'];
+			}
+			// TENGO SUFICIENTES PUNTOS
+			if($tsUser->info['user_puntosxdar'] >= $puntos) {
+				if($puntos === 0) return '0: Voto no v&aacute;lido. No puedes no dar puntos.';
+				if($puntos >= $max_points) {
+					return "0: Voto no v&aacute;lido. No puedes dar $puntos puntos, s&oacute;lo se permiten $max_points";
+				}
+				// SUMAR PUNTOS AL POST
+				$mp = ($puntos == 2) ? "-" : "+";
+				db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET post_puntos = post_puntos $mp 1 WHERE post_id = $post_id");
+				// SUMAR PUNTOS AL DUEÑO DEL POST
+				db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_puntos = user_puntos $mp 1 WHERE user_id = $userPost");
+				// RESTAR PUNTOS AL VOTANTE
+				db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_puntosxdar = user_puntosxdar - 1 WHERE user_id = {$tsUser->uid}");
+				// INSERTAR EN TABLA
+				db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @posts_votos (tid, tuser, cant, type, date) VALUES ($post_id, {$tsUser->uid}, $puntos, 1, $time)");
+				// AGREGAR AL MONITOR
+				$tsMonitor->setNotificacion(3, $userPost, $tsUser->uid, $post_id, $puntos);
+				// ACTIVIDAD
+				$tsActividad->setActividad(3, $post_id, $puntos);
+				// SUBIR DE RANGO
+				$this->subirRango($data['post_user'], $post_id);
+				return '1: Puntos agregados!';					                  
+			} else return "'0: Voto no v&aacute;lido. No puedes dar $puntos puntos, s&oacute;lo te quedan {$tsUser->info['user_puntosxdar']}.'";
 		} else return '0: No tienes permiso para hacer esto.';			
-		
 	}	
 	/*
 		subirRango()

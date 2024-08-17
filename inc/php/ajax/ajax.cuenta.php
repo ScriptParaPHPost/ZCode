@@ -18,6 +18,7 @@ $files = [
    'cuenta-desvincular' => ['n' => 2, 'p' => ''],
    'cuenta-customizer' => ['n' => 2, 'p' => ''],
 	'cuenta-qr-regenerate' => ['n' => 2, 'p' => 'regenerate'],
+	'cuenta-token-regenerate' => ['n' => 2, 'p' => ''],
 	'cuenta-two-factor' => ['n' => 2, 'p' => ''],
 	'cuenta-delete-2fa' => ['n' => 2, 'p' => ''],
 	'cuenta-desactivate' => ['n' => 2, 'p' => '']
@@ -81,6 +82,9 @@ switch($action){
 	   # Asignamos una variable para mostrar la imagen
 	   $smarty->assign("tsGenerateNewQR", $generate);
 	   $smarty->assign("tsSecret", $secret);
+	break;
+	case 'cuenta-token-regenerate':
+		echo $tsCuenta->regenerateToken();
 	break;
 	case 'cuenta-two-factor':
 		echo $tsCuenta->activeTwoFactor();

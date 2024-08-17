@@ -220,7 +220,7 @@ class tsUser  {
 	/**
 	 * Se repiten en 3 funciones diferentes
 	*/
-	public function sessionUpdate(int $id = 0, bool $rem = true, string $twofactor = '') {
+	public function sessionUpdate(int $id = 0, bool $rem = true, ?string $twofactor = null) {
 		// Si no tiene el 2fa activo, iniciamos sesión
 		if(empty($twofactor)) {
 			// Actualizamos la session
@@ -240,9 +240,8 @@ class tsUser  {
 		global $tsCore;
 		/* ARMAR VARIABLES */
 		$filter = filter_var($username, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
-		$where = ($filter === 'email') ? 'email' : 'name';
 		/* CONSULTA */  
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_secret_2fa, user_activo, user_baneado FROM @miembros WHERE user_$where = '$username' LIMIT 1"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_secret_2fa, user_activo, user_baneado FROM @miembros WHERE user_$filter = '$username' LIMIT 1"));
 		// Existe el usuario
 		if(empty($data)) return '0: El usuario no existe.';
 		// Solo cuando inicia sesion, no cuando activa la cuenta
@@ -250,8 +249,8 @@ class tsUser  {
 		// El usuario esta activo
 		if((int)$data['user_activo'] === 0) return '3: Debes activar tu cuenta';
 		// Comprobando 2FA
-		$this->sessionUpdate($data['user_id'], $remember, $data['user_secret_2fa']);
-		if(empty($data['user_secret_2fa'])) {
+		$this->sessionUpdate($data['user_id'], $remember, $data['user_secret_2fa'] ?? '');
+		if($data['user_secret_2fa'] === NULL) {
 	   	// Redireccionamos en caso que contenga ?redirectTo=xxxx
 	   	if(isset(parse_url($_SERVER["HTTP_REFERER"])["query"])) {
 	   		parse_str(parse_url($_SERVER["HTTP_REFERER"])["query"], $e);
