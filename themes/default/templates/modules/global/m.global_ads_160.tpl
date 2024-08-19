@@ -1,0 +1,1 @@
+<div class="ad ad160 mx-auto d-lg-block d-none">{$tsConfig.ads_160}</div>

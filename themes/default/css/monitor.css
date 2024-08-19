@@ -1,0 +1,31 @@
+.not--item {
+	border-bottom: 1px solid var(--border-color);
+}
+.not--item a { 
+	color: light-dark(#764000, #FCF2DA);
+} 
+.not--item:nth-child(2n+1) {
+	background: var(--translucent-bg);
+}
+.not--item:last-child {
+	border-bottom: 1px solid transparent;
+	margin-bottom: 0!important;
+}
+.not--item.unread {
+	background: light-dark(#FCF2DA, #764000);
+}
+.not--item .monac_icons {
+	width: 1.325rem!important;
+	height: 1.325rem!important;
+}
+.check-filter {
+	cursor: pointer;
+	background: var(--translucent-bg);
+}
+.check-filter input[type="checkbox"] + span {
+	color: var(--main-bg-hover);
+}
+.check-filter input[type="checkbox"]:checked + span {
+	color: var(--main-bg);
+	font-weight: 700;
+}

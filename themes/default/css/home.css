@@ -1,0 +1,146 @@
+article[itemscope] {
+	--cover-width: 100px;
+	--cover-height: 100px;
+	--bgcolor: var(--border-color-translucent);
+	border: 1px solid var(--border-color-translucent);
+	grid-template-columns: var(--cover-width) 1fr;
+	background: var(--translucent-bg);
+}
+article[itemscope] .picture {
+	border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+	height: var(--cover-height);
+	width: var(--cover-width);
+}
+article:where(.private,.patrocinado,.status_1,.status_2,.status_3,.active_0,.baneado_1)::before {
+	--background: var(--bgcolor);
+	--border: 0;
+	--right: .54rem;
+	--radius: 10em;
+	--top: .675rem;
+	--width: .875rem;
+	content: '';
+	position: absolute;
+	width: var(--width);
+	height: var(--width);
+	display: block;
+	top: var(--top);
+	right: var(--right);
+	border-radius: var(--radius);
+	background: var(--background);
+	border: 2px solid var(--body-bg);
+	z-index: 9;
+}
+article:where(.active_0,.baneado_1)::before {
+	--radius: .125rem;
+	--top: 2.325rem;
+}
+article:where(.status_1,.status_2,.status_3)::before {
+	--background: transparent;
+	--border: .5rem;
+	--right: 0;
+	--radius: .125rem;
+	--top: .675rem;
+	--width: 0;
+	border: 2px solid transparent;
+	border-top: var(--border) solid transparent;
+	border-bottom: var(--border) solid transparent;
+	border-left: var(--border) solid var(--bgcolor);
+}
+article[itemscope].private {
+	background: rgba(228, 32, 32, .1);
+}
+article[itemscope].private,
+article[itemscope].private::before {
+	--bgcolor: #E42020;
+}
+article[itemscope].patrocinado,
+article[itemscope].patrocinado::before {
+	--bgcolor: #B91EBF;
+}
+article[itemscope].status_1,
+article[itemscope].status_1::before {
+	--bgcolor: #D29F25;
+}
+article[itemscope].status_2,
+article[itemscope].status_2::before {
+	--bgcolor: coral;
+}
+article[itemscope].status_3,
+article[itemscope].status_3::before {
+	--bgcolor: rosyBrown;
+}
+article[itemscope].active_0,
+article[itemscope].active_0::before {
+	--bgcolor: burlyWood;
+}
+article[itemscope].baneado_1,
+article[itemscope].baneado_1::before {
+	--bgcolor: orange;
+}
+.up-card--stats > div {
+	grid-template-columns: repeat(3, 1fr);
+}
+.up-card--stats .uicon-svg {
+	top: .325rem;
+	left: .5rem;
+	opacity: .1;
+}
+.up-card--afiliados .item {
+	width:216px;
+	height:42px;
+}
+.up-card[category] .filter span:hover {
+	background: var(--main-bg-hover);
+	color: #FFF;
+}
+.up-card[category] .filter span:active {
+	background: var(--main-bg-hover);
+	color: #FFF;
+}
+.up-card .filter span[data-active="true"] {
+	background: var(--main-bg);
+	color: #FFF;
+}
+.isNew {
+	top: .325rem;
+	left: -.325rem;
+}
+.filterShow {
+	--items: 2.325rem;
+	max-height: calc(var(--items) * 15);
+}
+.filterShow-item {
+	height: var(--items);
+	line-height: var(--items);
+	border-bottom: 1px solid var(--border-color);
+}
+.filterShow-item:first-child {
+	font-weight: 600;
+	background: rgba(200,200,200,.2);
+}
+[data-theme="dark"] .filterShow-item:first-child {
+	background: rgba(0,0,0,.2);
+}
+.filterShow-item:last-child {
+	border-bottom: 1px solid transparent;
+}
+.filterShow-item:nth-child(2n+1) {
+	background: rgba(200,200,200,.1);
+}
+[data-theme="dark"] .filterShow-item:nth-child(2n+1) {
+	background: rgba(0,0,0,.1);
+}
+.filterShow-item .filterShow-item--position {
+	width: 2.5rem;
+}
+.filterShow-item .filterShow-item--title {
+	width: calc(100% - 6rem);
+}
+.filterShow-item .filterShow-item--number {
+	width: 3.5rem;
+}
+#filterByTodos {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}

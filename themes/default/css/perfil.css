@@ -1,0 +1,200 @@
+.perfil-main {
+	grid-template-columns: 1fr 300px;
+}
+.info-data {
+	--stat-item-width: 120px;
+	grid-template-columns: 1fr calc(var(--stat-item-width) * 3);
+}
+.flag {
+	border-radius: 10em;
+	width: 1rem;
+	height: 1rem;
+	margin-right: 0.5rem;
+	margin-top: 0.325rem;
+}
+@media (width >= 992px) {
+	.stats-item {
+		display: block;
+		width: var(--stat-item-width)!important;
+	}
+}
+.menu-userPerfil {
+	overflow-x: auto;
+}
+.userPerfil--item,
+.userPortal--item,
+.filtros .filter-item {
+	border: 1px solid var(--main-bg-rgb);
+}
+.userPerfil--item.selected,
+.userPortal--item.selected,
+.filtros .filter-item.active {
+	background: var(--main-bg-rgb);
+	border: 1px solid var(--main-bg);
+	font-weight: 500;
+}
+.shout-status {
+	top: -.125rem;
+	left: 1rem;
+}
+.shout {
+	background: var(--translucent-bg);
+}
+.shout__content #wall, .frame-input, .frame-input-button {
+	background: var(--body-bg);
+	border: 1px solid var(--border-color);
+}
+.shout__content .buttons {
+	top: 0;
+	right: 0;
+}
+.frame-input-group {
+	height: 2.5rem;
+	line-height: 2.5rem;
+}
+.frame-input-button {
+	background: var(--main-bg);
+	color: #FFF;
+	height: 100%;
+}
+.frame-input-button:hover {
+	background: var(--main-bg-hover);
+}
+.frame-input-button:active {
+	background: var(--main-bg-active);
+}
+.frame-input {
+	border-top-right-radius: 0!important;
+	border-bottom-right-radius: 0!important;
+	border-right: transparent!important;
+}
+.frame-input-button {
+	border-top-left-radius: 0!important;
+	border-bottom-left-radius: 0!important;
+	border-left: transparent!important;
+}
+.shout__buttons .close {
+	top: 1rem;
+	right: 1rem;
+}
+
+.Story {
+	--avatar-size: 0;
+	border-bottom: 2px solid var(--border-color);
+	grid-template-columns: var(--avatar-size) 1fr;
+}
+.Story .Story_Pic, 
+.Story .Story_Pic img {
+	width: var(--avatar-size);
+	height: var(--avatar-size);
+	display: none;
+}
+@media (width >= 992px) {
+	.Story {
+		--avatar-size: 4.5rem;
+	}
+	.Story .Story_Pic, 
+	.Story .Story_Pic img {
+		display: block;
+	}
+}
+@media (width >= 1200px) {
+	.Story_Comments .people-likes {
+		top: -1.5rem;
+		right: 0;
+	}
+}
+.Story:last-child {
+	border-bottom: 2px solid transparent;
+	padding-bottom: 0!important;
+	margin-bottom: 0!important;
+}
+.muro-image {
+	width: 200px;
+	height: max-content;
+	transition: width .5s ease-in-out, height .4s ease-in-out;
+}
+.muro-image.image-open {
+	width: 100%;
+	height: max-content;
+	transition: width .5s ease-in-out, height .4s ease-in-out;
+}
+.muro-link--title {
+	font-weight: 500;
+	text-decoration: none;
+	display: block;
+}
+.muro-link--description {
+	font-size: 0.785rem;
+	font-style: italic;
+}
+.muro-video {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: .5rem;
+}
+.muro-video lite-youtube {
+	width: 260px;
+}
+.muro-video.only-video {
+	display: block;
+	width: 720px;
+}
+.muro-video.only-video lite-youtube {
+	width: auto;
+}
+.muro-video--description {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	flex-direction: column;
+	padding: 0 1rem;
+}
+.muro-link {
+	background: var(--main-bg-rgb);
+	padding: .5rem 1rem;
+	border-radius: var(--border-radius);
+}
+.muro-image, .muro-video, .muro-link {
+	margin: 0.325rem 0;
+	border-radius: var(--border-radius);
+	overflow: hidden;
+	border: 1px solid var(--border-color);
+}
+.sitio.icon_social {
+	--size: 2rem;
+	width: 2.5rem;
+	height: 2.5rem;
+	margin: 0 auto;
+}
+.sitio.icon_off {
+	filter: grayscale(80);
+	cursor: no-drop;
+	pointer-events: none;
+	opacity: .7;
+}
+.orden-21 {
+	grid-template-columns: repeat(7, 1fr);
+}
+.orden-item * {
+	width: 1.875rem;
+	height: 1.875rem;
+}
+.newComment {
+	margin-top: 0.325rem;
+}
+.newComment .formulario {
+	--total: 2.125rem;
+	height: calc(var(--total) + .5rem);
+}
+.newComment .formulario img {
+	top: 0.125rem;
+	left: 0.16rem;
+	width: var(--total);
+	height: var(--total);
+}
+.newComment .formulario textarea {
+	field-sizing: content!important;
+	border: 1px solid var(--border-color);
+	padding: .5rem .5rem .5rem calc(var(--total) + .65rem);
+}

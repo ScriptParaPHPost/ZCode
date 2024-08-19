@@ -5,13 +5,6 @@ assets/images/uploads
 backup/
 cache/
 
-# Themes
-!themes/default
-themes/*
-
-# Update
-update/
-
 # Ignorar archivos
 inc/ext/Avatar.php
 inc/ext/UUID.php

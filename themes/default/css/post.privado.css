@@ -1,0 +1,7 @@
+.panel-divider .panel,
+.panel-divider form h1 {
+	display: none!important;
+}
+.content-splash {
+	grid-template-columns: 1fr 40%;
+}

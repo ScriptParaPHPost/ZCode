@@ -1,0 +1,24 @@
+.up-card--stats > div {
+	grid-template-columns: repeat(3, 1fr);
+}
+.up-card--stats .uicon-svg {
+	top: .325rem;
+	left: .5rem;
+	opacity: .1;
+}
+.up-card--afiliados .item {
+	width:216px;
+	height:42px;
+}
+.up-card[category] .filter span:hover {
+	background: var(--main-bg-hover);
+	color: #FFF;
+}
+.up-card[category] .filter span:active {
+	background: var(--main-bg-hover);
+	color: #FFF;
+}
+.up-card .filter span[data-active="true"] {
+	background: var(--main-bg);
+	color: #FFF;
+}

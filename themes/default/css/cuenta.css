@@ -1,0 +1,95 @@
+.folder-tabs {
+	grid-template-columns: 240px 1fr 300px;
+}
+.folder--item {
+	margin-right: -3px;
+	border-right: transparent;
+}
+.folder--item:hover {
+	border-right: 1px solid transparent;
+}
+.folder--form {
+	padding: 0.5rem;
+}
+
+@media (width >= 1200px) {
+	.folder--item:hover, 
+	.folder--item.active {
+		border-right: 3px solid rgba(200,200,200,.5);
+	}
+	[data-theme="dark"] .folder--item:hover, 
+	[data-theme="dark"] .folder--item.active {
+		border-right: 3px solid rgba(0,0,0,.5);
+	}
+	.folder--form {
+		border-left: 3px solid var(--main-bg);
+	}
+}
+.only-avatar .webp-gif {
+	grid-template-columns: 12rem 1fr;
+}
+.avatar-loading {
+	inset: 0;
+	display: grid;
+	background: var(--main-bg-rgb)!important;
+	backdrop-filter: blur(6px);
+}
+.avatar-loading svg {
+	stroke: var(--main-color)!important;
+}
+.field-social svg {
+	width: 1.675rem!important;
+	height: 1.675rem!important;
+}
+.up-form--cuenta label {
+	display: block;
+}
+.up-form--cuenta label input {
+	position: absolute;
+}
+.up-form--cuenta label .up-cuenta--icon  {
+	background: rgba(200,200,200,.1);
+	padding: 0.325rem 0.5rem;
+}
+[data-theme="dark"] .up-form--cuenta label .up-cuenta--icon  {
+	background: rgba(0,0,0,.1);
+}
+.up-form--cuenta label input:checked + span {
+	background: var(--main-bg)!important;
+	color: #FFF;
+	font-weight: 600;
+}
+
+#drop-region {
+	top: 0;
+	left: 0;
+}
+#drop-region input[type="file"] {
+	opacity: 0;
+}
+
+.buttons {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1rem;
+	padding: 1rem;
+}
+.example {
+	background: var(--body-bg);
+}
+.example[data-theme="dark"] {
+	color-scheme: dark;
+}
+.example .box--example.normal {
+	background-color: var(--main-bg);
+}
+.example .box--example.hover {
+	background-color: var(--main-bg-hover);
+}
+.example .box--example.active {
+	background-color: var(--main-bg-active);
+}
+.example .box--example.transparent {
+	background-color: var(--main-bg-rgb);
+}
