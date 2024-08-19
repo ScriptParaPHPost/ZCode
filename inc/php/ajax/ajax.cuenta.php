@@ -21,7 +21,8 @@ $files = [
 	'cuenta-token-regenerate' => ['n' => 2, 'p' => ''],
 	'cuenta-two-factor' => ['n' => 2, 'p' => ''],
 	'cuenta-delete-2fa' => ['n' => 2, 'p' => ''],
-	'cuenta-desactivate' => ['n' => 2, 'p' => '']
+	'cuenta-desactivate' => ['n' => 2, 'p' => ''],
+	'cuenta-eliminar-tiempo' => ['n' => 2, 'p' => '']
 ];
 
 // REDEFINIR VARIABLES
@@ -91,5 +92,9 @@ switch($action){
 	break;
 	case 'cuenta-delete-2fa':
 		echo $tsCuenta->removeTwoFactor();
+	break;
+	case 'cuenta-eliminar-tiempo':
+		$opcion = (int)$_POST['outtime_type'];
+		echo $tsUser->deleteUserOutTime($opcion, time());
 	break;
 }

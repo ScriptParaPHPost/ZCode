@@ -37,15 +37,13 @@ const live = {
 		}
 	},
 	updateStatus() {
-		loading.start()
+		loading.start();
 		let notifications = live.status['notifications'];
 		let messages = live.status['messages'];
-		$.post(`${ZCodeApp.url}/live-stream.php`, { notifications, messages }, req => {
-			live.print(req);
-		})
+		$.post(`${ZCodeApp.url}/live-stream.php`, { notifications, messages }, req => live.print(req))
 		.done(() => {
 			setTimeout(() => live.updateStatus(), live.update);
-			loading.end()
+			loading.end();
 		});
 	},
 	hideStatus() {

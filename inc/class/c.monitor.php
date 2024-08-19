@@ -77,6 +77,7 @@ class tsMonitor {
 			15 => ['text' => 'Recibiste una medalla', 'css' => 'medal'],
 			16 => ['text' => 'Tu post recibi&oacute; una medalla', 'css' => 'medal'],
 			17 => ['text' => 'Tu foto recibi&oacute; una medalla', 'css' => 'medal'],
+			18 => ['text' => 'Public&oacute; un', 'ln_text' => 'estado', 'css' => 'status'],
 		];
 	}
 
@@ -382,13 +383,16 @@ class tsMonitor {
 				return "SELECT p.pub_id, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user_pub = u.user_id WHERE p.pub_id = {$data['obj_uno']} LIMIT 1";
 			break;
 			case 13:
+			case 18:
 				global $tsUser;
 				// HAY MAS DE UNA NOTIFICACION DEL MISMO TIPO
-				$dato = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT p.pub_id, p.p_user, p.p_user_pub, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user = u.user_id WHERE p.pub_id = {$data['obj_uno']} LIMIT 1"));
+				$dato = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT p.pub_id, p.p_user, p.p_user_pub, p.p_body, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user = u.user_id WHERE p.pub_id = {$data['obj_uno']} LIMIT 1"));
 				//
-				$dato['p_user_resp'] = $data['obj_user'];
-				$dato['p_user_name'] = $dato['user_name']; // 
-				$dato['user_name'] = $tsUser->getUserName($data['obj_user']); // QUIEN PUBLICO
+				$dato['p_user_name'] = $dato['user_name']; 
+				if($data['not_type'] === 13) {
+					$dato['p_user_resp'] = $data['obj_user'];
+					$dato['user_name'] = $tsUser->getUserName($data['obj_user']); // QUIEN PUBLICO
+				}
 				return $dato;
 			break;
 			case 14:
@@ -450,7 +454,7 @@ class tsMonitor {
 		$oracion['unread'] = ($this->show_type == 1) ? $data['not_menubar'] : $data['not_monitor'];
 		$oracion['style'] = $this->monitor[$no_type]['css'];
 		$oracion['date'] = $data['not_date'];
-		$oracion['user'] = $data['usuario'] ?? 'Sistema';
+		$oracion['user'] = $data['usuario'];
 		$oracion['avatar'] = !empty($data['obj_user']) ? $tsCore->getAvatar($data['obj_user'], 'use') : $tsCore->settings['logos'][64];
 		$oracion['total'] = (int)$data['not_total'];
 		# CON UN SWITCH ESCOGEMOS QUE ORACION CONSTRUIR
@@ -569,6 +573,12 @@ class tsMonitor {
 				$foto_link = $this->linkMonitorOfFoto($data);
 				$oracion['text'] = "Tu <a href=\"$site_url/fotos/{$data['user_name']}/{$data['foto_id']}/$f_title.html\" title=\"$f_title\"><strong>foto</strong></a> tiene una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url_med/{$data['m_image']}\" class=\"avatar avatar-1\"/></span>";
 			break;
+			case 18:
+				$oracion['text'] = $this->monitor[$no_type]['text'].$txt_extra;
+				$oracion['link'] = $site_url.'/perfil/'.$data['p_user_name'].'/'.$data['pub_id'];
+				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : substr($data['p_body'], 0, 50).$end_text;
+				$oracion['ltit'] = ($this->show_type == 1) ? substr($data['p_body'], 0, 50).$end_text : '';
+			break; 
 		}
 		# RETORNAMOS
 		return $oracion;

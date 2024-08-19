@@ -5,9 +5,12 @@ if (!defined('TS_HEADER')) exit('No direct script access allowed');
 /**
  * @name config.inc.php
  * @copyright ZCode 2024
- * @link https://phpost.es/descargas.php (ZCode)
+ * @link https://zcode.newluckies.com/ (DEMO)
+ * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version 1.0
+ * @version __version__
  * @description Archivo de datos de conexión
 **/
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{$tsTitle}</title>
+<link rel="stylesheet" href="{$tsConfig.assets}/css/base.min.css?t={$smarty.now}">
+<link rel="stylesheet" href="{$tsConfig.assets}/css/saliendo.css?t={$smarty.now}">
+<link href="{$tsConfig.assets}/images/favicon/logo-64.webp?t={$smarty.now}" rel="shortcut icon" type="image/webp" sizes="64x64" />
+</head>
+<body>
+
+	<div class="d-flex justify-content-center align-items-center vh-100">
+		<main class="leaving-wrapper w-50 rounded shadow pt-5 p-4 text-center">
+		   <div class="leaving-message">
+		      <h1 class="mb-3">Est&aacute;s saliendo de {$tsConfig.titulo}</h1>
+		      <h6>Para acceder a <strong>{$tsDecode}</strong></h6>
+		      <div class="buttons border-top mt-3 pt-3">
+		         <a href="{$tsDecode}" class="btn a">Ir al enlace</a>
+		         <a href="{$tsConfig.url}" class="btn btn-link">Volver a {$tsConfig.titulo}</a>
+		      </div>
+		   </div>
+		</main>
+	</div>
+
+</body>
+</html>

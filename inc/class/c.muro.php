@@ -373,6 +373,7 @@ class tsMuro {
 		// ACTIVIDAD
 		$is_my = ($pid == $tsUser->uid) ? 0 : 2;
 		$tsActividad->setActividad(10, $pub_id, $is_my);
+		$tsMonitor->setFollowNotificacion(18, ($pid == $tsUser->uid), $tsUser->uid, $pub_id); 
 		// RETORNAR VALOR
 		return $return;
 	 }

@@ -2,6 +2,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/ScriptParaPHPost/ZCode?style=plastic)
 ![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic)
 ![Discord](https://img.shields.io/discord/1150516717617938543?style=plastic&logo=discord&logoColor=%23FFF&label=Discord&color=%237289DA)
+[![Download zcode script php](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/zcode-script/files/latest/download)
 
 
 # zCode

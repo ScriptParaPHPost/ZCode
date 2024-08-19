@@ -3,15 +3,21 @@
 /**
  * Instalacion Automatica de theme v4
  * Copyright 2024 Miguel92, Todos los derechos reservados
- *
- * Desde: https://phpost.es/
- *
- * @name    	ThemeInstall.php
  * @author  	Miguel92
  * @version 	v4.0
- *
- * Definiremos las constantes de forma global
  */
+
+/**
+ * @name ThemeInstall.php
+ * @copyright ZCode 2024
+ * @link https://zcode.newluckies.com/ (DEMO)
+ * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @author Miguel92
+ * @version v1.7.0
+ * @description Definiremos las constantes de forma global
+**/
 
 if (!defined('TS_HEADER')) die('mmm...que estarás haciendo!');
 

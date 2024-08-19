@@ -1,14 +1,16 @@
 <?php
 
 /**
- * Autor: Miguel92
- * Ejemplo: getOpenGraph::getUrlDataInfo('url', ['title', 'description', 'image']);
- * Enlace: Enlace 
- * Fecha: 24.01.24 
- * Nombre: getOpenGraph
- * Proposito: Obtener datos como titulo, descripcion e imagen 
- * Version: v2.0 
-*/
+ * @name OpenGraph.php
+ * @copyright ZCode 2024
+ * @link https://zcode.newluckies.com/ (DEMO)
+ * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @author Miguel92
+ * @version v1.7.0
+ * @description Obtener datos como titulo, descripcion e imagen 
+**/
 
 class getOpenGraph {
 

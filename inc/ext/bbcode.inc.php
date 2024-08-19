@@ -144,6 +144,7 @@ class BBCode {
 	 * BodyValidator: Clase con la cual se valida lo que se pasa como contenido del tag.
 	*/
 	public function addBBcodes() {
+		global $tsCore;
 		$urlValidator = new \JBBCode\validators\UrlValidator();
 		$colorValidator = new \JBBCode\validators\ColorValidator();
 		$sizeValidator = new \JBBCode\validators\SizeValidator();
@@ -151,6 +152,8 @@ class BBCode {
 		$swfValidator = new \JBBCode\validators\SwfValidator();
 		$imgValidator = new \JBBCode\validators\ImgValidator();
 		$fontValidator = new \JBBCode\validators\FontValidator();
+
+		$leaving = ((int)$tsCore->settings['leaving'] === 1) ? ' data-encode="true"' : '';
 
 		$tagCodes = [
 			['tag' => 'b', 'replace' => '<strong>{param}</strong>'],
@@ -165,8 +168,8 @@ class BBCode {
 			['tag' => 'ul', 'replace' => '<ul>{param}</ul>'],
 			['tag' => 'li', 'replace' => '<li>{param}</li>'],
 			['tag' => 'ol', 'replace' => '<ol>{param}</ol>'],
-			['tag' => 'url', 'replace' => '<a href="{param}" target="_blank">{param}</a>', 'parse' => false, 'validParam' => $urlValidator],
-			['tag' => 'url', 'replace' => '<a href="{option}" target="_blank">{param}</a>', 'option' => true, 'validOption' => $urlValidator],
+			['tag' => 'url', 'replace' => '<a href="{param}" target="_blank"'.$leaving.'>{param}</a>', 'parse' => false, 'validParam' => $urlValidator],
+			['tag' => 'url', 'replace' => '<a href="{option}" target="_blank"'.$leaving.'>{param}</a>', 'option' => true, 'validOption' => $urlValidator],
 			['tag' => 'img', 'replace' => '<img src="{param}" class="wysibb--image w-100 object-fit-cover rounded border"/>', 'parse' => false, 'validParam' => $imgValidator],
 			['tag' => 'color', 'replace' => '<span style="color: {option}">{param}</span>', 'option' => true, 'validOption' => $colorValidator],
 			['tag' => 'size', 'replace' => '<span style="font-size: {option}pt; line-height: {option}pt">{param}</span>', 'option' => true, 'validOption' => $sizeValidator],

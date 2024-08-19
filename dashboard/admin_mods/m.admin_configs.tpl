@@ -19,6 +19,10 @@
             <dd><input type="text" id="ai_url" name="url" maxlength="32" value="{$tsConfig.url}" /></dd>
          </dl>
          <dl>
+            <dt><label for="leaving">Saliendo del sitio:</label></dt>
+            <dd>{html_radios name="leaving" values=[1, 0] id="leaving" output=['Activar', 'Desactivar'] selected=$tsConfig.leaving class="radio"}</dd>
+         </dl>
+         <dl>
             <dt><label for="ai_offline">Modo mantenimiento:</label><span>Esto har&aacute; al Sitio inaccesible a los usuarios. Si quiere, tambi&eacute;n puede introducir un breve mensaje (255 caracteres) para mostrar.</span></dt>
             <dd>
 					{html_radios name="offline" values=[1, 0] id="offline" output=['Si', 'No'] selected=$tsConfig.offline class="radio"}

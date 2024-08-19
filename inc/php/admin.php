@@ -413,10 +413,20 @@
 	// Usuarios
 	} elseif($action === 'users'){
 		$tsTitle = 'Todos los Usuarios';
-	   if(empty($act)) $smarty->assign("tsMembers",$tsAdmin->getUsuarios());
-	   elseif($act === 'show'){
-	      $do = (int)$_GET['t'];
+		if(in_array($act, ['verificar', 'show'])) {
          $user_id = (int)$_GET['uid'];
+		}
+	   if(empty($act)) {
+	   	$smarty->assign("tsMembers",$tsAdmin->getUsuarios());
+
+	   } elseif($act == 'verificar') {
+	   	var_dump($act);
+         $verificar = $tsAdmin->setUsuarioVerificado();
+        	if($verificar) $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
+			else $smarty->assign("tsError", $update); 
+
+	   } elseif($act === 'show') {
+	      $do = (int)$_GET['t'];
          // HACER
          switch($do){
 				case 5:

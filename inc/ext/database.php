@@ -1,10 +1,16 @@
 <?php
+
 /**
  * @name database.php
- * @author PHPost Team
- * @copyright 2024
- * Actualizada y optimizada!
-*/
+ * @copyright ZCode 2024
+ * @link https://zcode.newluckies.com/ (DEMO)
+ * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @author Miguel92
+ * @version v1.7.0
+ * @description Actualizada y optimizada!
+**/
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}fotos_comentarios` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
@@ -279,6 +285,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros` (
   `user_cache` int(10) NOT NULL DEFAULT 0,
   `user_comentarios` int(11) NOT NULL DEFAULT 0,
   `user_email` varchar(80) NOT NULL DEFAULT '',
+  `user_verificado` int(1) NOT NULL DEFAULT 0,
   `user_chat` int(12) NOT NULL DEFAULT 0,
   `user_secret_2fa` text NULL,
   `user_recovery` text NULL,
@@ -295,9 +302,11 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros` (
   `user_puntosxdar` int(2) unsigned NOT NULL DEFAULT 0,
   `user_rango` int(3) NOT NULL DEFAULT 3,
   `user_registro` int(10) NOT NULL DEFAULT 0,
+  `user_outtime_type` int(1) NOT NULL DEFAULT 0,
+  `user_outtime_start` int(10) NOT NULL DEFAULT 0,
+  `user_outtime` int(10) NOT NULL DEFAULT 0,
   `user_seguidores` bigint NOT NULL DEFAULT 0,
   `user_seguidos` bigint NOT NULL DEFAULT 0,
-  `user_socials` tinytext NOT NULL DEFAULT '{\"discord\":false,\"facebook\":false,\"github\":false,\"google\":false,\"twitter\":false}',
   `user_socials` tinytext NOT NULL DEFAULT '{\"discord\":false,\"facebook\":false,\"github\":false,\"google\":false,\"twitter\":false}',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
@@ -406,7 +415,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}portal` (
   `last_posts_visited` text NULL,
   `last_posts_shared` text NULL,
   `last_posts_cats` text NULL,
-  `c_monitor` text NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14',
+  `c_monitor` text NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14,f18',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 
@@ -486,6 +495,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}configuracion` (
   `tema_id` int(11) NOT NULL DEFAULT 1,
   `update_id` varchar(20) NOT NULL DEFAULT '',
   `c_avatar` int(1) NOT NULL DEFAULT 0,
+  `leaving` int(1) NOT NULL DEFAULT 0,
   `ads_300` text NULL,
   `ads_468` text NULL,
   `ads_160` text NULL,

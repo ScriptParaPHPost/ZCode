@@ -29,7 +29,7 @@ $tsMessage = '';
 $keygen = 'WkNvZGVVcGdyYWRl';
 $name = 'ZCode';
 // $version = major.minor.patch
-$version = '1.6.0';
+$version = file_get_contents(VERSION);
 $script = [
 	'name' => $name,
 	'slogan' => 'Script a otro nivel!',
@@ -66,6 +66,8 @@ if(!file_exists( CONFIG )) {
 	# Copiamos el archivo ejemplo a la ruta
 	copy(CONFIG_EXAMPLE, CONFIG);
 }
+// Guardar el contenido actualizado de nuevo en el archivo
+file_put_contents(CONFIG, str_replace('__version__', "v$version", file_get_contents(CONFIG)));
 
 # 2 - Damos los permisos necesarios
 if(file_exists( CONFIG )) chmod(CONFIG, 0666);
@@ -121,7 +123,8 @@ if( $step === 0 ) {
 	$versiones['php']['message'] = $statusPHP ? "Compatible con PHP $vphp" : "Tu versión es inferior a PHP $vphp";
 	$versiones['php']['status'] = $statusPHP;
 
-	$versiones['smarty']['message'] = "Versión: 4.5.2";
+	require_once TS_SMARTY . 'Smarty.class.php';
+	$versiones['smarty']['message'] = "Versión: " . Smarty::SMARTY_VERSION;
 	$versiones['smarty']['status'] = true;
 
 	$statusGD = (extension_loaded('gd') || function_exists('gd_info'));

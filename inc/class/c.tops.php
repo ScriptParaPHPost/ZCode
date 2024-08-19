@@ -163,12 +163,12 @@ class tsTops {
 		$time = time();
 		// OBTENEMOS LAS ESTADISTICAS
 		$return = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT stats_max_online, stats_max_time, stats_time, stats_time_cache, stats_miembros, stats_posts, stats_fotos, stats_comments, stats_foto_comments FROM @stats WHERE stats_no = 1"));
-		if((int)$return['stats_time_cache'] > $time - ((int)$tsCore->settings['c_stats_cache'] * 60)) {
+		#if((int)$return['stats_time_cache'] > $time - ((int)$tsCore->settings['c_stats_cache'] * 60)) {
 			// MIEMBROS
 			$this->getStatsWithoutTable($return);
 
 		  $ndat = ", stats_time_cache = {$time}, stats_miembros = {$return['stats_miembros']}, stats_posts = {$return['stats_posts']}, stats_fotos = {$return['stats_fotos']}, stats_comments = {$return['stats_comments']}, stats_foto_comments = {$return['stats_foto_comments']}";
-		}
+		#}
 		// PARA SABER SI ESTA ONLINE
 		$is_online = ($time - ((int)$tsCore->settings['c_last_active'] * 60));
 		// USUARIOS ONLINE - COMPROBAMOS SI CONTAMOS A TODOS LOS USUARIOS O SOLO A REGISTRADOS

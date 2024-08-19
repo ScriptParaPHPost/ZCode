@@ -142,6 +142,7 @@ class tsUser  {
 		$sql = "SELECT u.*, s.* FROM @sessions s, @miembros u WHERE s.session_id = '{$this->session->ID}' AND u.user_id = s.session_user_id";
 		$query = db_exec([__FILE__, __LINE__], 'query', $sql);
 		$this->info = db_exec('fetch_assoc', $query);
+
 		// Existe el usuario?
 		if(!isset($this->info['user_id'])) return FALSE;
 		// PERMISOS SEGUN RANGO
@@ -171,6 +172,8 @@ class tsUser  {
 			'img' => $tsCore->getAvatar($this->uid, 'img'),
 			'gif' => $tsCore->getAvatar($this->uid, 'gif')
 		];
+		$this->deleteUserOutTime($this->info['user_outtime_type'] ?? 0, $time);
+		
 		// ULTIMA ACCION
 		db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_lastactive = $time WHERE user_id = {$this->uid}");
 		// Si ha iniciado sesión cargamos estos datos.
@@ -182,6 +185,77 @@ class tsUser  {
 		}
 		// Borrar variable session
 		unset($this->session);
+	}
+
+	public function deleteUserOutTime(int $opcion = 0, int $time = 0) {
+		$userId = (int)$this->uid;
+		// Validar el userId
+    	if ($userId <= 0) {
+        	return "0: ID de usuario inválido.";
+    	}
+    	// Obtener la fecha actual
+    	$ahora = time();
+	   // Calcular la fecha de eliminación basada en la opción seleccionada
+	   if($opcion === 0) {
+	   	$outtime = 0;
+	   } elseif($opcion >= 1 && $opcion <= 4) {
+        	$totime = 3 * $opcion;
+         $outtime = strtotime("+$totime months", $ahora);
+	   } else {
+      	return "0: Opción inválida.";
+    	}
+	   // Esto detecta si el usuario inicio sesion otra vez 'user_outtime_start = $time'
+	   db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_outtime = $outtime, user_outtime_type = $opcion, user_outtime_start = $time WHERE user_id = {$userId}");
+	   // Iniciamos proceso para eliminar
+	   $data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_outtime_type, user_outtime_start, user_outtime FROM @miembros WHERE user_id = {$userId}"));
+	   if((int)$data['user_outtime'] !== 0 && (int)$data['user_outtime_type'] !== 0) {
+	    	// Verificar si se debe proceder con la eliminación
+	    	if ($data && (int)$data['user_outtime'] >= (int)$data['user_outtime_start'] && (int)$data['user_outtime'] === $ahora) {
+		   	// Acá aplicamos consulta para eliminar cuenta
+		   	$this->deleteContent($userId);
+		   }
+	   }
+	   return "1: Guardado correctamente";
+	}
+
+	private function deleteContent(int $user_id = 0){
+		global $tsCore, $tsUser;
+		
+		$tablas = [
+			['@posts', "post_user"],
+			['@fotos', "f_user"],
+			['@muro', "p_user_pub"],
+			['@posts_comentarios', "c_user"],
+			['@fotos_comentarios', "c_user"],
+			['@muro_comentarios', "c_user"],
+			['@muro_likes', "user_id"],
+			['@follows', "f_id"],
+			['@follows', "f_user"],
+			['@posts_favoritos', "fav_user"], 
+			['@posts_votos', "tuser"],
+			['@fotos_votos', "v_user"],
+			['@actividad', "user_id"],
+			['@avisos', "user_id"],
+			['@bloqueos', "b_user"],
+			['@mensajes', "mp_from"], 
+			['@respuestas', "mr_from"],
+			['@sessions', "session_user_id"],
+			['@visitas', "user"],
+			['@miembros', "user_id"],
+			['@perfil', "user_id"],
+			['@portal', "user_id"],
+			['@denuncias', "d_user"],
+			['@bloqueos', "b_auser"],
+			['@mensajes', "mp_to"],
+			['@visitas', "`for`"]
+		];
+		foreach($tablas as $k => $tabla) deleteFromId([__FILE__, __LINE__], $tabla[0], "{$tabla[1]} = $user_id");
+		$data = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_name FROM @miembros WHERE user_id = $user_id"));
+		$admin = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_email FROM @miembros WHERE user_id = 1"));
+		  
+		$avBody = "Hola, le informamos su cuenta ha sido eliminada con todo su contenido por inactividad elegida por {$data['user_name']}.";
+		mail($admin[0], 'Cuenta eliminada', "<html><head><title>Tu cuenta ha sido eliminada!</title></head><body><p>$avBody</p></body></html>", 'Content-type: text/html; charset=iso-8859-15');
+		return true;
 	}
 
 	private function ProtectedEmail() { 
@@ -352,6 +426,13 @@ class tsUser  {
 	public function getUserName(int $user_id = 0): string {
 		$tsUser = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_name FROM @miembros WHERE user_id = $user_id LIMIT 1"));
 		return $tsUser['user_name'];
+	}
+	/*
+		  getUserIsVerified($user_nick)
+	 */
+	public function getUserIsVerified(string $user_name = ''): bool {
+		$tsUser = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_verificado FROM @miembros WHERE user_name = '$user_name' LIMIT 1"));
+		return ((int)$tsUser['user_verificado'] === 1);
 	}
 	/*
 		  getUserName($user_id)

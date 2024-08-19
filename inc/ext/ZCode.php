@@ -1,5 +1,17 @@
 <?php 
 
+/**
+ * @name ZCode.php
+ * @copyright ZCode 2024
+ * @link https://zcode.newluckies.com/ (DEMO)
+ * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @author Miguel92
+ * @version v1.7.0
+ * @description Crearemos algunas funciones para uso global
+**/
+
 class tsZCode {
 
 	// No quitar, ni reemplazar
@@ -187,4 +199,5 @@ class tsZCode {
 
 	   return $reading_time;
 	}
+
 }

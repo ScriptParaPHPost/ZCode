@@ -1,28 +1,25 @@
 <?php
+
 /**
- * Resuelve para la home
- *
- * @name    index.php
- * @author  Miguel92 & PHPost.es
- */
+ * @name index.php
+ * @copyright ZCode 2024
+ * @link https://zcode.newluckies.com/ (DEMO)
+ * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @author Miguel92
+ * @version v1.7.0
+ * @description Archivo para cargar el sitio
+**/
 
-/*
- * -------------------------------------------------------------------
- *  Validamos que mostrar home/mi
- * -------------------------------------------------------------------
- */
+// Incluimos header
+include realpath(__DIR__) . DIRECTORY_SEPARATOR . 'header.php';
 
-    // Incluimos header
-	include 'header.php';
+// Checamos...
+if($tsCore->settings['c_allow_portal'] === 1 && $tsUser->is_member == true && $_GET['do'] == 'portal') {
+	include TS_PHP . 'portal.php';
 
-    // Checamos...
-    if($tsCore->settings['c_allow_portal'] == 1 && $tsUser->is_member == true && $_GET['do'] == 'portal')
-    {
-        // Portal/mi
-        include('inc/php/portal.php');
-    } 
-    else 
-    {
-        // Home
-        include('inc/php/posts.php');
-    }
+} else {
+	include TS_PHP . 'posts.php';
+	
+}

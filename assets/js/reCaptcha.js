@@ -1,10 +1,7 @@
 $(() => {
 
    // Desestructuramos las propiedades `pkey` y `url` del objeto `ZCodeApp`
-	const { pkey, url } = ZCodeApp;
-
-	// Clave de la API reCAPTCHA
-	const API_RECAPTCHA = pkey;
+	const { pkey: API_RECAPTCHA, url } = ZCodeApp;
 
 	// URL para cargar el script de reCAPTCHA de Google con la clave de la API
 	const API_RECAPTCHA_GOOGLE = `https://www.google.com/recaptcha/api.js?render=${API_RECAPTCHA}`;
@@ -41,13 +38,8 @@ $(() => {
 
 	// Función autoinvocada para cargar y ejecutar los scripts necesarios
    try {
-      // Cargar el script de reCAPTCHA
-      loadScript(API_RECAPTCHA_GOOGLE).then(() => {
-      	// Preparar y ejecutar reCAPTCHA
-      	reCaptchaReady();
-      	// Cargar el script de registro
-      	//loadScript(FILE_REGISTER_WEB);
-      });
+      // Cargar el script de reCAPTCHA | Preparar y ejecutar reCAPTCHA
+      loadScript(API_RECAPTCHA_GOOGLE).then(() => reCaptchaReady());
    } catch (error) {
       // Manejar errores de carga
       reCaptchaError(error);

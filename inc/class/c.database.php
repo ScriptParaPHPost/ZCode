@@ -131,7 +131,8 @@ class tsDatabase {
 	   } else {
 	      $tables = is_array($tables) ? $tables : explode(',', $tables);
 	   }
-	   $backupSQL = "";
+      $save = date('d.m.Y H:i a');
+	   $backupSQL = "/**\n * Copia de seguridad\n * Fecha: $save\n*/\n";
 	   // Recorrer las tablas y obtener el SQL de respaldo
    	foreach ($tables as $table) {
    	   $result = db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM $table");
@@ -139,13 +140,13 @@ class tsDatabase {
 
    	   $backupSQL .= "DROP TABLE IF EXISTS $table;";
    	   $row2 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SHOW CREATE TABLE $table"));
-   	   $backupSQL .= "\n\n" . $row2[1] . ";\n\n";
+   	   $backupSQL .= "\n" . $row2[1] . ";\n\n";
 
    	   for ($i = 0; $i < $numFields; $i++) {
    	      while ($row = db_exec('fetch_row', $result)) {
    	         $backupSQL .= "INSERT INTO $table VALUES(";
    	         for ($j = 0; $j < $numFields; $j++) {
-   	            $row[$j] = $row[$j] ? addslashes($row[$j]) : 'NULL';
+   	            $row[$j] = $row[$j] ? addslashes($row[$j]) : '';
    	            $row[$j] = str_replace("\n", "\\n", $row[$j]);
    	            $backupSQL .= '"' . $row[$j] . '"';
    	            if ($j < ($numFields - 1)) {

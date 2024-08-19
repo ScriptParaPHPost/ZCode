@@ -1,0 +1,24 @@
+html, body {
+	width: 100%;
+	height: 100vh;
+}
+.leaving-wrapper .buttons {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 1rem;
+}
+.leaving-wrapper .buttons a {
+   display: block;
+   background-color: #1849B9;
+   color: #FFF;
+}
+.leaving-wrapper .buttons a:hover {
+   background-color: #1C439C;
+}
+.leaving-wrapper .buttons a:first-child {
+   background-color: #4969B3;
+}
+.leaving-wrapper .buttons a:hover:first-child {
+   background-color: #3155A7;
+}

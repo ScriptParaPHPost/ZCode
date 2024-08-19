@@ -48,6 +48,7 @@ class tsSmarty extends Smarty {
 
 	private function listDirectories() {
 		return [
+			'root' => TS_ROOT,
 			'assets' => TS_ASSETS,
 			'dashboard' => TS_DASHBOARD,
 			'admin_mods' => TS_DASHBOARD . 'admin_mods' . TS_PATH,
@@ -74,7 +75,6 @@ class tsSmarty extends Smarty {
 			'global' => $modules . 'global' . TS_PATH,
 			'php_files' => $templates . 't.php_files' . TS_PATH
 		], $this->listDirectories());
-
 		$this->addTemplateDir($directorios);
 	}
 
@@ -86,6 +86,7 @@ class tsSmarty extends Smarty {
 	public function loadTemplate($page) {
 		$page = (in_array($page, ['admin', 'moderacion'])) ? "main.tpl" : "t.$page.tpl";
 		try {
+			if($page === 't.saliendo.tpl') $page = 'saliendo.html';
 			$temp = $this->templateExists($page) ? $page : $this->template_error;
 			$this->display($temp);
 		} catch (Exception $e) {

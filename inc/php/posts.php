@@ -167,10 +167,9 @@ if($tsContinue) {
  * -------------------------------------------------------------------
  */
 
-if(empty($tsAjax)) 
-{
+if(empty($tsAjax)) {
 	 // Asignamos título
 	$smarty->assign("tsTitle", $tsTitle);
 	 // Incluir footer
-	include(TS_ROOT . "/footer.php");
+	include TS_ROOT . "footer.php";
 }

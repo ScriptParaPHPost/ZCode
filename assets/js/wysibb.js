@@ -67,12 +67,16 @@ CURLANG = {
 	fileupload_text1: "Suelta el archivo aquí",
 	fileupload_text2: "o también puedes",
 
+	loading_image: "/images/loader.gif",
 	loading: "Cargando",
 	auto: "Auto",
 	views: "Visitas",
 	downloads: "Descargas",
 };
 
+ZCodeWysibb = {
+	copyright: `<span class="powered">Editado para <a style="font-weight:bold;text-decoration:none;" href="${ZCodeApp.url}/" target="_blank">${ZCodeApp.version}</a></span>`
+}
 
 $(() => {
 	$('button, input, .btn_g, .answerCitar').on('hover', () => {
@@ -1495,7 +1499,7 @@ wbbdebug = false;
 				this.imgListeners();
 			}
 
-			this.$editor.append(`<span class="powered">Editado para <a style="font-weight:bold;text-decoration:none;" href="${ZCodeApp.url}/" target="_blank">${ZCodeApp.version}</a></span>`);
+			this.$editor.append(ZCodeWysibb.copyright);
 
 			//add event listeners to textarea 
 			this.$txtArea.on('mouseup keyup', $.proxy(function() {
@@ -3508,7 +3512,7 @@ wbbdebug = false;
 				});
 				this.$modal.find("#fupform").on("submit", $.proxy(function(e) {
 					const { images: { assets: Path }} = ZCodeApp;
-					$(e.target).parents("#imguploader").hide().after('<div class="loader"><img src="' + Path + '/loading_bar.gif" /><br/><br/><span>' + CURLANG.loading + '</span></div>').parent().css("text-align", "center");
+					$(e.target).parents("#imguploader").hide().after('<div class="loader"><img src="' + Path + '/' + CURLANG.loading_image + '" /><br/><br/><span>' + CURLANG.loading + '</span></div>').parent().css("text-align", "center");
 				}, this))
 
 			} else {
@@ -3773,7 +3777,7 @@ wbbdebug = false;
 						});
 					}
 
-					this.$loader = $('<div class="loader"><img src="' + this.opt.themePrefix + '/' + this.opt.themeName + '/images/loading_bar.gif" /><br/><span>' + CURLANG.loading + '</span></div>');
+					this.$loader = $('<div class="loader"><img src="' + this.opt.themePrefix + '/' + this.opt.themeName +  CURLANG.loading_image + '" /><br/><span>' + CURLANG.loading + '</span></div>');
 					this.$block.html(this.$loader);
 
 					$.ajax({

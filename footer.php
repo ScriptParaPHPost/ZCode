@@ -22,6 +22,6 @@ if (!defined('TS_HEADER')) exit('No se permite el acceso directo al script');
 	# Si no encuentra la plantilla t.$tsPage.tpl
 	# Mostrar esta página
 	$smarty->template_error = '404.html';
-
+	
 	$smarty->loadAllTemplates(TS_TEMA, $tsPage);
 	$smarty->loadTemplate($tsPage);

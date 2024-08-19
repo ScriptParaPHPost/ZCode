@@ -38,6 +38,17 @@ try {
 } catch (Exception $e) {
 	show_error('No se pudo ejecutar una consulta en la base de datos.', 'db');
 }
+/**
+ * Todo lo que se añada a database.php
+ * Se ejecutará automáticamente sin 
+ * intervención del usuario
+*/
+if(isset($_GET['migrator']) && $_GET['migrator']) {
+	require_once TS_EXTRA . 'migrator.php';
+	if(!$success) {
+		die('No se pudo migrar correctamente...');
+	}
+}
 
 $prefijo = $db['prefix'];
 function withPrefix(string $query = '') {

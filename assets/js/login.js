@@ -70,8 +70,10 @@ const login = (() => {
 		$.post(`${ZCodeApp.url}/login-validar.php`, params, req => {
 			let INPUT_NUMBER = parseInt(req.charAt(0));
 			const CONTENT_SHOW = req.substring(3);
-			let CONTENT_TITLE = (INPUT_NUMBER === 1) ? 'Bien' : 'Oops';
-			UPModal.alert(CONTENT_TITLE, CONTENT_SHOW, (INPUT_NUMBER === 1));
+			if(INPUT_NUMBER === 0) {
+				UPModal.alert('Oops', CONTENT_SHOW, false);
+			}
+			if(INPUT_NUMBER === 1) location.reload();
 		});
 	}
 

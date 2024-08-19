@@ -343,7 +343,6 @@ class SmartyZCode {
   		$jsMain = ['zCode.js', 'plugins.js', ...$scripts];
   		# Añadimos el editor
 	  	$this->appendJS($jsMain, $this->page_wysibb, 'wysibb.js');
-	  	$this->appendJS($jsMain, ['agregar', 'posts', 'perfil', 'portal'], 'lite-youtube.js');
 	  	# Añadimos complementos a cuenta, comunidades...
 	  	$this->appendJS($jsMain, ['cuenta', 'comunidades'], ["croppr.js", "avatar.js"]);
 	  	# Solo para registro

@@ -247,8 +247,9 @@
 	z-index: 1;
    width: 230px;
    height: max-content;
-   max-height: min-content;
+   max-height: 164px;
    padding: 0.32rem;
+   overflow-y: auto;
 }
 .wbb-list span:hover {
 	background: #EEE;

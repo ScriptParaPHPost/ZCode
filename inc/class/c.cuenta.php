@@ -19,7 +19,7 @@ class tsCuenta {
 		global $tsUser;
 		//
 		if(empty($user_id)) $user_id = $tsUser->uid;
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_socials, u.user_registro, u.user_lastactive FROM @perfil AS p LEFT JOIN @miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_socials, u.user_registro, u.user_lastactive, u.user_outtime_type FROM @perfil AS p LEFT JOIN @miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
 		$perfilInfo = db_exec('fetch_assoc', $query);
 		$fecha = "{$perfilInfo['user_dia']}-{$perfilInfo['user_mes']}-{$perfilInfo['user_ano']}";
 		$perfilInfo['nacimiento'] = date("Y-m-d", strtotime($fecha));
@@ -58,8 +58,8 @@ class tsCuenta {
 	public function loadHeadInfo(int $user_id = 0){
 		global $tsUser, $tsCore;
 		// INFORMACION GENERAL
-		$new = "p.user_gif, p.user_gif_active, p.user_portada, p.user_scheme, p.user_avatar_uid, p.user_color, p.user_customize, p.p_socials";
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_socials, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, $new, p.p_avatar, p.p_mensaje, p.p_configs FROM @miembros AS u, @perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
+		$new = "u.user_verificado, p.user_gif, p.user_gif_active, p.user_portada, p.user_scheme, p.user_avatar_uid, p.user_color, p.user_customize, p.p_socials";
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_socials, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, $new, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_configs FROM @miembros AS u, @perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
       //
 		$data['avatar'] = $tsCore->getAvatar($user_id, 'use');
       $data['p_nombre'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_nombre']), true);

@@ -27,22 +27,23 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
 	//
+	$script = 'ZCode';
 	$code = [
       'title' => $tsCore->settings['titulo'],
       'url' => $tsCore->settings['url'],
-      'version' => $tsCore->settings['version'],
+      'version' => "$script {$tsCore->settings['version']}",
       'admin' => $tsUser->nick,
       'id' => $tsUser->uid
    ];
 	$key = base64_encode(serialize($code));
 	$key .= '&verification=' . $tsCore->verification();
-	#$conexion = "https://phpost.es/feed/";
+	#$conexion = "http://localhost/feed/";
 	$conexion = "https://zcode.newluckies.com/feed/";
 	// CODIGO
 	switch($action){
 		case 'feed-support':
 			//<--- CONSULTAR ACTUALIZACIONES OFICIALES Y VERIFICAR VERSIÓN ACTUAL DE ESTE SCRIPT
-				$json = $tsCore->getUrlContent($conexion . 'index.php?from=ZCode&type=support&key=' . $key);
+				$json = $tsCore->getUrlContent($conexion.'index.php?from='.$script.'&type=support&key='.$key);
 				echo $json;
 			//--->
 		break;
@@ -52,7 +53,7 @@
 			 * ZCode 1.6.0 *
 			*/
 			$time = time();
-			$version_now = 'ZCode 1.6.0';
+			$version_now = $script.' ' . file_get_contents(VERSION);
 			$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 			# ACTUALIZAR VERSIÓN
 			if($tsCore->settings['version'] != $version_now){
@@ -60,42 +61,14 @@
 				db_exec([__FILE__, __LINE__], 'query', "UPDATE @stats SET stats_time_upgrade = $time WHERE stats_no = 1 LIMIT 1");
 			}
 			//<---
-			$json = $tsCore->getUrlContent($conexion . 'index.php?from=ZCode&type=version&key=' . $key);
+			$json = $tsCore->getUrlContent($conexion.'index.php?from='.$script.'&type=version&key='.$key);
 			echo $json;
 			//--->
 		break;
 		case 'feed-system':
 		case 'feed-update':
 			//<---
-			$URL = $conexion . 'index.php?from=ZCode&type=update&key=' . $key;
-			$URL .= '&update_id=' . (int)$tsCore->settings['update_id'];
-			if($action === 'feed-update') {
-				$URL .= '&start=true';
-			}
-			$json = $tsCore->getUrlContent($URL);
-			if($action === 'feed-update') {
-				$update = json_decode($json);
-				$basename = TS_CACHE . pathinfo($update->file, PATHINFO_BASENAME);
-				$filename = pathinfo($update->file, PATHINFO_FILENAME);
-				if(copy($update->file, $basename)) {
-					$destino = TS_ROOT;
-					$zip = new ZipArchive;
-					if ($zip->open($basename) === TRUE) {
-					   // Extraer el contenido a la carpeta de destino
-					   $zip->extractTo($destino);
-					   // Cerrar el archivo ZIP
-					   $zip->close();
-					   if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @configuracion SET update_id = '$filename' WHERE tscript_id = 1 LIMIT 1")) {
-					   	echo '1: Actualizaci&oacute;n completa.';
-					   	unlink($basename);
-					   }
-					} else {
-					   echo '0: No se pudo abrir el archivo ZIP.';
-					}
-				}
-				die;
-			}
-			echo $json;
+			echo json_encode([ 'status' => 1, 'message' => 'Muy pronto, nueva mejora...' ]);
 		break;
 		default:
 			die('0: Este archivo no existe.');

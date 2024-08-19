@@ -4,10 +4,15 @@ if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
 
 /**
  * @name Images.php
- * @description Controlador para manipular imagenes
- * @copyright 2024
+ * @copyright ZCode 2024
+ * @link https://zcode.newluckies.com/ (DEMO)
+ * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
  * @author Miguel92
-*/
+ * @version v1.7.0
+ * @description Controlador para manipular imagenes
+**/
 
 class Images {
 

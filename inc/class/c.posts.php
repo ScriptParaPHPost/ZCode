@@ -219,7 +219,7 @@ class tsPosts {
 		elseif(!empty($postData['post_private']) && empty($tsUser->is_member)) return ['privado', $postData['post_title']];
   
 		//ESTADÍSTICAS
-		if((int)$postData['post_cache'] <= $time - ((int)$tsCore->settings['c_stats_cache'] * 60)) {
+		#if((int)$postData['post_cache'] <= $time - ((int)$tsCore->settings['c_stats_cache'] * 60)) {
 			// NÚMERO DE COMENTARIOS
 			$postData['post_comments'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(u.user_name) AS c FROM @miembros AS u LEFT JOIN @posts_comentarios AS c ON u.user_id = c.c_user WHERE c.c_post_id = $post_id && c.c_status = 0 && u.user_activo = 1 && u.user_baneado = 0"))[0];
 			// NÚMERO DE SEGUIDORES
@@ -239,7 +239,7 @@ class tsPosts {
 
 		  //ACTUALIZAMOS LAS ESTADÍSTICAS
 		  db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET $post WHERE post_id = $post_id");
-		}
+		#}
 		// BLOQUEADO
 		$postData['block'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT bid FROM @bloqueos WHERE b_user = {$postData['post_user']} AND b_auser = {$tsUser->uid} LIMIT 1"));
 		// FOLLOWS

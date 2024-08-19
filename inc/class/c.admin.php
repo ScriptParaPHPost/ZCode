@@ -1151,4 +1151,11 @@ class tsAdmin {
 		return $num;
 	}
 
+	public function setUsuarioVerificado(){
+      $user = (int)$_GET['id'];
+      $verificar = db_exec('fetch_array', db_exec([__FILE__, __LINE__], 'query', "SELECT user_verificado FROM @miembros WHERE user_id = $user"));
+      $cambiar = ((int)$verificar['user_verificado'] === 1) ? 0 : 1;
+      return (db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_verificado = $cambiar WHERE user_id = $user"));
+   } 
+
 }

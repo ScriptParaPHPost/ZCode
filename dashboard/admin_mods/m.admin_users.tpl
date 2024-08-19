@@ -86,6 +86,10 @@
 			<dt><label>Cambios de nick disponibles:</label></dt>
 			<dd><input type="text" name="changenicks" id="changenicks" value="{$tsUserD.user_name_changes}" style="width:10%" /></dd>
 		</dl>
+		<dl>
+         <dt><label for="verificar">Usuario Verificado:</label></dt>
+         <dd><a href="{$tsConfig.url}/admin/users?act=verificar&id={$tsUserD.user_id}">{if $tsUserD.user_verificado}Desverificar usuario{else}Verificar usuario{/if}</a></dd>
+      </dl>
 		<hr />
 		<dl>
 			<dt><label for="email">E-mail:</label></dt>

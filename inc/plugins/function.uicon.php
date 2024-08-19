@@ -34,19 +34,20 @@ function smarty_function_uicon($params, &$smarty) {
       $insert_pos = $pos + 4;
       $class_attr = ' class="' . trim(htmlspecialchars($classes)) . '"';
       $icon_content = substr_replace($icon_content, $class_attr, $insert_pos, 0);
-   
-      if(isset($params['role'])) {
-         $role_attr = ' role="' . trim(htmlspecialchars($params['role'])) . '"';
-         $icon_content = substr_replace($icon_content, $role_attr, $insert_pos, 0);
+      
+      $attributes = ['role', 'style', 'title', 'fill'];
+      foreach($attributes as $attr) {
+         if(isset($params[$attr])) {
+            $newAttr = trim(htmlspecialchars($params[$attr]));
+            $addAttr = " $attr=\"$newAttr\"";
+            $icon_content = substr_replace($icon_content, $addAttr, $insert_pos, 0);
+         }
       }
-      if(isset($params['style'])) {
-         $new_attr = " style=\"{$params['style']}\"";
-         $icon_content = substr_replace($icon_content, $new_attr, $insert_pos, 0);
-      }
+
       // Buscamos los atributos 'width' y 'height' y los actualizamos
       if (isset($params['size'])) {
-         $size_attr = ' width="' . trim(htmlspecialchars($params['size'])) . '"';
-         $size_attr .= ' height="' . trim(htmlspecialchars($params['size'])) . '"';
+         $size = trim(htmlspecialchars($params['size']));
+         $size_attr = " width=\"$size\" height=\"$size\"";
          $icon_content = substr_replace($icon_content, $size_attr, $insert_pos, 0);
       }
    }

@@ -4,17 +4,20 @@
  *  # Empty 
  *  # Htmlspecialchars_decode 
  *  # Number_format 
+ *  # base64_encode
 */
 empty = n => {let e,r,t;const f=[undefined,null,!1,0,"","0"];for(r=0,t=f.length;r<t;r++)if(n===f[r])return!0;if("object"==typeof n){for(e in n)if(n.hasOwnProperty(e))return!1;return!0}return!1}
 htmlspecialchars_decode = (e,E) => {let T=0,_=0,t=!1;void 0===E&&(E=2),e=e.toString().replace(/&lt;/g,"<").replace(/&gt;/g,">");const c={ENT_NOQUOTES:0,ENT_HTML_QUOTE_SINGLE:1,ENT_HTML_QUOTE_DOUBLE:2,ENT_COMPAT:2,ENT_QUOTES:3,ENT_IGNORE:4};if(0===E&&(t=!0),"number"!=typeof E){for(E=[].concat(E),_=0;_<E.length;_++)0===c[E[_]]?t=!0:c[E[_]]&&(T|=c[E[_]]);E=T}return E&c.ENT_HTML_QUOTE_SINGLE&&(e=e.replace(/&#0*39;/g,"'")),t||(e=e.replace(/&quot;/g,'"')),e=e.replace(/&amp;/g,"&")}
 number_format = (e,t,n,i) => {e=(e+"").replace(/[^0-9+\-Ee.]/g,"");const r=isFinite(+e)?+e:0,o=isFinite(+t)?Math.abs(t):0,a=void 0===i?",":i,d=void 0===n?".":n;let l="";return l=(o?function(e,t){if(-1===(""+e).indexOf("e"))return+(Math.round(e+"e+"+t)+"e-"+t);{const n=(""+e).split("e");let i="";return+n[1]+t>0&&(i="+"),(+(Math.round(+n[0]+"e"+i+(+n[1]+t))+"e-"+t)).toFixed(t)}}(r,o).toString():""+Math.round(r)).split("."),l[0].length>3&&(l[0]=l[0].replace(/\B(?=(?:\d{3})+(?!\d))/g,a)),(l[1]||"").length<o&&(l[1]=l[1]||"",l[1]+=new Array(o-l[1].length+1).join("0")),l.join(d)}
 rawurlencode = string => {string = string + '';return encodeURIComponent(string).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\*/g, '%2A');}
+base64_encode = string => {let type="undefined"!=typeof window&&window.btoa;return type?window.btoa(unescape(encodeURIComponent(string))):Buffer.from(string,"binary").toString("base64");}
 
 function isYoutube(linkVideo) { 
 	const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/; 
 	const match = linkVideo.match(regExp); 
 	return (match && match[7].length === 11) ? match[7] : false;
 }
+
 function generarCadenaAleatoria(longitud) {
 	const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	let resultado = '';
@@ -43,26 +46,6 @@ const verifyInput = (selector, errorMessage) => {
 $('input').on('keyup', function() {
 	$(this).parent().parent().find('.upform-status').removeClass('error ok loading info').html('')
 });
-
-/**
- * Imported v1.0
- * Lo que hace es cargar el código cuando es necesario
- * y que no se cargue cuando no se usa
-*/
-async function imported(fileroute = '', execFunction = '', objects) {
-	try {
-		const { theme } = ZCodeApp;
-		javascriptFile = `${theme}/js/${fileroute}?v` + generarCadenaAleatoria(4);
-		const module = await import(javascriptFile);
-		if (module[execFunction]) {
-			module[execFunction](objects);
-		} else {
-			console.error(`Function ${execFunction} no se encontro en ${javascriptFile}`);
-		}
-	} catch (error) {
-		console.error(`Error al importar ${javascriptFile}:`, error);
-	}
-}
 
 /**
  * Nuevas funciones creadas para zCode
@@ -100,7 +83,6 @@ const toast = {
 	},
 	start({ title = '', content = '', type = 'default', autoClose = true, duration = 5 }) {
 	  	this.createContainer();
-		console.log(title, content, type, autoClose, duration)
 	  	const gid = this.generateID(8);
 	  	const toastBox = this.createToastBox(gid, { title, content, type, autoClose, duration });
 	  	$('.toast').append(toastBox);
@@ -414,7 +396,44 @@ $(document).on('keyup keydown', function(event) {
 });
 
 
+/**
+ * Imported v1.2
+ * Lo que hace es cargar el código cuando es necesario
+ * y que no se cargue cuando no se usa
+ * Ahora verifica si ya fue importado
+*/
+// Mapa para almacenar los archivos ya importados
+const importedFiles = new Map();
+async function imported(fileroute = '', execFunction = '', objects, from = 'theme') {
+	try {
+		const { theme, assets } = ZCodeApp;
+		javascriptFile = `${ZCodeApp[from]}/js/${fileroute}?v` + generarCadenaAleatoria(4);
+
+		// Verificar si el archivo ya ha sido importado
+		if (importedFiles.has(javascriptFile)) {
+			console.log(`Archivo ${javascriptFile} ya ha sido importado.`);
+			return;
+		}
+
+		const module = await import(javascriptFile);
+		importedFiles.set(javascriptFile, true);
+		if (module[execFunction]) {
+			module[execFunction](objects);
+		} else {
+			console.error(`Function ${execFunction} no se encontro en ${javascriptFile}`);
+		}
+	} catch (error) {
+		console.error(`Error al importar ${javascriptFile}:`, error);
+	}
+}
+
 $(() => {
+	if($('lite-youtube').length > 0) {
+		/**
+		 * Solo cargará cuando sea necesario
+		*/
+		imported('lite-youtube.js', 'liteYt', {}, 'assets');
+	}
 	// Ejecutamos LazyLoad - by Miguel92
 	if (typeof LazyLoad !== 'undefined') {
 	   const lazyLoadSelectors = ['img[src]', '[data-src]', '[data-bg]'];
@@ -475,5 +494,14 @@ $(() => {
          if(SAVE.length === 1) SAVE.click();
       }
    });
+
+   if($('a[data-encode="true"]').length > 0) {
+	   $('a[data-encode="true"]').each(function(){
+	      let url = $(this).attr('href');
+	      $(this).attr({
+	         href: `${ZCodeApp.url}/saliendo/?p=`  + base64_encode(url)
+	      });
+	   });
+   }
 
 });
