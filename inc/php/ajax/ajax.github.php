@@ -33,7 +33,7 @@ $tsActualizacion = new tsActualizacion;
 switch($action){
 	case 'github-api':
 
-		$tsActualizacion->BRANCH = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'alpha';
+		$tsActualizacion->BRANCH = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'main';
 
 		$last = $tsActualizacion->getLastCommit();
 		$response = $tsActualizacion->api_response('info');

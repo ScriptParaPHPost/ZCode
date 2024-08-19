@@ -56,7 +56,7 @@ function SystemUpdate() {
 		}
 	});
 }
-function changeBranch(branch = 'alpha') {
+function changeBranch(branch = 'main') {
 	$.post(ZCodeApp.url + '/github-api.php', { branch }, response => {
 		if(response === null) {
 			$('#lastCommit').html('<div class="empty">No se puede cargar el último commit...</div>');
