@@ -152,9 +152,7 @@ function replaceAccents(str) {
 const portada = {
 	input: $('input[name="portada"]'),
 	image(src) {
-		const { images: { assets: pathImages } } = ZCodeApp;
-		const tagimage = `<img class="w-100 h-100 object-fit-cover" src="${src}">`;
-		$('.loadimg .avatar').removeClass('placeholder placeholder-wave').html(tagimage);
+		$('.loadimg .avatar').removeClass('placeholder placeholder-wave').html(`<img class="w-100 h-100 object-fit-cover" src="${src}">`);
 	},
 	type(type) {
 		type = (type === 'pc') ? 'file' : 'url';
@@ -177,10 +175,13 @@ const portada = {
 	},
 	load() {
 		const { images: { assets: pathImages } } = ZCodeApp;
-		const portadas = pathImages + '/portadas/' + portadaIMG + '/image_lg.webp';
-		const logo = pathImages + '/favicon/logo-128.webp';
-		let srcImg = empty(portadaIMG) ? logo : portada;
-		this.image(srcImg);
+		let showPortada = pathImages;
+		if(empty(portadaIMG)) {
+			showPortada += '/favicon/logo-128.webp';
+		} else {
+			showPortada += '/portadas/' + portadaIMG + '/image_lg.webp';
+		}
+		this.image(showPortada);
 	}
 }
 // Ejecutamos el wysibb

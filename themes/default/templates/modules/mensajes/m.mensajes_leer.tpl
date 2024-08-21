@@ -5,7 +5,7 @@
 				<h2 class="m-0 text-capitalize">{$tsMensajes.msg.mp_subject}</h2>
 			</div>
 			<div class="mpUser">
-				<span class="small d-block">Entre <a href="{$tsConfig.url}/perfil/{$tsUser->nick}" class="text-decoration-none fw-semibold">T&uacute;</a> y <a href="{$tsConfig.url}/perfil/{$tsMensajes.ext.user}" class="text-decoration-none fw-semibold">{$tsMensajes.ext.user}</a></span>
+				<span class="small d-block">Entre <a href="{$tsConfig.url}/perfil/{$tsUser->nick}" class="text-decoration-none fw-semibold">T&uacute;</a> y <a href="{$tsConfig.url}/perfil/{$tsMensajes.ext.user}" class="text-decoration-none fw-semibold">{$tsMensajes.ext.user|verificado}</a></span>
 			</div>
 			<div class="mpHistory" id="historial">
 				{foreach from=$tsMensajes.res item=mp}
@@ -16,7 +16,7 @@
 						<div class="mensaje">
 							<div class="d-flex justify-content-between align-items-center">
 								<span>
-									<a href="{$tsConfig.url}/perfil/{$mp.user_name}" class="text-decoration-none fw-semibold autor-name">{$mp.user_name}</a> 
+									<a href="{$tsConfig.url}/perfil/{$mp.user_name}" class="text-decoration-none fw-semibold autor-name">{$mp.user_name|verificado}</a> 
 									{if $tsUser->is_admod}<a href="{$tsConfig.url}/moderacion/buscador/1/1/{$mp.mr_ip}">{$mp.mr_ip}</a>{/if} 
 								</span>
 								<time class="mp-date small fst-italic">{$mp.mr_date|hace:true}</time>

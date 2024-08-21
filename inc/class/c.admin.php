@@ -6,7 +6,7 @@ if (!defined('TS_HEADER'))
  * Modelo para la adminitración
  *
  * @name    c.admin.php
- * @author  Miguel92 & PHPost.es
+ * @author  Miguel92
  */
 class tsAdmin {
 
@@ -1151,11 +1151,215 @@ class tsAdmin {
 		return $num;
 	}
 
-	public function setUsuarioVerificado(){
+	public function setUsuarioVerificado() {
+		global $tsCore;
       $user = (int)$_GET['id'];
       $verificar = db_exec('fetch_array', db_exec([__FILE__, __LINE__], 'query', "SELECT user_verificado FROM @miembros WHERE user_id = $user"));
       $cambiar = ((int)$verificar['user_verificado'] === 1) ? 0 : 1;
-      return (db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_verificado = $cambiar WHERE user_id = $user"));
+      if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_verificado = $cambiar WHERE user_id = $user")) {
+      	return $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user.'&save=true');
+      } else return false;
    } 
+
+   public function getHtaccess() {
+   	return file_get_contents(TS_ROOT . '.htaccess');
+   }
+
+   public function createCopy() {
+   	return (copy(TS_ROOT . '.htaccess', TS_ROOT . '.htaccess-bak'));
+   }
+
+   public function setErrorDesc() {
+   	return [
+   		400 => [
+   			'type' => 'Bad Request',
+   			'description' => 'El servidor no puede o no procesará la solicitud debido a un error del cliente.'
+   		], 
+   		401 => [
+   			'type' => 'Unauthorized',
+   			'description' => 'La solicitud requiere autenticación del usuario. El usuario no está autorizado para acceder al recurso.'
+   		], 
+   		403 => [
+   			'type' => 'Forbidden',
+   			'description' => 'El servidor ha entendido la solicitud, pero se niega a autorizarla.'
+   		], 
+   		404 => [
+   			'type' => 'Not Found',
+   			'description' => 'El servidor no puede encontrar el recurso solicitado.'
+   		], 
+   		500 => [
+   			'type' => 'Internal Server Error',
+   			'description' => 'Error genérico del servidor cuando se encuentra una condición inesperada.'
+   		], 
+   		501 => [
+   			'type' => 'Not Implemented',
+   			'description' => 'El servidor no puede cumplir con la solicitud debido a que no tiene la funcionalidad necesaria.'
+   		]
+   	];
+   }
+
+   public function getError() {
+   	// Lee el contenido del archivo .htaccess
+   	$content = $this->getHtaccess();
+   	// Divide el contenido en líneas
+   	$lines = explode("\n", $content);
+   	// Inicializa el array de salida
+   	$salida = [];
+   	// Itera sobre cada línea
+   	foreach ($lines as $line) {
+   	   // Limpia los espacios en blanco al principio y al final de la línea
+   	   $line = trim($line);
+   	   // Verifica si la línea comienza con ErrorDocument
+   	   if (preg_match('/^#?ErrorDocument/', $line)) {
+   			$error = explode(' ', $line);
+   	      // Determina si la línea está comentada
+   	      $isActive = $line[0] !== '#';
+   	      // Agrega la información al array de salida
+   	      $salida[] = [
+   	         'active' => $isActive,
+   	         'lines'   => $error,
+   	         ...$this->setErrorDesc()[$error[1]]
+   	      ];
+   	   }
+   	}
+   	// Muestra las líneas (opcional)
+   	return $salida;
+   }
+
+   public function saveError() {
+   	// Obtiene el contenido actual del archivo .htaccess
+   	$content = $this->getHtaccess();
+   	// Divide el contenido en líneas
+   	$lines = explode("\n", $content);
+   	
+   	// Define los errores y sus líneas correspondientes
+   	$errores = [400, 401, 403, 404, 500, 501];
+   	$newLines = [];
+    
+    	// Genera las nuevas líneas para cada error basado en $_POST
+    	foreach ($errores as $error) {
+        	$hash = (in_array($error, $_POST['error'])) ? '' : '#';
+        	$newLines[] = "{$hash}ErrorDocument $error /$error.html";
+    	}
+    
+    	// Itera sobre las líneas actuales del archivo
+   	foreach ($lines as $line) {
+   	  	$line = trim($line);
+   	  	// Verifica si la línea contiene ErrorDocument
+   	  	if (preg_match('/^#?ErrorDocument (\d+)/', $line, $matches)) {
+   	  	   $errorCode = $matches[1];
+   	  	   if (in_array($errorCode, $errores)) {
+   	  	      continue;
+   	  	   }
+   	  	}
+   	  	$newLines[] = $line;
+   	}
+    	// Asegura que cada línea esté en una nueva línea
+    	$newContent = implode("\n", $newLines);
+    	// Asegura que el contenido esté en UTF-8 antes de guardar
+    	$newContent = mb_convert_encoding($newContent, 'UTF-8', 'UTF-8');
+   	// Guarda el contenido nuevo en el archivo .htaccess
+    	if(file_put_contents(TS_ROOT . '.htaccess', $newContent)) {
+    		return true;
+    	}
+    	return false;
+   }
+
+   public function getRewriteRules() {
+	   // Lee el contenido del archivo .htaccess
+	   $content = $this->getHtaccess();
+	   // Divide el contenido en líneas
+	   $lines = explode("\n", $content);
+	   // Inicializa el array de salida
+	   $salida = [
+	      'base' => [
+	         'active' => false,
+	         'site' => ''
+	      ],
+	      'rules' => []
+	   ];
+	   // Bandera para detectar si estamos en el bloque de Rewrite
+	   $inRewriteBlock = false;
+	   
+	   // Itera sobre cada línea
+	   foreach ($lines as $line) {
+	      // Limpia los espacios en blanco al principio y al final de la línea
+	      $line = trim($line);
+	      // Verifica si la línea es RewriteBase
+	      if (preg_match('/^#?RewriteBase/', $line)) {
+	         $inRewriteBlock = true;
+	         $isActive = ($line[0] !== '#') ? 1 : 0;
+	         $site = trim(str_replace(['RewriteBase', '/'], '', $line));
+	         $salida['base'] = [
+	            'active' => $isActive,
+	            'site' => $site
+	         ];
+	         continue;
+	      }
+	      
+	      // Verifica si la línea es RewriteCond o RewriteRule dentro del bloque de Rewrite
+	      if ($inRewriteBlock && preg_match('/^#?RewriteBase|RewriteCond|RewriteRule/', $line)) {
+	         $salida['rules'][] = $line;
+	      } elseif (empty($line) || preg_match('/^#/', $line)) {
+	         // Si la línea está vacía o es un comentario, resetea la bandera del bloque de Rewrite
+	         $inRewriteBlock = false;
+	      }
+	   }
+	   return $salida;
+	}
+
+	public function saveRewriteRules() {
+		global $tsCore;
+	   // Obtiene el contenido actual del archivo .htaccess
+	   $content = $this->getHtaccess();
+	   // Divide el contenido en líneas
+	   $lines = explode("\n", $content);
+	   
+	   // Reglas predeterminadas
+	   $defaultRules = [
+	      '#RewriteBase /',
+	      '#RewriteCond %{SERVER_PORT} 80',
+	      '#RewriteCond %{HTTP_HOST} ^http://TU_SITIO_WEB.com[NC,OR]',
+	      '#RewriteRule ^(.*)$ https://TU_SITIO_WEB.com/$1 [L,R=301,NC]'
+	   ];
+	   // Obtiene los datos de $_POST
+	   $baseActive = (isset($_POST['active']) AND (int)$_POST['active'] === 1) ? true : false;
+	   $site = isset($_POST['site']) ? $tsCore->setSecure($_POST['site']) : 'TU_SITIO_WEB.com';
+	   
+		// Prepara las nuevas líneas para la sección de Rewrite
+		$newRewriteLines = [];
+		$hash = $baseActive ? '' : '#'; // No agregar `#` si está activo
+		$newRewriteLines[] = "{$hash}RewriteBase /";
+		$newRewriteLines[] = "{$hash}RewriteCond %{SERVER_PORT} 80";
+		$newRewriteLines[] = "{$hash}RewriteCond %{HTTP_HOST} ^http://{$site}[NC,OR]";
+		$newRewriteLines[] = "{$hash}RewriteRule ^(.*)$ https://{$site}/$1 [L,R=301,NC]";
+		  
+		// Índice de las líneas que se deben reemplazar
+		$startLine = 13; // Cambia esto al índice de la primera línea que deseas reemplazar
+		$endLine = 16; // Cambia esto al índice de la última línea que deseas reemplazar
+
+		// Reemplaza las líneas específicas del bloque de reescritura
+		$i = 0;
+		foreach ($lines as &$line) {
+		   $i++;
+		   if ($i >= $startLine && $i <= $endLine) {
+		      $line = ($i - $startLine < count($newRewriteLines)) ? $newRewriteLines[$i - $startLine] : '';
+		   }
+		}
+
+   	// Si hay más nuevas líneas que líneas para reemplazar, agregar las nuevas líneas restantes
+   	if (count($newRewriteLines) > ($endLine - $startLine + 1)) {
+   	   $extraLines = array_slice($newRewriteLines, $endLine - $startLine + 1);
+   	   $lines = array_merge(array_slice($lines, 0, $endLine), $extraLines, array_slice($lines, $endLine));
+   	}
+
+   	// Asegura que cada línea esté en una nueva línea
+   	$newContent = implode("\n", $lines);
+   	// Asegura que el contenido esté en UTF-8 antes de guardar
+   	$newContent = mb_convert_encoding($newContent, 'UTF-8', 'UTF-8');
+	   // Guarda el contenido nuevo en el archivo .htaccess
+	   file_put_contents(TS_ROOT . '.htaccess', $newContent);
+	}
+
 
 }

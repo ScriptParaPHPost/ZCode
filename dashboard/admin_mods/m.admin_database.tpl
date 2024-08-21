@@ -4,8 +4,8 @@
 <div id="res" class="boxy-content">
 	{if $tsSave}<div class="empty empty-success">{$tsStatus}</div>{/if}
 	{if $tsAct == ''}
-   	<a href="{$tsConfig.url}/admin/database/backup" class="btn">Crear copia de seguridad</a>
-   	<a href="{$tsConfig.url}/admin/database/lista" class="btn">Lista de backups</a>
+   	<a href="{$tsConfig.url}/admin/database/?act=backup" class="btn">Crear copia de seguridad</a>
+   	<a href="{$tsConfig.url}/admin/database/?act=lista" class="btn">Lista de backups</a>
    	<div style="overflow-x:auto;">
 		   <table class="admin_table mt-3">
 				<thead>
@@ -79,7 +79,7 @@
 			{/foreach}
 		</div>
 		<span role="button" onclick="database.create_backup()" class="btn">Crear backup</span>
-		<a href="{$tsConfig.url}/admin/database/lista" class="btn">Lista de backups</a>
+		<a href="{$tsConfig.url}/admin/database/?act=lista" class="btn">Lista de backups</a>
 		<a href="{$tsConfig.url}/admin/database/" class="btn">Volver</a>
 	{elseif $tsAct === 'lista'}
 		<table class="admin_table mt-3">
@@ -112,7 +112,7 @@
 				{/foreach}
 			</tbody>
 		</table>
-		<a href="{$tsConfig.url}/admin/database/backup" class="btn">Crear copia de seguridad</a>
+		<a href="{$tsConfig.url}/admin/database/?act=backup" class="btn">Crear copia de seguridad</a>
 		<a href="{$tsConfig.url}/admin/database/" class="btn">Volver</a>
 	{/if}
 </div>

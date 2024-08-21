@@ -34,10 +34,10 @@ class tsActualizacion {
 
 	public $BRANCH;
 
-
 	public function api_response(string $type = '', string $commit = '') {
 		$user_repo = "{$this->USER}/{$this->REPO}";
 		$repos = "https://api.github.com/repos";
+		$curl[''] = "$repos/$user_repo";
 		$curl['api'] = "$repos/$user_repo/commits";
 		$curl['info'] = "$repos/$user_repo/branches/{$this->BRANCH}";
 		$curl['raw'] = "https://raw.githubusercontent.com/$user_repo/{$this->commitSha}/";
@@ -56,6 +56,15 @@ class tsActualizacion {
 		$response = curl_exec($ch);
 		curl_close($ch);
 		return json_decode($response);
+	}
+
+	public function getLastCommits() {
+		$datos = [];
+		foreach($this->api_response('api') as $cid => $otherCommit) {
+			$datos[$cid]['sha'] = $otherCommit->sha;
+			$datos[$cid]['date'] = strtotime($otherCommit->commit->author->date);
+		}
+		return $datos;
 	}
 
 	public function saveIDUpdate(string $type = '', string $sha_short = '') {
@@ -83,26 +92,40 @@ class tsActualizacion {
 	}
 
 	public function getLastCommitFiles() {
-		if(!isset($_SESSION["commit"])) {
-			$api = $this->api_response('api', $_SESSION['sha']);
-			$_SESSION["commit"] = [
-				'author' => [
-					'name' => $api->commit->author->name,
-					'date' => strtotime($api->commit->author->date),
-				],
-				'stats' => [
-					'total' => $api->stats->total,
-					'additions' => $api->stats->additions,
-					'deletions' => $api->stats->deletions
-				]
-			];
-			$_SESSION["files"] = $api->files;
-		}		
-		return $_SESSION['commit'];
+	   if (!isset($_SESSION["commit"]) || (isset($_GET['sha']) && $_GET['sha'] !== $_SESSION['sha'])) {
+	      $shaToFetch = isset($_GET['sha']) ? $_GET['sha'] : $_SESSION['sha'];
+	      $api = $this->api_response('api', $shaToFetch);
+	      $tsCommit = [
+	         'author' => [
+	            'name' => $api->commit->author->name,
+	            'date' => strtotime($api->commit->author->date),
+	         ],
+	         'stats' => [
+	            'total' => $api->stats->total,
+	            'additions' => $api->stats->additions,
+	            'deletions' => $api->stats->deletions
+	         ]
+	      ];
+	      // Si estamos utilizando $_GET, no actualizamos $_SESSION
+	      if (!isset($_GET['sha'])) {
+	         $_SESSION["commit"] = $tsCommit;
+	         $_SESSION["files"] = $api->files;
+	      }
+	      // Devolvemos la información del commit solicitado (o el último por defecto)
+	      return [
+	         'commit' => $tsCommit,
+	         'files' => $api->files
+	      ];
+	   }
+	   // Si no hay $_GET['sha'], devolvemos lo almacenado en $_SESSION
+	   return [
+	      'commit' => $_SESSION['commit'],
+	      'files' => $_SESSION['files']
+	   ];
 	}
 
 	public function filesStatus() {
-		return $_SESSION["files"];
+		return $this->getLastCommitFiles()["files"];
 	}
 
 	private function cambiarPermisos() {
@@ -158,5 +181,14 @@ class tsActualizacion {
 		}
 		$this->restaurarPermisos($permisos);
 		return in_array(1, $copy);
+	}
+
+	public function getUser() {
+		$data = $this->api_response();
+		$info['name'] = $data->name;
+		$info['avatar'] = $data->owner->avatar_url;
+		$info['description'] = $data->description;
+		$info['tags'] = $data->topics;
+		return $info;
 	}
 }

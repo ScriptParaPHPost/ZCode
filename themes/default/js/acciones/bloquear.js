@@ -27,7 +27,7 @@ export function bloquear({ user, bloqueado, lugar, aceptar }) {
 
 					$(divBox)
 					  .html(actionText1)
-					  .attr('href', `javascript:bloquear('${user}', ${state1}, '${lugar}')`)
+					  .attr('onclick', `bloquear('${user}', ${state1}, '${lugar}')`)
 					  .removeClass(`${baseClass} des${baseClass}`)
 					  .addClass(toggleClass);
 				break;

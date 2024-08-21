@@ -12,7 +12,7 @@
 						<img src="{$u.avatar}" class="w-100 h-100"/>
 					</a>
 					<div class="txt">
-						<a href="{$tsConfig.url}/perfil/{$u.user_name}" class="d-block text-decoration-none fw-semibold">{$u.user_name}</a>
+						<a href="{$tsConfig.url}/perfil/{$u.user_name}" class="d-block text-decoration-none fw-semibold">{$u.user_name|verificado}</a>
 						<em class="grey small d-block">{if empty($u.p_mensaje)}Sin mensaje{else}{$u.p_mensaje}{/if}</em>
 						<img src="{$u.pais_image}" alt="{$u.pais}" class="position-absolute avatar avatar-1 border-0" style="top:1rem;right:1rem"/>
 					</div>

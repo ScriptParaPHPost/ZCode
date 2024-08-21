@@ -6,9 +6,9 @@
  * @link https://zcode.newluckies.com/ (DEMO)
  * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
- * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version v1.7.0
+ * @version v1.8.11
  * @description Actualizada y optimizada!
 **/
 
@@ -279,7 +279,6 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_activo` int(1) NOT NULL DEFAULT 0,
   `user_amigos` int(11) NOT NULL DEFAULT 0,
-  `user_avatares` tinytext NOT NULL DEFAULT '',
   `user_bad_hits` int(2) unsigned NOT NULL DEFAULT 0,
   `user_baneado` int(1) NOT NULL DEFAULT 0,
   `user_cache` int(10) NOT NULL DEFAULT 0,
@@ -307,9 +306,18 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros` (
   `user_outtime` int(10) NOT NULL DEFAULT 0,
   `user_seguidores` bigint NOT NULL DEFAULT 0,
   `user_seguidos` bigint NOT NULL DEFAULT 0,
-  `user_socials` tinytext NOT NULL DEFAULT '{\"discord\":false,\"facebook\":false,\"github\":false,\"google\":false,\"twitter\":false}',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+
+$zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros_social` (
+  `social_id` int(11) NOT NULL AUTO_INCREMENT,
+  `social_user_id` int(11) NOT NULL DEFAULT 0,
+  `social_name` varchar(20) NOT NULL DEFAULT '',
+  `social_nick` varchar(24) NOT NULL DEFAULT '',
+  `social_email` varchar(80) NOT NULL DEFAULT '',
+  `social_avatar` tinytext NOT NULL DEFAULT '',
+  PRIMARY KEY (`social_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}nicks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -395,7 +403,8 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}perfil` (
   `user_firma` text NULL,
   `user_gif` tinytext NULL,
   `user_gif_active` int(1) NOT NULL DEFAULT 0,
-  `user_avatar_uid` varchar(20) NOT NULL DEFAULT '',
+  `user_avatar_type` int(1) NOT NULL DEFAULT 0, /* Tipo gif, normal, social */
+  `user_avatar_social` varchar(20) NOT NULL DEFAULT 'web', /* Nombre de red social */
   `user_portada` tinytext NULL,
   `user_scheme` int(1) NOT NULL DEFAULT 0,
   `user_color` int(2) NOT NULL DEFAULT 1,

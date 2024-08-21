@@ -34,13 +34,39 @@
 			</div>
 		</div>
 		<div class="text-center w-100" id="more_avatar">
-			<h3 class="d-block my-2">O selecciona un avatar...</h3>
-			<div class="d-flex justify-content-start align-items-center flex-wrap gap-3">
-				{foreach $tsAvatarSelect item=avatar}
-					<div data-avatar="{$avatar.id}" class="overflow-hidden avatar avatar-6 shadow">
-						<img src="{$avatar.image}" alt="{$avatar.avatar}" class="w-100 h-100 object-fit-cover" loading="lazy">
+			<h3 class="d-block mt-2 mb-4">O selecciona un avatar por defecto/social...</h3>
+			<div class="row">
+				<div class="col-12 col-lg-6 mb-3 mb-lg-0">
+					<div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
+						{foreach $tsAvatarSelect item=avatar}
+							<div data-avatar="{$avatar.id}" class="overflow-hidden avatar avatar-8 shadow">
+								<img src="{$avatar.image}" alt="{$avatar.avatar}" class="w-100 h-100 object-fit-cover" loading="lazy">
+							</div>
+						{/foreach}
 					</div>
-				{/foreach}
+				</div>
+				<div class="col-12 col-lg-6">
+					<div class="border{if $tsPerfil.user_avatar_social === 'web'} border-success{/if} p-2 rounded mb-3 d-flex justify-content-start align-items-center column-gap-3 text-start">
+						<img src="{$tsUser->avatar['img']}" alt="{$tsConfig.titulo}" class="avatar_loader avatar avatar-8 shadow object-fit-cover" loading="lazy">
+						<div>
+							<h5>Avatar de {$tsConfig.titulo}</h5>
+							{if $tsPerfil.user_avatar_social !== 'web'}
+								<span class="btn btn-sm" role="button" onclick="cuenta.avatar('web')">Usar avatar</span>
+							{/if}
+						</div>
+					</div>
+					{foreach $tsAvatarSocials key=r item=social}
+						<div class="border{if $tsPerfil.user_avatar_social === $social.social_name} border-success{/if} p-2 rounded mb-3 d-flex justify-content-start align-items-center column-gap-3 text-start">
+							<img src="{$social.social_avatar}" alt="{$social.social_name}" class="avatar avatar-8 shadow object-fit-cover" loading="lazy">
+							<div>
+								<h5>Avatar de {$social.social_name}</h5>
+								{if $tsPerfil.user_avatar_social !== $social.social_name}
+									<span class="btn btn-sm" role="button" onclick="cuenta.avatar('{$social.social_name}')">Usar avatar</span>
+								{/if}
+							</div>
+						</div>
+					{/foreach}
+				</div>
 			</div>
 		</div>
 	</section>

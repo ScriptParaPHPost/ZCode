@@ -22,7 +22,8 @@ $files = [
 	'cuenta-two-factor' => ['n' => 2, 'p' => ''],
 	'cuenta-delete-2fa' => ['n' => 2, 'p' => ''],
 	'cuenta-desactivate' => ['n' => 2, 'p' => ''],
-	'cuenta-eliminar-tiempo' => ['n' => 2, 'p' => '']
+	'cuenta-eliminar-tiempo' => ['n' => 2, 'p' => ''],
+	'cuenta-avatar-social' => ['n' => 2, 'p' => '']
 ];
 
 // REDEFINIR VARIABLES
@@ -96,5 +97,8 @@ switch($action){
 	case 'cuenta-eliminar-tiempo':
 		$opcion = (int)$_POST['outtime_type'];
 		echo $tsUser->deleteUserOutTime($opcion, time());
+	break;
+	case 'cuenta-avatar-social':
+		echo $tsCuenta->activeAvatarSocial();
 	break;
 }

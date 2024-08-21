@@ -8,7 +8,7 @@ if (!defined('TS_HEADER')) exit('No direct script access allowed');
  * @link https://zcode.newluckies.com/ (DEMO)
  * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
- * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
  * @version __version__
  * @description Archivo de datos de conexión

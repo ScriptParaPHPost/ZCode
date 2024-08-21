@@ -19,7 +19,7 @@ class tsUpload {
 
 	public $file_size = []; // TAMA�O DEL ARCHIVO REMOTO
 
-	public $image_size = ['w' => 570, 'h' => 450];
+	public $image_size = ['w' => 1200, 'h' => 1200];
 
 	public $image_scale = false;
 
@@ -27,12 +27,19 @@ class tsUpload {
 
 	public $server = 'imgur';  // DEFAULT IMGUR
 
+	protected $avatar_folder;
+
 	// CONSTRUCTOR
 	public function __construct() {
 		$this->servers = ['imgur' => 'https://api.imgur.com/3/image.json'];
+		$this->avatar_folder = $this->getFolderUser();
 	}
 
-
+	private function getFolderUser() {
+		global $tsUser;
+		return "user{$tsUser->uid}";
+	}
+	
 	/*
 	 * newUpload($type) :: $type => URL o ARCHIVO
 	*/
@@ -169,14 +176,28 @@ class tsUpload {
 				$_height = round($this->image_size['h']);
 			}
 			// TIPO
-			$img = match ($file['type']) {
-				'image/url' => imagecreatefromstring($tsCore->getUrlContent($file['tmp_name'])),
-				'image/jpeg', 'image/jpg' => imagecreatefromjpeg($file['tmp_name']),
-				'image/gif' => imagecreatefromgif($file['tmp_name']),
-				'image/png' => imagecreatefrompng($file['tmp_name']),
-    			'image/webp' => imagecreatefromwebp($file['tmp_name']),
-				default => null,
-			};
+			switch ($file['type']) {
+				case 'image/url':
+					$img = imagecreatefromstring($tsCore->getUrlContent($file['tmp_name']));
+				break;
+				case 'image/jpeg':
+				case 'image/jpg':
+					$img = imagecreatefromjpeg($file['tmp_name']);
+				break;
+				case 'image/gif':
+					$img = imagecreatefromgif($file['tmp_name']);
+				break;
+				case 'image/png':
+					$img = imagecreatefrompng($file['tmp_name']);
+				break;
+				case 'image/webp':
+					$img = imagecreatefromwebp($file['tmp_name']);
+				break;
+				
+				default:
+					$img = null;
+				break;
+			}
 			// ESCALAMOS NUEVA IMAGEN
 			$newimg = imagecreatetruecolor($_width, $_height); 
 			imagecopyresampled($newimg, $img, 0, 0, 0, 0, $_width, $_height, $width, $height);
@@ -210,7 +231,7 @@ class tsUpload {
 		// TAMA�OS
 		$width_pin = 160;
 		// CREAMOS LA IMAGEN DEPENDIENDO EL TIPO
-		switch($size['mime']){
+		switch ($size['mime']) {
 			case 'image/jpeg':
 			case 'image/jpg':
 				$img = imagecreatefromjpeg($source);
@@ -218,8 +239,12 @@ class tsUpload {
 			case 'image/gif':
 				$img = imagecreatefromgif($source);
 			break;
-			case 'image/png':
+			case 'image/gif':
 				$img = imagecreatefrompng($source);
+			break;
+			
+			default:
+				$img = null;
 			break;
 		}
 		if(!$img) return ['error' => 'No pudimos crear tu avatar...'];
@@ -227,7 +252,7 @@ class tsUpload {
 		$width = imagesx($img);
 		$height = imagesy($img);
 		// AVATAR
-		$root = TS_AVATAR . $key;
+		$root = TS_AVATAR . $this->avatar_folder . TS_PATH . $key;
 		// AVATAR
 		$imgvar = imagecreatetruecolor($width_pin, $width_pin);
 		// Verificar que las coordenadas y el tamaño estén dentro de los límites de la imagen original
@@ -237,7 +262,7 @@ class tsUpload {
 		$crop_h = min($h, $height - $crop_y);
 		imagecopyresampled($imgvar, $img, 0, 0, $crop_x, $crop_y, $width_pin, $width_pin, $crop_w, $crop_h);
 		// La convertimos a webp, para que sea más liviana 
-		$nameimage = "$root.webp";
+		$nameimage = "$root-web.webp";
 		$img = imagecreatefromjpeg($source);
       if(imagewebp($imgvar, $nameimage, 100)) {
          imagedestroy($imgvar);

@@ -9,7 +9,7 @@
 		  		<span class="close"><a href="#" onclick="muro.del_pub({$c.cid}, 2); return false" class="uiClose" title="Eliminar"></a></span>
 		  	{/if}
 		  	<div class="mensaje">
-				<a href="{$tsConfig.url}/perfil/{$c.user_name}" class="autorName a_blue">{$c.user_name}</a>
+				<a href="{$tsConfig.url}/perfil/{$c.user_name}" class="autorName a_blue">{$c.user_name|verificado}</a>
 				<span>{$c.c_body|quot}</span>
 				<div class="cmInfo">{$c.c_date|fecha} &middot; <a onclick="muro.like_this({$c.cid}, 'com', this); return false;" class="a_blue">{$c.like}</a> <span class="cm_like"{if $c.c_likes == 0} style="display:none"{/if}>&middot; <i></i> <a onclick="muro.show_likes({$c.cid}, 'com'); return false;" id="like_comment--{$c.cid}" class="a_blue">{$c.c_likes} persona{if $c.c_likes > 1}s{/if}</a></span></div>
 		  	</div>

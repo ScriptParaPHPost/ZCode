@@ -39,6 +39,8 @@ class tsUser  {
 
 	public $use_avatar;
 
+	public $avatar_folder;
+
 	// Usado por el login
 	public $is_type;
 	public $response;
@@ -161,13 +163,14 @@ class tsUser  {
 		} else {
 			$this->is_admod = 0;
 		}
-		
+	
 		// NOMBRE
 		$this->nick = $this->info['user_name'];
 		$this->uid = $this->info['user_id'];
 		$this->email = $this->ProtectedEmail();
 		$this->is_banned = $this->info['user_baneado'];
 		$this->use_avatar = $tsCore->getAvatar($this->uid, 'use');
+		
 		$this->avatar = [
 			'img' => $tsCore->getAvatar($this->uid, 'img'),
 			'gif' => $tsCore->getAvatar($this->uid, 'gif')
@@ -279,15 +282,10 @@ class tsUser  {
 		# Buscamos para desactivar
 		$delete = $tsCore->setSecure($_POST['social']);
 		if($this->is_member) {
-			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_socials FROM @miembros WHERE user_id = {$this->uid} LIMIT 1"));
-			$socials = json_decode($data["user_socials"]);
-			$socials->$delete = false;
-			// Lo armamos otra vez
-			$social_encode = json_encode($socials, JSON_FORCE_OBJECT);
-			// Acutalizamos la tabla
-			if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_socials = '$social_encode' WHERE user_id = {$this->uid}")) {
-				return true;
-			}
+			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, m.social_id, m.social_name FROM @miembros AS u LEFT JOIN @miembros_social AS m ON m.social_user_id = u.user_id WHERE u.user_id = {$this->uid} AND m.social_name = '$delete' LIMIT 1"));
+			$sid = (int)$data['social_id'];
+			// Actualizamos la tabla
+			return (db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @miembros_social WHERE social_id = $sid AND social_name = '$delete' AND social_user_id = {$this->uid}")) ? true : false;
 		}
 	}
 

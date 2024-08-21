@@ -8,7 +8,7 @@
 					</div>
 					<div class="post-data">
 						<a class="fw-semibold d-block text-decoration-none{if $p.post_private} privado{/if}" title="{$p.post_title}" target="_self" href="{$tsConfig.url}/posts/{$p.c_seo}/{$p.post_id}/{$p.post_title|seo}.html">{$p.post_title}</a>
-						<span>{$p.post_date|hace:true} &raquo; <a href="{$tsConfig.url}/perfil/{$p.user_name}" class="text-decoration-none fw-semibold">{$p.user_name}</a> &middot; Puntos <strong>{$p.post_puntos}</strong> &middot; Comentarios <strong>{$p.post_comments}</strong></span>
+						<span>{$p.post_date|hace:true} &raquo; <a href="{$tsConfig.url}/perfil/{$p.user_name}" class="text-decoration-none fw-semibold">{$p.user_name|verificado}</a> &middot; Puntos <strong>{$p.post_puntos}</strong> &middot; Comentarios <strong>{$p.post_comments}</strong></span>
 						<span class="position-absolute" style="bottom:.5rem; right:1rem;">
 							<a href="{$tsConfig.url}/posts/{$p.c_seo}/" class="up-badge">{$p.c_nombre}</a>
 						</span>

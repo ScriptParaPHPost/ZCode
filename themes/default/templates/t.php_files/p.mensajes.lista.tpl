@@ -7,7 +7,7 @@
 					<div class="subject fw-semibold">{$mp.mp_subject}</div>
 					<div class="preview d-block fst-italic">{$mp.mp_preview}</div>
 					<div class="time small fst-italic d-flex justify-content-between align-items-center">
-						<span class="autor">{$mp.user_name}</span> 
+						<span class="autor">{$mp.user_name|verificado}</span> 
 						<span>{$mp.mp_date|hace:true}</span>
 					</div>
 				</div>

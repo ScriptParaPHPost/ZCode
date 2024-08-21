@@ -235,7 +235,10 @@
 .status-banned {
 	--color: #F6E02A;
 }
-
+.bloquearU {
+	--button-bg: var(--danger-bg);
+	--button-border: var(--danger-bg);
+}
 .width {
 	--avatar-size: 1rem;
 	width: var(--avatar-size)!important;

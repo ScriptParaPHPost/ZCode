@@ -65,11 +65,6 @@
 			echo $json;
 			//--->
 		break;
-		case 'feed-system':
-		case 'feed-update':
-			//<---
-			echo json_encode([ 'status' => 1, 'message' => 'Muy pronto, nueva mejora...' ]);
-		break;
 		default:
 			die('0: Este archivo no existe.');
 		break;

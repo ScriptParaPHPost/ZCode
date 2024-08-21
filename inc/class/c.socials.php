@@ -56,26 +56,4 @@ class tsSocials {
 		return false;
 	}
 
-	public function desvincular() {
-		global $tsCore, $tsUser;
-		$red = $tsCore->setSecure($_POST['name']);
-		// Que este logueado 
-		if($tsUser->is_member) {
-			$uid = (int)$tsUser->uid;
-			// Buscamos
-			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_activo, u.user_baneado, u.user_socials, us.social_id, us.social_user_red FROM @miembros AS u LEFT JOIN @miembros_social AS us ON us.social_user_id = u.user_id WHERE u.user_id = {$uid} AND us.social_user_red = '$red' LIMIT 1"));
-			///
-			$social_decode = json_decode($data['user_socials'], true);
-			$social_decode[$red] = false;
-			$data['user_socials'] = json_encode($social_decode, JSON_FORCE_OBJECT);
-			// Actualizamos
-			if(db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @miembros_social WHERE social_user_id = $uid AND social_id = " . (int)$data['social_id'])) {
-				db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_socials = '{$data['uer_socials']}' WHERE user_id = " . (int)$uid);
-				return true;
-			}
-			return false;
-		}
-		
-	}
-
 }

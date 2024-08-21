@@ -35,24 +35,6 @@
 			</div>
 		</div>
 		<div class="col-12 col-lg-3">
-			<div class="zcode up-card version">
-				<div class="up-card--header" data-icon="true">
-					<div class="up-header--icon">
-						<span uicon="clipboard-check"></span>
-					</div>
-					<div class="up-header--title">
-						<span>Estado</span>
-					</div>
-				</div>
-				<ul id="status_pp" class="pp_list up-card--body list-unstyled">
-					<li>
-						<div class="title">Actualizar archivos!</div>
-						<div class="body">
-							<strong>Verificando...</strong>
-						</div>
-					</li>
-				</ul>
-			</div>
 			<div class="zcode up-card">
 				<div class="up-card--header" data-icon="true">
 					<div class="up-header--icon">
@@ -66,6 +48,7 @@
 					<li class="list-clone">
 						<div class="title text-body-secondary">Versi&oacute;n instalada</div>
 						<div class="body fw-bold">{$tsConfig.version}</div>
+						<small class="nextversion"></small>
 					</li>
 				</ul>
 			</div>

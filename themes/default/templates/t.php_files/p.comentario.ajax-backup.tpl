@@ -23,7 +23,7 @@
 
                <div class="comment-info clearbeta">
                   <div class="floatL">
-                     <a href="{$tsConfig.url}/perfil/{$c.user_name}" class="nick">{$c.user_name}</a> {if $tsUser->is_admod}(<span style="color:red;">IP:</span> <a href="{$tsConfig.url}/moderacion/buscador/1/1/{$c.c_ip}" class="geoip" target="_blank">{$c.c_ip}</a>){/if} dijo <span>{$c.c_date|hace}</span> :
+                     <a href="{$tsConfig.url}/perfil/{$c.user_name}" class="nick">{$c.user_name|verificado}</a> {if $tsUser->is_admod}(<span style="color:red;">IP:</span> <a href="{$tsConfig.url}/moderacion/buscador/1/1/{$c.c_ip}" class="geoip" target="_blank">{$c.c_ip}</a>){/if} dijo <span>{$c.c_date|hace}</span> :
                   </div>
                   {if $tsUser->is_member}
                      <div class="floatR answerOptions" id="opt_{$c.cid}">

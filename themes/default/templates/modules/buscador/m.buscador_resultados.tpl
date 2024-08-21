@@ -9,7 +9,7 @@
 			</picture>
 			<div class="resultado--info position-relative small">
 	         <a class="h5 text-decoration-none text-truncate d-block" href="{$p.post_url}">{$p.post_title}</a>
-		      <span class="d-block"><strong>Autor</strong>: <a href="{$tsConfig.url}/perfil/{$p.user_name}" class="text-decoration-none fw-semibold main-bg-color">{$p.user_name}</a></span>
+		      <span class="d-block"><strong>Autor</strong>: <a href="{$tsConfig.url}/perfil/{$p.user_name}" class="text-decoration-none fw-semibold main-bg-color">{$p.user_name|verificado}</a></span>
 		      <span><strong>Categoría</strong>: <a href="{$tsConfig.url}/posts/{$p.c_seo}" class="text-decoration-none fw-semibold main-bg-color">{$p.c_nombre}</a></span> &bull; 
 		      <span>{$p.post_date|hace:true}</span> &bull; 
 		      <span><a href="{$tsConfig.url}/buscador/?query={$p.post_title}&tesla={$tsEngine}&category={$tsCategory}&autor={$tsAutor}" class="text-decoration-none fw-semibold main-bg-color">Post Relacionados</a></span>

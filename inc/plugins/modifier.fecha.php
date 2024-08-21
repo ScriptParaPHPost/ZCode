@@ -16,64 +16,50 @@
 */
 
 function smarty_modifier_fecha($fecha, $format = false) {
-   $_meses = array('', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
-   $_dias = array('Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado');
+   $_meses = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+   $_dias = array('Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado');
    
    // FORMATO
-   if ($format !== false) {
+   if (!$format) {
       $dia = date("d", $fecha);
       $mes = date("m", $fecha);
-      $mes_int = date("n", $fecha);
+      $mes_int = date("n", $fecha) - 1;
       $ano = date("Y", $fecha);
       $hora = date("H", $fecha);
       $minuto = date("i", $fecha);
+      $segundos = date("s", $fecha);
+      $week = date("N", $fecha);
       $e_ano = date("Y", time());
       
       switch ($format) {
          case 'd_Ms_a':
-            $ano = ($e_ano == $ano) ? '' : ' de ' . $ano;
-            return $dia . ' de ' . $_meses[$mes_int] . $ano;
+            $ano_match = "$dia de {$_meses[$mes_int]}" . ($e_ano === $ano ? '' : " de $ano");
+         break;
          case 'd-m-Y':
-            return date("d-m-Y", $fecha);
+            $ano_match = date("d-m-Y", $fecha);
+         break;
          case 'd/m/Y':
-            return date("d/m/Y", $fecha);
+            $ano_match = date("d/m/Y", $fecha);
+         break;
          case 'Y-m-d':
-            return date("Y-m-d", $fecha);
-         case 'd M Y':
-            return $dia . ' ' . $_meses[$mes_int] . ' ' . $ano;
-         case 'D, d M Y H:i:s':
-            return $_dias[date("w", $fecha)] . ', ' . $dia . ' ' . $_meses[$mes_int] . ' ' . $ano . ' ' . $hora . ':' . $minuto . ':' . date("s", $fecha);
+            $ano_match = date("Y-m-d", $fecha);
+         break;
+         case 'date':
+            $ano_match = "$dia {$_meses[$mes_int]} $ano";
+         break;
+         case 'date-hours':
+            $ano_match = "{$_dias[$week]}, $dia {$_meses[$mes_int]} $ano $hora:$minuto:$segundos";
+         break;
+         
          default:
-            return date($format, $fecha); // Permite formatos personalizados usando date()
+            $ano_match = date($format, $fecha);
+         break;
       }
-   } else {
-      // Formato "hace X tiempo"
-      $ahora = time();
-      $tiempo = $ahora - $fecha;
-      $dias = round($tiempo / 86400);
       
-      if ($dias <= 0) {
-         if (round($tiempo / 3600) <= 0) {
-            if (round($tiempo / 60) <= 0) {
-               return $tiempo <= 60 ? "Hace unos segundos" : '';
-            } else {
-               $can = round($tiempo / 60);
-               $word = $can <= 1 ? "minuto" : "minutos";
-               return 'Hace ' . $can . ' ' . $word;
-            }
-         } else {
-            $can = round($tiempo / 3600);
-            $word = $can <= 1 ? "hora" : "horas";
-            return 'Hace ' . $can . ' ' . $word;
-         }
-      } else if ($dias <= 7) {
-         if ($dias < 2) {
-            return 'Ayer a las ' . date("H:i", $fecha);
-         } else {
-            return 'El ' . $_dias[date("w", $fecha)] . ' a las ' . date("H:i", $fecha);
-         }
-      } else {
-         return "El " . date("d", $fecha) . " de " . $_meses[date("n", $fecha)] . " a las " . date("H:i", $fecha);
-      }
+      return $ano_match;
+   } else {
+      include TS_PLUGINS . "modifier.hace.php";
+      // Formato "hace X tiempo"
+      return smarty_modifier_hace($fecha, $format);
    }
 }

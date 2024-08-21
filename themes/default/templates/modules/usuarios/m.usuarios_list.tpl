@@ -7,7 +7,7 @@
 						<img src="{$tsConfig.logos.64}" data-src="{$u.avatar}" alt="Usuario {$u.status.t}" loading="lazy" class="w-100 h-100"/>
 					</a>
 					<div class="usuario-data">
-						<a href="{$tsConfig.url}/perfil/{$u.user_name}" class="text-decoration-none fw-semibold mb-2 fs-5 d-block">{$u.user_name}{if $tsUser->is_admod} #{$u.user_id}{/if}</a>
+						<a href="{$tsConfig.url}/perfil/{$u.user_name}" class="text-decoration-none fw-semibold mb-2 fs-5 d-block">{$u.user_name|verificado}{if $tsUser->is_admod} #{$u.user_id}{/if}</a>
 						<span class="d-flex justify-content-start align-items-center column-gap-2">
 							<small class="d-flex justify-content-start align-items-center column-gap-1"><img src="{$u.rango.image}" alt="{$u.rango.title}" class="avatar"> {$u.rango.title}</small>-
 							<small>{if $u.user_sexo == 'none'}Sin definir{elseif $u.user_sexo == 'female'}Mujer{else}Hombre{/if}</small>

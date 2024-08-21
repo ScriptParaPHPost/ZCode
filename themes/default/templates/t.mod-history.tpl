@@ -22,7 +22,7 @@
                             <tr>
                                 <td style="text-align: left;">
                         			{$h.post_title}<br/>
-                        			Por <a href="{$tsConfig.url}/perfil/{$h.user_name}">{$h.user_name}</a>
+                        			Por <a href="{$tsConfig.url}/perfil/{$h.user_name}">{$h.user_name|verificado}</a>
                         		</td>
                                 <td>
                         			{if $h.action == 1}
@@ -34,7 +34,7 @@
                                     {/if}
                         		</td>
                                 <td>
-           							<a href="{$tsConfig.url}/perfil/{$h.mod_name}">{$h.mod_name}</a>
+           							<a href="{$tsConfig.url}/perfil/{$h.mod_name}">{$h.mod_name|verificado}</a>
             					</td>
                                 <td>{if $h.reason == 'undefined'}Indefinida{else}{$h.reason}{/if}</td>
                             </tr>
@@ -56,7 +56,7 @@
                             <tr>
                                 <td style="text-align: left;">
                         			{$h.f_title}<br/>
-                        			Por <a href="{$tsConfig.url}/perfil/{$h.user_name}">{$h.user_name}</a>
+                        			Por <a href="{$tsConfig.url}/perfil/{$h.user_name}">{$h.user_name|verificado}</a>
                         		</td>
                                 <td>
                         			{if $h.action == 1}
@@ -66,7 +66,7 @@
                                     {/if}
                         		</td>
                                 <td>
-           							<a href="{$tsConfig.url}/perfil/{$h.mod_name}">{$h.mod_name}</a>
+           							<a href="{$tsConfig.url}/perfil/{$h.mod_name}">{$h.mod_name|verificado}</a>
             					</td>
                                 <td>{if $h.reason == 'undefined'}Indefinida{else}{$h.reason}{/if}</td>
                             </tr>

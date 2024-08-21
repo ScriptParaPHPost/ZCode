@@ -10,7 +10,7 @@
       <div class="comment--tools d-flex justify-content-between align-items-center p-1">
 
          <div class="comment--name">
-            <a href="{$tsConfig.url}/perfil/{$tsUser->nick}" class="fw-semibold text-decoration-none">{$tsUser->nick}</a>
+            <a href="{$tsConfig.url}/perfil/{$tsUser->nick}" class="fw-semibold text-decoration-none">{$tsUser->nick|verificado}</a>
              - <time class="fst-italic small text-center mt-2">{$tsComment.3|hace:true}</time>
             {if $tsUser->is_admod} (<span style="color:red;">IP:</span> <a href="{$tsConfig.url}/moderacion/buscador/1/1/{$tsComment.6}" class="geoip" target="_blank">{$tsComment.6}</a>){/if}
          </div>

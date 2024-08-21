@@ -101,13 +101,19 @@ class tsMuro {
          
          include_once TS_EXTRA . 'OpenGraph.php';
          $OpenGraph = new getOpenGraph;
-
-         return match ($type) {
-            'foto' => $this->validatePhoto($url, $return),
-            'enlace' => $this->validateLink($url, $OpenGraph, $return),
-            'video' => $this->validateVideo($url, $OpenGraph, $return),
-            default => throw new Exception('0: El campo <strong>type</strong> es obligatorio.'),
-         };
+         switch ($type) {
+         	case 'foto':
+         		return $this->validatePhoto($url, $return);
+         	break;
+         	case 'enlace':
+         		return $this->validateLink($url, $OpenGraph, $return);
+         	break;
+         	case 'video':
+         		return $this->validateVideo($url, $OpenGraph, $return);
+         	break;
+         	default: 
+         		throw new Exception('0: El campo <strong>type</strong> es obligatorio.');
+         }
       } catch (Exception $e) {
          return $e->getMessage();
       }

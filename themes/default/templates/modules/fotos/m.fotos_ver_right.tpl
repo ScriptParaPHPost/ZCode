@@ -12,7 +12,7 @@
 		{foreach from=$tsAmigosFotos item=f}
 			<a href="{$tsConfig.url}/fotos/{$f.user_name}/{$f.foto_id}/{$f.f_title|seo}.html" class="d-block m-1 overflow-hidden position-relative">
 				<img src="{$f.f_url}" title="{$f.f_title}" class="w-100 rounded object-fit-cover" style="height: 100px;" loading="lazy" />
-				<a href="{$tsConfig.url}/perfil/{$f.user_name}" class="position-absolute up-badge" style="top: 0.5rem;left: 0.5rem;">{$f.user_name}</a>
+				<a href="{$tsConfig.url}/perfil/{$f.user_name}" class="position-absolute up-badge" style="top: 0.5rem;left: 0.5rem;">{$f.user_name|verificado}</a>
 			</a>
 		{foreachelse}
 			<div class="empty"><u>{$tsFoto.user_name}</u> no sigue usuarios o no han subido fotos.</div>

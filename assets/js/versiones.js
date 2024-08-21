@@ -19,16 +19,19 @@ $.getJSON(ZCodeApp.url + "/feed-support.php", response => {
 
 //
 $.getJSON(ZCodeApp.url + "/feed-version.php", response => {
-	const { version, status, color } = response;
+	const { version: nowVersion, status, color, newVersion: nextVersion } = response;
 	// Clonamos
   	let clonar = $('.list-clone').first().clone();
   	// Añadimos color
   	clonar.addClass(color)
   	// Modificar los datos dentro del clon
-  	clonar.find('.fw-bold').text(version);
+  	clonar.find('.fw-bold').text(nowVersion);
   	clonar.find('.text-body-secondary').text(status);
+  	if(nowVersion.match(/\d+/g).join('') <= nextVersion.match(/\d+/g).join('')) {
+  		clonar.find('.nextversion').text(`Próxima versión: v${nextVersion}`);
+  	}
   	// Agregar el clon a la lista
-	if(typeof version === 'undefined') {
+	if(typeof nowVersion === 'undefined') {
 		clonar.addClass('list-clone-danger')
 		clonar.find('.fw-bold').text('No version');
   		clonar.find('.text-body-secondary').text(response);
@@ -36,26 +39,6 @@ $.getJSON(ZCodeApp.url + "/feed-version.php", response => {
   	$('#ultima_version').append(clonar);
 });
 
-// ACTUALIZAR ARCHIVOS
-$.getJSON(ZCodeApp.url + "/feed-system.php", response => {
-	let { status, message } = response;
-	if(parseInt(status) === 0) {
-		message += `\n<span role="button" onclick="SystemUpdate()" class="btn d-block btn-sm main-color">Actualizar ahora...</span>`;
-	}
-	$('#status_pp strong').html(message);
-});
-
-function SystemUpdate() {
-	$.get(ZCodeApp.url + "/feed-update.php", response => {
-		let type = parseInt(response.charAt(0));
-		if(type === 0) {
-			UPModal.alert('Error', response.substring(3));
-		} else {
-			$('#status_pp strong').html(response.substring(3));
-			setTimeout(() => location.reload(), 5000);
-		}
-	});
-}
 function changeBranch(branch = 'main') {
 	$.post(ZCodeApp.url + '/github-api.php', { branch }, response => {
 		if(response === null) {

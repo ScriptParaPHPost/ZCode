@@ -8,6 +8,24 @@
 require_once TS_EXTRA . "datos.php";
 class tsCuenta {
 
+	private function getSocialUser(int $user_id = 0) {
+		// Redes viculadas
+		$socials = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT social_name as name FROM @miembros_social WHERE social_user_id = $user_id"));
+		$array_social = [
+			'discord' => false,
+			'facebook' => false,
+			'github' => false,
+			'google' => false
+		];
+		foreach($socials as $sn) {
+    		$name = $sn['name'];
+    		if (isset($array_social[$name])) {
+        		$array_social[$name] = true;
+    		}
+		}
+		return $array_social;
+	}
+
    /**
     * @name loadPerfil()
     * @access public
@@ -19,15 +37,13 @@ class tsCuenta {
 		global $tsUser;
 		//
 		if(empty($user_id)) $user_id = $tsUser->uid;
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_socials, u.user_registro, u.user_lastactive, u.user_outtime_type FROM @perfil AS p LEFT JOIN @miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_registro, u.user_lastactive, u.user_outtime_type FROM @perfil AS p LEFT JOIN @miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
 		$perfilInfo = db_exec('fetch_assoc', $query);
 		$fecha = "{$perfilInfo['user_dia']}-{$perfilInfo['user_mes']}-{$perfilInfo['user_ano']}";
 		$perfilInfo['nacimiento'] = date("Y-m-d", strtotime($fecha));
 		// CAMBIOS
       $perfilInfo = $this->unData($perfilInfo);
-		// Redes viculadas
-		$perfilInfo['socials'] = empty($perfilInfo['user_socials']) ? '' : json_decode($perfilInfo['user_socials'], true);
-
+		$perfilInfo['socials'] = $this->getSocialUser($user_id);
 		$custom = explode(';', $perfilInfo['user_customize']);
 		$perfilInfo['custom'] = [
 			'light' => $custom[0] ?? '#F4F4F4',
@@ -58,8 +74,8 @@ class tsCuenta {
 	public function loadHeadInfo(int $user_id = 0){
 		global $tsUser, $tsCore;
 		// INFORMACION GENERAL
-		$new = "u.user_verificado, p.user_gif, p.user_gif_active, p.user_portada, p.user_scheme, p.user_avatar_uid, p.user_color, p.user_customize, p.p_socials";
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_socials, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, $new, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_configs FROM @miembros AS u, @perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
+		$new = "u.user_verificado, p.user_gif, p.user_gif_active, p.user_portada, p.user_scheme, p.user_color, p.user_customize, p.p_socials";
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, $new, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_configs FROM @miembros AS u, @perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
       //
 		$data['avatar'] = $tsCore->getAvatar($user_id, 'use');
       $data['p_nombre'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_nombre']), true);
@@ -98,6 +114,32 @@ class tsCuenta {
 		$data['block'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @bloqueos WHERE b_user = {$tsUser->uid} AND b_auser = $user_id LIMIT 1"));
       //
 		return $data;
+	}
+
+	public function getAvatarSocials() {
+		global $tsCore, $tsUser, $Avatar;
+		$uid = (int)$tsUser->uid;
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT social_id, social_user_id, social_name, social_nick, social_email, social_avatar, user_avatar_type, user_avatar_social FROM @miembros_social LEFT JOIN @perfil ON user_id = $uid AND social_user_id = $uid"));
+		foreach($data as $key => $user) {
+			$destinationPath = TS_AVATAR . "user$uid" . TS_PATH . "{$user['social_name']}.webp";
+			if(!file_exists($destinationPath)) {
+				$Avatar->createAvatarSocial($destinationPath, $user['social_avatar']);
+			}
+			$data[$key]['social_avatar'] = $tsCore->settings['avatar'] . "/user$uid/{$user['social_name']}.webp";
+		}
+		return $data;
+	}
+
+	public function activeAvatarSocial() {
+		global $tsCore, $tsUser;
+		if($tsUser->is_member) {
+			$name = $tsCore->setSecure($_POST['name']);
+			$active = (int)$_POST['active'] ?? 0;
+			if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @perfil SET user_avatar_type = $active, user_avatar_social = '$name' WHERE user_id = {$tsUser->uid}")) {
+				return '1: Activado correctamente.';
+			}
+			return '0: Hubo un error al activar';
+		}
 	}
 
 	public function saveColorCustomizer() {
@@ -539,9 +581,9 @@ class tsCuenta {
 		# Obtenemos el sexo del usuario
 		$sexo = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_sexo FROM @perfil WHERE user_id = $uid"))['user_sexo'];
 		if($tsUser->is_member) {
-			$image_new = $tsUser->uid . ".webp";
-			copy(TS_AVATARES . $sexo . TS_PATH . $image, TS_AVATAR . $image_new);
-			return $tsCore->settings['avatar'] . "/$image_new";
+			$image_new = $tsUser->uid . "-web.webp";
+			copy(TS_AVATARES . $sexo . TS_PATH . $image, TS_AVATAR . "user$uid" . TS_PATH . $image_new);
+			return $tsCore->settings['avatar'] . "/user$uid/$image_new";
 		}
 	}
 

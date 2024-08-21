@@ -11,7 +11,7 @@
 	      <img src="{$tsAutor.user_avatar}" alt="{$tsAutor.user_name}" class="w-100 h-100 object-fit-cover shadow body-bg">
 	   </a>
 	   <div class="position-relative z-3 lh-2 pt-4">
-	 		<a href="{$tsConfig.url}/perfil/{$tsAutor.user_name}" class="given-name d-block fw-semibold text-decoration-none" itemprop="name">{$tsAutor.user_name}</a>
+	 		<a href="{$tsConfig.url}/perfil/{$tsAutor.user_name}" class="given-name d-block fw-semibold text-decoration-none" itemprop="name">{$tsAutor.user_name|verificado}</a>
 	 		<small>{$tsAutor.rango.r_name} - {$tsAutor.status.t}</small>
 	 		<div class="data d-flex justify-content-between align-items-center">
 

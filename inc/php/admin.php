@@ -88,15 +88,17 @@
 		$tsTitle = 'Generador de actualizacion';
     	require_once TS_CLASS . "c.actualizacion.php";
     	$tsActualizacion = new tsActualizacion;
-    
+ 
     	$commits = $tsActualizacion->getLastCommit();
     	$getUpdated = $tsActualizacion->saveIDUpdate('get');
     	$smarty->assign([
+    		'tsUserGithub' => $tsActualizacion->getUser(),
     		'tsUpdated' => $getUpdated,
-    		'tsLastCommit' => $commits
+    		'tsLastCommit' => (isset($_GET['sha']) ? $_GET['sha'] : $commits)
     	]);
+
     	if(is_string($commits) AND !empty($getUpdated)) {
-    		$smarty->assign('tsLastCommitFiles', $tsActualizacion->getLastCommitFiles());
+    		$smarty->assign('tsLastCommitFiles', $tsActualizacion->getLastCommitFiles()['commit']);
     		$files = $tsActualizacion->filesStatus();
     		$smarty->assign('tsFilesStatus', $files);
     		$smarty->assign('tsFilesTotal', safe_count($files));
@@ -107,11 +109,23 @@
     				foreach($unset as $del) unset($_SESSION[$del]);
     				$tsCore->redireccionar('admin', $action);
     			}
+    		} elseif($act === 'commits') {
+    			$smarty->assign('tsLastCommits', $tsActualizacion->getLastCommits());
     		}
     	}
 
+   // Editar htaccess
+   } elseif($action === 'htaccess') {
+		$tsTitle = 'Configuraci&oacute;n de htaccess';
+		$smarty->assign('tsErrorDocument', $tsAdmin->getError());
+		$smarty->assign('tsRewriteRules', $tsAdmin->getRewriteRules());
+		
+   	if(!empty($_POST['saveError']) || !empty($_POST['saveRewrite'])) {
+   		$func = isset($_POST['saveError']) ? $tsAdmin->saveError() : $tsAdmin->saveRewriteRules();
+   		if($func) $tsCore->redireccionar('admin', $action, 'save=true');
+   	}
    // Configuraciones y Registro
-	} elseif(in_array($action, ['configs', 'registro'])){
+	} elseif(in_array($action, ['configs', 'registro'])) {
 		$tsTitle = ($action === 'configs') ? 'Configuraci&oacute;n' : 'Registro de ' . $tsTitle;
 		// GUARDAR CONFIGURACION
 		if(!empty($_POST['titulo']) OR (!empty($_POST['pkey']) AND !empty($_POST['skey']))) {
@@ -413,17 +427,12 @@
 	// Usuarios
 	} elseif($action === 'users'){
 		$tsTitle = 'Todos los Usuarios';
-		if(in_array($act, ['verificar', 'show'])) {
-         $user_id = (int)$_GET['uid'];
-		}
+	   $user_id = (int)$_GET['uid'];
 	   if(empty($act)) {
 	   	$smarty->assign("tsMembers",$tsAdmin->getUsuarios());
 
-	   } elseif($act == 'verificar') {
-	   	var_dump($act);
-         $verificar = $tsAdmin->setUsuarioVerificado();
-        	if($verificar) $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
-			else $smarty->assign("tsError", $update); 
+	   } elseif($act === 'verificar') {
+        	if(!$tsAdmin->setUsuarioVerificado())  $smarty->assign("tsError", $update); 
 
 	   } elseif($act === 'show') {
 	      $do = (int)$_GET['t'];

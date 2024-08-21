@@ -72,6 +72,10 @@
 
 	// Usando un gestor de imagenes
 	include TS_EXTRA . 'Images.php';
+	include TS_EXTRA . 'Avatar.php';
+
+	$Avatar = new Avatar(new tsCore);
+	$Avatar->moveAvatars();
 
 /*
  * -------------------------------------------------------------------

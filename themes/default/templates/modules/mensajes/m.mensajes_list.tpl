@@ -6,7 +6,7 @@
 					<img loading="lazy" src="{$mp.avatar}" class="placeholder placeholder-grow avatar avatar-8 rounded" />
 					<div class="mp_desc">
 						<div class="autor d-flex justify-content-start align-items-center column-gap-2">
-							<strong>{$mp.user_name}</strong> -
+							<strong>{$mp.user_name|verificado}</strong> -
 							<time class="mp_time small fst-italic">{$mp.mp_date|hace:true}</time>
 						</div>
 						<div class="subject">{$mp.mp_subject}</div>

@@ -51,6 +51,10 @@
 - Consultas con nuevo prefijo para las tablas @nombre_tabla
 	* Se quitaron f_, p_, u_, w_, etc.
 - Administrar base de datos (Analizar, Optimizar, Reparar, Comprobar, Crear backup)
+- Generador de favicon 16, 32, 64, 128, 512 px
+- Sistema de actualización usando el repositorio de Github
+- El doble factor (2FA) integrado
+- Votar como un foro Positivo o Negativo
 
 > (*) Quiere decir que los cree desde cero!
 > (+) Similares a otro existente, pero no iguales!

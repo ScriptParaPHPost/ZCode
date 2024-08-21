@@ -31,7 +31,7 @@
 	
 	<div id="vp_toggle" style="display: none;">
 	   {foreach from=$tsPost.puntos item=v key=i}
-	      <a href="{$tsConfig.url}/perfil/{$v.user_name}" style="color:#{if $v.cant == 2}B92626{else}6f8f52{/if};" title="Vot&oacute; {if $v.cant == 2}negativo{else}positivo{/if}" class="fw-semibold text-decoration-none">{$v.user_name}</a>{if $tsPost.total_votos > $i+1}, {/if}
+	      <a href="{$tsConfig.url}/perfil/{$v.user_name}" style="color:#{if $v.cant == 2}B92626{else}6f8f52{/if};" title="Vot&oacute; {if $v.cant == 2}negativo{else}positivo{/if}" class="fw-semibold text-decoration-none">{$v.user_name|verificado}</a>{if $tsPost.total_votos > $i+1}, {/if}
 	   {foreachelse}
 	   	<div class="empty">Nadie voto</div>
 	   {/foreach}

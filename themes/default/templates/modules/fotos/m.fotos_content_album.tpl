@@ -3,7 +3,7 @@
 	<div class="foto-item_data">
 		<a class="up-badge position-absolute p-0 overflow-hidden column-gap-2 pe-2 d-flex justify-content-start align-items-center" style="top:.875rem;left:.875rem;height:1.5rem" href="{$tsConfig.url}/perfil/{$f.user_name}">
 			<img src="{$f.avatar}" class="avatar avatar-2" alt="{$f.user_name}">
-			{$f.user_name}
+			{$f.user_name|verificado}
 		</a>
 		<small class="up-badge position-absolute" style="top:2.875rem;left:.875rem;">{$f.f_date|hace:true}</small>
 		<a href="{$f.foto_url}" class="d-block text-decoration-none fs-6 fw-semibold main-bg-color">{$f.f_title}</a>

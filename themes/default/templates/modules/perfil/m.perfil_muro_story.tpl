@@ -13,7 +13,7 @@
 				{/if}
 				<div class="Story_Message">
 					<div class="autor">
-						<a href="{$tsConfig.url}/perfil/{$p.user_name}" class="fw-semibold text-decoration-none">{if $p.user_name == $tsUser->nick}{$tsUser->nick}{else}{$p.user_name}{/if}</a>
+						<a href="{$tsConfig.url}/perfil/{$p.user_name}" class="fw-semibold text-decoration-none">{if $p.user_name == $tsUser->nick}{$tsUser->nick|verificado}{else}{$p.user_name|verificado}{/if}</a>
 					</div>
 					<span class="d-block my-2">{$p.p_body|quot}</span>
 					{if $p.p_type != 1}

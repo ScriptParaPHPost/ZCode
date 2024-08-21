@@ -4,7 +4,7 @@
 			<img src="{$tsFoto.avatar}" loading="lazy"/>
 		</a>
 		<div class="foto-content-autor">
-			<a href="{$tsConfig.url}/perfil/{$tsFoto.user_name}" class="fw-semibold d-block fs-6 text-decoration-none">{$tsFoto.user_name}</a>
+			<a href="{$tsConfig.url}/perfil/{$tsFoto.user_name}" class="fw-semibold d-block fs-6 text-decoration-none">{$tsFoto.user_name|verificado}</a>
 			<div class="d-flex justify-content-start align-items-center column-gap-3 py-2">
 				{uicon name="{$tsFoto.user_pais.icon}" folder="flags" alt="{$tsFoto.user_pais.name}" class="rounded avatar avatar-2"}
 				<span class="autor-rango translucent-bg rounded py-0 pe-2 ps-4 border fw-semibold" style="background-image:url({$tsConfig.assets}/images/rangos/{$tsFoto.r_image});--border-color:#{$tsFoto.r_color}">{$tsFoto.r_name}</span>

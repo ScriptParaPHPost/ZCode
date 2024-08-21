@@ -43,6 +43,7 @@
 	// CLASE
 	require TS_CLASS . 'c.upload.php';
 	$tsUpload = new tsUpload();
+	
 	// CODIGO
 	switch($action) {
 		case 'upload-avatar':
@@ -64,7 +65,7 @@
 			$total = unserialize($total['p_total']);
 			$total[5] = 1;
 			$total = serialize($total);
-			db_exec([__FILE__, __LINE__], 'query', 'UPDATE @perfil SET p_avatar = \'1\', p_total = \''.$total.'\' WHERE user_id = \''.$tsUser->uid.'\'');
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE @perfil SET p_avatar = 1, p_total = '$total' WHERE user_id = {$tsUser->uid}");
 				// -->
 		break;
 		case 'upload-images':

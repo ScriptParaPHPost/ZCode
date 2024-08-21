@@ -13,7 +13,7 @@
 						<a href="{$tsConfig.url}/moderacion/buscador/1/1/{$c.c_ip}" class="position-absolute fw-semibold text-decoration-none" style="top:0;right:2rem;" target="_blank">{$c.c_ip}</a>
 					{/if}
 					<div class="info">
-						<a href="{$tsConfig.url}/fotos/{$c.user_name}" class="fw-semibold text-decoration-none">{$c.user_name}</a> - 
+						<a href="{$tsConfig.url}/fotos/{$c.user_name}" class="fw-semibold text-decoration-none">{$c.user_name|verificado}</a> - 
 						<em>{$c.c_date|hace:true}</em>
 					</div>
 					{if !$c.user_activo}

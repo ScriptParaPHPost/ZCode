@@ -24,7 +24,7 @@
 							{if $p.p_user == $tsUser->uid || $c.c_user == $tsUser->uid  || $tsUser->is_admod || $tsUser->permisos.moecm}
 								<span class="close"><a href="#" onclick="muro.del_pub({$c.cid}, 2); return false" class="uiClose" title="Eliminar"></a></span>
 							{/if}
-							<a href="{$tsConfig.url}/perfil/{$c.user_name}" class="fw-semibold text-decoration-none">{$c.user_name}</a>
+							<a href="{$tsConfig.url}/perfil/{$c.user_name}" class="fw-semibold text-decoration-none">{$c.user_nam|verificadoe}</a>
 							<span>&raquo; {$c.c_body|quot}</span>
 							<div class="cmInfo small">
 								{$c.c_date|fecha} &middot; 

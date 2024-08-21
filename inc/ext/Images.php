@@ -8,9 +8,9 @@ if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
  * @link https://zcode.newluckies.com/ (DEMO)
  * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
- * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version v1.7.0
+ * @version v1.8.11
  * @description Controlador para manipular imagenes
 **/
 
@@ -80,14 +80,15 @@ class Images {
    */
 	protected function getInformationImage(string $image = '', string $type = '') {
 		switch ($type) {
-		   case 'extension':
-		      return strtolower(pathinfo($image, PATHINFO_EXTENSION));
-		   case 'filename':
-		      return pathinfo($image, PATHINFO_FILENAME);
-		   case 'basename':
-		      return pathinfo($image, PATHINFO_BASENAME);
-		   default:
-		      return false;
+			case 'extension':
+				return strtolower(pathinfo($image, PATHINFO_EXTENSION));
+			break;
+			case 'filename':
+				return pathinfo($image, PATHINFO_FILENAME);
+			break;
+			case 'basename':
+				return pathinfo($image, PATHINFO_BASENAME);
+			break;
 		}
 	}
 
@@ -158,14 +159,15 @@ class Images {
    */
 	private function getRoute(string $folder = '', string $type = 'link'): string {
 		switch ($type) {
-	    	case 'link':
-	        	return $this->assets . '/images/' . $folder . '/';
-	    	case 'temp':
-	        	return TS_UPLOADS;
-	    	case 'cover':
-	        	return TS_PORTADAS;
-	    	default:
-	        	return false;
+			case 'link':
+				return $this->assets . '/images/' . $folder . '/';
+			break;
+			case 'temp':
+				return TS_UPLOADS;
+			break;
+			case 'cover':
+				return TS_PORTADAS;
+			break;
 		}
 	}
 
@@ -208,6 +210,7 @@ class Images {
     * @return void
    */
    private function resizeAndConvertToWebP(string $destDir = '', string $fileName = '') {
+   	global $tsCore;
 		$sourceDir = TS_UPLOADS;
 	   $quality = $this->quality;
 	   // Define the sizes and their prefixes
@@ -223,24 +226,7 @@ class Images {
 	      $this->logError("No se puede determinar el tipo de imagen de {$sourcePath}");
 	   }
 	   // Create an image resource from the source image
-	  switch ($imageInfo[2]) {
-	    	case IMAGETYPE_JPEG:
-	        $sourceImage = imagecreatefromjpeg($sourcePath);
-	      break;
-	    	case IMAGETYPE_PNG:
-	        	$sourceImage = imagecreatefrompng($sourcePath);
-	      break;
-	    	case IMAGETYPE_GIF:
-	        	$sourceImage = imagecreatefromgif($sourcePath);
-	      break;
-	    	case IMAGETYPE_WEBP:
-	        	$sourceImage = imagecreatefromwebp($sourcePath);
-	     	break;
-	    	default:
-	        	$this->logError("Tipo de imagen no admitido: {$imageInfo[2]}");
-	        	$sourceImage = false; // O cualquier valor por defecto que prefieras
-	      break;
-		}
+		$sourceImage = $tsCore->getFormatImage($type, $sourcePath, $imageInfo[2]);
 
       // Resize and save the images
 		if(!is_dir($destDir)) mkdir($destDir, 0777, true);

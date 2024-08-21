@@ -122,9 +122,11 @@ class tsRegistro {
 
 	private function createAvatar(array $tsData = []) {
 		// CREAMOS EL AVATAR CON LAS INICIALES DEL USUARIO
-      $return_avatar = TS_AVATAR . "{$tsData['user_id']}.webp";
+		$folder = TS_AVATAR . "user{$tsData['user_id']}";
+		if(!is_dir($folder)) mkdir($folder, 0777, true);
+      $return_avatar = $folder . TS_PATH . "web.webp";
       if($tsData['user_sexo'] === 'none') {
-	      $avatar = "https://ui-avatars.com/api/?name={$tsData['user_nick']}&background=random&color=fff&size=160&font-size=0.50&bold=false&length=2";
+	      $avatar = "https://ui-avatars.com/api/?name={$tsData['user_nick']}&background=random&color=fff&size=160&font-size=0.60&bold=false&length=2";
 	   } else {
 	   	# AVATAR ALEATORIO Y CONVIRTIENDO A WEBP
 	   	$origen = TS_AVATARES . $tsData['user_sexo'] . TS_PATH;

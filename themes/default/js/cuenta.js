@@ -24,17 +24,29 @@ const cuenta = {
 			})
 		}
 	},
+	sameToast(page, param, fn) {
+		$.post(`${ZCodeApp.url}/cuenta-${page}.php`, param, req => {
+			let type_msg = parseInt(req.charAt(0));
+			toast.start({ content: req.substring(3), type: (type_msg === 0 ? 'warning' : 'success') });
+			loading.end();
+			if(type_msg === 1 && typeof fn === 'function') {
+				fn();
+			}
+		});
+	},
+	avatar(name) {
+		loading.start();
+		let active = (name === 'web') ? 0 : 1;
+		this.sameToast('avatar-social', { name, active }, () => setTimeout(() => location.reload(), 3000));
+	},
 	guardar_datos() {
 		loading.start();
-		$.post(ZCodeApp.url + '/cuenta-guardar.php', $("form[name=editarcuenta]").serialize(), response => {
-			toast.start({ content: response, type: 'warning' });
-			loading.end();
-		})
+		this.sameToast('guardar', $("form[name=editarcuenta]").serialize());
 	},
 	eliminar_cuenta(obj) {
 		let outtime_type = parseInt($(obj).val());
 		$.post(`${ZCodeApp.url}/cuenta-eliminar-tiempo.php`, { outtime_type }, req => {
-			toast.start({ content: req.substring(3), type: 'warning' });
+			toast.start({ content: req.substring(3), type: (req.charAt(0) === '0' ? 'warning' : 'success') });
 		});
 	}
 }

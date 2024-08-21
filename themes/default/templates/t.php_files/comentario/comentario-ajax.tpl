@@ -9,7 +9,7 @@
       <div class="comment--tools d-flex justify-content-between align-items-center{if !$c.respuesta} p-1{/if}">
 
          <div class="comment--name">
-            <a href="{$tsConfig.url}/perfil/{$c.user_name}" class="fw-semibold text-decoration-none">{$c.user_name}</a>
+            <a href="{$tsConfig.url}/perfil/{$c.user_name}" class="fw-semibold text-decoration-none">{$c.user_name|verificado}</a>
              - <time class="fst-italic small text-center mt-2">{$c.c_date|hace:true}</time>
             {if $tsUser->is_admod} (<span style="color:red;">IP:</span> <a href="{$tsConfig.url}/moderacion/buscador/1/1/{$c.c_ip}" class="geoip" target="_blank">{$c.c_ip}</a>){/if}
          </div>

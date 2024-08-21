@@ -7,7 +7,7 @@
 		<div class="menu-user d-grid gap-2 mb-2 end-0">
 			<img class="avatar avatar-6 dropdown-avatar avatar_loader" src="{$tsUser->use_avatar}" alt="avatar {$tsUser->nick}">
 			<div class="menu-userdata p-1 d-flex justify-content-center align-items-start flex-column">
-				<a title="Mi perfil" class="fw-bold" href="{$tsConfig.url}/perfil/{$tsUser->info.user_name}">{$tsUser->nick}</a>
+				<a title="Mi perfil" class="fw-bold" href="{$tsConfig.url}/perfil/{$tsUser->info.user_name}">{$tsUser->nick|verificado}</a>
 				{$tsUser->email|protected_mail}
 			</div>
 			<div class="settings d-flex justify-content-center align-items-center" data-dropaction="true" style="cursor: pointer;">

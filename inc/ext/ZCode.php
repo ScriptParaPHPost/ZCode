@@ -6,9 +6,9 @@
  * @link https://zcode.newluckies.com/ (DEMO)
  * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
- * @link https://sourceforge.net/projects/zcode-script/ (Repositorio Sourceforge)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version v1.7.0
+ * @version v1.8.11
  * @description Crearemos algunas funciones para uso global
 **/
 
@@ -126,19 +126,27 @@ class tsZCode {
 	public function getAvatar(int $uid = 0, string $type = 'img') {
 		// Verificamos si el gif es global
 		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_avatar, p.user_id, p.user_gif, p.user_gif_active, p.p_avatar FROM @configuracion c, @perfil p WHERE c.tscript_id = 1 AND p.user_id = '$uid'"));
+		//
+		$who = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_avatar_type as aType, user_avatar_social as aName FROM @perfil WHERE user_id = '$uid'"));
 		// Avatar
-		$avatar_img = "{$this->settings['avatar']}/{$query['user_id']}.webp" . uniqid('?');
+		$avatar_root = "{$this->settings['avatar']}/user$uid";
+		$image_name =  ($who['aType'] === 0 OR empty($who['aType'])) ? 'web' : $who['aName'];
+		$avatar_img_type = "$avatar_root/$image_name" . uniqid('.webp?');
+		$avatar_img = "$avatar_root/web" . uniqid('.webp?');
 		$avatar_gif = $query['user_gif'];
 		//
 		switch ($type) {
-		   case 'use':
-		      return ((int)$query['user_gif_active'] === 1 && !empty($avatar_gif)) ? $avatar_gif : $avatar_img;
-		   case 'img':
-		      return $avatar_img;
-		   case 'gif':
-		      return $avatar_gif;
-		   default:
-		      return $this->settings['images'] . '/favicon/logo-128.webp';
+			case 'use':
+				return ((int)$query['user_gif_active'] === 1 && !empty($avatar_gif) ? $avatar_gif : $avatar_img_type);
+			break;
+			case 'img':
+				return $avatar_img;
+			break;
+			case 'gif':
+				return $avatar_gif;
+			break;
+			default:
+				return $this->settings['images'] . '/favicon/logo-128.webp';
 		}
 
 	}
@@ -198,6 +206,29 @@ class tsZCode {
 	   }
 
 	   return $reading_time;
+	}
+
+	public function getFormatImage($match, $source, $data = '') {
+		// Create an image resource from the source image
+		switch ($match) {
+			case IMAGETYPE_JPEG:
+				return imagecreatefromjpeg($source);
+			break;
+			case IMAGETYPE_PNG:
+				return imagecreatefrompng($source);
+			break;
+			case IMAGETYPE_GIF:
+				return imagecreatefromgif($source);
+			break;
+			case IMAGETYPE_WEBP:
+				return imagecreatefromwebp($source);
+			break;
+			
+			default:
+				if(!empty($data)) die("Tipo de imagen no admitido: $data");
+        		return false;
+			break;
+		}
 	}
 
 }

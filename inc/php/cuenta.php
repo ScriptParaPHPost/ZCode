@@ -48,6 +48,7 @@ if($tsContinue){
 		$smarty->assign('tsColoresValue', $tsColores);
 		$smarty->assign('tsColoresTxt', $tsColoresTxt);
 		$smarty->assign('tsAvatarSelect', $tsCuenta->getAvatarImages());
+		$smarty->assign('tsAvatarSocials', $tsCuenta->getAvatarSocials());
 	}
 
 	# Comprobamos que tenga el 2FA activado
@@ -72,6 +73,7 @@ if($tsContinue){
 		// PERFIL INFO
    	$tsPerfil = $tsCuenta->loadPerfil();
 		$smarty->assign("tsPerfil", $tsPerfil);
+		
 		$smarty->assign("tsRedes", $redes);
 		// PERFIL DATA
 		$smarty->assign("tsPData", $tsPerfilData);

@@ -24,6 +24,8 @@ function smarty_modifier_verificado($nick, $icon = 'verified', $folder = 'others
    	$parametros['size'] = '1.125rem';
    	// Cambiamos el color
    	$parametros['fill'] = '#1E67B9';
+   	// 
+   	$parametros['style'] = 'position:absolute;margin-top: 3px;margin-left: 3px;';
    	// Buscamos, aplicamos y adjuntamos al nombre
    	$nick .= smarty_function_uicon($parametros, $smarty);
    }

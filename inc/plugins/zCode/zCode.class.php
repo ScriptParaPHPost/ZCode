@@ -123,17 +123,13 @@ class SmartyZCode {
 		$withoutCached = false;
 		$fileCache = $htmltag . ($withoutCached ? '' : $this->getCached());
 		switch ($extension) {
-		   case 'css':
-		      return "<link rel=\"stylesheet\" href=\"$fileCache\" type=\"text/css\"/>\n";
-		   break;
-		   case 'js':
-		     return "<script src=\"$fileCache\"></script>\n";
-		   break;
-		   default:
-		      return null;
-		   break;
+			case 'css':
+				return "<link rel=\"stylesheet\" href=\"$fileCache\" type=\"text/css\"/>\n";
+			break;
+			case 'js':
+				return "<script src=\"$fileCache\"></script>\n";
+			break;
 		}
-
 	}
 
   	/**

@@ -17,7 +17,7 @@
                                 </div>
                             </div>
                             {elseif $tsMuro.total == 0}
-                            <div class="emptyData">Hola <u>{$tsUser->nick}</u>. &iquest;Por qu&eacute; no empiezas a seguir usuarios?</div>
+                            <div class="emptyData">Hola <u>{$tsUser->nick|verificado}</u>. &iquest;Por qu&eacute; no empiezas a seguir usuarios?</div>
                             {/if}
     		            </div>
                   </div>

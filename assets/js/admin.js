@@ -112,6 +112,12 @@ const database = {
 	}
 }
 
+const htaccess = {
+	backup() {
+		$.get(`${ZCodeApp.url}/htaccess-backup.php`, req => UPModal.alert('Bien', 'La copia fue creada correctamente', false))
+	}
+}
+
 var admin = {
 	// AFILIADOS
 	afs: {
@@ -306,6 +312,12 @@ var ad_afiliado = {
    }
 }
 
+function lastCommits() {
+	$.post(ZCodeApp.url + '/github-last-commits.php', req => {
+		console.log(req)
+	});
+}
+
 $(document).ready(() => {
 	const { url } = ZCodeApp;
 	const selectJquery = $(".up-select--jquery");
@@ -336,7 +348,7 @@ $(document).ready(() => {
    if($('input[name="tables[all]"]').length) {
    	$('input[type="checkbox"][value="all"]').change(function() {
 	    	if ($(this).prop('checked')) {
-	        $('input[type="checkbox"]').prop('checked', true);
+	      $('input[type="checkbox"]').prop('checked', true);
 	    	} else {
 	        $('input[type="checkbox"]').prop('checked', false);
 	   	}

@@ -20,7 +20,7 @@
 					<span class="beeper_x" bid="m{$id}">&times;</span>
 					<div class="UIBeep_Title">
 						<strong>Nuevo mensaje</strong>                 
-						<span class="blueName">{$mp.user_name}</span> {$mp.mp_preview}
+						<span class="blueName">{$mp.user_name|verificado}</span> {$mp.mp_preview}
 					</div>
 				</a>
 			</div>

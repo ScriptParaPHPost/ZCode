@@ -1,7 +1,7 @@
 <section class="up-card">
 	<div class="up-card--header" icon="true">
 		<div class="up-header--title">
-			<span>Fotos de {$tsFoto.user_name}</span>
+			<span>Fotos de {$tsFoto.user_name|verificado}</span>
 		</div>
 	</div>
 	<div class="up-card--body">

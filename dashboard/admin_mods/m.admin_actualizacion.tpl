@@ -12,13 +12,28 @@
 				<span class="d-block mb-3">{$tsLastCommit.message}</span>
 			{else}
 				<small class="text-center d-block mb-3">
-					SHA <strong>{$tsLastCommit}</strong> Último commit realizado
+					SHA <strong>{$tsLastCommit}</strong> Commit realizado, <a href="{$tsConfig.url}/admin/actualizacion?act=commits" class="fw-semibold pe-auto">ver los commits anteriores</a>
 				</small>
+
+				<div class="p-3 rounded my-3 shadow d-grid align-items-center column-gap-3" style="grid-template-columns: 130px 1fr;">
+					<div class="overflow-hidden rounded" style="width: 130px;height: 130px;">
+						<img src="{$tsUserGithub.avatar}" loading="lazy" class="w-100 h-100 object-fit-cover" alt="{$tsUserGithub.name}">
+					</div>
+					<div class="boxed">
+						<h5>{$tsUserGithub.name}</h5>
+						<span class="d-block">{$tsUserGithub.description}</span>
+						<div class="tags my-1 d-flex gap-2 justify-content-start align-items-center flex-wrap">
+					      {foreach $tsUserGithub.tags item=$tag}
+					         <small class="tag-item rounded d-block px-2 main-bg main-color text-decoration-none">#{$tag}</small>
+					      {/foreach}
+					   </div>
+					</div>
+				</div>
 				
 				<div class="border p-2 rounded mb-3 d-block d-lg-flex justify-content-between align-items-center">
 					<div>
 						<span>Autor del commit <strong>{$tsLastCommitFiles.author.name}</strong></span>
-						<time class="d-block fst-italic">{$tsLastCommitFiles.author.date|date_format:"d.m.Y H:i"}</time>
+						<time class="d-block fw-semibold">{$tsLastCommitFiles.author.date|date_format:"d/m/Y - H:i:s A"}</time>
 					</div>
 					<div class="d-flex justify-content-end align-items-center">
 						<span class="d-block text-center small" style="width:100px">
@@ -71,6 +86,25 @@
 			{/if}
 		{elseif $tsAct === 'actualizar'}
 			<div class="empty">Este proceso tardará varios minutos</div>
+		{elseif $tsAct === 'commits'}
+			<div style="overflow-x:auto;">
+				<table class="admin_table mt-3">
+					<thead>
+						<th>Commit</th>
+						<th>Fecha</th>
+						<th>Accion</th>
+					</thead>
+					<tbody>
+						{foreach $tsLastCommits key=f item=commit}
+							<tr>
+								<td>{$commit.sha}</td>
+								<td class="text-center fw-semibold">{$commit.date|date_format:"d/m/Y H:i:s - A"}</td>
+								<td class="text-center"><a href="{$tsConfig.url}/admin/actualizacion?sha={$commit.sha}" class="text-decoration-none fw-semibold">Leer</a></td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			</div>
 		{/if}
 	
 	{/if}
