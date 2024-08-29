@@ -1,16 +1,16 @@
 // FEED SUPPORT
-$.getJSON(ZCodeApp.url + "/feed-support.php", response => {
+$.getJSON(ZCodeApp.url + "/feed-support", response => {
 	$('#ulitmas_noticias').html('<div class="empty">Obteniendo información...</div>');
 	if(Array.isArray(response)) {
 		$('#ulitmas_noticias').html('');
 		response.map( data => {
 			const { link, title, info, version } = data;
-			let html = `<a href="${link}" target="_blank" class="feed-item">
-			 	<div class="me-auto">
-			   	<div class="fw-bold">${title}</div>
-			   	<span class="text-secondary">${info}</span>
-			 	</div>
-    			<span class="up-badge">${version}</span>
+			let html = `<a href="${link}" target="_blank" class="feed:item">
+			   <div class="feed:header">
+			   	<h5>${title}</h5>
+			   	<small class="feed:version">${version}</small>
+			   </div>
+			   <span class="feed:info">${info}</span>
 			</a>`;
 			$('#ulitmas_noticias').append(html);
 		})
@@ -18,20 +18,20 @@ $.getJSON(ZCodeApp.url + "/feed-support.php", response => {
 });
 
 //
-$.getJSON(ZCodeApp.url + "/feed-version.php", response => {
-	const { version: nowVersion, status, color, newVersion: nextVersion } = response;
+$.getJSON(ZCodeApp.url + "/feed-version", response => {
+	const { version, status, color, newVersion } = response;
 	// Clonamos
   	let clonar = $('.list-clone').first().clone();
   	// Añadimos color
   	clonar.addClass(color)
   	// Modificar los datos dentro del clon
-  	clonar.find('.fw-bold').text(nowVersion);
+  	clonar.find('.fw-bold').text(version);
   	clonar.find('.text-body-secondary').text(status);
-  	if(nowVersion.match(/\d+/g).join('') <= nextVersion.match(/\d+/g).join('')) {
-  		clonar.find('.nextversion').text(`Próxima versión: v${nextVersion}`);
+  	if(version.match(/\d+/g).join('') <= newVersion.match(/\d+/g).join('')) {
+  		clonar.find('.nextversion').text(`Próxima versión: v${newVersion}`);
   	}
   	// Agregar el clon a la lista
-	if(typeof nowVersion === 'undefined') {
+	if(typeof version === 'undefined') {
 		clonar.addClass('list-clone-danger')
 		clonar.find('.fw-bold').text('No version');
   		clonar.find('.text-body-secondary').text(response);
@@ -40,7 +40,7 @@ $.getJSON(ZCodeApp.url + "/feed-version.php", response => {
 });
 
 function changeBranch(branch = 'main') {
-	$.post(ZCodeApp.url + '/github-api.php', { branch }, response => {
+	$.post(ZCodeApp.url + '/github-api', { branch }, response => {
 		if(response === null) {
 			$('#lastCommit').html('<div class="empty">No se puede cargar el último commit...</div>');
 			return;

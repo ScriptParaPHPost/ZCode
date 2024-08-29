@@ -14,28 +14,7 @@
 			{include "m.cuenta_$tsAccion.tpl"}
 		</form>
 		<div class="">
-			<div class="mb-3">
-				<h5 class="d-flex justify-content-between align-items-center">2FA: {if $tsG2FA === false}Desa{else}A{/if}ctivado{if $tsG2FA === false} <small id="countdown">30s</small>{/if}</h5>
-				{if $tsG2FA === false}
-					<div id="regenerate">
-						{include "p.cuenta.regenerate.tpl"}
-					</div>
-				{else}
-					<div class="text-center">
-						{uicon name="lightning" size="4rem"}
-					</div>
-					<div class="row">
-						<div class="col-12 col-lg-6">
-							<span role="button" class="btn btn-sm d-block text-center remove_2fa">Desactivar 2FA</span>
-						</div>
-						<div class="col-12 col-lg-6">
-							<span role="button" class="btn btn-sm d-block text-center regenerate_token">Generar Token</span>
-						</div>
-					</div>
-					
-				{/if}
-			</div>
-
+			<h4>Tus redes sociales</h4>
 			{foreach $SocialMager key=nombre item=social}
 			   <div class="btn-group-socials d-block">
 			      {if $tsPerfil.socials.$nombre}
@@ -51,7 +30,7 @@
 			      {/if}
 			   </div>
 			{foreachelse}
-				<div class="empty">Conexiones a tus redes sociales!</div>
+				<div class="empty">Conexiones a tus redes sociales, pero aun {$tsConfig.titulo} no las ha configurado!</div>
 			{/foreach}
 		</div>
 	</div>

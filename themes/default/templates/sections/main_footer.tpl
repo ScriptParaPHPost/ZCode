@@ -14,11 +14,13 @@
 					</div>
 				</div>
 				<div class="footer-copyright text-center translucent-bg text-uppercase border-top small py-3">
-					<a class="text-decoration-none fw-semibold hover:main-bg-color active:main-bg-color" href="{$tsConfig.url}" rel="internal" title="{$tsConfig.titulo} - {$tsConfig.slogan}">{$tsConfig.titulo}</a> &copy; {$smarty.now|date_format:"Y"}
+					<a class="text-decoration-none fw-semibold hover:main-bg-color active:main-bg-color" href="{$tsConfig.url}" rel="internal" title="{$tsConfig.titulo} - {$tsConfig.slogan}">{$tsConfig.titulo}</a> &copy; {$smarty.now|date_format:"Y"} | versión: <strong>{SCRIPT_VERSION}</strong>
 				</div>
 				<template id="verification-install">
 					<p>Esto es solamente para verificar tú versión con la versión actual.</p>
 					<p>Si remueves esto, no recibirás información sobre actualizaciones y cambios!</p>
+					<input type="hidden" name="script" value="{SCRIPT_NAME}">
+					<input type="hidden" name="version" value="{SCRIPT_VERSION}">
 					<input type="hidden" name="verification-code" value="{$tsVerification}">
 				</template>
 			</footer>
@@ -30,12 +32,13 @@
 {if $tsUser->is_admod && $tsConfig.c_see_mod && $tsNovemods.total}
 	<div id="stickymsg" class="position-fixed py-1 px-3 small toast-box toast-box--danger fw-semibold" style="cursor:default;">Hay <span class="fw-bold">{$tsNovemods.total} contenido{if $tsNovemods.total != 1}s{/if}</span> esperando revisi&oacute;n</div>
 {/if}
-{zCode js=["acciones.js"] scriptGlobal=true more=true}
+
+{zCode js=["acciones.js","dropdown.js"] scriptGlobal=true more=true}
 <script>
-$(document).ready(() => {
-	notifica.popup({$tsNots});
-	mensaje.popup({$tsMPs});
-});
+	$(document).ready(() => {
+		notifica.popup({$tsNots});
+		mensaje.popup({$tsMPs});
+	});
 </script>
 </body>
 </html>

@@ -1,19 +1,20 @@
-# Ignorar directorios
-assets/images/avatar
-assets/images/portadas
-assets/images/uploads
-backup/
-cache/
+# Conexion a base de datos
+config/dbconnect.php
+
+# Archivos de errores
+*.log
+
+# Ignorar todo en la carpeta 'storage'
+storage/*
+
+# No ignorar el archivo '.version' en 'storage'
+!storage/.version
+
+# Ignorar todo en la carpeta 'themes'
+themes/*
+
+# No ignorar la carpeta 'default'
+!themes/default/
 
 # Ignorar archivos
-inc/ext/Avatar.php
-inc/ext/UUID.php
-inc/ext/xsl-sitemap.xml
-.log
-.env
-.lock
-error.log
-changelog.txt
-config.inc.php
-pasos.txt
-robots.txt
+*.txt

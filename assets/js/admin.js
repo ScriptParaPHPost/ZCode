@@ -45,7 +45,7 @@ function sameModal(sametitle, samebody, sameaction) {
 function sameFn(page, params, element) {
    loading.start();
    UPModal.proccess_start();
-	$.post(`${ZCodeApp.url}/${page}.php`, params, a => {
+	$.post(`${ZCodeApp.url}/${page}.php?from=dashboard`, params, a => {
    	UPModal.proccess_end();
    	UPModal.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
    	if(a.charAt(0) == '1') $(element).fadeOut().remove(); 
@@ -56,7 +56,7 @@ function sameFn(page, params, element) {
 const database = {
 	table_action(action, table, id = 0) {
 		loading.start();
-		$.post(`${ZCodeApp.url}/database-${action}.php`, { table }, req => {
+		$.post(`${ZCodeApp.url}/database-${action}.php?from=dashboard`, { table }, req => {
 			let type = (parseInt(req.charAt(0)) === 0) ? 'Error' : 'Bien';
 			let msg = req.substring(3);
 			if(action === 'optimize') {
@@ -81,7 +81,7 @@ const database = {
 		if($.isEmptyObject(tablas)) {
 			UPModal.alert('Espera', 'Debes seleccionar por lo menos una tabla.', false);
 		} else {
-			$.post(`${ZCodeApp.url}/database-all.php`, { action, tablas }, req => {
+			$.post(`${ZCodeApp.url}/database-all.php?from=dashboard`, { action, tablas }, req => {
 				let type = (parseInt(req.charAt(0)) === 1);
 				let msg = req.substring(3);
 				if(type) {
@@ -103,7 +103,7 @@ const database = {
 	create_backup() {
 		loading.start();
 		var tablas = $('input#todos').prop('checked') ? '*' : this.tablas();
-		$.post(`${ZCodeApp.url}/database-backup.php`, { tablas }, req => {
+		$.post(`${ZCodeApp.url}/database-backup.php?from=dashboard`, { tablas }, req => {
 			let type = (parseInt(req.charAt(0)) === 0) ? 'Error' : 'Bien';
 			let msg = req.substring(3);
 			UPModal.alert(type, msg, false);
@@ -114,7 +114,7 @@ const database = {
 
 const htaccess = {
 	backup() {
-		$.get(`${ZCodeApp.url}/htaccess-backup.php`, req => UPModal.alert('Bien', 'La copia fue creada correctamente', false))
+		$.get(`${ZCodeApp.url}/htaccess-backup.php?from=dashboard`, req => UPModal.alert('Bien', 'La copia fue creada correctamente', false))
 	}
 }
 
@@ -128,7 +128,7 @@ var admin = {
    	},
    	accion(aid) {
    		loading.start()
-   		$.post(ZCodeApp.url +'/afiliado-setactive.php', { aid }, h => {
+   		$.post(ZCodeApp.url +'/afiliado-setactive.php?from=dashboard', { aid }, h => {
    			let number = parseInt(h.charAt(0));
 				if(number === 0) UPModal.alert('Error', h.substring(3));
 				let color = (number === 1) ? 'green' : 'purple';
@@ -142,7 +142,7 @@ var admin = {
 	news: {
  		accion(nid) {
 		   loading.start();
-		   $.post(ZCodeApp.url +'/admin-noticias-setInActive.php', { nid }, req => {
+		   $.post(ZCodeApp.url +'/admin-noticias-setInActive.php?from=dashboard', { nid }, req => {
    			let number = parseInt(req.charAt(0));
 				if(number === 0) UPModal.alert('Error', req.substring(3));
 				let color = (number === 1) ? 'success' : 'danger';
@@ -210,7 +210,7 @@ var admin = {
 	   // Cerramos o Abrimos los comentario en foto
 	   setOpenClosed(fid) {
 	   	loading.start()
-         $.post(ZCodeApp.url +'/admin-foto-setOpenClosed.php', { fid }, h => {
+         $.post(ZCodeApp.url +'/admin-foto-setOpenClosed.php?from=dashboard', { fid }, h => {
          	let number = parseInt(h.charAt(0));
          	if(number === 0) UPModal.alert('Error', h.substring(3));
          	let color = number ? 'red' : 'green';
@@ -222,7 +222,7 @@ var admin = {
       // Ocultamos | Mostramos la foto
       setShowHide(fid) {
          loading.start()
-         $.post(ZCodeApp.url +'/admin-foto-setShowHide.php', { fid }, h => {
+         $.post(ZCodeApp.url +'/admin-foto-setShowHide.php?from=dashboard', { fid }, h => {
          	let number = parseInt(h.charAt(0));
          	if(number === 0) UPModal.alert('Error', h.substring(3));
          	let color = number ? 'purple' : 'green';
@@ -267,7 +267,8 @@ var admin = {
 					'pid=' + $('#m_post').val(),
 					'fid=' + $('#m_foto').val()
 				].join('&');
-				$.post(ZCodeApp.url + '/admin-medalla-asignar.php', params, c => {
+				$.post(ZCodeApp.url + '/admin-medalla-asignar.php?from=dashboard', params, c => {
+					console.log(c)
 					UPModal.alert((c.charAt(0) == '0' ? 'Opps!' : 'Hecho'), c.substring(3), false);
 			   	if(c.charAt(0) != '0') {
 						var nmeds = parseInt($('#total_med_assig_' + medal_id).text());
@@ -282,7 +283,7 @@ var admin = {
    users: {
 		setInActive(uid) {
 			loading.start()
-			$.post(ZCodeApp.url +'/admin-users-InActivo.php', { uid }, h => {
+			$.post(ZCodeApp.url +'/admin-users-InActivo.php?from=dashboard', { uid }, h => {
    			let number = parseInt(h.charAt(0));
 				if(number === 0) UPModal.alert('Error', h.substring(3));
 				let color = (number === 1) ? 'green' : 'purple';
@@ -299,7 +300,7 @@ var admin = {
 var ad_afiliado = {
    cache: {},
    detalles: (aid) => {
-   	$.post(ZCodeApp.url + '/afiliado-detalles.php', 'ref=' + aid, response => {
+   	$.post(ZCodeApp.url + '/afiliado-detalles.php?from=dashboard', 'ref=' + aid, response => {
 		   UPModal.setModal({
 				title: 'Detalles del Afiliado',
 				body: response,
@@ -312,13 +313,9 @@ var ad_afiliado = {
    }
 }
 
-function lastCommits() {
-	$.post(ZCodeApp.url + '/github-last-commits.php', req => {
-		console.log(req)
-	});
-}
 
 $(document).ready(() => {
+
 	const { url } = ZCodeApp;
 	const selectJquery = $(".up-select--jquery");
 	selectJquery.on('change', () => {
@@ -329,7 +326,7 @@ $(document).ready(() => {
 	if(empty(redirectURI.val())) redirectURI.val(`${url}/discord.php`)
    $('#social_name').on('change', () => {
    	let replace = $('#social_name option:selected').val() ;
-   	redirectURI.val(`${url}/${replace}.php`);
+   	redirectURI.val(`${url}/${replace}`);
    });
    $("#botonCopiar").on("click", () => {
       redirectURI.select();
@@ -360,7 +357,7 @@ $(document).ready(() => {
       var formData = new FormData(this);
       $('#uploadForm button').html('Generando...');
       $.ajax({
-         url: `${ZCodeApp.url}/admin-upload-favicon.php`,
+         url: `${ZCodeApp.url}/admin-upload-favicon.php?from=dashboard`,
          type: 'POST',
          data: formData,
          contentType: false,

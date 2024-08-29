@@ -37,7 +37,7 @@ const cuenta = {
 	avatar(name) {
 		loading.start();
 		let active = (name === 'web') ? 0 : 1;
-		this.sameToast('avatar-social', { name, active }, () => setTimeout(() => location.reload(), 3000));
+		this.sameToast('avatar-social', { name, active }, () => setTimeout(() => location.reload(), 1000));
 	},
 	guardar_datos() {
 		loading.start();
@@ -64,23 +64,6 @@ function desvincular(social) {
 			});
 		}
 	});
-}
-
-function startCountdown() {
-   let countdown = 30; // Duración del contador en segundos
-   let interval = setInterval(function() {
-      countdown--; // Decrementa el contador
-      $("#countdown").text(`${countdown}s`); // Actualiza el texto del contador
-
-      if (countdown <= 0) {
-         clearInterval(interval); // Detiene el contador cuando llega a 0
-         $('#regenerate').html(''); // Limpiamos
-         // Realiza una llamada AJAX usando $.post
-         $.post(`${ZCodeApp.url}/cuenta-qr-regenerate.php`, response => $('#regenerate').html(response));
-         // Reinicia el contador
-         startCountdown();
-      }
-   }, 1000); // Intervalo de 1 segundo (1000 ms)
 }
 
 $(document).ready(() => {
@@ -123,15 +106,13 @@ $(document).ready(() => {
 	  	});
 	}
 	//
-	if($('.remove_2fa').length > 0) imported('cuenta/TFactorAuth.js', 'twoFactorAuthRemove', {});
-	if($('.regenerate_token').length > 0) {
-		$('.regenerate_token').on('click', () => imported('cuenta/TFactorAuth.js', 'tokenRegenerate', {}));
-	}
-	if($('small#countdown').length > 0) {
-      startCountdown();
-		$.post(`${ZCodeApp.url}/cuenta-qr-regenerate.php`, function(response) {
-         $('#regenerate').html(response); // Mostramos
-      });
+
+	if ($('input[name="pagina"]').val() === 'seguridad') {
+    	imported('cuenta/security.js', 'TFactorAuthSecurity', {});
+    	if($('.remove_2fa').length > 0) imported('cuenta/TFactorAuth.js', 'twoFactorAuthRemove', {});
+		if($('.regenerate_token').length > 0) {
+			$('.regenerate_token').on('click', () => imported('cuenta/TFactorAuth.js', 'tokenRegenerate', {}));
+		}
 	}
 	//
 	if ($('input[name="pagina"]').val() === 'apariencia') {

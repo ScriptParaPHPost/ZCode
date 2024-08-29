@@ -27,7 +27,7 @@ export function changeAvatar() {
       avatarLoading.show();
       const imageGet = $(this).parent().data('avatar');
       $.post(`${ZCodeApp.url}/cuenta-avatar-change.php`, { image: imageGet }, function(src) {
-         src += `?=vs${generarCadenaAleatoria(10)}`;
+         src += `?=vs${string_random(10)}`;
          avatarImg.add(avatarLoader).attr('src', src);
          avatarLoading.hide();
       });

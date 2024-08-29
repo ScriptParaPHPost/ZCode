@@ -384,21 +384,6 @@ var mensaje = {
 	close: () => $('#mp_list').slideUp()
 }
 
-function decodeEmail() {
-	const PM = $('#protected_mail');
-	if ($('#protected_mail').length > 0) {
-		const PMailkey = PM.data('key');
-		const PMailpublic = PM.data('public');
-		const PMOrder = PMailkey.split("").sort().join("");
-		const keyMap = {};
-		// Crear un mapa de búsqueda para mejorar la eficiencia
-		for (let i = 0; i < PMailkey.length; i++) keyMap[PMailkey[i]] = PMOrder[i];
-		// Decodificar el correo usando el mapa
-		const EmailDecode = PMailpublic.split("").map(char => keyMap[char]).join("");
-		PM.html(`<a href="mailto:${EmailDecode}">${EmailDecode}</a>`);
-	}
-}
-
 // NEWS
 const news = {
 	total: 0,
@@ -445,32 +430,30 @@ $(document).ready(() => {
    	click:     () => location.href = `${ZCodeApp.url}/moderacion/`
 	});
 
-	$('a[data-dropopen]').on('click', function(event) {
-		event.preventDefault();
-		const dropopen = $(this).data('dropopen');
-		const dropdownElement = $(`.up-dropdown[data-dropname="${dropopen}"]`);
-		let isTrue = dropdownElement.attr('data-dropdown') === 'true';
-		// Cerramos todos los dropdown abiertos
-		$('.up-dropdown').attr('data-dropdown', false);
-		// Alternar el estado del dropdown específico
-		if (!isTrue) dropdownElement.attr('data-dropdown', true);
-	});
+	$('.drop-select--toggle').on('click', function() {
+      var $menu = $(this).siblings('.drop-select--menu');
+      $('.drop-select--menu').not($menu).hide(); // Hide other menus
+      $menu.toggle();
+   });
 
-	$('[data-dropaction]').on('click', function(event) {
-		let dropAction = $(this).data('dropaction');
-		$('.up-subdropdown')[(dropAction ? 'addClass' : 'removeClass')]('show');
-		/**
-		 *  Añadir height automatico
-		*/
-		let totalItems = $('.up-subdropdown .subitem-drop').length;
-		let firstHeight = $('.up-subdropdown .subitem-drop').first().height();
-    	let Height = (Math.ceil(firstHeight) * totalItems) + ((0.5 * 16) * totalItems) + 'px'; /* 16px root */
-  		const style = {
-  			height: dropAction ? Height : 'auto',
-			transition: 'height .4s ease-in-out'
-  		}
-		$('.up-dropdown--secondary').css(style);
-	});
+   // Select dropdown item
+   $('.drop-select').on('click', '.drop-select--item', function() {
+      var $this = $(this);
+      var selectedText = $this.find('span').text();
+      var selectedValue = $this.data('value');
+      var $select = $this.closest('.drop-select');
+      
+      $select.find('.drop-select--toggle').text(selectedText);
+      $select.find('input[type="hidden"]').val(selectedValue);
+      $select.find('.drop-select--menu').hide();
+   });
+
+   // Close dropdown if clicked outside
+   $(document).on('click', function(event) {
+      if (!$(event.target).closest('.drop-select').length) {
+         $('.drop-select--menu').hide();
+      }
+   });
 
 	const displayDropdown = [
 		{id: '#mon_list', attrName: 'Monitor', callFunction: notifica.last},
@@ -484,8 +467,6 @@ $(document).ready(() => {
 			}
 		});
 	});
-
-	decodeEmail();
 
 	if( $('#respuesta').length ) {
 		$('#respuesta').css({ height: 40 }).html('').wysibb({ buttons: "smilebox,|,bold,italic,underline,strike" });

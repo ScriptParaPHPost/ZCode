@@ -33,7 +33,7 @@
 						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'buscador'} active{/if}" title="Buscador" href="{$tsConfig.url}/buscador/">Buscador</a>
 						{if $tsUser->is_member}
 							{if $tsUser->is_admod || $tsUser->permisos.gopp}
-				  				<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsSubmenu == 'agregar'} active{/if}" title="Agregar Post" href="{$tsConfig.url}/agregar.php">Agregar Post</a>
+				  				<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsSubmenu == 'agregar'} active{/if}" title="Agregar Post" href="{$tsConfig.url}/agregar/">Agregar Post</a>
 				  			{/if}
 				  			<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'mod-history'} active{/if}" title="Historial de Moderaci&oacute;n" href="{$tsConfig.url}/mod-history/">Historial</a>
 				  			{if $tsUser->is_admod || $tsUser->permisos.moacp}

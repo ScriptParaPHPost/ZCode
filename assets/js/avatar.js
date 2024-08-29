@@ -35,7 +35,7 @@ var avatar = {
 		$(".avatar-loading").hide();
 	},
 	cortar: img => {
-		newImageUpload = img + '?t=' + generarCadenaAleatoria(10);
+		newImageUpload = img + '?t=' + string_random(10);
 		UPModal.setModal({
 			title: 'Cortar avatar',
 			body: `<img class="avatar-cortar" src="${newImageUpload}" />`,
@@ -69,7 +69,7 @@ var avatar = {
 			marginTop: '-' + Math.round(ry * coords.y) + 'px'
 		});
 	},
-	recargar: () => $("#avatar-img, #avatar-menu").attr("src", avatar.current + '?t=' + generarCadenaAleatoria(10)),
+	recargar: () => $("#avatar-img, #avatar-menu").attr("src", avatar.current + '?t=' + string_random(10)),
 	guardar: async () => {
 		if (empty(avatar.informacion)) cuenta.alerta('Debes seleccionar una parte de la foto', 0);
 		else {

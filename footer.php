@@ -6,7 +6,7 @@ if (!defined('TS_HEADER')) exit('No se permite el acceso directo al script');
  * El footer permite mostrar la plantilla
  *
  * @name    footer.php
- * @author  Miguel92 & PHPost.es
+ * @author  ZCode | PHPost
  */
 
 /*

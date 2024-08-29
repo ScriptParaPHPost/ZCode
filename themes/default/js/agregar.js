@@ -138,7 +138,7 @@ function publicar() {
 
 // Con esta función ya publicaremos el post
 function createPostNow() {
-	UPModal.alert('Publicando', 'Comprobando contenido...', false);
+	UPModal.proccess_start('Comprobando contenido...','Publicando');
 	confirmar = false;
 	$('form[name="newpost"]').submit();
 }

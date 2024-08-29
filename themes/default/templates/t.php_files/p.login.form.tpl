@@ -14,9 +14,9 @@
 		{if $SocialMager}
 			<div class="form-line d-{if isset($pageLogin)}block{else}flex justify-content-center align-items-center column-gap-2{/if} mb-3">
 				{foreach $SocialMager key=i item=social}
-					<a class="btn btn--{$i} btn-active" href="{$social}">
+					<a class="btn btn--{$i}{if !isset($pageLogin)} btn--only-icon{/if} btn-active" href="{$social}">
 						{uicon name="$i" folder="prime" class="btn--icon"}
-						<span class="btn--text{if !isset($pageLogin)} d-none{/if}">Con {$i}</span>
+						<span class="btn--text">Con {$i}</span>
 					</a>
 				{/foreach}
 			</div>

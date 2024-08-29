@@ -42,6 +42,8 @@
 	--linkedin-active: #005983;
 	--twitter: #55acee;
 	--twitter-active: #2795e9;
+	--reddit: #FF4500;
+	--reddit-active: #C53500;
 	--telegram: #0088cc;
 	--telegram-active: #1b91cf;
 
@@ -6349,42 +6351,65 @@ lite-youtube.lyt-activated > .lty-playbtn {
 }
 
 [class*="btn btn--"] {
-	all:  unset;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: .5rem;
-	place-items: center;
-	padding: .5rem;
-	margin: 0.325rem 0;
-	cursor: pointer;
-	border-radius: var(--border-radius-sm);
-}
-[class*="btn btn--"], .btn--text { 
-	color:  #FFF;
-	text-decoration: none;
+	--button-social-color: #333;
+	all: unset;
+	display: grid;
+	grid-template-columns: 2.5rem 1fr;
+	column-gap: .5rem;
+	place-items: center start;
+	width: 100%;
 	font-weight: 500;
-	padding-right: 0.5rem;
+	box-sizing: border-box;
+	margin-bottom: 0.875rem;
+	border-radius: var(--border-radius);
+	overflow: hidden;
+	background: var(--button-social-color);
+	cursor: pointer;
+	&:hover {
+		box-shadow: 0 0 .5rem var(--button-social-color);
+	}
+	.btn--text, .btn--icon {
+		fill: #F4F4F4;
+		color: #F4F4F4;
+	}
+	.btn--icon {
+		width: 2.5rem;
+		height: 2.5rem;
+		padding: 0.5rem;
+		background: rgba(0, 0, 0, .2);
+	}
+	&.btn--only-icon {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 3rem;
+		height: 3rem;
+		.btn--icon {
+			padding: 0!important;
+			background: rgba(0, 0, 0, 0);
+		}
+		.btn--text {
+			display: none;
+			text-decoration: none;
+		}
+	}
 }
-.btn--icon {
-	fill: #FFF;
-	width: 1.5rem;
-	height: 1.5rem;
-}
-.btn.btn--discord { background: var(--discord); }
-.btn.btn--discord:hover { background: var(--discord-active); }
-.btn.btn--facebook { background: var(--facebook); }
-.btn.btn--facebook:hover { background: var(--facebook-active); }
-.btn.btn--github { background: var(--github); }
-.btn.btn--github:hover { background: var(--github-active); }
-.btn.btn--google { background: var(--google); }
-.btn.btn--google:hover { background: var(--google-active); }
-.btn.btn--linkedin { background: var(--linkedin); }
-.btn.btn--linkedin:hover { background: var(--linkedin-active); }
-.btn.btn--twitter { background: var(--twitter); }
-.btn.btn--twitter:hover { background: var(--twitter-active); }
-.btn.btn--telegram { background: var(--telegram); }
-.btn.btn--telegram:hover { background: var(--telegram-active); }
+.btn.btn--discord { --button-social-color: var(--discord); }
+.btn.btn--discord:hover { --button-social-color: var(--discord-active); }
+.btn.btn--facebook { --button-social-color: var(--facebook); }
+.btn.btn--facebook:hover { --button-social-color: var(--facebook-active); }
+.btn.btn--github { --button-social-color: var(--github); }
+.btn.btn--github:hover { --button-social-color: var(--github-active); }
+.btn.btn--google { --button-social-color: var(--google); }
+.btn.btn--google:hover { --button-social-color: var(--google-active); }
+.btn.btn--linkedin { --button-social-color: var(--linkedin); }
+.btn.btn--linkedin:hover { --button-social-color: var(--linkedin-active); }
+.btn.btn--reddit { --button-social-color: var(--reddit); }
+.btn.btn--reddit:hover { --button-social-color: var(--reddit-active); }
+.btn.btn--twitter { --button-social-color: var(--twitter); }
+.btn.btn--twitter:hover { --button-social-color: var(--twitter-active); }
+.btn.btn--telegram { --button-social-color: var(--telegram); }
+.btn.btn--telegram:hover { --button-social-color: var(--telegram-active); }
 
 :where(.disabled, [disabled]) {
 	pointer-events: none;
@@ -6483,10 +6508,14 @@ lite-youtube.lyt-activated > .lty-playbtn {
 	--btn-danger: #C02C2C;
 	--btn-danger-hover: #931010;
 	--btn-danger-active: #802020;
+	--btn-warning: #ffe9a7;
+	--btn-warning-hover: #DFCA89;
+	--btn-warning-active: #F6D46F;
 	--color-icon: var(--main-bg);
 	inset: 0;
 	z-index: 999;
 	position: fixed;
+	backdrop-filter: blur(4px);
 }
 [data-theme="dark"] .UPModal {
 	--background: var(--html-bg);
@@ -6496,6 +6525,9 @@ lite-youtube.lyt-activated > .lty-playbtn {
 	--btn-danger: #EC4D4D;
 	--btn-danger-hover: #EC5F5F;
 	--btn-danger-active: #D46868;
+	--btn-warning: #DA6F1D;
+	--btn-warning-hover: #C4641A;
+	--btn-warning-active: #BC5C13;
 }
 .UPModal[data-modal-status="success"] {
 	--modal-border-color: #41B06E;
@@ -6528,10 +6560,10 @@ lite-youtube.lyt-activated > .lty-playbtn {
 	inset: 0;
 	position: fixed;
 	background: var(--body-bg);
-	opacity: .6;
+	opacity: .76;
 }
 [data-theme="dark"] .UPModal-mask {
-	background: var(--html-bg);
+	background: #000;
 }
 .UPModal-dialog {
 	background: var(--background);
@@ -6543,8 +6575,17 @@ lite-youtube.lyt-activated > .lty-playbtn {
 	box-shadow: var(--box-shadow);
 	z-index: 999;
 }
+.UPModal-dialog.UPModal-dialog-default {
+	width: var(--size-default);
+}
+.UPModal-dialog.UPModal-dialog-sm {
+	width: var(--size-sm);
+}
 .UPModal-dialog.UPModal-dialog-lg {
-	width: 40%;
+	width: var(--size-lg);
+}
+.UPModal-dialog.UPModal-dialog-xl {
+	width: var(--size-xl);
 }
 .UPModal-dialog .UPModal-header {
 	font-size: 1.325rem;
@@ -6656,7 +6697,6 @@ lite-youtube.lyt-activated > .lty-playbtn {
 }
 .UPModal-dialog .UPModal-buttons .UPModal-button-danger {
 	--btn-border-bg: var(--btn-danger);
-	color:#FFF;
 }
 .UPModal-dialog .UPModal-buttons .UPModal-button-danger:hover {
 	--btn-border-bg: var(--btn-danger-hover);
@@ -6664,18 +6704,16 @@ lite-youtube.lyt-activated > .lty-playbtn {
 .UPModal-dialog .UPModal-buttons .UPModal-button-danger:active {
 	--btn-border-bg: var(--btn-danger-active);
 }
-.UPModal .UPModal-buttons .UPModal-button-outline {
-	--btn-border-color: var(--btn-danger);
-	color: var(--btn-danger);
+.UPModal-dialog .UPModal-buttons .UPModal-button-warning {
+	--btn-border-bg: var(--btn-warning);
 }
-.UPModal-dialog .UPModal-buttons .UPModal-button-outline:hover {
-	--btn-border-color: var(--btn-danger-hover);
-	color: var(--btn-danger-hover);
+.UPModal-dialog .UPModal-buttons .UPModal-button-warning:hover {
+	--btn-border-bg: var(--btn-warning-hover);
 }
-.UPModal-dialog .UPModal-buttons .UPModal-button-outline:active {
-	--btn-border-color: var(--btn-danger-active);
-	color: var(--btn-danger-active);
+.UPModal-dialog .UPModal-buttons .UPModal-button-warning:active {
+	--btn-border-bg: var(--btn-warning-active);
 }
+
 .UPModal-dialog.UPModal-alert .UPModal-dialog .UPModal-body {
 	padding: .765rem 1rem;
 }

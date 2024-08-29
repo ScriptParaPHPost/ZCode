@@ -11,6 +11,9 @@
 				</a>
 		  	</div>
 	 	</div>
+	 	<script>
+	 		showNotification(`{if $noti.total == 1}{$noti.user}{else}{$tsConfig.titulo}{/if}`, `{$noti.text} {$noti.ltext}`, ZCodeApp.images.assets + `/favicon/logo-128.webp`, '{$noti.link}');
+	 	</script>
 	{/foreach}
 	{foreach from=$tsMensajes.data item=mp key=id}
 	 	<div class="UIBeeper_Full" id="beep_m{$id}">
@@ -25,5 +28,8 @@
 				</a>
 			</div>
 	 	</div>
+	 	<script>
+	 		showNotification(`Nuevo mensaje`, `{$mp.mp_preview}`, ZCodeApp.images.assets + `/favicon/logo-128.webp`, '{$tsConfig.url}/mensajes/leer/{$mp.mp_id}');
+	 	</script>
 	{/foreach}
 </div>

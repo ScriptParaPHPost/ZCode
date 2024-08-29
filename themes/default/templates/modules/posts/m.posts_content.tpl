@@ -16,6 +16,15 @@
    {if !$tsUser->is_member}{include "m.global_ads_728.tpl"}{/if}
         
 	<span class="d-block px-4{if !$tsUser->is_member} mt-3{/if}">{$tsPost.post_body|unescape}</span>
+
+   {if $tsPost.post_fuentes}
+      <div class="pt-3 mt-3 border-top">
+         <h5>Fuentes:</h5>
+         {foreach $tsPost.post_fuentes key=titulo item=enlace name=coma}
+            <a href="{$enlace}" target="_blank" class="fw-semibold text-decoration-none">{$titulo}</a>{if $smarty.foreach.coma.last}{else}, {/if}
+         {/foreach}
+      </div>
+   {/if}
      
    {if $tsPost.user_firma && $tsConfig.c_allow_firma}
       <span class="d-block mt-2 py-1 firma monospace rounded text-center">{$tsPost.user_firma}</span>

@@ -17,6 +17,21 @@
 	<small class="upform-status help"></small>
 </div>
 
+{if $tsConfig.c_allow_fuentes}
+	<div class="upform-group">
+		<label class="upform-label" for="fuentes">Fuentes: <small>Para añadir hazlo así [Titulo-Nombre](URL), si son más separalas por ; o uno debajo de otro</small></label>
+		<div class="upform-group-input upform-icon">
+			<div class="upform-input-icon">{uicon name="pen"}</div>
+			<textarea id="fuentes" name="fuentes" placeholder="[{$tsConfig.titulo}]({$tsConfig.url}); [pag2](otra_url)" class="upform-textarea">{$tsDraft.b_fuentes}</textarea>
+		</div>
+		<small class="upform-status help"></small>
+	</div>
+{else}
+	{if $tsUser->is_admod == 1}
+		<div class="empty">Tu lo puedes ver ya que eres administrador, puedes activar las fuentes desde <a href="{$tsConfig.url}/admin/configs">configuraciones</a></div>
+	{/if}
+{/if}
+
 <div class="upform-group">
 	<label class="upform-label" for="tags">Tags: <small>Una lista separada por comas, que describa el contenido.</small></label>
 	<div class="upform-group-input upform-icon">

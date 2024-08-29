@@ -8,8 +8,10 @@
 		</div>
 		<div class="d-block d-lg-grid up-card--body webp-gif">
 			<div class="avatar-content avatar-big-cont position-relative mx-auto my-3 overflow-hidden shadow-sm rounded avatar avatar-19">
-				<div style="display:none;" class="avatar-loading">
-					{uicon name="ring-resize" folder="spinner"}
+				<div style="display:none;" class="avatar-loading position-absolute top-0 start-0 w-100 h-100 z-3">
+					<div class="d-flex justify-content-center align-items-center">
+						{uicon name="ring-resize" folder="spinner" class="avatar avatar-6"}
+					</div>
 				</div>
 				<img src="{$tsUser->avatar['img']}" class="avatar-big avatar avatar-19" id="avatar-img" loading="lazy"/>
 			</div>

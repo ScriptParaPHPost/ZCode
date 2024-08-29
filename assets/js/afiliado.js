@@ -14,14 +14,15 @@ const afiliado = {
 		})
 	},
 	enviar() {
-		verifyInput('#aurl', 'La url no puede estar vacío.');
-		verifyInput('#atitle', 'El titulo no puede estar vacío.');
-		verifyInput('#atxt', 'La descripcion no puede estar vacío.');
+		let data1 = verifyInput('#aurl', 'La url no puede estar vacío.');
+		let data2 = verifyInput('#atitle', 'El titulo no puede estar vacío.');
+		let data3 = verifyInput('#atxt', 'La descripcion no puede estar vacío.');
+		if(data1 === false || data2 === false || data3 === false ) return;
 		UPModal.proccess_start('Enviando los datos...');
 		afiliado.enviando($('form[name="AFormInputs"]').serialize());
 	},
 	enviando(params) {
-		loading.start() 
+		loading.start();
 		$.post(ZCodeApp.url + '/afiliado-enviando.php', params, h => {
 			UPModal.proccess_end();
 			switch(h.charAt(0)){

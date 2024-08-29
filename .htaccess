@@ -1,15 +1,14 @@
-ErrorDocument 400 /400.html
-ErrorDocument 401 /401.html
-ErrorDocument 403 /403.html
-ErrorDocument 404 /404.html
-#ErrorDocument 500 /500.html
-#ErrorDocument 501 /501.html
+ErrorDocument 401 /errors/401.html
+ErrorDocument 403 /errors/403.html
+ErrorDocument 404 /errors/404.html
+#ErrorDocument 500 /errors/500.html
+#ErrorDocument 501 /errors/501.html
 
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
-## NO DEBEN EDITAR ESTO, YA QUE PUEDE GENERAR ERROR! DEBE TENER LAS LINEAS 13 HASTA 16
+## NO DEBEN EDITAR ESTO, YA QUE PUEDE GENERAR ERROR! DEBE TENER LAS LINEAS 12 HASTA 15
 #RewriteBase /
 #RewriteCond %{SERVER_PORT} 80
 #RewriteCond %{HTTP_HOST} ^http://TU_SITIO_WEB.com[NC,OR]
@@ -23,7 +22,6 @@ RewriteCond %{HTTP_USER_AGENT} ^(-|\.|') [OR]
 RewriteCond %{HTTP_USER_AGENT} ^(.*)(<|>|%3C|%3E)(.*) [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^(java|curl|wget)(.*) [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^(.*)(libwww-perl|libwwwperl|snoopy|curl|wget|winhttp|python|nikto|scan|clshttp|archiver|loader|email|harvest|fetch|extract|grab|miner|suck|reaper|leach)(.*) [NC,OR]
-
 RewriteCond %{REQUEST_URI} ^(/,|/;|/<|/>|/'|/`|/%2C|/%3C|/%3E|/%27|/////) [NC,OR]
 RewriteCond %{HTTP_REFERER} ^(.*)(%00|%08|%09|%0A|%0B|%0C|%0D|%0E|%0F|%2C|<|>|'|%3C|%3E|%26%23|%27|%60)(.*) [NC,OR]
 RewriteCond %{QUERY_STRING} ^(.*)(%00|%08|%09|%0A|%0B|%0C|%0D|%0E|%0F|%2C|%3C|%3E|%27|%26%23|%60)(.*) [NC,OR]
@@ -41,58 +39,62 @@ LimitRequestBody 10240000
 RewriteRule ^$ index.php?do=home [QSA,L]
 RewriteRule ^pagina([0-9]+)$ index.php?page=$1 [QSA,L]
 RewriteRule ^index.php$ index.php?do=home [QSA,L]
-RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ inc/php/cuenta.php?accion=$1 [QSA,L]
-RewriteRule ^agregar.php$ inc/php/agregar.php [QSA,L]
+RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ app/helpers/cuenta.php?accion=$1 [QSA,L]
+#RewriteRule ^agregar/$ app/helpers/agregar.php [QSA,L]
 
 # CALLBACK PARA REDES SOCIALES
-RewriteRule ^(github|discord|google|facebook)\.php$ inc/callback/$1.php [QSA,L]
+RewriteRule ^(github|discord|google|facebook|reddit)\.php$ app/callback/$1.php [QSA,L]
 
 #PERFIL
-RewriteRule ^perfil/([A-Za-z0-9_-]+)(/([0-9]+))?$ inc/php/perfil.php?user=$1&pid=$3 [QSA,L]
+RewriteRule ^perfil/([A-Za-z0-9_-]+)(/([0-9]+))?$ app/helpers/perfil.php?user=$1&pid=$3 [QSA,L]
 
 # PORTAL
 RewriteRule ^mi/$ index.php?do=portal [QSA,L]
 
 # POSTS
+RewriteRule ^posts/([a-z]+)/$ index.php?do=posts&cat=$1 [QSA,L]
 RewriteRule ^posts(/([a-z]+))?(pagina([0-9]+))?$ index.php?do=posts&action=$2&page=$4 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)(/pagina([0-9]+))?$ index.php?do=posts&cat=$1&page=$3 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/([0-9]+)/(.*)\.html$ index.php?do=posts&cat=$1&post_id=$2&title=$3 [QSA,L]
-RewriteRule ^posts/editar/([0-9]+)$ inc/php/agregar.php?action=editar&pid=$1 [QSA,L]
+RewriteRule ^posts/editar/([0-9]+)$ app/helpers/agregar.php?action=editar&pid=$1 [QSA,L]
 
 # POSTS SHORTEN
 RewriteRule ^p/([0-9]+)$ index.php?do=posts&p=$1 [QSA,L]
 
 # RECUPERAR PASS Y VALIDAR CUENTA
-RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ inc/php/password.php?hash=$1&type=$2&email=$3
-RewriteRule ^validar/(.+)$ inc/php/validar.php?encode=$1 [QSA,L]
+RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ app/helpers/password.php?hash=$1&type=$2&email=$3
+RewriteRule ^validar/(.+)$ app/helpers/validar.php?encode=$1 [QSA,L]
 
 # FOTOS
-RewriteRule ^fotos/([A-Za-z0-9_-]+)(/([0-9]+))?(.*)\.html?$ inc/php/fotos.php?action=album&user=$1&page=$3&fid=$4 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)(/([0-9]+))?(.*)\.html?$ app/helpers/fotos.php?action=album&user=$1&page=$3&fid=$4 [QSA,L]
 
-# MODERACI?N
-RewriteRule ^moderacion/buscador/([0-2]+)/([0-2]+)/(.+)$ inc/php/moderacion.php?action=buscador&act=search&m=$1&t=$2&texto=$3 [QSA,L]
+# MODERACION
+RewriteRule ^moderacion/buscador/([0-2]+)/([0-2]+)/(.+)$ app/helpers/moderacion.php?action=buscador&act=search&m=$1&t=$2&texto=$3 [QSA,L]
 
-#HISTORIAL DE MODERACI?N
-RewriteRule ^mod-history/([A-Za-z0-9_-]+)/?$ inc/php/mod-history.php?ver=$1 [QSA,L]
+#HISTORIAL DE MODERACION
+RewriteRule ^mod-history/([A-Za-z0-9_-]+)/?$ app/helpers/mod-history.php?ver=$1 [QSA,L]
 
 # SITEMAP & RSS
-RewriteRule ^rss/([A-Za-z0-9_-]+)(/([A-Za-z0-9_-]+))?$ inc/php/rss.php?type=$1&user=$3 [QSA,L]
+RewriteRule ^rss/([A-Za-z0-9_-]+)(/([A-Za-z0-9_-]+))?$ app/helpers/rss.php?type=$1&user=$3 [QSA,L]
 
 # COMUNIDADES
-RewriteRule ^comunidades(/([A-Za-z0-9_-]+))?(/([0-9]+))?(/([A-Za-z0-9_-]+))?(/([A-Za-z0-9_-]+))?(/([0-9]+))?$ inc/php/comunidades.php?action=$2&act=$3&bid=$4&page=$5&c_seo=$6&s_seo=$7 [QSA,L]
+RewriteRule ^comunidades(/([A-Za-z0-9_-]+))?(/([0-9]+))?(/([A-Za-z0-9_-]+))?(/([A-Za-z0-9_-]+))?(/([0-9]+))?$ app/helpers/comunidades.php?action=$2&act=$3&bid=$4&page=$5&c_seo=$6&s_seo=$7 [QSA,L]
 
 # LOGIN & REGISTRO
-RewriteRule ^(login|registro)/?$ inc/php/access.php?action=$1 [QSA,L]
+RewriteRule ^(login|registro)/?$ app/helpers/access.php?action=$1 [QSA,L]
 
-# UPGRADE
-RewriteRule ^update/index.php$ update/index.php [QSA,L]
+# INSTALL
+RewriteRule ^install/(([A-Za-z0-9_-]+))?$ app/zcode/install.php?step=$1 [QSA,L]
+
+RewriteRule ^(admin|moderacion)/?([A-Za-z0-9_-]+)?/?([A-Za-z0-9_-]+)?/?([0-9]+)?$ admin/helpers/$1.php?template=$1&action=$2&act=$3&id=$4 [QSA,L]
 
 # EXTRAS
-RewriteRule ^([A-Za-z0-9_-]+)\.php$ inc/php/ajax_files.php?action=$1 [QSA,L]
-RewriteRule ^([A-Za-z0-9_-]+)/(([A-Za-z0-9_-]+))?$ inc/php/$1.php?action=$2&id=$3 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+).php$ app/helpers/ajax_files.php?action=$1 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/?(([A-Za-z0-9_-]+))?/$ app/helpers/$1.php?action=$2 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/?(([A-Za-z0-9_-]+))?/(([0-9]+))$ app/helpers/$1.php?action=$2&id=3 [QSA,L]
 
 # NO PERMITIR LA DESCARGA DE ARCHIVOS .TPL
-<FilesMatch "\.(htaccess|ini|log|cfg|tpl|env|version|md)$">
+<FilesMatch "\.(htaccess|ini|log|cfg|tpl|env|version|md|cache)$">
 Order Allow,Deny
 Deny from all
 </FilesMatch>

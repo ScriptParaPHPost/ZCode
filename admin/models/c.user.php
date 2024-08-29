@@ -1,0 +1,468 @@
+<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+/**
+ * Modelo para el control de los usuarios
+ *
+ * @name    c.user.php
+ * @author  ZCode | PHPost
+ */
+
+class tsUser  {
+
+	// SI EL USUARIO ES MIEMBRO CARGAMOS DATOS DE LA TABLA
+	public $info = [];
+	
+	// EL USUARIO ESTA LOGUEADO?
+	public $is_member = 0;
+	
+	// ES USUARIO ES ADMINISTRADOR
+	public $is_admod = 0;
+	
+	// EL USUARIO ESTA BANEADO
+	public $is_banned = 0;
+
+	// NOMBRE A MOSTRAR
+	public $nick = 'Anonymous';
+	
+	// USER ID
+	public $uid = 0;
+	
+	// SI OCURRE UN ERROR ESTA VARIABLE CONTENDRA EL NUMERO DE ERROR
+	public $is_error;
+	
+	public $session;
+	
+	public $permisos;
+	
+	public $email;
+	
+	public $avatar = [];
+
+	public $use_avatar;
+
+	public $avatar_folder;
+
+	// Usado por el login
+	public $is_type;
+	public $response;
+
+	public function __construct() {
+		global $tsCore, $tsMedal;
+		/* CARGAR SESSION */
+		$this->session = new tsSession();
+		$this->setSession();
+	}
+
+	/*
+		CARGA LA SESSION
+		setSession()
+	*/
+	public function setSession() {
+		// Si no existe una sessión la creamos, si existe la actualizamos...
+		if ( ! $this->session->read()) $this->session->create();
+		else {
+			// Actualizamos sesión
+			$this->session->update();
+			// Cargamos información
+			$this->loadUser();
+		}
+	}
+	
+	/*
+		CARGAR USUARIO POR SU ID
+		loadUser()
+	*/
+	public function loadUser($login = FALSE) {
+		global $tsCore;
+		$time = time();
+		// Cargar datos
+		$sql = "SELECT u.*, s.* FROM @sessions s, @miembros u WHERE s.session_id = '{$this->session->ID}' AND u.user_id = s.session_user_id";
+		$query = db_exec([__FILE__, __LINE__], 'query', $sql);
+		$this->info = db_exec('fetch_assoc', $query);
+
+		// Existe el usuario?
+		if(!isset($this->info['user_id'])) return FALSE;
+		// PERMISOS SEGUN RANGO
+		$this->info['rango'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT r_name, r_color, r_image, r_allows FROM @rangos WHERE rango_id = {$this->info['user_id']} LIMIT 1"));
+		// PERMISOS SEGUN RANGO
+		$datis = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT r_allows FROM @rangos WHERE rango_id = {$this->info['user_rango']} LIMIT 1"));
+		$this->permisos = unserialize($datis['r_allows']);
+		/* ES MIEMBRO */
+		$this->is_member = 1;
+		if($this->permisos['sumo'] == false && $this->permisos['suad'] == true) {
+			$this->is_admod = 1;
+		} elseif($this->permisos['sumo'] == true && $this->permisos['suad'] == false) {
+			$this->is_admod = 2;
+		} elseif($this->permisos['sumo'] || $this->permisos['suad']) {
+			$this->is_admod = true;
+		} else {
+			$this->is_admod = 0;
+		}
+	
+		// NOMBRE
+		$this->nick = $this->info['user_name'];
+		$this->uid = $this->info['user_id'];
+		$this->email = $this->ProtectedEmail();
+		$this->is_banned = $this->info['user_baneado'];
+
+		$this->use_avatar = $tsCore->getAvatar($this->uid, 'use');
+		
+		// ULTIMA ACCION
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_lastactive = $time WHERE user_id = {$this->uid}");
+		// Si ha iniciado sesión cargamos estos datos.
+		if($login) {
+			// Last login
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_lastlogin = {$this->session->time_now} WHERE user_id = {$this->uid}");
+			/* REGISTAR IP */
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_last_ip = '{$this->session->ip_address}' WHERE user_id = {$this->uid}");
+		}
+		// Borrar variable session
+		unset($this->session);
+	}
+
+
+	private function ProtectedEmail() { 
+		$charrandom = '+-.0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
+		$random = str_shuffle($charrandom); 
+		$text = ''; 
+		$email = $this->info['user_email'];
+		for ( $i = 0; $i < strlen($email); $i += 1) $text .= $random[strpos($charrandom, $email[$i])];
+		$data = [
+			'key'	=>	$random,
+			'public' => $text
+		];
+		return $data;
+	}
+
+	/**
+	 * Se repiten en 3 funciones diferentes
+	*/
+	public function sessionUpdate(int $id = 0, bool $rem = true, ?string $twofactor = null) {
+		// Si no tiene el 2fa activo, iniciamos sesión
+		if(empty($twofactor)) {
+			// Actualizamos la session
+			$this->session->update($id, $rem, TRUE);
+		}
+		// Cargamos la información del usuario
+		$this->loadUser(true);
+	}
+
+	/*
+		HACEMOS LOGIN
+		loginUser($username, $password, $remember = false, $redirectTo = NULL);
+	*/
+	function loginUser(string $username = '', string $password = '', bool $remember = false, bool $redirectTo = false){
+		global $tsCore;
+		/* ARMAR VARIABLES */
+		$filter = filter_var($username, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+		/* CONSULTA */  
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_secret_2fa, user_activo, user_baneado FROM @miembros WHERE user_$filter = '$username' LIMIT 1"));
+		// Existe el usuario
+		if(empty($data)) return '0: El usuario no existe.';
+		// Solo cuando inicia sesion, no cuando activa la cuenta
+		if(!$tsCore->createPassword($data['user_name'], $password, $data['user_password'])) return '2: Tu contrase&ntilde;a es incorrecta.';
+		// El usuario esta activo
+		if((int)$data['user_activo'] === 0) return '3: Debes activar tu cuenta';
+		// Comprobando 2FA
+		$this->sessionUpdate($data['user_id'], $remember, $data['user_secret_2fa'] ?? '');
+		if($data['user_secret_2fa'] === NULL) {
+	   	// Redireccionamos en caso que contenga ?redirectTo=xxxx
+	   	if(isset(parse_url($_SERVER["HTTP_REFERER"])["query"])) {
+	   		parse_str(parse_url($_SERVER["HTTP_REFERER"])["query"], $e);
+	   		return "5: " . urldecode(base64_decode($e["redirectTo"]));
+	   	} 
+	   	if($redirectTo) $tsCore->redirectTo(true);
+			else return TRUE;
+	   } else return '4: Ingrese el código de autentificación.';
+	}
+
+	/**
+	 * Función para validar el código de autentificación 
+	*/
+	public function validateTwoFactor() {
+		global $tsCore;
+
+		include GOOGLE2FA . "GoogleAuthStart.php";
+		$authenticator = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+
+		$nick = $tsCore->setSecure($_POST['nick']);
+		$rem = ($_POST['rem'] === 'true');
+		# Buscar datos del usuario
+		$data = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', "SELECT user_id, user_secret_2fa, user_recovery FROM @miembros WHERE user_name = '$nick'"));
+		$recovery = json_decode(base64_decode($data["user_recovery"]), true);
+		if($authenticator->checkCode($data['user_secret_2fa'], $_POST['code']) || in_array($_POST['code'], $recovery)) {
+		   $this->session->update($data['user_id'], $rem, TRUE);
+		   return '1: Código 2FA correcto.';
+		} 
+		return '0: No se pudo comprobar la doble autentificación.';		
+	}
+
+	/*
+		CERRAR SESSION
+		logoutUser($redirectTo)
+	*/
+	public function logoutUser(int $user_id = 0, bool $redirectTo = false){
+		global $tsCore;
+		/* BORRAR SESSION */
+		$this->session = new tsSession();
+		$this->session->read();
+		$this->session->destroy();
+		/* LIMPIAR VARIABLES */
+		$this->info = '';
+		$this->is_member = 0;
+		# UPDATE
+		$last_active = ((int)$tsCore->settings['c_last_active'] * 60);
+		$last_active = time() - ($last_active * 3);
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_lastactive = $last_active WHERE user_id = $user_id");
+		/* REDERIGIR */
+		if($redirectTo) header("Location: {$tsCore->settings['url']}");	// REDIRIGIR
+		return true;
+	}
+	/*
+		userActivate()
+	*/
+	public function userActivate(int $tsUserID = 0, string $tsKey = '') {
+	   global $tsCore;
+	   // Obtener userID y key de $_GET si no se proporcionan
+	   if ($tsUserID === 0) $tsUserID = (int)$_GET['uid'];
+	   if (empty($tsKey)) $tsKey = $tsCore->setSecure($_GET['key']);
+	   // Consulta para obtener datos del usuario
+	   $query = db_exec([__FILE__, __LINE__], 'query', "SELECT user_name, user_password, user_registro FROM @miembros WHERE user_id = $tsUserID LIMIT 1");
+	   $tsData = db_exec('fetch_assoc', $query);
+	   // Verificar si se encontraron datos y si la clave coincide
+	   if ($tsData && $tsKey === md5($tsData['user_registro'])) {
+	      // Actualizar el estado del usuario a activo
+	      if (db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_activo = 1 WHERE user_id = $tsUserID")) {
+	         return $tsData;
+	      }
+	   }
+	   return false;
+	}
+	/*
+		getUserBanned()
+	*/
+	public function getUserBanned() {
+		$uid = (int)$this->uid;
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT susp_id, user_id, susp_causa, susp_date, susp_termina, susp_mod, susp_ip FROM @suspension WHERE user_id = $uid LIMIT 1"));
+		$now = time();
+		if((int)$data['susp_termina'] > 1 && (int)$data['susp_termina'] < $now){
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_baneado = 0 WHERE user_id = $uid");
+			db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @suspension WHERE user_id = $uid");
+			return false;
+		} else return $data;
+	}
+	/*
+		getUserID($tsUsername)
+	*/
+	public function getUserID(string $tsUser = ''): int {
+		global $tsCore;
+		$tsUser = $tsCore->setSecure($tsUser);
+		$tsUser = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM @miembros WHERE user_name = '$tsUser' LIMIT 1"));
+		$tsUserID = (int)$tsUser['user_id'] ?? 0;
+		return $tsUserID;
+	}
+	/*
+		  getUserName($user_id)
+	 */
+	public function getUserName(int $user_id = 0): string {
+		$tsUser = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_name FROM @miembros WHERE user_id = $user_id LIMIT 1"));
+		return $tsUser['user_name'];
+	}
+	/*
+		  getUserIsVerified($user_nick)
+	 */
+	public function getUserIsVerified(string $user_name = ''): bool {
+		$tsUser = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_verificado FROM @miembros WHERE user_name = '$user_name' LIMIT 1"));
+		return ((int)$tsUser['user_verificado'] === 1);
+	}
+	/*
+		  getUserName($user_id)
+	 */
+	public function getUserRango(int $user_id = 0, string $type = 'r_name') {
+		$UserRango = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT rango_id, r_name, r_color, r_image, user_rango FROM @rangos LEFT JOIN @miembros ON user_rango = rango_id WHERE user_id = $user_id LIMIT 1;"));
+		return $UserRango[$type];
+	}
+	
+}
+
+// --------------------------------------------------------------------
+
+class tsSession {
+
+	public $ID                 = '';
+
+	public $sess_expiration    = 7200;
+
+	public $sess_match_ip      = FALSE;
+
+	public $sess_time_online   = 300;
+
+	public $cookie_prefix      = 'zcode_';
+
+	public $cookie_name        = '';
+
+	public $cookie_path        = '/';
+
+	public $cookie_domain      = '';
+
+	public $userdata;
+
+	public $ip_address;
+
+	public $time_now;
+
+	public $db;
+
+	public function __construct() {
+		global $tsCore;
+		// Tiempo
+		$this->time_now = time();
+		// Obtener el dominio o subdominio para la cookie
+		$host = parse_url($tsCore->settings['url']);
+		$host = str_replace('www.', '' , strtolower($host['host']));
+		// Establecer variables
+		$this->cookie_domain = ($host == 'localhost') ? '' : '.' . $host;
+		$this->cookie_name = $this->cookie_prefix . substr(md5($host), 0, 6);
+		// IP
+		$this->ip_address = $tsCore->getIP();
+		// Cada que un usuario cambie de IP, requerir nueva session?
+		$this->sess_match_ip = empty($tsCore->settings['c_allow_sess_ip']) ? FALSE : TRUE;
+		// Cada cuanto actualizar la sesión? && Expires
+		$this->sess_time_online = empty($tsCore->settings['c_last_active']) ? $this->sess_time_online : ($tsCore->settings['c_last_active'] * 60);
+	}
+
+	/**
+	 * Leer session activa
+	 *
+	 * @access	public
+	 * @return	bool
+	*/
+	public function read() {
+		$this->ID = $_COOKIE[$this->cookie_name . '_sid'];
+		// Es un ID válido?
+		if(!$this->ID || strlen($this->ID) != 32) {
+			return FALSE;
+		}
+		// ** Obtener session desde la base de datos
+		$session = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT session_id, session_user_id, session_ip, session_time, session_autologin FROM @sessions WHERE session_id = '{$this->ID}'"));
+		// Existe en la DB?
+		if(!isset($session['session_id'])) {
+			$this->destroy();
+			return FALSE;
+		}
+		// Is the session current?
+		if (($session['session_time'] + $this->sess_expiration) < $this->time_now AND empty($session['session_autologin'])) {
+			$this->destroy();
+			return FALSE;
+		}
+		// Si cambió de IP creamos una nueva session
+		if($this->sess_match_ip == TRUE && $session['session_ip'] != $this->ip_address) {
+			$this->destroy();
+			return FALSE;
+		}
+		// Listo guardamos y retornamos
+		$this->userdata = $session;
+		unset($session);
+		return TRUE;
+	}
+
+	/**
+	 * Create a new session
+	 *
+	 * @access	public
+	 * @return	void
+	*/
+	public function create() {
+		// Generar ID de sesión
+		$this->ID = $this->gen_session_id();
+		// Guardar en la base de datos, session_user_id siemrpe será 0 aquí | si inicia sesión se "actualiza"
+		db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @sessions (session_id, session_user_id, session_ip, session_time) VALUES ('{$this->ID}', 0, '{$this->ip_address}', {$this->time_now})");
+		// Establecemos la cookie
+		$this->set_cookie('sid', $this->ID, $this->sess_expiration);
+	}
+
+	/**
+	 * Update an existing session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function update($user_id = 0, $autologin = FALSE, $force_update = FALSE) {
+		// Actualizar la sesión cada x tiempo, esto es configurado en el panel de Admin
+		if(($this->userdata['session_time'] + $this->sess_time_online) >= $this->time_now AND $force_update == FALSE) {
+			return;
+		}
+		// Datos para actualizar
+		$this->userdata['session_user_id'] = empty($user_id) ? $this->userdata['session_user_id'] : $user_id;
+		$this->userdata['session_ip'] = $this->ip_address;
+		$this->userdata['session_time'] = $this->time_now;
+		// Autologin requiere una comprovación doble
+		$autologin = ($autologin == FALSE) ? 0 : 1;
+		$this->userdata['session_autologin'] = empty($this->userdata['session_autologin']) ? $autologin : $this->userdata['session_autologin'];
+		// Actualizar en la DB
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE @sessions SET session_user_id = '{$this->userdata['session_user_id']}', session_ip = '{$this->userdata['session_ip']}', session_time = {$this->userdata['session_time']}, session_autologin = '{$this->userdata['session_autologin']}' WHERE session_id = '{$this->ID}'");
+		// Limpiar sesiones
+		$this->sess_gc();
+		// Actualizar cookie | Si el usuario quiere recordar su sesión, se guardará por 1 año
+		$expiration = (!empty($this->userdata['session_autologin'])) ? 31500000 : $this->sess_expiration;
+		//
+		$this->set_cookie('sid', $this->ID, $expiration);
+	}
+
+	/**
+	 * Destroy the current session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function destroy() {
+		// Elminar de la DB
+		db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @sessions WHERE session_id = '{$this->ID}'");
+		// Reset a la cookie
+		$this->set_cookie('sid', '', -31500000);
+	}
+
+	 /**
+	  * Crear cookie
+	  * @access public
+	  * @param string
+	  * @param string
+	  * @param int
+	  */
+	public function set_cookie($name, $cookiedata, $cookietime) {
+		$cookiename = rawurlencode($this->cookie_name . '_' . $name);
+		$cookiedata = rawurlencode($cookiedata);
+		// Establecer la cookie
+		setcookie($cookiename, $cookiedata, ($this->time_now + $cookietime), '/', $this->cookie_domain);
+	}
+	/**
+	 * Generar un ID de sesión
+	 *
+	 * @access public
+	 * @param void
+	*/
+	public function gen_session_id() {
+		$sessid = '';
+		while (strlen($sessid) < 32) {
+			$sessid .= mt_rand(0, mt_getrandmax());
+		}
+		// To make the session ID even more secure we'll combine it with the user's IP
+		$sessid .= $this->ip_address;
+		return md5(uniqid($sessid, TRUE));
+	}
+
+	/**
+	 * Eliminar sesiones expiradas
+	 *
+	 * @access	public
+	 * @return	void
+	*/
+	public function sess_gc() {
+		// Esto es para no eliminar con cada llamada a esta función
+		// sólo si se cumple la siguiente sentencia se eliminan las sesiones
+		if ((rand() % 100) < 30) {
+			// Usuario sin actividad
+			$expire = $this->time_now - $this->sess_time_online;
+			db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @sessions WHERE session_time < $expire AND session_autologin = 0");
+		  }
+	}
+}

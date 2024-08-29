@@ -8,7 +8,7 @@
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version v1.8.11
+ * @version v2.0.0
  * @description Archivo para cargar el sitio
 **/
 
@@ -16,10 +16,10 @@
 include realpath(__DIR__) . DIRECTORY_SEPARATOR . 'header.php';
 
 // Checamos...
-if($tsCore->settings['c_allow_portal'] === 1 && $tsUser->is_member == true && $_GET['do'] == 'portal') {
-	include TS_PHP . 'portal.php';
+if((int)$tsCore->settings['c_allow_portal'] === 1 && $tsUser->is_member == true && $_GET['do'] == 'portal') {
+	include TS_HELPERS . 'portal.php';
 
 } else {
-	include TS_PHP . 'posts.php';
+	include TS_HELPERS . 'posts.php';
 	
 }

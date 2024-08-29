@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
 {meta facebook=true twitter=true}
-{zCode css=["base.min.css","default.css"]}
+{zCode css=["base.css","theme.css"]}
 </head>
 <body>
 	
