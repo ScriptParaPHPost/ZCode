@@ -99,6 +99,7 @@ class tsAdmin {
 		}
 		return $admins;
 	}
+	
 	/**
 	 * Función para obtener la fecha de instalación/actualización
 	*/

@@ -97,7 +97,7 @@ define('TS_AUTH', 		TS_ROOT . 'auth' . TS_PATH);
  */
 define('TS_CONFIG', 		   TS_ROOT . 'config' . TS_PATH);
 define('CONFIG_EXAMPLE',   TS_CONFIG . 'example.php');
-define('DATABASE_CONNECT', TS_CONFIG . 'dbconnect.php');
+define('DATABASE_CONNECT', TS_CONFIG . 'config.inc.php');
 
 /**
  * Rutas STORAGE

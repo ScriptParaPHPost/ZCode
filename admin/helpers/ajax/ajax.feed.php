@@ -38,7 +38,7 @@
 	$key .= '&verification=' . $tsCore->verification();
 	
 	$conexion = FEED_CONNECTION . "/index.php?key=$key&type=";
-
+	
 	// CODIGO
 	switch($action){
 		case 'feed-support':

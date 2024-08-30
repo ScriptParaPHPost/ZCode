@@ -20,7 +20,7 @@
 	
 /*++++++++ = ++++++++*/
 
-	$realpath = '../../' . (isset($_GET['from']) AND $_GET['from'] === 'dashboard' ? 'admin/' : '');
+	$realpath = (isset($_GET['from']) AND $_GET['from'] === 'dashboard') ? '../../admin/' : '../../';
 	include realpath($realpath) . DIRECTORY_SEPARATOR . "header.php"; // INCLUIR EL HEADER
 
 	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
@@ -46,7 +46,7 @@
 	// QUE ARCHIVO NECESITAMOS?
 	$file = './ajax/ajax.'.$action_type.'.php';
 	if($_GET['from'] === 'dashboard') {
-		$file = TS_ADMIN . 'helpers/' .  substr($file, 2);
+		$file = '../../admin/helpers/' .  ltrim($file, './');
 	}
 	//
 	if(file_exists($file)) include($file);

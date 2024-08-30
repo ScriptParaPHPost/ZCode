@@ -64,13 +64,12 @@ function withPrefix(string $query = '') {
  * Se ejecutará automáticamente sin 
  * intervención del usuario
 */
-if(isset($_GET['migrator']) && $_GET['migrator']) {
+if(isset($_GET['migrator']) && $_GET['migrator'] && (int)$tsUser->is_admod === 1 && (int)$tsUser->uid === 1) {
 	require_once TS_ZCODE . 'migrator.php';
 	if(!$success) {
 		die('No se pudo migrar correctamente...');
 	}
 }
-
 
 /**
  * Ejecutar consulta

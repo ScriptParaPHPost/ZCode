@@ -1,5 +1,5 @@
 // FEED SUPPORT
-$.getJSON(ZCodeApp.url + "/feed-support", response => {
+$.getJSON(ZCodeApp.url + "/feed-support.php?from=dashboard", response => {
 	$('#ulitmas_noticias').html('<div class="empty">Obteniendo información...</div>');
 	if(Array.isArray(response)) {
 		$('#ulitmas_noticias').html('');
@@ -18,7 +18,7 @@ $.getJSON(ZCodeApp.url + "/feed-support", response => {
 });
 
 //
-$.getJSON(ZCodeApp.url + "/feed-version", response => {
+$.getJSON(ZCodeApp.url + "/feed-version.php?from=dashboard", response => {
 	const { version, status, color, newVersion } = response;
 	// Clonamos
   	let clonar = $('.list-clone').first().clone();
@@ -40,7 +40,7 @@ $.getJSON(ZCodeApp.url + "/feed-version", response => {
 });
 
 function changeBranch(branch = 'main') {
-	$.post(ZCodeApp.url + '/github-api', { branch }, response => {
+	$.post(ZCodeApp.url + '/github-api.php?from=dashboard', { branch }, response => {
 		if(response === null) {
 			$('#lastCommit').html('<div class="empty">No se puede cargar el último commit...</div>');
 			return;
