@@ -50,6 +50,13 @@ function smarty_function_uicon($params, &$smarty) {
          $size_attr = " width=\"$size\" height=\"$size\"";
          $icon_content = substr_replace($icon_content, $size_attr, $insert_pos, 0);
       }
+
+      if(isset($params['attrs'])) {
+         foreach($params['attrs'] as $attr => $newAttr) {
+            $addAttr = " $attr=\"$newAttr\"";
+            $icon_content = substr_replace($icon_content, $addAttr, $insert_pos, 0);
+         }
+      }
    }
    $icon_content = preg_replace('/(stroke)="[^"]*"/', '$1="' . $stroke . '"', $icon_content);
 

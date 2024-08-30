@@ -252,7 +252,7 @@ class tsUpload {
 		$width = imagesx($img);
 		$height = imagesy($img);
 		// AVATAR
-		$root = TS_AVATAR . $this->avatar_folder . TS_PATH . $key;
+		$root = TS_AVATAR . $this->avatar_folder . TS_PATH;
 		// AVATAR
 		$imgvar = imagecreatetruecolor($width_pin, $width_pin);
 		// Verificar que las coordenadas y el tamaño estén dentro de los límites de la imagen original
@@ -262,7 +262,7 @@ class tsUpload {
 		$crop_h = min($h, $height - $crop_y);
 		imagecopyresampled($imgvar, $img, 0, 0, $crop_x, $crop_y, $width_pin, $width_pin, $crop_w, $crop_h);
 		// La convertimos a webp, para que sea más liviana 
-		$nameimage = "$root-web.webp";
+		$nameimage = $root . "web.webp";
 		$img = imagecreatefromjpeg($source);
       if(imagewebp($imgvar, $nameimage, 100)) {
          imagedestroy($imgvar);

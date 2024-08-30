@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Definimos el formato
+ * https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/stylesheet
+-->
+<xsl:stylesheet version="2.0" xmlns:html="http://www.w3.org/TR/REC-html40" xmlns:sitemap="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<!-- 
+ * Salida con HTML 
+ * https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/output
+-->
+<xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
+
+<!-- 
+ * Definimos el template
+ * https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/template
+-->
+<xsl:template match="/">
+	<html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<title>PHPost - Últimos posts</title>
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+			<!-- Icono del sitio -->
+			<link rel="shortcut icon" href="http://localhost/PHPost/public/asstes/images/logo.png?" type="image/png" />
+			<!-- Estilo -->
+			<style type="text/css">
+				/**
+				 * Name: RSS
+				 * Description: Estilo para el feed
+				 * Author: Miguel92
+				 * Versión: 1.0.0
+				 * Created: 12.12.2022
+				*/
+				@media (prefers-reduced-motion: no-preference) {
+				  	:root {
+				    	scroll-behavior: smooth;
+				  	}
+				}
+
+				/**
+				 * Reseteamos estilos
+				*/
+				*, *::after, *::before {
+					padding: 0;
+					margin: 0;
+					box-sizing: border-box;
+					background: transparent;
+					appearance: transparent;
+					border-color: transparent;
+					outline: transparent;
+					text-decoration: none;
+				  	background-repeat: no-repeat;
+				}
+				::before,
+				::after {
+					text-decoration: inherit;
+					vertical-align: inherit;
+				}
+
+				html, body {
+					width: 100%;
+					height: 100vh;
+				}
+				body {
+					background: #F4F4F4;
+					color: #434343;
+					font: normal normal 400 1rem/1.5em 'Century Gothic', sans-serif;
+				}
+
+				.container {
+					--gutter-x: 1.5rem;
+					--gutter-y: 0;
+					width: 80%;
+					padding-right: calc(var(--spacing) * 0.5);
+					padding-left: calc(var(--spacing) * 0.5);
+					margin-right: auto;
+				  	margin-left: auto;
+				}
+
+				a, a:hover, a:visited {
+					color: #317192;
+					font-weight: 600;
+				}
+
+				header {
+					text-align: center;
+					padding: 1rem 0;
+					margin-bottom: 1rem;
+				}
+				header > h1 {
+					margin-bottom: 1rem;
+				}
+				header > p {
+					font-size: 0.8rem;
+					font-style: italic;
+					line-height: 1rem;
+				}
+				section {
+					padding: 1rem;
+				}
+				section > p:first-child {
+					font-weight: 700;
+					font-size: 1.3rem
+				}
+				.tabla {
+					margin-top: 1rem;
+				}
+				.tabla > .head,
+				.tabla > .body > div {
+					display: grid;
+					grid-template-columns: 60% repeat(2, 10%) 15%;
+					gap: 1rem;
+				}
+				.tabla > .head {
+				 	font-weight: 600;
+					text-align: center;
+				 	padding: .6rem 0
+				}
+				.tabla > .body .subbody {
+					text-align: center;
+				}
+				.tabla > .body > div {
+					padding: .5rem;
+				}
+				.tabla > .body > div:nth-child(2n+1) {
+					background-color: #EEE;
+				}
+				.tabla > .body .subbody.left {
+					text-align: left;
+				}
+				.tabla > .body .subbody.left a {
+					font-weight: 400;
+				}
+			</style>
+		</head>
+		<body>
+			
+			<div class="container">
+				
+				<header>
+					<h1>XML Sitemap</h1>
+					<p>
+						Este es un mapa del sitio XML, destinado al consumo de los motores de búsqueda, para más información sobre sitemaps en <a href="http://sitemaps.org" target="_blank" rel="noreferrer">sitemaps.org</a>.
+					</p>
+					<p>Creado por <a href="#" target="_blank" rel="noreferrer">Miguel92</a></p>
+				</header>
+
+				<section>
+					<!-- Si count es menor a 0 -->
+					<xsl:if test="count(sitemap:sitemapindex/sitemap:sitemap) &gt; 0">
+						<table id="sitemap" cellpadding="3">
+							<thead>
+								<tr>
+									<th width="75%">Sitemap</th>
+									<th width="25%">Last Modified</th>
+								</tr>
+							</thead>
+							<tbody>
+								<xsl:for-each select="sitemap:sitemapindex/sitemap:sitemap">
+									<xsl:variable name="sitemapURL">
+										<xsl:value-of select="sitemap:loc"/>
+									</xsl:variable>
+									<tr>
+										<td>
+											<a href="{$sitemapURL}"><xsl:value-of select="sitemap:loc"/></a>
+										</td>
+										<td>
+											<xsl:value-of select="concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)))"/>
+										</td>
+									</tr>
+								</xsl:for-each>
+							</tbody>
+						</table>
+					</xsl:if>
+
+					<!-- Si count es mayor a 1 -->
+					<xsl:if test="count(sitemap:sitemapindex/sitemap:sitemap) &lt; 1">
+						<p>
+							<!-- 
+							 * https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/value-of
+							 * ex: count(RSS.php:urlset/RSS.php:url) urlset > url
+							-->
+							XML Sitemap total: <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/>
+						</p>
+						<div class="tabla">
+							<div class="head">
+								<div class="subhead">URL</div>
+								<div class="subhead">Prioridad</div>
+								<div class="subhead">Frecuencia</div>
+								<div class="subhead">Modificación</div>
+							</div>
+							<div class="body">
+								<!-- 
+								 * Para ordenar
+								 * https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/variable
+								-->
+								<xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
+								<xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+								<!-- 
+								 * Ciclo foreach
+								 * https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/variable
+								-->
+								<xsl:for-each select="sitemap:urlset/sitemap:url">
+									<div>
+										<div class="subbody left">
+											<xsl:variable name="itemURL">
+												<xsl:value-of select="sitemap:loc"/>
+											</xsl:variable>
+											<a href="{$itemURL}">
+												<xsl:value-of select="sitemap:loc"/>
+											</a>
+										</div>
+										<div class="subbody">
+											<xsl:value-of select="concat(sitemap:priority*100,'%')"/>
+										</div>
+										<div class="subbody">
+											<xsl:value-of select="concat(translate(substring(sitemap:changefreq, 1, 1),concat($lower, $upper),concat($upper, $lower)),substring(sitemap:changefreq, 2))"/>
+										</div>
+										<div class="subbody">
+											<xsl:value-of select="concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)))"/>
+										</div>
+									</div>
+								</xsl:for-each>
+								
+							</div>
+						</div>	
+					</xsl:if>
+				</section>
+
+			</div>
+
+		</body>
+	</html>
+</xsl:template>
+
+</xsl:stylesheet>

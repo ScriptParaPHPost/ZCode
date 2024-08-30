@@ -260,7 +260,7 @@ class tsCore extends tsZCode {
 			}
 		} else {
 			// Calcular el inicio basado en el número de página
-			$pageNumber = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+			$pageNumber = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
 			$tsStart = ($pageNumber - 1) * $tsLimit;
 		}
 		// Retornar el inicio y el límite de resultados

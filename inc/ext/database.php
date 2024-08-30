@@ -8,7 +8,7 @@
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version v1.8.11
+ * @version v1.8.12
  * @description Actualizada y optimizada!
 **/
 
@@ -85,6 +85,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_borradores` (
   `b_status` int(1) NOT NULL DEFAULT 1,
   `b_sticky` int(1) NOT NULL DEFAULT 0,
   `b_tags` varchar(128) DEFAULT NULL,
+  `b_fuentes` text COLLATE utf8mb4_general_ci NULL,
   `b_title` varchar(120) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `b_update` int(10) NOT NULL DEFAULT 0,
   `b_user` int(11) NOT NULL DEFAULT 0,
@@ -190,6 +191,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts` (
   `post_status` int(1) NOT NULL DEFAULT 0,
   `post_sticky` int(1) NOT NULL DEFAULT 0,
   `post_tags` varchar(128) NOT NULL DEFAULT '',
+  `post_fuentes` text COLLATE utf8mb4_general_ci NULL,
   `post_date` int(10) NOT NULL DEFAULT 0,
   `post_update` int(10) NOT NULL DEFAULT 0,
   `post_block_comments` int(1) NOT NULL DEFAULT 0,
@@ -503,6 +505,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}configuracion` (
   `banner` varchar(100) NOT NULL DEFAULT '',
   `tema_id` int(11) NOT NULL DEFAULT 1,
   `update_id` varchar(20) NOT NULL DEFAULT '',
+  `c_allow_fuentes` int(1) NOT NULL DEFAULT 0,
   `c_avatar` int(1) NOT NULL DEFAULT 0,
   `leaving` int(1) NOT NULL DEFAULT 0,
   `ads_300` text NULL,

@@ -19,6 +19,7 @@ class tsDrafts {
 			'body' => $tsCore->setSecure($_POST['cuerpo'], true),
 			'tags' => $tsCore->setSecure($tsCore->parseBadWords($_POST['tags']), true),
 			'category' => $tsCore->setSecure($_POST['categoria']),
+			'fuentes' => $tsCore->setSecure($_POST['fuentes'], true),
 			'private' => empty($_POST['privado']) ? 0 : 1,
 			'block_comments' => empty($_POST['sin_comentarios']) ? 0 : 1,
 			'sponsored' => empty($_POST['patrocinado']) ? 0 : 1,
@@ -37,7 +38,7 @@ class tsDrafts {
 					else return '0: '.show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db');
 		   	} else {
 					// INSERT
-			    	if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @posts_borradores (`b_user`, `b_date`, `b_title`, `b_body`, `b_tags`, `b_category`, `b_private`, `b_block_comments`, `b_sponsored`, `b_sticky`, `b_smileys`, `b_visitantes`, `b_status`) VALUES ({$tsUser->info['user_id']}, {$draftData['date']}, '{$draftData['title']}', '{$draftData['body']}', '{$draftData['tags']}', {$draftData['category']}, {$draftData['private']}, {$draftData['block_comments']}, {$draftData['sponsored']}, {$draftData['sticky']}, {$draftData['smileys']}, {$draftData['visitantes']}, 1)")) return '1: '.db_exec('insert_id');
+			    	if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @posts_borradores (`b_user`, `b_date`, `b_title`, `b_body`, `b_tags`, `b_category`, `b_fuentes`, `b_private`, `b_block_comments`, `b_sponsored`, `b_sticky`, `b_smileys`, `b_visitantes`, `b_status`) VALUES ({$tsUser->info['user_id']}, {$draftData['date']}, '{$draftData['title']}', '{$draftData['body']}', '{$draftData['tags']}', {$draftData['category']}, '{$draftData['fuentes']}', {$draftData['private']}, {$draftData['block_comments']}, {$draftData['sponsored']}, {$draftData['sticky']}, {$draftData['smileys']}, {$draftData['visitantes']}, 1)")) return '1: '.db_exec('insert_id');
 			   	else return '0: '.show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db');
 				}
 			} else $return = 'Categor&iacute;a';
@@ -81,7 +82,7 @@ class tsDrafts {
 		global $tsCore, $tsUser;
 		//
 		$bid = (int)$_GET['action'];
-      return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT bid, b_user, b_date, b_title, b_body, b_tags, b_category, b_private, b_block_comments, b_sponsored, b_sticky, b_smileys, b_post_id, b_status, b_causa FROM @posts_borradores WHERE `bid` = $bid AND `b_user` = {$tsUser->info['user_id']} AND b_status = $status LIMIT 1"));
+      return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT bid, b_user, b_date, b_title, b_body, b_tags, b_category, b_private, b_block_comments, b_sponsored, b_sticky, b_smileys, b_post_id, b_status, b_causa, b_fuentes FROM @posts_borradores WHERE `bid` = $bid AND `b_user` = {$tsUser->info['user_id']} AND b_status = $status LIMIT 1"));
 	}
 	/*
 		delDraft()

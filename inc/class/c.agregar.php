@@ -152,6 +152,20 @@ class tsAgregar {
 		return $postData;
 	}
 
+	private function getFuentes() {
+		global $tsCore;
+		if(!empty($_POST['fuentes']) AND (int)$tsCore->settings['c_allow_fuentes'] === 1) {
+			$fuentes = $_POST['fuentes'];
+			// Expresión regular para encontrar coincidencias de [texto](URL)
+			preg_match_all('/\[(.*?)\]\((.*?)\)/', $fuentes, $matches);
+			// Combinar los resultados en un array
+			$result = array_combine($matches[1], $matches[2]);
+			$result = json_encode($result);
+			return $result;
+		}
+		return '';
+	}
+
 	public function getCategorias() {
 		global $tsCore, $tsUser;
 		// CONSULTA
@@ -183,6 +197,8 @@ class tsAgregar {
 		$this->iCanEmpty($postData);
 		// ANTIFLOOD
 		$antiflood = 2;
+		$postData['fuentes'] = $this->getFuentes();
+	
 		if((int)$tsUser->info['user_lastpost'] < (time() - $antiflood)) {
 			// EXISTE LA CATEGORIA?
 			$query = db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM @posts_categorias WHERE cid = {$postData['category']} LIMIT 1");
@@ -245,7 +261,14 @@ class tsAgregar {
 		global $tsCore, $tsUser;
 		$pid = (int)$_GET['pid'];
 		// Para no traer todo y solo usamos las que requerimos
-		$verify = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id, post_category, post_title, post_body, post_user, post_portada, post_private, post_smileys, post_sponsored, post_status, post_sticky, post_tags, post_date, post_update, post_block_comments, post_visitantes, post_ip FROM @posts WHERE post_id = $pid LIMIT 1"));
+		$verify = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id, post_category, post_title, post_body, post_user, post_portada, post_private, post_smileys, post_sponsored, post_status, post_sticky, post_tags, post_date, post_update, post_block_comments, post_visitantes, post_ip, post_fuentes FROM @posts WHERE post_id = $pid LIMIT 1"));
+
+		$fuentes = json_decode($verify['post_fuentes'], true);
+		$postFuentes = [];
+		foreach($fuentes as $name => $fuente) {
+			$postFuentes[] = "[$name]($fuente)";
+		}
+		$verify['post_fuentes'] = join('; ', $postFuentes);
 		//
 		$withPermissons = ($tsUser->is_admod == 0 AND $tsUser->permisos['moedpo'] == false);
 		//
@@ -288,6 +311,7 @@ class tsAgregar {
 			$postData["portada"] = $tsImages->updateImagePost();
 		}
 		$postData["update"] = time();
+		$postData['fuentes'] = $this->getFuentes();
 		// ACTUALIZAMOS
 		if((int)$tsUser->uid === (int)$data['post_user'] || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moedpo'])) {
 			if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET {$tsCore->getIUP($postData, 'post_')} WHERE post_id = $post_id")) {

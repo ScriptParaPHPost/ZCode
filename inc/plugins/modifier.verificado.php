@@ -15,6 +15,7 @@
 function smarty_modifier_verificado($nick, $icon = 'verified', $folder = 'others') {
 	global $tsUser, $smarty;
 	// Obtenemos la verificación desde el usuario
+	if(empty($nick)) return '';
    if($tsUser->getUserIsVerified($nick)) {
 		// Nombre del icono SVG
    	$parametros['name'] = $icon;

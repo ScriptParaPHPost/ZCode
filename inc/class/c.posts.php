@@ -274,6 +274,7 @@ class tsPosts {
 		// Portada
 		$postData['post_portada'] = $tsImages->setImageCover($postData['post_id'], $postData['post_portada'], $postData['post_body']);
 		$postData['post_ip'] = $postData['post_ip'] ?? $tsCore->getIP();
+		$postData['post_fuentes'] = !empty($postData['post_fuentes']) ? json_decode($postData['post_fuentes'], true) : '';
 		// YA LO VOTE?
       $vote = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(voto_id) FROM @posts_votos WHERE tid = {$postData['post_id']} AND tuser = {$tsUser->uid} LIMIT 1"))[0];
       $postData['post_vote'] = !empty($vote) ? true : false;

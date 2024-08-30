@@ -28,7 +28,7 @@
       {if ($c.c_user == $tsUser->uid && $tsUser->permisos.godpc) || $tsUser->is_admod || $tsUser->permisos.moecp}
          <span role="button" onclick="comentario.borrar({$c.cid}, {$c.c_user}, {$c.c_post_id})" title="Borrar comentario">{uicon name="trash-alt" class="pe-none"}</span>
       {/if}
-      {uicon name="menu-vertical" role="button" attrs=['cid', {$c.cid}]}
+      {uicon name="menu-vertical" role="button" attrs=['cid' => {$c.cid}]}
 
       <div class="dropdown-options position-absolute z-3 body-bg shadow rounded p-2" dropdown="{$c.cid}" style="display:none;">
          {if $tsUser->is_member && $tsUser->info.user_id != $c.c_user}

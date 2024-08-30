@@ -5,15 +5,14 @@ assets/images/uploads
 backup/
 cache/
 
+# Themes
+!themes/default
+themes/*
+
 # Ignorar archivos
-inc/ext/Avatar.php
-inc/ext/UUID.php
-inc/ext/xsl-sitemap.xml
 .log
-.env
 .lock
 error.log
-changelog.txt
 config.inc.php
 pasos.txt
 robots.txt

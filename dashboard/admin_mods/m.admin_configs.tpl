@@ -87,6 +87,12 @@
             </dd>
          </dl>
          <dl>
+            <dt><label for="ai_fuentes">Activar fuentes (posts):</label><span>Los usuarios podr&aacute;n agregar las fuentes donde han obtenido la informacion.</span></dt>
+            <dd>
+               {html_radios name="c_allow_fuentes" id="ai_fuentes" values=[1, 0] output=['Si', 'No'] selected=$tsConfig.c_allow_fuentes class="radio"}
+            </dd>
+         </dl>
+         <dl>
             <dt><label for="ai_portal">Activar portal:</label><span>Los usuarios podr&aacute;n tener un inicio perzonalizado.</span></dt>
             <dd>
 					{html_radios name="c_allow_portal" id="ai_portal" values=[1, 0] output=['Si', 'No'] selected=$tsConfig.c_allow_portal class="radio"}

@@ -345,6 +345,10 @@ class SmartyZCode {
 	  	if($this->nucleo['action'] === 'registro' AND $this->nucleo["tsPage"] !== 'admin') {
 		  	$jsMain = [...$jsMain, "reCaptcha.js"];
 	  	}
+	  	# En la home y admin
+	  	if($this->nucleo['tsPage'] === 'home' OR $this->nucleo["tsPage"] === 'afs') {
+		  	$jsMain = [...$jsMain, "afiliado.js"];
+	  	}
 	  	# Añadimos complementos a cuenta, comunidades...
 	  	if($this->nucleo['tsPage'] === 'admin') {
 	  		if(empty($this->nucleo['action'])) {

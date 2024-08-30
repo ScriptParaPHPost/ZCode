@@ -226,7 +226,7 @@ class Images {
 	      $this->logError("No se puede determinar el tipo de imagen de {$sourcePath}");
 	   }
 	   // Create an image resource from the source image
-		$sourceImage = $tsCore->getFormatImage($type, $sourcePath, $imageInfo[2]);
+		$sourceImage = $tsCore->getFormatImage($imageInfo[2], $sourcePath, $imageInfo[2]);
 
       // Resize and save the images
 		if(!is_dir($destDir)) mkdir($destDir, 0777, true);

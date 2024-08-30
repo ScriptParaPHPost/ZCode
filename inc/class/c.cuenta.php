@@ -581,7 +581,7 @@ class tsCuenta {
 		# Obtenemos el sexo del usuario
 		$sexo = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_sexo FROM @perfil WHERE user_id = $uid"))['user_sexo'];
 		if($tsUser->is_member) {
-			$image_new = $tsUser->uid . "-web.webp";
+			$image_new = "web.webp";
 			copy(TS_AVATARES . $sexo . TS_PATH . $image, TS_AVATAR . "user$uid" . TS_PATH . $image_new);
 			return $tsCore->settings['avatar'] . "/user$uid/$image_new";
 		}

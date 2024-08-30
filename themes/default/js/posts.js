@@ -223,7 +223,10 @@ $(document).ready(() => {
 	let openDropdown = true;
 	$('svg[role="button"]').on('click', function (argument) {
 		const cid = $(this).attr('cid');
+		console.log($(this))
 		$(`.dropdown-options`).removeClass('show');
+		console.log(openDropdown)
+		console.log(`.dropdown-options[dropdown="${cid}"]`)
 		$(`.dropdown-options[dropdown="${cid}"]`)[(openDropdown ? 'addClass' : 'removeClass')]('show');
 		openDropdown = !openDropdown;
 	});

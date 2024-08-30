@@ -237,7 +237,8 @@ const UPModal = {
 		if(this.isShow) return;
 		this.isShow = true;
 		//
-		if ($('.UPModal').length === 0) $('body').append(this.template);
+		$('<div class="loader_modal"></div>').prependTo('body');
+		$('.loader_modal').html(this.template);
 		// Para los tamaños del modal
 		$('.UPModal-dialog').addClass(`UPModal-dialog-${this.size}`);
 		// Cerramos modal con la mascará
@@ -281,7 +282,7 @@ const UPModal = {
 	},
 	close(){
 		this.isShow = false;
-		$('.UPModal').remove();
+		$('.loader_modal').remove();
 		$('body').css({ overflow: 'auto' });
 	},
 	setTitle(title) {
