@@ -1,6 +1,6 @@
 {include "main_header.tpl"}
 {$tsInstall}
-
+    
 <div class="row">
 	{if $tsCatData}
 		<div class="col-12">
@@ -19,8 +19,8 @@
 		{include "m.home_last_posts.tpl"}
 	</div>
 	<div class="col-12 col-md-6 col-lg-4">
-		{include "m.home_posts_staff.tpl"}
 		{include "m.home_stats.tpl"}
+		{include "m.home_posts_staff.tpl"}
 		{include "m.home_top_posts.tpl"}
 		{include "m.home_top_users.tpl"}
 	</div>

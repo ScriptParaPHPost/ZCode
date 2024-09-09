@@ -37,14 +37,19 @@ if (!function_exists('safe_unserialize')) {
    }
 }
 
-if(file_exists(TS_ROOT . '.env')) {
-	$dotenv = fopen(TS_ROOT . '.env', 'r');
-	if ($dotenv) {
-	   while (($line = fgets($dotenv)) !== false) {
-	      if (preg_match('/\A([a-zA-Z0-9_]+)=(.*)\z/', trim($line), $matches)) {
-	         putenv(sprintf('%s=%s', $matches[1], $matches[2]));
-	      }
-	   }
-	   fclose($dotenv);
-	}
+$fileenv = dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env';
+if (file_exists($fileenv)) {
+   $dotenv = fopen($fileenv, 'r');
+   if ($dotenv) {
+      while (($line = fgets($dotenv)) !== false) {
+         // Ignorar comentarios y líneas vacías
+         if (trim($line) === '' || strpos(trim($line), '#') === 0) {
+            continue;
+         }
+         if (preg_match('/\A([a-zA-Z0-9_]+)=(.*)\z/', trim($line), $matches)) {
+         	$_ENV[$matches[1]] = $matches[2];
+         }
+      }
+      fclose($dotenv);
+   }
 }

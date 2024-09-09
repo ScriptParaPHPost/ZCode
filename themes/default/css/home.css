@@ -1,6 +1,6 @@
 article[itemscope] {
-	--cover-width: 100px;
-	--cover-height: 100px;
+	--cover-width: 90px;
+	--cover-height: 90px;
 	--bgcolor: var(--border-color-translucent);
 	border: 1px solid var(--border-color-translucent);
 	grid-template-columns: var(--cover-width) 1fr;

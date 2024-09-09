@@ -68,4 +68,8 @@
 
 	</form>
 </div>
+
+<script>
+var TYPE_LOAD = '{if !isset($pageLogin)}modal{else}page{/if}';
+</script>
 {if !isset($pageLogin)}{zCode js="login.js"}{/if}

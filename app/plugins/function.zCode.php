@@ -25,7 +25,7 @@ function smarty_function_zCode($params, &$smarty) {
 
 	# Añadimos las hojas de estilos
 	if(isset($params["css"])) {
-		$template .= "<!-- Plugin ZCode: V{$pluginZCode->version} -->\n";
+		if(is_array($params["css"])) $template .= "<!-- Plugin ZCode: V{$pluginZCode->version} -->\n";
 		if(!in_array($smarty->tpl_vars['tsPage']->value, ['admin', 'moderacion',  'login', 'registro'])) {
 			$template .= $pluginZCode->setStyleCustomized();
 		}
@@ -39,7 +39,7 @@ function smarty_function_zCode($params, &$smarty) {
 
 	# Añadimos las hojas de scripts
 	if(isset($params["js"])) {
-		$template .= "<!-- Plugin ZCode: V{$pluginZCode->version} -->\n";
+		if(is_array($params["js"])) $template .= "<!-- Plugin ZCode: V{$pluginZCode->version} -->\n";
 		$template .= $pluginZCode->setScripts($params["js"]);
 	}
 

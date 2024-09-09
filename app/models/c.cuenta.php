@@ -579,6 +579,8 @@ class tsCuenta {
 		$sexo = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_sexo FROM @perfil WHERE user_id = $uid"))['user_sexo'];
 		if($tsUser->is_member) {
 			$image_new = "user$uid/web.webp";
+			if(!is_dir(TS_AVATAR)) mkdir(TS_AVATAR, 0777);
+			if(!is_dir(TS_AVATAR."user$uid")) mkdir(TS_AVATAR."user$uid", 0777);
 			$from_avatar = TS_AVATARES . $sexo . TS_PATH . $image;
 			copy($from_avatar, TS_AVATAR . TS_PATH . $image_new);
 			return $this->settings['avatar'] . "/$image_new";

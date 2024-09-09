@@ -257,7 +257,14 @@ class tsUser  {
 		$admin = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_email FROM @miembros WHERE user_id = 1"));
 		  
 		$avBody = "Hola, le informamos su cuenta ha sido eliminada con todo su contenido por inactividad elegida por {$data['user_name']}.";
-		mail($admin[0], 'Cuenta eliminada', "<html><head><title>Tu cuenta ha sido eliminada!</title></head><body><p>$avBody</p></body></html>", 'Content-type: text/html; charset=iso-8859-15');
+		include_once TS_MODELS . 'c.emails.php';
+		$tsEmail = new tsEmail(); 
+
+		$tsEmail->emailTemplate = 'delete';
+		$tsEmail->emailTo = $admin[0];
+		$tsEmail->emailSubject = 'Cuenta eliminada';
+		$tsEmail->emailBody = "Tu cuenta ha sido eliminada!<br>$avBody";
+		$tsEmail->sendEmail() or die('0: Hubo un error al intentar procesar lo solicitado');
 		return true;
 	}
 
@@ -503,8 +510,7 @@ class tsUser  {
 		//
 		return array('data' => $data, 'pages' => $pages, 'total' => $total);
 	}
-	
-	
+		
 
 	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 }
@@ -568,7 +574,7 @@ class tsSession {
 			return FALSE;
 		}
 		// ** Obtener session desde la base de datos
-		$session = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT session_id, session_user_id, session_ip, session_time, session_autologin FROM @sessions WHERE session_id = '{$this->ID}'"));
+		$session = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT session_id, session_user_id, session_ip, session_token, session_time, session_autologin FROM @sessions WHERE session_id = '{$this->ID}'"));
 		// Existe en la DB?
 		if(!isset($session['session_id'])) {
 			$this->destroy();
@@ -620,11 +626,12 @@ class tsSession {
 		$this->userdata['session_user_id'] = empty($user_id) ? $this->userdata['session_user_id'] : $user_id;
 		$this->userdata['session_ip'] = $this->ip_address;
 		$this->userdata['session_time'] = $this->time_now;
+		$this->userdata['session_token'] = bin2hex(random_bytes(32));
 		// Autologin requiere una comprovación doble
 		$autologin = ($autologin == FALSE) ? 0 : 1;
 		$this->userdata['session_autologin'] = empty($this->userdata['session_autologin']) ? $autologin : $this->userdata['session_autologin'];
 		// Actualizar en la DB
-		db_exec([__FILE__, __LINE__], 'query', "UPDATE @sessions SET session_user_id = '{$this->userdata['session_user_id']}', session_ip = '{$this->userdata['session_ip']}', session_time = {$this->userdata['session_time']}, session_autologin = '{$this->userdata['session_autologin']}' WHERE session_id = '{$this->ID}'");
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE @sessions SET session_user_id = '{$this->userdata['session_user_id']}', session_ip = '{$this->userdata['session_ip']}', session_token = '{$this->userdata['session_token']}', session_time = {$this->userdata['session_time']}, session_autologin = '{$this->userdata['session_autologin']}' WHERE session_id = '{$this->ID}'");
 		// Limpiar sesiones
 		$this->sess_gc();
 		// Actualizar cookie | Si el usuario quiere recordar su sesión, se guardará por 1 año

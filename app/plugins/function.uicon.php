@@ -51,8 +51,8 @@ function smarty_function_uicon(array $params, &$smarty): string {
    ];
 
    // Insertar las clases y atributos en el código SVG
-   if (strpos($icon_path, '<svg') !== false) {
-      $insert_pos = strpos($icon_path, '<svg') + 4;
+   if (str_contains((string) $icon_path, '<svg')) {
+      $insert_pos = strpos((string) $icon_path, '<svg') + 4;
       $icon_path = substr_replace($icon_path, ' class="' . $classes . '"', $insert_pos, 0);
       
       foreach ($attributes as $attr => $value) {
@@ -63,7 +63,7 @@ function smarty_function_uicon(array $params, &$smarty): string {
 
       if (!empty($size)) {
          $icon_path = preg_replace('/(width|height)="[^"]*"/', "$1=\"$size\"", $icon_path);
-         if (strpos($icon_path, 'width') === false) {
+         if (!str_contains($icon_path, 'width')) {
             $icon_path = substr_replace($icon_path, " width=\"$size\" height=\"$size\"", $insert_pos, 0);
          }
       }

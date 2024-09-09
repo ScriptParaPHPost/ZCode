@@ -156,6 +156,12 @@ $('form input[type="submit"]').on('click', function(e) {
    login.iniciarSesion();
 });
 
+$(document).on('keydown', function(event) {
+	if(event.keyCode === 13 && event.code === 'Enter' && TYPE_LOAD === 'modal') {
+		login.iniciarSesion();
+	}
+});
+
 $('span[data-toggle="forget_password"]').on('click', function() {
 	login.multiOptions('password', false);
 });

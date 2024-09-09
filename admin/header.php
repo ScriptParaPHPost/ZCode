@@ -23,20 +23,23 @@
  * -------------------------------------------------------------------
  */
 	
-	require realpath(__DIR__) . DIRECTORY_SEPARATOR . 'configs.php';
+
+	require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'Polyfill.php';
+	require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'AppVarsGlobal.php';
+	require_once __DIR__ . DIRECTORY_SEPARATOR . 'configs.php';
 	
 	// Sesión
-	session_name(SESSION_NAME);
+	session_name($_ENV['SESSION_NAME']);
 	if(!isset($_SESSION)) session_start();
 
-	ini_set('error_log', LOG_ERROR_SCRIPT);
+	ini_set('error_log', DIR_ERROR_LOG . 'dashboard_error.log');
 
 	header('Content-Type: text/html; charset=utf-8');
 	// Establece el encabezado Cache-Control con max-age de un año
 	header("Cache-Control: max-age=31536000");
 
 	// Límite de ejecución
-	set_time_limit(SET_LIFETIME);
+	set_time_limit(300);
 
 /*
  * -------------------------------------------------------------------
@@ -46,8 +49,6 @@
 	
 	// Funciones
 	include TS_EXTRA . 'functions.php';
-
-	include TS_ZCODE . 'Polyfill.php';
 
 	include TS_ZCODE . 'ZCode.php';
 

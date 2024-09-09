@@ -4,11 +4,11 @@ function generateThemeColors($nameColor, $lightColor, $darkColor) {
 	function lightenDarkenColor($col, $amt) {
 		$usePound = false;
 		if ($col[0] === "#") {
-			$col = substr($col, 1);
+			$col = substr((string) $col, 1);
 			$usePound = true;
 		}
 		
-		$num = hexdec($col);
+		$num = hexdec((string) $col);
 		// R - Red | Rojo
 		$r = (($num >> 16) & 0xFF) + $amt;
 		if ($r > 255) $r = 255;

@@ -1,91 +1,101 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php
+declare(strict_types=1);
+
+if (!defined('TS_HEADER')) exit('No se permite el acceso directo al script');
 
 /**
- * Modelo para el control del envio de emails
- *
+ * Modelo para el control del envío de emails.
  * @name    c.emails.php
  * @author  ZCode | PHPost & Miguel92
  */
-error_reporting(-1);
-ini_set('display_errors', 'On');
-set_error_handler("var_dump");
 
-ini_set("mail.log", "/tmp/mail.log");
-ini_set("mail.add_x_header", TRUE);
+ini_set('error_log', DIR_ERROR_LOG . 'mail_error.log');
+ini_set('mail.add_x_header', '1');
 
 class tsEmail {
 
-	public $email_info = [];
-	public $emailSubject;
-	public $emailHeaders;
-	public $emailBody;
-	public $emailTo;
+   private array $emailInfo = [];
 
-	public function __construct(string $tsEmailData = '', string $tsEmailRef = '') {
-		$this->email_info['data'] = $tsEmailData;
-		$this->email_info['ref'] = $tsEmailRef;
-	}
+   public string $emailSubject = '';
 
-	/**
-	 * setHeaders()
-	*/
-	public function setHeaders() {
-		global $tsCore;
-		$headers = implode("\r\n", [
-			'MIME-Version: 1.0',
-			'X-Priority: 1',
-		   'Content-type: text/html; charset=UTF-8',
-		   'From: ' . $tsCore->settings['titulo'] . ' <'. $tsCore->settings['domain'] .'>',
-		   'Reply-To: no-reply@' . $tsCore->settings['domain'],
-		   'X-Mailer: PHP/' . PHP_VERSION
-		]);
-		//
-		return $headers;
-	}
+   public string $emailHeaders = '';
 
-	/**
-	 * private function setBody()
-	 * Generamos el contenido para enviar con plantilla
-	*/
-	private function setBody() {
-		global $tsCore;
-   	include_once TS_EXTRA . "emails/phpost.php";
-   	// Buscamos para reemplazar
-   	$search = ['{1}', '{2}', '{3}'];
+   public string $emailBody = '';
+
+   public string $emailTo = '';
+
+   public string $emailTemplate = 'zcode';
+
+   public function __construct(string $emailData = '', string $emailRef = '') {
+      $this->emailInfo = [
+         'data' => $emailData,
+         'ref' => $emailRef
+      ];
+   }
+
+   /**
+    * Setea los encabezados para el correo.
+    */
+   private function setHeaders(): string {
+      global $tsCore;
+      return implode("\r\n", [
+      	'MIME-Version: 1.0',
+      	'X-Priority: 1',
+      	'Content-type: text/html; charset=UTF-8',
+      	sprintf('From: %s <%s>', $tsCore->settings['titulo'], $tsCore->settings['domain']),
+      	sprintf('Reply-To: no-reply@%s', $tsCore->settings['domain']),
+      	'X-Mailer: PHP/' . PHP_VERSION
+      ]);
+   }
+
+   /**
+    * Genera el cuerpo del correo utilizando una plantilla.
+    */
+   private function setBody(): string {
+      global $tsCore;
+      include_once TS_EXTRA . "emails/" . $this->emailTemplate . ".php";
+      
+      // Definir búsqueda y reemplazo
+   	$placeholders = ['{url}', '{titulo}', '{slogan}', '{contenido}', '{asunto}'];
    	// Por lo que vamos a reemplazar
-   	$from = [$tsCore->settings['url'], $tsCore->settings['titulo'], $this->emailBody];
-   	// Realizamos los cambios
-		$contenido = str_replace($search, $from, $plantilla);
+   	$replacements = [
+   		$tsCore->settings['url'], 
+   		$tsCore->settings['titulo'], 
+   		$tsCore->settings['slogan'], 
+   		$this->emailBody, 
+   		htmlentities($this->emailSubject, ENT_QUOTES | ENT_HTML401, 'UTF-8')
+   	];
+      
+      // Reemplazar contenido en la plantilla
+      return str_replace($placeholders, $replacements, $plantilla);
+   }
 
-		return $contenido;	
-	}
+   /**
+    * Formatea la dirección de correo.
+    */
+   private function setTo(): string {
+      return sprintf("=?UTF-8?Q?%s?=", $this->emailTo);
+   }
 
-	/**
-	 * public function setTo()
-	*/
-	function setTo(){
-		return "=?UTF-8?Q?" . $this->emailTo . "?=";
-	}
+   /**
+    * Establece el asunto del correo en función de la referencia.
+    */
+   private function setEmailSubject(): string {
+      $subjects = [
+         'signup' => 'Por favor completa tu registro.'
+      ];
+      $this->emailSubject = $subjects[$this->emailInfo['ref']] ?? $this->emailSubject;
+      
+      return sprintf("=?UTF-8?B?%s?=", base64_encode($this->emailSubject));
+   }
 
-	/**
-	 * public function setEmailSubject()
-	*/
-	function setEmailSubject(){
-		switch($this->email_info['ref']) {
-			case 'signup' :
-				$this->emailSubject = "Por favor completa tu registro.";
-			break;
-		}
-		// ENCODE SUBJECT FOR UTF8
-		return "=?UTF-8?B?".base64_encode($this->emailSubject)."?=";
-	}
-
-	/**
-	 * public function sendEmail()
-	 * Para enviar el email
-	*/
-	public function sendEmail(){
-		return mail(self::setTo(), self::setEmailSubject(), self::setBody(), self::setHeaders());
-	}
-
+   /**
+    * Envía el correo utilizando la función `mail()`.
+    */
+   public function sendEmail(): bool {
+      if (!filter_var($this->emailTo, FILTER_VALIDATE_EMAIL)) {
+         return false; // Validación del email
+      }
+      return mail($this->setTo(), $this->setEmailSubject(), $this->setBody(), $this->setHeaders());
+   }
 }

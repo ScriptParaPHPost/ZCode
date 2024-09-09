@@ -36,7 +36,7 @@ class LimpiarSolicitud extends tsCore {
 		// Obtenga la cadena de consulta correcta. Puede estar en una variable de entorno...
 		if (!isset($_SERVER['QUERY_STRING'])) $_SERVER['QUERY_STRING'] = getenv('QUERY_STRING');
 		// Parece que pegar una URL después de la cadena de consulta es muy común!
-		if (strpos($_SERVER['QUERY_STRING'], 'http') === 0) {
+		if (str_starts_with((string) $_SERVER['QUERY_STRING'], 'http')) {
 		   http_response_code(400); 
 		   die;
 		}
@@ -57,9 +57,9 @@ class LimpiarSolicitud extends tsCore {
 	   // No dependamos de la configuración ini ... ¿por qué incluso tener COOKIE allí, de todos modos?
 		$_REQUEST = $_POST + $_GET;
 		// Compruebe si la solicitud proviene de este sitio
-   	$referer = isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "";
-		$host = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "";
-		$IsMySite = strpos(preg_replace("/https?:\/\/|www\./", "", $referer), preg_replace("/https?:\/\/|www\./", "", $host)) === 0;
+		$referer = $_SERVER["HTTP_REFERER"] ?? "";
++		$host = $_SERVER["HTTP_HOST"] ?? "";
++		$IsMySite = str_starts_with(preg_replace("/https?:\/\/|www\./", "", $referer), preg_replace("/https?:\/\/|www\./", "", $host));
    	$findPage = ['admin', 'moderacion', 'cuenta'];
    	if((!empty($_SERVER["HTTP_REFERER"]) && (in_array($tsPage, $findPage) || $_SERVER['QUERY_STRING'] == 'action=login-salir') && !$IsMySite) || $_SERVER["REQUEST_METHOD"] === "POST" && !$IsMySite) die("Invalid request");
    }

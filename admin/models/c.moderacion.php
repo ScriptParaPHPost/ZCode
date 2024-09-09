@@ -237,12 +237,20 @@ class tsMod {
 					'donde' => 'stats_no = 1'
 				]);
 				//AGREGAMOS A BORRADORES si se ha marcado la casilla
-				if ($_POST['send_b'] == 'yes')
+				if ($_POST['send_b'] === 'yes')
 					db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @posts_borradores (b_user, b_date, b_title, b_body, b_tags, b_category, b_status, b_causa) VALUES ({$data['post_user']}, $time, '{$data['post_title']}', '{$data['post_body']}', '{$data['post_tags']}', {$data['post_category']}, 1, '$razon_db')");
 					// AVISO
 					$aviso = "Hola <strong>{$data['user_name']}</strong>\n\nLamento contarte que tu post titulado <strong>{$data['post_title']}</strong> ha sido eliminado.\nCausa: <strong>$razon_db</strong>\n\n- Te recomendamos leer el <a href=\"{$tsCore->settings['url']}/pages/protocolo/\" rel=\"internal\">Protocolo</a> para evitar futuras sanciones.\n\n Muchas gracias por entender!";
 					$status = $tsMonitor->setAviso($data['post_user'], 'Post eliminado', $aviso, 1);
-					//mail($data['user_email'], 'Post eliminado', $aviso);
+				  	require_once TS_MODELS . "c.emails.php";
+					$tsEmail = new tsEmail;
+
+					$tsEmail->emailTo = $data['user_email'];
+					$tsEmail->emailTemplate = 'delete';
+					$tsEmail->emailSubject = 'Post eliminado';
+					$tsEmail->emailBody = $aviso;
+					$tsEmail->sendEmail() or die('0: Hubo un error al enviar el correo.');
+
 					$status = $this->setHistory('borrar', 'post', $pid);
 					if ($status == true) return '1: El post ha sido eliminado.';
 			}

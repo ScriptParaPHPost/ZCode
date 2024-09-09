@@ -3,7 +3,7 @@
 		<h4 class="titulorespuestas"><span id="ncomments">{$tsPost.post_comments}</span> Comentarios</h4>
 		<div id="load_comments" class="py-3 text-center" style="display: none;">
 			<span class="d-block">Cargando comentarios</span>
-			<img src="{$tsConfig.assets}/icons/spinner/3-dots-bounce.svg" alt="Cargando comentarios">
+			{uicon name="3-dots-bounce" folder="spinner" alt="Cargando comentarios"}
 		</div>
 	</div>
 	{if $tsPost.post_comments > $tsConfig.c_max_com}

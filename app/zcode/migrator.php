@@ -82,7 +82,7 @@ foreach ($zcode_sql as $sql) {
 }
 
 // Verificar si hay tablas en la base de datos que no estén en el archivo database.php
-$tablesInDb = $mysqli->query("SHOW TABLES LIKE '{$db['prefix']}%'");
+$tablesInDb = $mysqli->query("SHOW TABLES LIKE '{$_ENV['ZCODE_DB_PREFIX']}%'");
 $tablesInDbArray = [];
 while ($row = $tablesInDb->fetch_array()) {
    $tablesInDbArray[] = $row[0];

@@ -35,11 +35,11 @@ function smarty_function_meta($params, &$smarty) {
 
 	// Etiquetas
 	$keywords = (is_numeric($tsPost['post_id'])) ? join(',', $tsPost['post_tags']) : $data['seo_keywords'];
-	$keywords = empty($keywords) ? '' : strtolower($keywords);
+	$keywords = empty($keywords) ? '' : strtolower((string) $keywords);
 
 	// Portada
 	if(isset($tsPost['post_portada']) AND empty($tsPost['post_portada'])) {
-		$tsPost['post_portada'] = "{$tsCore->settings['public']}/images/sin_portada.png";
+		$tsPost['post_portada'] = "{$tsCore->settings['assets']}/images/sin_portada.png";
 	} 
 	$images = (is_numeric($tsPost['post_id'])) ? $tsPost['post_portada'] : ($tsFoto['foto_id'] ? $tsFoto['foto_url'] : $data['seo_portada']);
 
@@ -52,10 +52,10 @@ function smarty_function_meta($params, &$smarty) {
 	$meta = "<!-- Meta Tags Generado por {$tsCore->settings['url']} -->\n";
 	$tags = ['title', 'description', 'keywords'];
 	// Etiquetas por defecto
-	foreach ($tags as $tag) $meta .= "<meta name=\"$tag\" content=\"".$$tag."\" />\n";
+	foreach ($tags as $tag) $meta .= "<meta name=\"$tag\" content=\"".${$tag}."\" />\n";
 
 	if((int)$data['seo_robots']) {
-		$robots_data = json_decode($data['seo_robots_data'], true);
+		$robots_data = json_decode((string) $data['seo_robots_data'], true);
 		$meta .= "<meta name=\"{$nameRobots[$robots_data['name']]}\" content=\"{$contentRobots[$robots_data['content']]}\" />\n";
 	}
 
@@ -82,20 +82,20 @@ function smarty_function_meta($params, &$smarty) {
 			foreach ($social['data'] as $d => $info) {
 				# Añadiendo imagen
 				if($info === 'image') {
-					$$info = is_array($images) ? $images['lg'] : $images;
+					${$info} = is_array($images) ? $images['lg'] : $tsCore->settings['assets'].$images;
 				}
-				$meta .= "<meta {$social['attr']}=\"{$social['prop']}:$info\" content=\"".$$info."\" />\n";
+				$meta .= "<meta {$social['attr']}=\"{$social['prop']}:$info\" content=\"".${$info}."\" />\n";
 			}
 		}
 	}
 	
 	if(isset($data['seo_favicon']) AND !empty($data['seo_favicon'])) {
-		$type = pathinfo($data['seo_favicon'], PATHINFO_EXTENSION);
+		$type = pathinfo((string) $data['seo_favicon'], PATHINFO_EXTENSION);
 		$data['seo_favicon'] .= '?t=' . uniqid();
 		foreach($data['seo_images'] as $im => $img) {
 			if(!empty($img)) {
 				$img .= '?t=' . uniqid();
-				$meta .= "<link href=\"$img\" rel=\"shortcut icon\" type=\"image/$type\" sizes=\"{$im}x{$im}\" />\n";
+				$meta .= "<link href=\"{$tsCore->settings['assets']}$img\" rel=\"shortcut icon\" type=\"image/$type\" sizes=\"{$im}x{$im}\" />\n";
 			}
 		}
 	}

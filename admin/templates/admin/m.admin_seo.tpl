@@ -58,7 +58,7 @@
          </dl>
          <div class="search-results">
 	        	<div class="result">
-               <img class="image" src="{$tsSeo.seo_portada}" alt="{$tsSeo.seo_titulo}">
+               <img class="image" src="{$tsConfig.assets}{$tsSeo.seo_portada}" alt="{$tsSeo.seo_titulo}">
 	            <span class="title">{$tsSeo.seo_titulo}</span>
 	            <span class="url">{$tsConfig.url}</span>
 	            <span class="description">{$tsSeo.seo_descripcion}</span>
@@ -109,6 +109,8 @@
             .search-results .url {
             	font-style: italic;
             	color: #2375C1;
+               display: block;
+               margin: .325rem 0;
             }
             .search-results .descripcion {
             	line-height: 1rem;

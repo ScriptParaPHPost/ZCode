@@ -11,12 +11,12 @@
 				<thead>
 					<th class="body-bg"><input type="checkbox" class="up-checkbox" name="tables[all]" value="all"></th>
 					<th>Tabla</th>
+					<th>Motor</th>
 					<th>Filas</th>
 					<th>Tamaño</th>
-					<th>Caché</th>
 					<th>Creado</th>
 					<th>Actualizado</th>
-					<th>Acciones</th>
+					<th></th>
 				</thead>
 				<tbody>
 					{foreach $tsTablesSQL key=t item=table}
@@ -24,28 +24,23 @@
 							<td class="text-center">
 								<input type="checkbox" class="up-checkbox" name="tables[{$table.name}]" value="{$table.name}">
 							</td>
-							<td>{$table.name} <small class="d-block"><strong>{$table.engine}</strong> - <strong>{$table.collation}</strong></small></td>
+							<td>{$table.name} <small class="d-block">Caché <strong data-cache="{$table.id}">{if $table.cache === 0}Vacio{else}{$table.cache}{/if}</strong></small></td>
+							<td>{$table.engine}</td>
 							<td class="text-center">{$table.rows}</td>
 							<td class="text-center">{$table.size}</td>
-							<td class="text-center" data-cache="{$table.id}">{if $table.cache === 0}Vacio{else}{$table.cache}{/if}</td>
-							<td>{$table.create|hace:true}</td>
-							<td data-update="{$table.id}">{$table.update|hace:true}</td>
+							<td class="text-center">{$table.create|fecha:'d/m/Y'}</td>
+							<td class="text-center" data-update="{$table.id}">{$table.update|hace:true}</td>
 							<td>
-								<div class="admin_actions d-flex justify-content-center align-items-center column-gap-2">
-									<span role="button" onclick="database.table_action('analyze', '{$table.name}')" title="Analizar {$table.name}">
-										{uicon name="gauge" class="pe-none" size="1.325rem"}
-									</span>
-									{if $table.cache != 0}
-							   	<span role="button" data-remove="{$table.id}" onclick="database.table_action('optimize', '{$table.name}', {$table.id})" title="Limpiar {$table.name}">
-							   		{uicon name="database" class="pe-none" size="1.325rem"}
-							   	</span>
-							   	{/if}
-							   	<span role="button" onclick="database.table_action('repair', '{$table.name}', {$table.id})" title="Reparar {$table.name}">
-							   		{uicon name="nut" class="pe-none" size="1.325rem"}
-							   	</span>
-							   	<span role="button" onclick="database.table_action('check', '{$table.name}')" title="Comprobar {$table.name}">
-							   		{uicon name="search" class="pe-none" size="1.325rem"}
-							   	</span>
+								<div class="drop-options text-center">
+									<span role="button" class="actions mx-auto d-flex justify-content-center align-items-center" data-target="#option_{$table.name}">{uicon name="menu_vertical" class="pe-none"}</span>
+									<div class="drop-box" id="option_{$table.name}">
+										<span role="button" onclick="database.table_action('analyze', '{$table.name}')" title="Analizar {$table.name}">{uicon name="gauge" class="pe-none" size="1.325rem"} Analizar tabla</span>
+										<span role="button" onclick="database.table_action('repair', '{$table.name}', {$table.id})" title="Reparar {$table.name}">{uicon name="nut" class="pe-none" size="1.325rem"} Reparar tabla</span>
+										<span role="button" onclick="database.table_action('check', '{$table.name}')" title="Comprobar {$table.name}">{uicon name="search" class="pe-none" size="1.325rem"} Comprobar tabla</span>
+										{if $table.cache != 0}
+											<span role="button" data-remove="{$table.id}" onclick="database.table_action('optimize', '{$table.name}', {$table.id})" title="Limpiar {$table.name}">{uicon name="database" class="pe-none" size="1.325rem"} Vaciar caché</span>
+										{/if}
+									</div>
 								</div>
 							</td>
 						</tr>

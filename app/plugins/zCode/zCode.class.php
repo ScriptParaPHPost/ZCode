@@ -79,7 +79,7 @@ class SmartyZCode {
   	private function getRoutesOfDirectories(array $themeRoute = [], array $dirs = []):array {
   		$setRoutes = ['links' => [], 'directories' => []];
   		foreach (['tema', 'assets'] as $link) {
-         $theme = ($link === 'tema') ? $themeRoute[$link]['t_url'] : $themeRoute[$link];
+         $theme = ($link === 'tema') ? $themeRoute['t_url'] : $themeRoute[$link];
          foreach ($this->resources as $source) {
             $isSource = ($source === 'root');
             $setRoutes['links'][$link][$source] = $theme . ($isSource ? '' : "/$source");
@@ -404,7 +404,7 @@ class SmartyZCode {
 			'assets' => $tsCore->settings['assets'] . '/images',
 			'tema' => $tsCore->settings['images']
 		];
-		$claves['theme'] = $tsCore->settings['tema']['t_url'];
+		$claves['theme'] = $tsCore->settings['t_url'];
 		$others = ['url', 'assets', 'domain', 'titulo', 'slogan', 'version'];
 		foreach ($others as $key => $other) {
 			$claves[$other] = $tsCore->settings[$other];

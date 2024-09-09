@@ -7,7 +7,8 @@
  */
 
 class tsCore extends tsZCode {
-	 
+
+
 	public $settings;	// CONFIGURACIONES DEL SITIO
 
 	/**
@@ -15,31 +16,25 @@ class tsCore extends tsZCode {
 	 *
 	 * @return string El esquema de URL (http:// o https://).
 	 */
-	private function httpsSslOn(): string {
-		$isSecure = false;
-		if (
-			(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
-			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
-			(!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
-		) {
-			$isSecure = true;
-		}
-		return 'http' . ($isSecure ? 's' : '') . '://';
+	private function getSSLProtocol() {
+		$ssl = 'http';
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') $ssl .= 's';
+		return $ssl;
 	}
 
 	private function withoutSSL() {
-		return str_replace($this->httpsSslOn(), '', $this->settings['url']);
+		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT url FROM @configuracion WHERE tscript_id = 1")); 
+		return $query['url'];
 	}
 
 	public function __construct() {
 		// CARGANDO CONFIGURACIONES
 		$this->settings = $this->getSettings();
 		$this->settings['domain'] = $this->withoutSSL();
-		$this->settings['default'] = $this->settings['url'].'/themes/default';
-		$this->settings['tema'] = $this->getTema();
-		$this->settings['images'] = $this->settings['tema']['t_url'].'/images';
-		$this->settings['css'] = $this->settings['tema']['t_url'].'/css';
-		$this->settings['js'] = $this->settings['tema']['t_url'].'/js';
+		$this->settings['t_url'] = $this->settings['url'] . '/themes/' . $this->settings['tema'];
+		$this->settings['images'] = $this->settings['t_url'].'/images';
+		$this->settings['css'] = $this->settings['t_url'].'/css';
+		$this->settings['js'] = $this->settings['t_url'].'/js';
 		//
 		$this->settings['assets'] = $this->settings['url'].'/assets';
 		$this->settings['favicon'] = $this->settings['assets'].'/images/favicon';
@@ -55,12 +50,7 @@ class tsCore extends tsZCode {
 			'128' => $this->settings['favicon'] . '/logo-128.webp',
 			'256' => $this->settings['favicon'] . '/logo-256.webp'
 		];
-		$this->settings['canonical'] = $this->obtenerUrlActual();
-	}
-
-	public function obtenerUrlActual() {
-		$url = $this->httpsSslOn() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		return urlencode($url);
+		$this->settings['canonical'] = urlencode($this->getSSLProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 	}
 
 	/*
@@ -68,6 +58,7 @@ class tsCore extends tsZCode {
 	*/
 	public function getSettings() {
 		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @configuracion WHERE tscript_id = 1")); 
+		$query['url'] = $this->getSSLProtocol() . '://' . $query['url'];
 		return $query;
 	}
 	
@@ -106,9 +97,7 @@ class tsCore extends tsZCode {
 		getTema()
 	*/
 	public function getTema() {
-		$id = $this->settings['tema_id'];
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT tid, t_name, t_url, t_path, t_copy FROM @temas WHERE tid = $id LIMIT 1"));
-		$data['t_url'] = $this->settings['url'] . '/themes/' . $data['t_path'];
+		$data['t_url'] = $this->settings['url'] . '/themes/' . $this->settings['tema'];
 		//
 		return $data;
 	}
@@ -231,7 +220,7 @@ class tsCore extends tsZCode {
 		currentUrl()
 	*/
 	public function currentUrl(){
-		$current_url = $this->httpsSslOn() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$current_url = $this->getSSLProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		return urlencode($current_url);
 	}
 

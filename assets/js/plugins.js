@@ -246,7 +246,7 @@ const UPModal = {
 		this.show = true;
 		// Creamos el ID para el modal
 		$('<div class="loader_modal"></div>').prependTo('body');
-		$('.UPModal').html(this.template);
+		$('.loader_modal').html(this.template);
 	   $('body').css({ overflow: (this.default.scrolleable ? 'auto' : 'hidden') });
 	},
 	setModalStatus(icon, status) {

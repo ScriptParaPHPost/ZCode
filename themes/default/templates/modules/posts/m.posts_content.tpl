@@ -35,7 +35,7 @@
          <a class="tag-item rounded d-block px-2 main-bg main-color text-decoration-none" href="{$tsConfig.url}/buscador/?e=tags&q={$tag}&autor=&cat=-1">#{$tag}</a>
       {/foreach}
    </div>
-      {include "m.posts_metadata.tpl"}
+   {include "m.posts_metadata.tpl"}
    {include "m.posts_cambiar.tpl"}
    {include "m.posts_compartir.tpl"}
  </div>

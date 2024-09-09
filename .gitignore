@@ -1,11 +1,19 @@
 # Conexion a base de datos
-config/dbconnect.php
+config.inc.php
 
 # Archivos de errores
 *.log
 
+# Ignorar todo en la carpeta 'cache'
+cache/
+
 # Ignorar todo en la carpeta 'storage'
 storage/*
+
+# Ignorar portadas
+assets/images/avatar
+assets/images/portadas
+assets/images/uploads
 
 # No ignorar el archivo '.version' en 'storage'
 !storage/.version
@@ -18,3 +26,5 @@ themes/*
 
 # Ignorar archivos
 *.txt
+.env
+.lock

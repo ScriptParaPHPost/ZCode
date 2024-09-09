@@ -202,7 +202,8 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts` (
 
 $zcode_sql[] = "ALTER TABLE `{$db['prefix']}posts` ADD FULLTEXT(`post_tags`);";
 
-$zcode_sql[] = "INSERT INTO `{$db['prefix']}posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES (1, 1, 30, 'Bienvenido a ' . SCRIPT_NAME, '[size=18]¡Hola a todos![/size]\r\n\r\nNos llena de emoción darles la bienvenida a [b]'.SCRIPT_NAME.'[/b], el cual marca el primer paso en lo que esperamos sea un emocionante viaje para todos nosotros. Este es nuestro primer post y estamos encantados de que estés aquí, acompañándonos en este inicio.\r\n\r\nEste espacio ha sido creado con la intención de compartir, informar y ofrecer contenido valioso para nuestra comunidad. A lo largo de nuestras publicaciones, exploraremos una variedad de temas que van desde las últimas novedades y tendencias, hasta recursos útiles como descargas e imágenes que pueden ser de gran ayuda en tu día a día.\r\n\r\nQueremos que esta página sea un punto de encuentro, un lugar donde puedas encontrar información relevante, interactuar con otros lectores y, por supuesto, disfrutar de contenido que inspire y motive.\r\n\r\nEste es solo el comienzo, y tenemos muchas ideas y proyectos que estamos ansiosos por compartir con ustedes. Así que, te invitamos a quedarte con nosotros, explorar lo que tenemos para ofrecer y ser parte activa de esta comunidad que estamos construyendo juntos.\r\n\r\n[b][align=center]¡Gracias por ser parte de esta aventura desde el primer día![/align][/b]', 0, 'zcode, actualizado, optimizacion, mejoras, proyecto, compartir, ideas, construir');";
+$namescript = SCRIPT_NAME;
+$zcode_sql[] = "INSERT INTO `{$db['prefix']}posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES (1, 1, 30, 'Bienvenido a $namescript', '[size=18]¡Hola a todos![/size]\r\n\r\nNos llena de emoción darles la bienvenida a [b]{$namescript}[/b], el cual marca el primer paso en lo que esperamos sea un emocionante viaje para todos nosotros. Este es nuestro primer post y estamos encantados de que estés aquí, acompañándonos en este inicio.\r\n\r\nEste espacio ha sido creado con la intención de compartir, informar y ofrecer contenido valioso para nuestra comunidad. A lo largo de nuestras publicaciones, exploraremos una variedad de temas que van desde las últimas novedades y tendencias, hasta recursos útiles como descargas e imágenes que pueden ser de gran ayuda en tu día a día.\r\n\r\nQueremos que esta página sea un punto de encuentro, un lugar donde puedas encontrar información relevante, interactuar con otros lectores y, por supuesto, disfrutar de contenido que inspire y motive.\r\n\r\nEste es solo el comienzo, y tenemos muchas ideas y proyectos que estamos ansiosos por compartir con ustedes. Así que, te invitamos a quedarte con nosotros, explorar lo que tenemos para ofrecer y ser parte activa de esta comunidad que estamos construyendo juntos.\r\n\r\n[b][align=center]¡Gracias por ser parte de esta aventura desde el primer día![/align][/b]', 0, 'zcode, actualizado, optimizacion, mejoras, proyecto, compartir, ideas, construir');";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_votos` (
   `voto_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -317,7 +318,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros_social` (
   `social_name` varchar(20) NOT NULL DEFAULT '',
   `social_nick` varchar(24) NOT NULL DEFAULT '',
   `social_email` varchar(80) NOT NULL DEFAULT '',
-  `social_avatar` tinytext NOT NULL DEFAULT '',
+  `social_avatar` tinytext,
   PRIMARY KEY (`social_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
 
@@ -426,7 +427,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}portal` (
   `last_posts_visited` text NULL,
   `last_posts_shared` text NULL,
   `last_posts_cats` text NULL,
-  `c_monitor` text NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14,f18',
+  `c_monitor` varchar(255) NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14,f18',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 
@@ -464,6 +465,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}sessions` (
   `session_id` varchar(32) NOT NULL DEFAULT '',
   `session_user_id` int(11) unsigned NOT NULL DEFAULT 0,
   `session_ip` varchar(50) NOT NULL DEFAULT '',
+  `session_token` varchar(100) NOT NULL DEFAULT '',
   `session_time` int(10) unsigned NOT NULL DEFAULT 0,
   `session_autologin` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`session_id`),
@@ -503,7 +505,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}configuracion` (
   `url` tinytext NULL,
   `email` varchar(80) NOT NULL DEFAULT '',
   `banner` varchar(100) NOT NULL DEFAULT '',
-  `tema_id` int(11) NOT NULL DEFAULT 1,
+  `tema` varchar(30) NOT NULL DEFAULT 'default',
   `update_id` varchar(20) NOT NULL DEFAULT '',
   `c_allow_fuentes` int(1) NOT NULL DEFAULT 0,
   `c_avatar` int(1) NOT NULL DEFAULT 0,
@@ -526,7 +528,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}configuracion` (
   `c_keep_points` int(1) NOT NULL DEFAULT 0,
   `c_allow_points` int(11) NOT NULL DEFAULT 0,
   `c_allow_edad` int(11) NOT NULL DEFAULT 16,
-  `c_max_posts` int(2) NOT NULL DEFAULT 50,
+  `c_max_posts` int(2) NOT NULL DEFAULT 17,
   `c_max_com` int(3) NOT NULL DEFAULT 50,
   `c_max_nots` int(3) NOT NULL DEFAULT 99,
   `c_max_acts` int(3) NOT NULL DEFAULT 99,
@@ -663,15 +665,6 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}stats` (
 
 $zcode_sql[] = "INSERT INTO `{$db['prefix']}stats` (`stats_no`, `stats_max_online`) VALUES (1, 0);";
 
-$zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}temas` (
-  `tid` int(11) NOT NULL AUTO_INCREMENT,
-  `t_name` tinytext NULL,
-  `t_url` tinytext NULL,
-  `t_path` tinytext NULL,
-  `t_copy` tinytext NULL,
-  PRIMARY KEY (`tid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
-
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}visitas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` int(11) NOT NULL DEFAULT 0,
@@ -699,8 +692,8 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}seo` (
   `seo_portada` tinytext NULL,
   `seo_favicon` tinytext NULL,
   `seo_keywords` text NULL,
-  `seo_images` text NULL DEFAULT '',
-  `seo_robots_data` text NULL DEFAULT '',
+  `seo_images` text NULL,
+  `seo_robots_data` text NULL,
   `seo_robots` int(1) NULL DEFAULT 0,
   `seo_sitemap` int(1) NULL DEFAULT 0,
   PRIMARY KEY (`seo_id`)
@@ -710,7 +703,7 @@ $zcode_sql[] = "INSERT INTO `{$db['prefix']}seo` (`seo_id`) VALUES (1);";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}sitemap` (
   `id` int(3) NOT NULL AUTO_INCREMENT,
-  `url` tinytext NOT NULL DEFAULT '',
+  `url` tinytext NULL,
   `frecuencia` varchar(15) NOT NULL DEFAULT '',
   `fecha` int(16) NOT NULL DEFAULT 0,
   `prioridad` decimal(2,1) NOT NULL DEFAULT 0,
@@ -762,7 +755,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}chat_lobby` (
   `lobby_author` int(11) NOT NULL DEFAULT 0,
   `lobby_description` varchar(50) NOT NULL DEFAULT '',
   `lobby_private` int(1) NOT NULL DEFAULT 0,
-  `lobby_guests` text NOT NULL DEFAULT '',
+  `lobby_guests` text NULL,
   `lobby_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`lid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";

@@ -3,19 +3,10 @@
 if ( ! defined('TS_HEADER')) 
 	exit('No se permite el acceso directo al script');
 
-if(file_exists(DATABASE_CONNECT)) {
-	require_once DATABASE_CONNECT;
-	if($db['hostname'] == 'dbhost') {
-		header("Location: ./install/");
-		die;
-	}
-} else {
-	header("Location: ./install/");
-	die;
-}
+if(!file_exists(TS_ROOT.'.env') || $_ENV['ZCODE_DB_HOST'] === 'dbhost') header("Location: ./install/");
 
-if (DEBUG_MODE) {
-   mysqli_debug("d:t:o," . LOG_DIR . "mysqliError.log");
+if ($_ENV['DEBUG_MODE'] === 'true') {
+   mysqli_debug("d:t:o," . DIR_ERROR_LOG . "mysqli_error.log");
 }
 
 /**
@@ -27,24 +18,27 @@ try {
 	 * Realizamos la conexión con MySQLi
 	 * @link https://www.php.net/manual/es/mysqli.construct.php
 	*/
-	$port = empty($db['port']) ? ini_get('mysqli.default_port') : $db['port'];
-   $mysqli = new mysqli($db['hostname'], $db['username'], $db['password'], $db['database'], $port);
+   $mysqli = new mysqli(
+   	$_ENV['ZCODE_DB_HOST'], 
+   	$_ENV['ZCODE_DB_USER'], 
+   	$_ENV['ZCODE_DB_PASS'], 
+   	$_ENV['ZCODE_DB_NAME']
+   );
+
 	
    // Comprobar el estado de la conexión
    if ($mysqli->connect_errno) {
       throw new Exception("Falló la conexión con MySQL: ({$mysqli->connect_errno}) {$mysqli->connect_error}");
    }
    // Establecer el juego de caracteres utf8
-   if (!$mysqli->set_charset('utf8mb4')) {
+   if (!$mysqli->set_charset( $_ENV['ZCODE_DB_CHARSET'] )) {
       throw new Exception('No se pudo establecer la codificación de caracteres.');
    }
 } catch (Exception $e) {
 	show_error('No se pudo ejecutar una consulta en la base de datos.', 'db');
 }
 
-$prefijo = $db['prefix'];
 function withPrefix(string $query = '') {
-	global $prefijo;
    // Definir la expresión regular para buscar el contenido entre < y > 
    $expresion_regular = '/\s@([\w_]+)/';
    // Realizar la búsqueda y extraer los resultados
@@ -53,24 +47,22 @@ function withPrefix(string $query = '') {
       $resultados = $coincidencias[1];
       // Reemplazar cada coincidencia con $prefix . $resultado
       foreach ($resultados as $resultado) {
-         $query = str_replace("@$resultado", "$prefijo$resultado", $query);
+         $query = str_replace("@$resultado", $_ENV['ZCODE_DB_PREFIX'] . "$resultado", $query);
       }
       return $query;
    } else return $query;
 }
-
 /**
  * Todo lo que se añada a database.php
  * Se ejecutará automáticamente sin 
  * intervención del usuario
 */
-if(isset($_GET['migrator']) && $_GET['migrator'] && (int)$tsUser->is_admod === 1 && (int)$tsUser->uid === 1) {
-	require_once TS_ZCODE . 'migrator.php';
-	if(!$success) {
-		die('No se pudo migrar correctamente...');
-	}
+if(isset($_GET['migrator']) && $_GET['migrator'] === 'true' || (int)$tsUser->is_admod === 1) {
+   include TS_ZCODE . 'migrator.php';
+   if(!$success) {
+      die('No se pudo migrar correctamente...');
+   }
 }
-
 /**
  * Ejecutar consulta
  */
@@ -87,16 +79,16 @@ function db_exec() {
 	 
 	// Si la primera variable contiene un string, se entiende que es la consulta que debe ejecutarse. Esto lo prepara para ello.
 	if(is_array($info)) {
-		if(!$tsUser->is_admod && $display['msgs'] != 2) { 
+		if(!$tsUser->is_admod && $display['msgs'] !== 2) { 
 			$info[0] = explode('\\', $info[0]); 
 		}
-		$info['file'] = ($tsUser->is_admod || $display['msgs'] == 2) ? $info[0] : end($info[0]);
+		$info['file'] = ($tsUser->is_admod || $display['msgs'] === 2) ? $info[0] : end($info[0]);
 		$info['line'] = $info[1];
 		$info['query'] = $data;
 	} else {
 		$data = $type;
 		$type = $info;
-		if($type == 'query') { 
+		if($type === 'query') { 
 		  	$info = []; 
 		  	$info['query'] = $data; 
 		}
@@ -217,7 +209,7 @@ function show_error($error = 'Indefinido', $type = 'db', $info = []) {
    if($type === 'db') {
       $extra = [];
 
-      if ($tsUser->is_admod || $display['msgs'] == 2) {
+      if ($tsUser->is_admod || $display['msgs'] === 2) {
          $extra[] = "<tr><td colspan=\"2\"><p class=\"warning\">".$mysqli->error."</p></td></tr>";
       }
       if (isset($info['file'])) {
@@ -239,15 +231,5 @@ function show_error($error = 'Indefinido', $type = 'db', $info = []) {
 // Borramos la variable por seguridad
 unset($db);
 
-function generateCsrfToken() {
-   $token = bin2hex(random_bytes(32));
-   $_SESSION['csrf_token'] = $token;
-   $_SESSION['csrf_token_expiry'] = time() + CSRF_TOKEN_LIFETIME;
-   return $token;
-}
-
-function validateCsrfToken($token) {
-   if (!isset($_SESSION['csrf_token']) || !isset($_SESSION['csrf_token_expiry'])) return false;
-   if ($_SESSION['csrf_token_expiry'] < time()) return false; // Token expirado
-   return hash_equals($_SESSION['csrf_token'], $token);
-}
+# Importante para almacenar los logs
+if(!is_dir(DIR_ERROR_LOG)) mkdir(DIR_ERROR_LOG, 0777, true);

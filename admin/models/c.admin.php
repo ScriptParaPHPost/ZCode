@@ -579,7 +579,14 @@ class tsAdmin {
 		// ACTUALIZAMOS LA TABLA
 		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_email = '$email'$changedis$new_nick$pxd$apoints$db_key WHERE user_id = $user_id")) {
 			if ($_POST['sendata']) {
-				mail($email, 'Nuevos datos de acceso', "Sus datos de acceso a {$tsCore->settings['titulo']} han sido cambiados por un administrador. Los nuevos datos son: usuario: $user_nick, contraseña: $password. Disculpe las molestias", 'From: ' . $tsCore->settings['titulo'] . ' <no-reply@' . $tsCore->settings['domain'] . '>');
+			  	require_once TS_MODELS . "c.emails.php";
+				$tsEmail = new tsEmail;
+
+				$tsEmail->emailTo = $admin[0];
+				$tsEmail->emailTemplate = 'default';
+				$tsEmail->emailSubject = 'Nuevos datos de acceso';
+				$tsEmail->emailBody = "Sus datos de acceso a {$tsCore->settings['titulo']} han sido cambiados por un administrador. Los nuevos datos son:<br>Usuario: <strong>$user_nick</strong><br>Contrase&ntilde;a: <strong>$password</strong><br><br> Disculpe las molestias";
+				$tsEmail->sendEmail() or die('0: Hubo un error al enviar el correo.');
 			}
 			return 'Los cambios fueron aplicados';
 		}
@@ -648,7 +655,15 @@ class tsAdmin {
 		  		'av_date' => time(),
 		  		'av_type' => 1
 		  	]);
-		  	mail($admin[0], 'Contenido eliminado', "<html><head><title>Contenido de cierta cuenta han sido eliminados.</title></head><body><p>$avBody</p></body></html>", 'Content-type: text/html; charset=iso-8859-15');
+		  	require_once TS_MODELS . "c.emails.php";
+			$tsEmail = new tsEmail;
+
+			$tsEmail->emailTo = $admin[0];
+			$tsEmail->emailTemplate = 'delete';
+			$tsEmail->emailSubject = 'Contenido eliminado';
+			$tsEmail->emailBody = "Contenido de cierta cuenta han sido eliminados.<br>$avBody";
+			$tsEmail->sendEmail() or die('0: Hubo un error al enviar el correo.');
+		 
 		  	return 'OK';
 		} else return 'Credenciales incorrectas';
 	}
@@ -775,12 +790,12 @@ class tsAdmin {
 		$subject = "{$datos['name_1']}, su petición de cambio ha sido " . ($_POST['accion'] == 'aprobar' ? 'aprobada' : 'denegada');
 		$body = "Hola {$datos['name_1']}:<br />Le enviamos este email para informarle que su petici&oacute;n de cambio de nick ha sido";
 		$body .= $aprobado ? " aceptada. <br> Desde este momento, podr&aacute; acceder en {$tsCore->settings['titulo']} con el nombre de usuario {$datos['name_2']}." : " denegada";
-		$body .= " <br /><br />El staff de <strong>{$tsCore->settings['titulo']}</strong>";
 		// <--
 		require_once TS_MODELS . "c.emails.php";
 		$tsEmail = new tsEmail;
 
 		$tsEmail->emailTo = $datos['user_email'];
+		$tsEmail->emailTemplate = 'default';
 		$tsEmail->emailSubject = $subject;
 		$tsEmail->emailBody = $body;
 		$tsEmail->sendEmail() or die('0: Hubo un error al enviar el correo.');

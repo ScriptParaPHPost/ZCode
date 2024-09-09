@@ -19,8 +19,12 @@
 		<h4 class="py-2 border-bottom">Post Relacionados</h4>	
 
 		{foreach from=$tsRelated item=p}
-			<div class="{$p.c_seo}">
-			 	<a class="mb-2 rounded p-3 hover:main-bg hover:main-color active:main-bg active:main-color fw-semibold text-decoration-none d-block{if $p.post_private} privado{/if}"title="{$p.post_title}" href="{$tsConfig.url}/posts/{$p.c_seo}/{$p.post_id}/{$p.post_title|seo}.html" rel="dc:relation">{$p.post_title}</a>
+			<div class="{$p.c_seo} post-relacionado rounded py-2 px-3 hover:main-bg hover:main-color active:main-bg active:main-color">
+			 	<a class="fw-semibold text-decoration-none d-block{if $p.post_private} privado{/if}"title="{$p.post_title}" href="{$p.post_url}" rel="dc:relation">{$p.post_title}</a>
+			 	<div class="d-flex justify-content-start align-items-center column-gap-2">
+			 		<span class="d-flex justify-content-start align-items-center column-gap-2"><img src="{$p.c_img}" class="avatar"> {$p.c_nombre}</span>
+			 		<time class="fw-500">- {$p.post_date|hace:true}</time>
+			 	</div>
 			</div>
 		{foreachelse}
 			<div class="empty">No se encontraron posts relacionados.</div>
@@ -28,5 +32,10 @@
 	
 	</div>
 </div>
+<style>
+	.post-relacionados .post-relacionado:hover a {
+		color: var(--main-color);
+	}
+</style>
 					 
 {include "main_footer.tpl"}

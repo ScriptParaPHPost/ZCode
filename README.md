@@ -4,7 +4,7 @@
 ![Discord](https://img.shields.io/discord/1150516717617938543?style=plastic&logo=discord&logoColor=%23FFF&label=Discord&color=%237289DA)
 
 # ZCode
-PHPost Risus es un sistema de compartimiento de enlaces que permite crear un sitio web similar a Taringa!
+Es un sistema de compartimiento de enlaces que permite crear un sitio web similar a Taringa!
 > Esta versión solo funcionará bien con PHP 8.2, se puede llegar a usar PHP 7+, pero tendrá algunos errores!
 
 ### Actualizaciones

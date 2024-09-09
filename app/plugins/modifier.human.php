@@ -14,7 +14,7 @@
 function smarty_modifier_human($number = 0) {
    if($number <= 0) return 0;
    $abbrevs = ['', 'K', 'M', 'B', 'T'];
-   $factor = floor((strlen($number) - 1) / 3);
+   $factor = floor((strlen((string) $number) - 1) / 3);
    if ($factor == 0) return $number;
-   return sprintf("%.1f", $number / pow(1000, $factor)) . $abbrevs[$factor];
+   return sprintf("%.1f", $number / 1000 ** $factor) . $abbrevs[$factor];
 }

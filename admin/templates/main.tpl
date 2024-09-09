@@ -56,5 +56,6 @@
 {if $tsPage == 'admin' && $tsAction == ''}
 	{zCode js="versiones.js"}
 {/if}
+{zCode js="$tsAction.js"}
 </body>
 </html>

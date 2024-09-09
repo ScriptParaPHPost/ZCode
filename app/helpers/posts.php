@@ -107,19 +107,14 @@ if($tsContinue) {
 
 		} else {
 			//
-			$tsPage = "post.aviso";
 			$tsAjax = 0;
 			$smarty->assign("tsAviso", $tsPost);
-			if($tsPost[0] === 'privado') {
-				//
-				$title = str_replace("-",",", $tsCore->setSecure($_GET['title']));
-				$title = explode(",", $title);
-				// RELACIONADOS
-				$tsRelated = $tsPosts->getRelated($title);
-				$smarty->assign("tsRelated", $tsRelated);
-				$tsTitle = $tsPost[1] .' - ' . $tsTitle;
-				$tsPage = "post.privado";
-			}
+			// RELACIONADOS
+			$tsRelated = $tsPosts->getRelated();
+			$smarty->assign("tsRelated", $tsRelated);
+			$tsTitle = $tsPost[1] .' - ' . $tsTitle;
+			$tsPage = "post." . ($tsPost[0] === 'privado' ? 'privado' : 'aviso');
+		
 			$smarty->assign("tsType", 'post');
 
 		}

@@ -15,20 +15,14 @@ class tsCore {
 	 *
 	 * @return string El esquema de URL (http:// o https://).
 	 */
-	private function httpsSslOn(): string {
-		$isSecure = false;
-		if (
-			(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
-			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
-			(!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
-		) {
-			$isSecure = true;
-		}
-		return 'http' . ($isSecure ? 's' : '') . '://';
+	private function getSSLProtocol() {
+		$ssl = 'http';
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') $ssl .= 's';
+		return $ssl;
 	}
 
 	private function withoutSSL() {
-		return str_replace($this->httpsSslOn(), '', $this->settings['url']);
+		return str_replace($this->getSSLProtocol(), '', $this->settings['url']);
 	}
 
 	public function __construct() {
@@ -54,7 +48,7 @@ class tsCore {
 	}
 
 	public function obtenerUrlActual() {
-		$url = $this->httpsSslOn() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$url = $this->getSSLProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		return urlencode($url);
 	}
 
@@ -62,7 +56,8 @@ class tsCore {
 		getSettings() :: CARGA DESDE LA DB LAS CONFIGURACIONES DEL SITIO
 	*/
 	public function getSettings() {
-		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT titulo, slogan, url, email, update_id, c_avatar, leaving, c_last_active, c_allow_sess_ip, c_count_guests, c_reg_active, c_reg_activate, c_reg_rango, c_met_welcome, c_message_welcome, c_fotos_private, c_hits_guest, c_keep_points, c_allow_points, c_allow_edad, c_max_posts, c_max_com, c_max_nots, c_max_acts, c_newr_type, c_allow_sump, c_allow_firma, c_allow_upload, c_allow_portal, c_allow_live, c_see_mod, c_stats_cache, c_desapprove_post, offline, offline_message, pkey, skey, version, version_code FROM @configuracion WHERE tscript_id = 1")); 
+		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT titulo, slogan, url, email, update_id, c_avatar, leaving, c_last_active, c_allow_sess_ip, c_count_guests, c_reg_active, c_reg_activate, c_reg_rango, c_met_welcome, c_message_welcome, c_fotos_private, c_hits_guest, c_keep_points, c_allow_points, c_allow_edad, c_max_posts, c_max_com, c_max_nots, c_max_acts, c_newr_type, c_allow_sump, c_allow_firma, c_allow_upload, c_allow_portal, c_allow_live, c_see_mod, c_stats_cache, c_desapprove_post, offline, offline_message, pkey, skey, version, version_code FROM @configuracion WHERE tscript_id = 1"));
+		$query['url'] = $this->getSSLProtocol() . '://' . $query['url'];
 		return $query;
 	}
 
@@ -172,7 +167,7 @@ class tsCore {
 		currentUrl()
 	*/
 	public function currentUrl(){
-		$current_url = $this->httpsSslOn() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$current_url = $this->getSSLProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		return urlencode($current_url);
 	}
 
@@ -592,7 +587,10 @@ class tsCore {
 	 * @description Es solo para comprobar que fue instalado
 	*/
 	public function verification() {
-		$encode = base64_encode("{$this->settings['url']} - " . SCRIPT_VERSION . " - " . SCRIPT_KEY);
+		$encode = base64_encode(serialize([
+   		'KEY' => $_ENV['ZCODE_VERIFY_KEY'],
+   		'PIN' => $_ENV['ZCODE_VERIFY_PIN']
+   	]));
 		return $encode;
 	}
 

@@ -1,14 +1,14 @@
 ErrorDocument 401 /errors/401.html
 ErrorDocument 403 /errors/403.html
 ErrorDocument 404 /errors/404.html
-#ErrorDocument 500 /errors/500.html
-#ErrorDocument 501 /errors/501.html
+ErrorDocument 500 /errors/500.html
+ErrorDocument 501 /errors/501.html
 
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
-## NO DEBEN EDITAR ESTO, YA QUE PUEDE GENERAR ERROR! DEBE TENER LAS LINEAS 12 HASTA 15
+## NO DEBEN EDITAR ESTO, YA QUE PUEDE GENERAR ERROR! DEBE TENER LAS LINEAS 12 HASTA 15 
 #RewriteBase /
 #RewriteCond %{SERVER_PORT} 80
 #RewriteCond %{HTTP_HOST} ^http://TU_SITIO_WEB.com[NC,OR]
@@ -34,6 +34,9 @@ IndexIgnore *
 
 # Limitar tama?o de subida de archivos
 LimitRequestBody 10240000
+
+# Denegando acceso a estas carpetas
+RewriteRule ^(config|storage|admin|app|logs) - [F,L]
 
 # INDEX
 RewriteRule ^$ index.php?do=home [QSA,L]
@@ -84,7 +87,7 @@ RewriteRule ^comunidades(/([A-Za-z0-9_-]+))?(/([0-9]+))?(/([A-Za-z0-9_-]+))?(/([
 RewriteRule ^(login|registro)/?$ app/helpers/access.php?action=$1 [QSA,L]
 
 # INSTALL
-RewriteRule ^install/(([A-Za-z0-9_-]+))?$ app/zcode/install.php?step=$1 [QSA,L]
+RewriteRule ^(install|upgrade)/([A-Za-z0-9_-]+)?$ app/extras/$1.php?step=$2 [QSA,L]
 
 RewriteRule ^(admin|moderacion)/?([A-Za-z0-9_-]+)?/?([A-Za-z0-9_-]+)?/?([0-9]+)?$ admin/helpers/$1.php?template=$1&action=$2&act=$3&id=$4 [QSA,L]
 
@@ -95,15 +98,16 @@ RewriteRule ^([A-Za-z0-9_-]+)/?(([A-Za-z0-9_-]+))?/(([0-9]+))$ app/helpers/$1.ph
 
 # NO PERMITIR LA DESCARGA DE ARCHIVOS .TPL
 <FilesMatch "\.(htaccess|ini|log|cfg|tpl|env|version|md|cache)$">
-Order Allow,Deny
-Deny from all
+	Order Allow,Deny
+	Deny from all
 </FilesMatch>
+
 
 # Seguridad contra patrones de consulta maliciosos
 RewriteCond %{QUERY_STRING} PHP[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} [NC]
 RewriteRule .* - [F]
 
-# Control de cach? para archivos est?ticos
+# Control de cach? para archivos estaticos
 <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|js|css|pdf)$">
 Header set Cache-Control "max-age=31536000, public"
 </FilesMatch>

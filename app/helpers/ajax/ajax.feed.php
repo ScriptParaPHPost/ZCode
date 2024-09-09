@@ -37,8 +37,7 @@
 	$key = base64_encode(serialize($code));
 	$key .= '&verification=' . $tsCore->verification();
 	
-	$conexion = FEED_CONNECTION . "/index.php?key=$key&type=";
-
+	$conexion = $_ENV['FEED_' . $_ENV['ENVIRONMENT']] . "/index.php?key=$key&type=";
 	// CODIGO
 	switch($action){
 		case 'feed-support':
@@ -53,7 +52,7 @@
 			 * ZCode 2.0.0 *
 			*/
 			$time = time();
-			$version_now = SCRIPT_NAME . ' ' . file_get_contents(VERSION);
+			$version_now = SCRIPT_NAME . ' ' . SCRIPT_VERSION;
 			$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 			# ACTUALIZAR VERSIÓN
 			if($tsCore->settings['version'] != $version_now){

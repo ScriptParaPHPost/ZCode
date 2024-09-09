@@ -33,13 +33,6 @@ define('TS_AVATARES',	TS_IMAGES . 'avatares' . TS_PATH);
 define('TS_AUTH', 		TS_ROOT . 'auth' . TS_PATH);
 
 /**
- * Rutas CONFIG
- */
-define('TS_CONFIG', 		   TS_ROOT . 'config' . TS_PATH);
-define('CONFIG_EXAMPLE',   TS_CONFIG . 'example.php');
-define('DATABASE_CONNECT', TS_CONFIG . 'config.inc.php');
-
-/**
  * Rutas STORAGE
  */
 define('TS_STORAGE', 	 TS_ROOT . 'storage' . TS_PATH);
@@ -48,15 +41,13 @@ define('TS_CACHE', 		 TS_STORAGE . 'cache' . TS_PATH);
 define('TS_PORTADAS',	 TS_STORAGE . 'portadas' . TS_PATH);
 define('TS_UPLOADS', 	 TS_STORAGE . 'uploads' . TS_PATH);
 define('TS_BACKUP', 		 TS_STORAGE . 'backup' . TS_PATH);
-define('LOCK', 		 	 TS_STORAGE . '.lock');
-define('VERSION', 		 TS_STORAGE . '.version');
 define('TS_AVATAR_USER', TS_AVATAR . 'user');
 
 /**
  * Rutas THEMES
  */
 define('TS_THEMES', TS_ROOT . 'themes' . TS_PATH);
-
-define('LICENSE',   TS_ROOT . 'LICENSE');
+define('VERSION',   TS_ROOT . '.version');
+define('LOCK', 	  TS_ROOT . '.lock');
 
 set_include_path(get_include_path() . PATH_SEPARATOR . realpath('./'));

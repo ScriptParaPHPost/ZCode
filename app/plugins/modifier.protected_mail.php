@@ -23,8 +23,8 @@ function smarty_modifier_protected_mail($params) {
    }
 
    // Prevenimos ataques XSS
-   $key = htmlspecialchars($params['key'], ENT_QUOTES, 'UTF-8');
-   $public = htmlspecialchars($params['public'], ENT_QUOTES, 'UTF-8');
+   $key = htmlspecialchars((string) $params['key'], ENT_QUOTES, 'UTF-8');
+   $public = htmlspecialchars((string) $params['public'], ENT_QUOTES, 'UTF-8');
 	
 	$keyAttr = "data-key=\"$key\"";
 	$publicAttr = "data-public=\"$public\"";

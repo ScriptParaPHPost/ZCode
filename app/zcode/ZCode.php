@@ -39,23 +39,16 @@ class tsZCode {
 			'google' => [
 				'authorize' => 'https://accounts.google.com/o/oauth2/auth',
 				'token' => "https://accounts.google.com/o/oauth2/token",
-				'user' => "https://www.googleapis.com/oauth2/".GOOGLEVERSION."/userinfo",
+				'user' => "https://www.googleapis.com/oauth2/v3/userinfo",
 				'revoke' => "",
 				'scope' => "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
 			],
 			'facebook' => [
-				'authorize' => "https://www.facebook.com/".FBVERSION."/dialog/oauth",
+				'authorize' => "https://www.facebook.com/v20.0/dialog/oauth",
 				'token' => "https://graph.facebook.com/oauth/access_token",
 				'revoke' => "",
-				'user' => "https://graph.facebook.com/".FBVERSION."/me?fields=id,name,email,picture,short_name",
+				'user' => "https://graph.facebook.com/v20.0/me?fields=id,name,email,picture,short_name",
 				'scope' => "email,public_profile"
-			],
-			'reddit' => [
-				'authorize' => "https://ssl.reddit.com/api/".REDDITVERSION."/authorize",
-				'token' => "https://ssl.reddit.com/api/".REDDITVERSION."/access_token",
-				'revoke' => "",
-				'user' => "https://www.reddit.com/user/",
-				'scope' => "identity"
 			]
 		];
 		return $getEndPoints[$social][$type];
@@ -97,7 +90,10 @@ class tsZCode {
 	 * @description Es solo para comprobar que fue instalado
 	*/
 	public function verification() {
-		$encode = base64_encode("{$this->settings['url']} - " . SCRIPT_VERSION . " - " . SCRIPT_KEY);
+		$encode = base64_encode(serialize([
+   		'KEY' => $_ENV['ZCODE_VERIFY_KEY'],
+   		'PIN' => $_ENV['ZCODE_VERIFY_PIN']
+   	]));
 		return $encode;
 	}
 
@@ -200,7 +196,7 @@ class tsZCode {
 	 * @param string $param Additional URL parameters.
 	 * @return string The generated URL.
 	 */
-	public function createLink(string $type = 'post', mixed $id = null, string $param = ''): string {
+	public function createLink(string $type = 'post', $id = '', string $param = ''): string {
 	   $url = '';
 	   $id = (int)$id; // Ensure $id is an integer to prevent SQL injection.
 

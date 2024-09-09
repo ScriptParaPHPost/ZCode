@@ -16,11 +16,10 @@
 */
 
 function smarty_modifier_fecha($fecha, $format = false) {
-   $_meses = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
-   $_dias = array('Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado');
+   $_meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+   $_dias = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
    
    // FORMATO
-   if (!$format) {
       $dia = date("d", $fecha);
       $mes = date("m", $fecha);
       $mes_int = date("n", $fecha) - 1;
@@ -52,14 +51,10 @@ function smarty_modifier_fecha($fecha, $format = false) {
          break;
          
          default:
-            $ano_match = date($format, $fecha);
+            $ano_match = date('d.m.y', $fecha);
          break;
       }
       
       return $ano_match;
-   } else {
-      include TS_PLUGINS . "modifier.hace.php";
-      // Formato "hace X tiempo"
-      return smarty_modifier_hace($fecha, $format);
-   }
+
 }

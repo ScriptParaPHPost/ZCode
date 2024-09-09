@@ -155,16 +155,15 @@ class tsPosts {
 	 * @return array
 	*/
 	public function getLastPostsStickys() {
-		global $sqlCache;
 		// TIPO DE POSTS A MOSTRAR
-		$sentencia = $this->getLastSQL() . " AND p.post_sticky = 1 ORDER BY p.post_id DESC LIMIT 5";
+		$sentencia = $this->getLastSQL() . " AND p.post_sticky = 1 ORDER BY p.post_date DESC LIMIT 5";
 		$result = result_array(db_exec([__FILE__, __LINE__], 'query', $sentencia));
-		$data = $sqlCache->setCache('getLastPostsStickys', $this->getLastForeach($result), 0);
+		$data = $this->getLastForeach($result);
 		return $data;
 	}
 
 	public function getLastPosts(string $category = NULL) {
-		global $tsCore, $sqlCache;
+		global $tsCore;
 		// TIPO DE POSTS A MOSTRAR
 		$c_where = '';
 		$p_where = '';
@@ -177,17 +176,18 @@ class tsPosts {
 		 		$p_where = ' && post_category = ' . $cid;
 		 	}
 		}
+		$MaxTotal = (int)$tsCore->settings['c_max_posts'];
 		// TOTAL DE POSTS
 		$isAdmodPost = $this->isAdmodPost();
 		$isAdmod = $this->isAdmod();
 		$posts['total'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(p.post_id) AS total FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id WHERE $isAdmodPost $p_where AND p.post_sticky = 0"))[0];
 		//
-		$lastPosts['pages'] = $tsCore->system_pagination($posts['total'], $tsCore->settings['c_max_posts']);
-		$limit = $tsCore->setPageLimit($tsCore->settings['c_max_posts'], false, $posts['total']);
+		$lastPosts['pages'] = $tsCore->system_pagination($posts['total'], $MaxTotal);
+		$limit = $tsCore->setPageLimit($MaxTotal, false, $posts['total']);
 		
-		$query = db_exec([__FILE__, __LINE__], 'query', $this->getLastSQL() . " $c_where AND p.post_sticky = 0 GROUP BY p.post_id ORDER BY p.post_id DESC LIMIT $limit");
+		$query = db_exec([__FILE__, __LINE__], 'query', $this->getLastSQL() . " $c_where AND p.post_sticky = 0 GROUP BY p.post_id ORDER BY p.post_id AND p.post_sponsored DESC LIMIT $limit");
 
-		$lastPosts['data'] = $sqlCache->setCache('getLastPosts', $this->getLastForeach(result_array($query)), $posts['total'], $tsCore->settings['c_max_posts']);
+		$lastPosts['data'] = $this->getLastForeach(result_array($query));
 		return $lastPosts;
 	}
 	/*
@@ -398,23 +398,23 @@ class tsPosts {
 	/*
 		getRelated()
 	*/
-	public function getRelated($tags = null){
-		global $tsCore, $tsUser, $sqlCache;
+	public function getRelated($tags = null) {
+		global $tsCore, $tsUser;
 		// ES UN ARRAT AHORA A UNA CADENA
-		$tags = is_array($tags) ? implode(",", $tags) : str_replace('-', ', ', $tags);
+		$search = !empty($tags) ? implode(",", $tags) : str_replace('-', ' ', $tsCore->setSecure($_GET['title']));
+		$match = !empty($tags) ? 'post_tags' : 'post_title';
 		//
 		$pid = (int)$_GET['post_id'] ?? 0;
 		//
-		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT DISTINCT p.post_id, p.post_title, p.post_category, p.post_private, p.post_portada, p.post_body, p.post_date, c.c_nombre, c.c_seo, c.c_img, u.user_id, u.user_name FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category LEFT JOIN @miembros AS u ON u.user_id = p.post_user WHERE MATCH (post_tags) AGAINST ('$tags' IN BOOLEAN MODE) AND p.post_status = 0 AND post_sticky = 0 AND p.post_id != $pid ORDER BY rand() LIMIT 0, 5"));
-		$data = $sqlCache->setCache('getRelated', $this->getRelatedPostAutor($data));
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT DISTINCT p.post_id, p.post_title, p.post_category, p.post_private, p.post_portada, p.post_body, p.post_date, c.c_nombre, c.c_seo, c.c_img, u.user_id, u.user_name FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category LEFT JOIN @miembros AS u ON u.user_id = p.post_user WHERE MATCH ($match) AGAINST ('$search' IN BOOLEAN MODE) AND p.post_status = 0 AND post_sticky = 0 AND p.post_id != $pid ORDER BY rand() LIMIT 0, 5"));
+		$data = $this->getRelatedPostAutor($data);
 		return $data;
 	}
 
 	public function getPostAutor(int $uid = 0) {
-		global $sqlCache;
 		$pid = (int)$_GET['post_id'] ?? 0;
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT DISTINCT p.post_id, p.post_title, p.post_category, p.post_private, p.post_portada, p.post_body, p.post_date, c.c_nombre, c.c_seo, c.c_img, u.user_id, u.user_name FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category LEFT JOIN @miembros AS u ON u.user_id = p.post_user WHERE p.post_status = 0 AND post_sticky = 0 AND p.post_user = $uid AND p.post_id != $pid ORDER BY rand() LIMIT 0, 10"));
-		$data = $sqlCache->setCache('getPostAutor', $this->getRelatedPostAutor($data));
+		$data = $this->getRelatedPostAutor($data);
 		return $data;
 	}
 	

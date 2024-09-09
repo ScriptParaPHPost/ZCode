@@ -19,7 +19,7 @@ $.getJSON(ZCodeApp.url + "/feed-support.php?from=dashboard", response => {
 
 //
 $.getJSON(ZCodeApp.url + "/feed-version.php?from=dashboard", response => {
-	const { version, status, color, newVersion } = response;
+	const { version, status, color } = response;
 	// Clonamos
   	let clonar = $('.list-clone').first().clone();
   	// Añadimos color
@@ -27,9 +27,6 @@ $.getJSON(ZCodeApp.url + "/feed-version.php?from=dashboard", response => {
   	// Modificar los datos dentro del clon
   	clonar.find('.fw-bold').text(version);
   	clonar.find('.text-body-secondary').text(status);
-  	if(version.match(/\d+/g).join('') <= newVersion.match(/\d+/g).join('')) {
-  		clonar.find('.nextversion').text(`Próxima versión: v${newVersion}`);
-  	}
   	// Agregar el clon a la lista
 	if(typeof version === 'undefined') {
 		clonar.addClass('list-clone-danger')

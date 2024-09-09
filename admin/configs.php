@@ -1,4 +1,3 @@
-
 <?php if ( ! defined('TS_HEADER')) exit('No direct script access allowed');
 
 /**
@@ -12,60 +11,17 @@
  * @version v2.0.0
  * @description Se definen todas las rutas
 **/
-
-define('SCRIPT_NAME', 'ZCode');
-
-define('SCRIPT_VERSION', '2.0.0');
-
-define('SCRIPT_KEY', 'WkNvZGVVcGdyYWRl');
-
-define('SCRIPT_AUTHOR', 'Miguel92');
-
-define('ENVIRONMENT', 'development'); // o 'production'
-
-define('DISPLAY_ERRORS', (ENVIRONMENT === 'development'));
-
-define('DEBUG_MODE', 	 (ENVIRONMENT === 'development'));
-
-define('DISPLAY_STARTUP_ERRORS', (ENVIRONMENT === 'development'));
-
-define('ERROR_REPORTING_LEVEL', DEBUG_MODE ? E_ALL ^ E_WARNING : E_ALL ^ E_WARNING ^ E_NOTICE); 
-
 //DEFINICION DE CONSTANTES
-define('TS_PATH', DIRECTORY_SEPARATOR);
-
-define('TS_ROOT', realpath(dirname(__DIR__)) . TS_PATH);
-
 define('TS_ADMIN', TS_ROOT . 'admin' . TS_PATH);
 
-define('LOG_DIR', TS_ROOT . 'logs' . TS_PATH);
-
-define('LOG_ERROR_SCRIPT', LOG_DIR . 'adminError.log');
-
-define('LOG_LEVEL_INFO', 'INFO');
-
-define('LOG_LEVEL_WARNING', 'WARNING');
-
-define('LOG_LEVEL_ERROR', 'ERROR');
-
-define('ENCRYPTION_KEY', 'b3974372f0b53a49d0dc972ae5bf8d04');
-
-define('SESSION_NAME', 'ZCODESESSID');
-
-define('CSRF_TOKEN_LIFETIME', 3600); // 1 hora
-
-define('SET_LIFETIME', 300); // 5 minutos
-
-define('FEED_CONNECTION', (DEBUG_MODE ? "http://localhost" : "https://zcode.newluckies.com") . '/feed');
-
 // Reporte de errores
-error_reporting(ERROR_REPORTING_LEVEL);
+error_reporting(($_ENV['DEBUG_MODE'] === 'true' ? E_ALL ^ E_WARNING : 0));
 
-ini_set('display_errors', DISPLAY_ERRORS);
+ini_set('display_errors', ($_ENV['DEBUG_MODE'] === 'true'));
 
-ini_set('display_startup_errors', DISPLAY_STARTUP_ERRORS);
+ini_set('display_startup_errors', ($_ENV['DEBUG_MODE'] === 'true'));
 
-ini_set('log_errors', DEBUG_MODE);
+ini_set('log_errors', ($_ENV['DEBUG_MODE'] === 'true'));
 
 /**
  * Rutas APP
@@ -91,13 +47,6 @@ define('TS_IMAGES', 		TS_ASSETS . 'images' . TS_PATH);
 define('TS_AVATARES',	TS_IMAGES . 'avatares' . TS_PATH);
 
 define('TS_AUTH', 		TS_ROOT . 'auth' . TS_PATH);
-
-/**
- * Rutas CONFIG
- */
-define('TS_CONFIG', 		   TS_ROOT . 'config' . TS_PATH);
-define('CONFIG_EXAMPLE',   TS_CONFIG . 'example.php');
-define('DATABASE_CONNECT', TS_CONFIG . 'config.inc.php');
 
 /**
  * Rutas STORAGE

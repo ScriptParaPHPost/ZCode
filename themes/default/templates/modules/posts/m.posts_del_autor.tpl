@@ -1,3 +1,4 @@
+{if $tsPostAutor}
 <section class="up-card">
 	<div class="up-card--header" icon="true">
 		<div class="up-header--icon">
@@ -25,3 +26,4 @@
 		</div>
 	</div>
 </section>
+{/if}

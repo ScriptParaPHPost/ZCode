@@ -16,7 +16,7 @@
 	 		<div class="data d-flex justify-content-between align-items-center">
 
 				{if !$tsUser->is_member}
-					<a class="small d-flex justify-content-end align-items-center gap-2 text-decoration-none fw-semibold" href="{$tsConfig.url}/registro/">{uicon name="user_add"} Seguir Usuario</a>
+					<a class="small d-flex justify-content-end align-items-center gap-2 text-decoration-none fw-semibold" href="{$tsConfig.url}/registro/?r={$tsConfig.canonical}">{uicon name="user_add"} Seguir Usuario</a>
 				{elseif $tsAutor.user_id != $tsUser->uid}
 					<a role="button" data-action="unfollow_user" class="small text-decoration-none fw-semibold" onclick="notifica.followed('unfollow', 'user', {$tsAutor.user_id}, notifica.userInPostHandle, $(this).children('span'))"{if !$tsAutor.follow} style="display: none!important;"{/if}><span>Dejar de seguir</span></a>
 					<a role="button" data-action="follow_user" class="small text-decoration-none fw-semibold" onclick="notifica.followed('follow', 'user', {$tsAutor.user_id}, notifica.userInPostHandle, $(this).children('span'))"{if $tsAutor.follow > 0} style="display: none!important;"{/if}><span>Seguir Usuario</span></a>

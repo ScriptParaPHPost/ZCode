@@ -30,7 +30,12 @@ class tsSeo {
 		$tsCore = new tsCore;
 		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_id, seo_titulo, seo_descripcion, seo_portada, seo_favicon, seo_keywords, seo_images, seo_robots_data, seo_robots, seo_sitemap FROM @seo WHERE seo_id = 1'));
 		if($sql == null) return [];
-		$robots = json_decode($sql['seo_robots_data'], true);
+		if(empty($sql['seo_robots_data'])) {
+			$robots = [];
+		} else {
+			$robots = json_decode($sql['seo_robots_data'], true);
+		}
+		
 		$sql['robots_name'] = $robots['name'];
 		$sql['robots_content'] = $robots['content'];
 		$sql['seo_images'] = empty($sql['seo_images']) ? : json_decode($sql['seo_images'], true);

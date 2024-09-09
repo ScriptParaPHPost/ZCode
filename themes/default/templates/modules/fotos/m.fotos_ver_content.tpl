@@ -50,7 +50,7 @@
 		<h4 class="titulorespuestas"><span id="ncomments">{$tsFoto.f_comments}</span> Comentarios</h4>
 		<div id="load_comments" class="py-3 text-center" style="display: none;">
 			<span class="d-block">Cargando comentarios</span>
-			<img src="{$tsConfig.assets}/icons/spinner/3-dots-bounce.svg" alt="Cargando comentarios">
+			{uicon name="3-dots-bounce" folder="spinner" alt="Cargando comentarios"}
 		</div>
 	</div>
 	{include "m.fotos_comments.tpl"}
@@ -61,6 +61,6 @@
 	{elseif $tsUser->is_member}
 		<div class="miComentario">{include "m.fotos_comments_form.tpl"}</div>
 	{else}
-		<div class="empty">Para poder comentar necesitas estar <a href="{$tsConfig.url}/registro/" class="fw-semibold text-decoration-none">Registrado.</a> O.. ya tienes usuario? <a href="{$tsConfig.url}/login/" class="fw-semibold text-decoration-none">Logueate!</a></div>
+		<div class="empty">Para poder comentar necesitas estar <a href="{$tsConfig.url}/registro/?r={$tsConfig.canonical}" class="fw-semibold text-decoration-none">Registrado.</a> O.. ya tienes usuario? <a href="{$tsConfig.url}/login/" class="fw-semibold text-decoration-none">Logueate!</a></div>
 	{/if}
 </div>

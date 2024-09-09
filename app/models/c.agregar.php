@@ -262,12 +262,15 @@ class tsAgregar {
 		// Para no traer todo y solo usamos las que requerimos
 		$verify = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id, post_category, post_title, post_body, post_user, post_portada, post_private, post_smileys, post_sponsored, post_status, post_sticky, post_tags, post_date, post_update, post_block_comments, post_visitantes, post_ip, post_fuentes FROM @posts WHERE post_id = $pid LIMIT 1"));
 
-		$fuentes = json_decode($verify['post_fuentes'], true);
-		$postFuentes = [];
-		foreach($fuentes as $name => $fuente) {
-			$postFuentes[] = "[$name]($fuente)";
+		$verify['post_fuentes'] = '';
+		if(!empty($verify['post_fuentes'])) {
+			$fuentes = json_decode($verify['post_fuentes'], true);
+			$postFuentes = [];
+			foreach($fuentes as $name => $fuente) {
+				$postFuentes[] = "[$name]($fuente)";
+			}
+			$verify['post_fuentes'] = join('; ', $postFuentes);
 		}
-		$verify['post_fuentes'] = join('; ', $postFuentes);
 		//
 		$withPermissons = ($tsUser->is_admod == 0 AND $tsUser->permisos['moedpo'] == false);
 		//
