@@ -63,6 +63,7 @@
 		$tsTitle = 'Centro de Administración';
 		$smarty->assign("tsAdmins", $tsAdmin->getAdmins());
       $smarty->assign("tsInst", $tsAdmin->getInst());
+      $smarty->assign("tsAllThemes", $tsAdmin->getAllThemes());
 
 	// Creditos
 	} elseif($action === 'creditos') {
@@ -79,6 +80,10 @@
     		$smarty->assign('tsBackupSQL', $tsDatabase->getBackups());
     	}
 
+   // Foro
+   } elseif(in_array($action, ['foro', 'actualizacion', 'temas', 'users'])) {
+   	include "$action.php";
+
    // Generador de favicon
    } elseif($action === 'favicon') {
 		$tsTitle = 'Generador de favicon';
@@ -86,49 +91,6 @@
     	$tsFavicon = new tsFavicon;
     	$smarty->assign('tsAllFavicons', $tsFavicon->getAllFavicons());
 
-   // Generador de actualizacion
-   } elseif($action === 'actualizacion') {
-		$tsTitle = 'Generador de actualizacion';
-
-	   require_once TS_MODELS . "c.actualizacion.php";
-	   $tsActualizacion = new tsActualizacion;
-
-    	$commits = $tsActualizacion->getLastCommit();
-    	$getUpdated = $tsActualizacion->saveIDUpdate('get');
-    	$smarty->assign([
-    		'tsUserGithub' => $tsActualizacion->getUser(),
-    		'tsUpdated' => $getUpdated,
-    		'tsLastCommit' => (isset($_GET['sha']) ? $_GET['sha'] : $commits)
-    	]);
-
-    	if(is_string($commits) AND !empty($getUpdated)) {
-    		$smarty->assign('tsLastCommitFiles', $tsActualizacion->getLastCommitFiles()['commit']);
-    		$files = $tsActualizacion->filesStatus();
-   		$smarty->assign('tsFilesTotal', safe_count($files));
-    		$smarty->assign('tsFilesStatus', $files);
-
-    		if($act === 'actualizar') {
-    			if($tsActualizacion->getFilesUpdate()) {
-    				$tsActualizacion->saveIDUpdate('save', '');
-    				$unset = ['sha', 'commit', 'files'];
-    				foreach($unset as $del) unset($_SESSION[$del]);
-    				$tsCore->redireccionar('admin', $action);
-    			}
-    		} elseif($act === 'commits') {
-    			$smarty->assign('tsLastCommits', $tsActualizacion->getLastCommits());
-    		}
-    	}
-
-   // Editar htaccess
-   } elseif($action === 'htaccess') {
-		$tsTitle = 'Configuraci&oacute;n de htaccess';
-		$smarty->assign('tsErrorDocument', $tsAdmin->getError());
-		$smarty->assign('tsRewriteRules', $tsAdmin->getRewriteRules());
-		
-   	if(!empty($_POST['saveError']) || !empty($_POST['saveRewrite'])) {
-   		$func = isset($_POST['saveError']) ? $tsAdmin->saveError() : $tsAdmin->saveRewriteRules();
-   		if($func) $tsCore->redireccionar('admin', $action, 'save=true');
-   	}
    // Configuraciones y Registro
 	} elseif(in_array($action, ['configs', 'registro'])) {
 		$tsTitle = ($action === 'configs') ? 'Configuraci&oacute;n' : 'Registro de ' . $tsTitle;
@@ -184,39 +146,6 @@
 		} elseif($act == 'leer'){
 			$smarty->assign("tsDatamp", $tsMensajes->getDataMensajePrivado());
 			$smarty->assign("tsLeermp", $tsMensajes->getLeerMensajePrivado());
-		}
-
-	// Temas
-	} elseif($action === 'temas') {
-		$tsTitle = 'Diseños / Temas';
-		// VER TEMAS
-		if(empty($act)) {
-			# Instalamos themes automaticamente
-			include TS_ZCODE . 'ThemeInstall.php';
-			$installer->installThemes();
-			$installer->verifyThemesInstalled();
-			# Mostramos
-			$smarty->assign("tsTemas", $tsAdmin->getTemas());
-		}
-		// Editar o Nuevo tema
-		elseif(in_array($act, ['editar', 'nuevo'])) {
-			$tsTitle = ucfirst($act) . ' tema';
-			if(!empty($_POST['save']) OR !empty($_POST['path'])) {
-				$ActTheme = ($act === 'editar') ? $tsAdmin->saveTema() : $tsAdmin->newTema();
-				if($ActTheme) $tsCore->redireccionar('admin', $action, 'save=true');
-			} else {
-				if($act === 'editar') $smarty->assign("tsTema", $tsAdmin->getTema());
-				if($act === 'nuevo') $smarty->assign("tsError", $tsAdmin->newTema());
-			} 
-		} elseif($act === 'usar') {
-			$tsTitle = 'Activar tema';
-			if($tsAdmin->changeTema()) $tsCore->redireccionar('admin', $action, 'save=true');
-		} elseif($act === 'borrar') {
-			$tsTitle = 'Borrar tema';
-			if(!empty($_POST['confirm'])) {
-				if($tsAdmin->deleteTema()) $tsCore->redireccionar('admin', $action, 'save=true');
-			}
-			$smarty->assign("tt", $_GET['tt']);
 		}
 
 	// Noticias
@@ -360,8 +289,9 @@
       }
 
    // Categorías
-	} elseif($action === 'cats'){
+	} elseif($action === 'cats') {
 		$tsTitle = 'Todas las categor&iacute;as';
+		$smarty->assign('tsCats', $tsAdmin->getCats());
 		if(!empty($_GET['ordenar'])) $tsAdmin->saveOrden();
 		elseif(in_array($act, ['editar', 'nueva'])){
 			$tsTitle = ucfirst($act) . ' categor&iacute;a';
@@ -428,58 +358,6 @@
 		} elseif($act === 'setdefault') {
 			if($tsAdmin->SetDefaultRango()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
-
-	// Usuarios
-	} elseif($action === 'users'){
-		$tsTitle = 'Todos los Usuarios';
-	   $user_id = (int)$_GET['uid'];
-	   if(empty($act)) {
-	   	$smarty->assign("tsMembers",$tsAdmin->getUsuarios());
-
-	   } elseif($act === 'verificar') {
-        	if(!$tsAdmin->setUsuarioVerificado())  $smarty->assign("tsError", $update); 
-
-	   } elseif($act === 'show') {
-	      $do = (int)$_GET['t'];
-         // HACER
-         switch($do){
-				case 5:
-				case 6:
-				case 7:
-				case 8:
-					if($do === 6) {
-						require TS_ZCODE . 'ContentUserInfo.php';
-						$smarty->assign("contentUser", $contentUser);
-					}
-        	      if(!empty($_POST['save'])) {
-        	         $both = ($do === 5) ? $tsAdmin->setUserPrivacidad($user_id) : ($do === 7 ? $tsAdmin->setUserRango($user_id) : ($do === 8 ? $tsAdmin->setUserFirma($user_id) : $tsAdmin->deleteContent($user_id)));
-        	         if($both === 'OK') $tsCore->redireccionar('admin', $action, "act=show&uid=$user_id&save=true");
-                  else $smarty->assign("tsError", $both);
-               }
-               if($do === 7) {
-               	$smarty->assign("tsUserR", $tsAdmin->getUserRango($user_id));
-               } elseif($do === 8) {
-               	$smarty->assign("tsUserF", $tsAdmin->getUserData());
-               } else {
-               	include_once TS_ZCODE . "datos.php";
-	            	$smarty->assign("tsPerfil", $tsAdmin->getUserPrivacidad());
-						$smarty->assign("tsPrivacidad", $tsPrivacidad);
-               }
-            break;
-            default:
-               if(!empty($_POST['save'])){
-        	       	$update = $tsAdmin->setUserData($user_id);
-        	       	if($update === 'OK') $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
-                  else $smarty->assign("tsError",$update);
-               }
-    	       	$smarty->assign("tsUserD",$tsAdmin->getUserData());
-            break;
-         }
-         // TIPO
-         $smarty->assign("tsType",$_GET['t']);
-         $smarty->assign("tsUserID",$user_id);
-         $smarty->assign("tsUsername",$tsUser->getUserName($user_id));
-	   }
 	}
 
 /**********************************\

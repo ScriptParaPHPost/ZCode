@@ -67,6 +67,28 @@ class tsAdmin {
 		]);
 	}
 
+	/**
+	 * Obtenemos todos los temas que existan en themes
+	*/
+	public function getAllThemes() {
+		$themes = scandir(TS_THEMES);
+		$exists = [];
+		foreach($themes as $tid => $theme) {
+			if(in_array($theme, ['.', '..'])) continue;
+			$exists[$tid] = $theme;
+		}
+		return $exists;
+	}
+
+	public function changeTemaNow() {
+		global $tsCore;
+		$tema = $tsCore->setSecure($_POST['tema']);
+		if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @configuracion SET tema = '$tema' WHERE tscript_id = 1")) {
+			return '1: Cambiado correctamente.';
+		}
+		return '0: Error al cambiar.';
+	}
+
 	/** 
 	 * Agregamos esta función ya que se repite 2 veces,
 	 * extraemos las imagenes
@@ -288,6 +310,7 @@ class tsAdmin {
 			"nombre" => $nombre,
 			"seo" => $tsCore->setSEO($nombre),
 			"img" => $tsCore->setSecure($_POST['c_img']),
+			"color" => $tsCore->setSecure($_POST['c_color']),
 			"descripcion" => $tsCore->setSecure($_POST['c_descripcion']),
 		];
 		if($type === 'nueva') $categoria['orden'] = $orden;
@@ -302,6 +325,16 @@ class tsAdmin {
 			array_push($ordenado, $nuevo_orden);
 			$nuevo_orden++;
 		}
+	}
+	public function getCats() {
+		global $tsCore;
+		# Obtenemos la información
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_nombre, c_descripcion, c_seo, c_color, c_img FROM @posts_categorias"));
+		foreach($data as $k => $super) {
+			$data[$k]['c_img'] = $tsCore->imageCat($super['c_img'] ?? '1f30d.svg');
+		}
+		# Retornamos los daots
+		return $data;
 	}
 	public function getCat() {
 		# Obtenemos la ID de la categoría

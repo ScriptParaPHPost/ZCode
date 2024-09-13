@@ -1,35 +1,44 @@
-export function ColorScheme({ name, selected }) {
-	const { url, colores, themes } = ZCodeApp;
-   $.post(`${url}/cuenta-${name}.php`, { selected }).done(req => {
-      if (req) {
-         const attr = (name === 'color') ? '-color' : '';
-         const data = (name === 'color') ? colores[selected] : themes[selected];
-         $('html').attr('data-theme' + attr, data);
-      }
-   }).fail(() => UPModal.alert('Error', 'No se pudo actualizar el esquema de color.', false));
+export function executeSync(page, selected, object, tag = 'html') {
+   $.post(`${ZCodeApp.url}/cuenta-${page}.php`, { selected }).done(req => {
+      if (req) $(tag).attr(object);
+   }).fail(() => UPModal.alert('Error', `No se pudo actualizar el esquema de ${page}.`, false));
 };
 
-export function changeAvatar() {
-   const avatarImg = $('#avatar-img');
-   const avatarLoader = $('.avatar_loader');
-   const avatarLoading = $('.avatar-loading');
+export function syncThemeSystem() {
+   $('#scheme').on('click', function() {
+      const { themes } = ZCodeApp;
+      let selected = ($('#scheme').prop('checked') === true) ? 1 : 0;
+      executeSync('scheme', selected, { 'data-theme': themes[selected] });
+   });
+};
 
-   $('#more_avatar').on('mouseover', '[data-avatar] img', function() {
-      const image = $(this).attr('src');
-      avatarImg.hide();
-      avatarImg.before(`<img width="120" height="120" alt="avatar 120" src="${image}" class="avatar-big" id="avatar-this"/>`);
-      avatarLoader.attr('src', image);
-   }).on('mouseout', '[data-avatar] img', function() {
-      avatarImg.show();
-      $('#avatar-this').remove();
-      avatarLoader.attr('src', avatarImg.attr('src'));
-   }).on('click', '[data-avatar] img', function() {
-      avatarLoading.show();
-      const imageGet = $(this).parent().data('avatar');
-      $.post(`${ZCodeApp.url}/cuenta-avatar-change.php`, { image: imageGet }, function(src) {
-         src += `?=vs${string_random(10)}`;
-         avatarImg.add(avatarLoader).attr('src', src);
-         avatarLoading.hide();
+export function syncThemeColor() {
+   const { url, colores } = ZCodeApp;
+   const themesColor = $('.syncThemeColor');
+   themesColor.map( (ncolor, check) => {
+      $(check).on('click', function() {
+         let selected = $(this).data('color');
+         $('.syncThemeColor > div').removeClass('border');
+         $('.syncThemeColor > .tc' + selected).addClass('border');
+         executeSync('color', selected, { 'data-theme-color': colores[selected] });
+         $('.customizar_tema').addClass('d-none');
+         if(selected === 0) {
+            $('.customizar_tema').removeClass('d-none');
+            imported('cuenta/customizar.js', 'handleChangeColor');
+         }
       });
    });
-}
+};
+
+export function syncThemeFont() {
+   const family = $('#font_family');
+   const size = $('#font_size');
+   family.on('change', function() {
+      let selected = family.val();
+      executeSync('family', selected, { 'data-font-family': selected }, 'body');
+   });
+   size.on('change', function() {
+      let selected = size.val();
+      executeSync('size', selected, { 'data-font-size': selected }, 'body');
+   });
+};

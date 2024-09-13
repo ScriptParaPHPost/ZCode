@@ -825,6 +825,9 @@ form input[type="submit"]:hover {
 form input[type="submit"]:active {
 	background: var(--main-bg-active);
 }
+form input[type="color"] {
+	padding: 0!important;
+}
 .admin_table {
 	width: 100%;
 	border-collapse: collapse;

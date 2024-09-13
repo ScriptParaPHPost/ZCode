@@ -9,10 +9,11 @@
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
  * @version v2.0.0
- * @description Para actualizar la base de datos sin intervension
+ * @description Para actualizar la base de datos sin intervencion
 **/
 
 include TS_ZCODE . 'database.php';
+$prefix = $_ENV['ZCODE_DB_PREFIX'];
 
 // Función para verificar si una tabla existe en la base de datos
 function tableExists($mysqli, $table) {
@@ -40,10 +41,10 @@ foreach ($zcode_sql as $sql) {
       continue;
    }
    if (preg_match('/CREATE TABLE IF NOT EXISTS `(.+?)`/', $sql, $matches)) {
-     	$table = $matches[1];
+     	$table = "$prefix$matches[1]";
      	// Verificar si la tabla existe
       if (tableExists($mysqli, $table)) {
-         //echo "La tabla <strong>$table</strong> ya existe. Verificando columnas...<br>";
+         # echo "La tabla <strong>$table</strong> ya existe. Verificando columnas...<br>";
          // Obtener las columnas actuales de la tabla
          $currentColumns = getTableColumns($mysqli, $table);
          // Extraer las columnas definidas en el archivo database.php
@@ -52,7 +53,7 @@ foreach ($zcode_sql as $sql) {
         	// Añadir columnas que no existen en la tabla actual
         	foreach ($expectedColumns as $column) {
         	   if (!in_array($column, $currentColumns)) {
-        	      //echo "Añadiendo columna <strong>$column</strong> a la tabla <strong>$table</strong>...<br>";
+        	      #echo "Añadiendo columna <strong>$column</strong> a la tabla <strong>$table</strong>...<br>";
         	      // Aquí puedes construir una consulta ALTER TABLE para añadir la columna
         	      $alterSQL = "ALTER TABLE $table ADD COLUMN `$column` TEXT"; // Ajustar el tipo de columna según sea necesario
         	     	if (!$mysqli->query($alterSQL)) {
@@ -64,7 +65,7 @@ foreach ($zcode_sql as $sql) {
          // Eliminar columnas que no están en el archivo database.php
          foreach ($currentColumns as $column) {
             if (!in_array($column, $expectedColumns)) {
-               //echo "Eliminando columna <strong>$column</strong> de la tabla <strong>$table</strong>...<br>";
+               #echo "Eliminando columna <strong>$column</strong> de la tabla <strong>$table</strong>...<br>";
                $alterSQL = "ALTER TABLE $table DROP COLUMN `$column`";
                if (!$mysqli->query($alterSQL)) {
                   $success = false;
@@ -73,7 +74,7 @@ foreach ($zcode_sql as $sql) {
          }  
       } else {
          // Crear la tabla si no existe
-         //echo "Creando tabla <strong>$table</strong>...<br>";
+         #echo "Creando tabla <strong>$table</strong>...<br>";
         	if (!$mysqli->query($sql)) {
             $success = false;
          }
@@ -82,7 +83,7 @@ foreach ($zcode_sql as $sql) {
 }
 
 // Verificar si hay tablas en la base de datos que no estén en el archivo database.php
-$tablesInDb = $mysqli->query("SHOW TABLES LIKE '{$_ENV['ZCODE_DB_PREFIX']}%'");
+$tablesInDb = $mysqli->query("SHOW TABLES LIKE '$prefix%'");
 $tablesInDbArray = [];
 while ($row = $tablesInDb->fetch_array()) {
    $tablesInDbArray[] = $row[0];
@@ -99,11 +100,15 @@ foreach ($zcode_sql as $sql) {
    }
 }
 
-// Eliminar tablas que no están en el archivo database.php
+// Eliminar tablas que no están en el archivo database.php solo si realmente no son necesarias
 foreach ($tablesInDbArray as $tableInDb) {
-   if (!in_array($tableInDb, $tablesInFileArray)) {
-      //echo "Eliminando tabla <strong>$tableInDb</strong>...<br>";
-     	if (!$mysqli->query("DROP TABLE IF EXISTS $tableInDb")) {
+   // Remover el prefijo antes de comparar con las tablas definidas en el archivo
+   $tableWithoutPrefix = str_replace($prefix, '', $tableInDb);
+   
+   if (!in_array($tableWithoutPrefix, $tablesInFileArray)) {
+      // Si la tabla es importante, puedes agregar una condición adicional aquí
+      #echo "Eliminando tabla <strong>$tableInDb</strong>...<br>";
+      if (!$mysqli->query("DROP TABLE IF EXISTS $tableInDb")) {
          $success = false;
       }
    }

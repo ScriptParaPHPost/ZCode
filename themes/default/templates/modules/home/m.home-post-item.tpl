@@ -1,9 +1,9 @@
 <article itemscope itemtype="https://schema.org/Article" class="position-relative small d-grid align-items-center rounded mb-2 categoriaPost entry-animation{if $p.post_status > 0} status_{$p.post_status}{/if}{if $p.user_activo == 0} active_{$p.user_activo}{/if}{if $p.user_baneado == 1} baneado_{$p.user_baneado}{/if}" title="{if $p.post_status == 3}El post est&aacute; en revisi&oacute;n{elseif $p.post_status == 1}El post se encuentra en revisi&oacute;n por acumulaci&oacute;n de denuncias{elseif $p.post_status == 2}El post est&aacute; eliminado{elseif $p.user_activo == 0}La cuenta del usuario est&aacute; desactivada{elseif $p.user_baneado == 1}La cuenta del usuario est&aacute; baneada{/if}">
 
 	<picture class="picture overflow-hidden">
-		<source src="{$tsConfig.logos.128}" data-srcset="{$p.post_portada.md}" media="(min-width: 800px)">
-		<source src="{$tsConfig.logos.128}" data-srcset="{$p.post_portada.lg}" media="(min-width: 400px)">
-		<source src="{$tsConfig.logos.128}" data-srcset="{$p.post_portada.sm}">
+		<source srcset="{$tsConfig.logos.128}" data-srcset="{$p.post_portada.md}" media="(min-width: 800px)">
+		<source srcset="{$tsConfig.logos.128}" data-srcset="{$p.post_portada.lg}" media="(min-width: 400px)">
+		<source srcset="{$tsConfig.logos.128}" data-srcset="{$p.post_portada.sm}">
 		<img src="{$tsConfig.logos.128}" data-src="{$p.post_portada.sm}" loading="lazy" alt="{$p.post_title}" class="object-fit-cover w-100 h-100">
 	</picture>
 

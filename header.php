@@ -75,11 +75,15 @@
 
 	// Usando un gestor de imagenes
 	include TS_ZCODE . 'Images.php';
+	
 	include TS_ZCODE . 'Avatar.php';
-	include TS_ZCODE . 'menu_user_account.php';
-
 	$Avatar = new Avatar(new tsCore);
 	$Avatar->moveAvatars();
+
+	include TS_ZCODE . 'Theme.php';
+	$Theme = new Theme;
+
+	include TS_ZCODE . 'menu_user_account.php';
 
 /*
  * -------------------------------------------------------------------
@@ -147,7 +151,8 @@
 	// Mensajes
 	$smarty->assign('tsMPs', $tsMP->mensajes);
 
-	$smarty->assign('tsSchemeColor', $tsCore->setColorScheme());
+	$smarty->assign('tsSchemeColor', $Theme->setSchemeColor());
+	$smarty->assign('tsThemeFont', $Theme->setThemeFont());
 
 	$smarty->assign('tsMenuCuenta', $menu_cuenta);
 
@@ -161,27 +166,7 @@
  * -------------------------------------------------------------------
  */
 // Baneo por IP
-$ip = $tsCore->executeIP(); 
-if(db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT id FROM @blacklist WHERE type = \'1\' && value = \''.$ip.'\' LIMIT 1'))) die('Bloqueado');
+$tsCore->verifiedIP($smarty);
 
 // Online/Offline
-if($tsCore->settings['offline'] == 1 && ($tsUser->is_admod != 1 && $tsUser->permisos['govwm'] == false) && $_GET['action'] != 'login-user'){
-	$smarty->assign('tsTitle',$tsCore->settings['titulo'].' -  '.$tsCore->settings['slogan']);
-	  if(empty($_GET['action'])) 
-		$smarty->display('mantenimiento.tpl');
-	  else die('Espera un poco...');
-	exit();
-// Banned
-} elseif($tsUser->is_banned) {
-	  $banned_data = $tsUser->getUserBanned();
-	  if(!empty($banned_data)){
-			// SI NO ES POR AJAX
-			if(empty($_GET['action'])){
-				 $smarty->assign('tsBanned',$banned_data);
-				 $smarty->display('suspension.tpl');
-			} 
-			else die('<div class="emptyError">Usuario suspendido</div>');
-			//
-			exit;
-	  }
-}
+$tsCore->verifiedMaintenance($smarty);

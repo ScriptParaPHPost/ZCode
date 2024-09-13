@@ -7,12 +7,12 @@
 {meta facebook=true twitter=true}
 {zCode css=["base.css","theme.css"]}
 </head>
-<body>
+<body data-font-family="{$tsThemeFont.family}" data-font-size="{$tsThemeFont.size}">
 	
 	<div class="UIBeeper" id="BeeperBox"></div>
 
 	<div class="container">
-		<main id="brandday" class="my-3 shadow">
+		<main id="brandday" class="my-3 rounded">
 			{include "head_header.tpl"}
 			<section class="container py-3 px-3">
 				{include "head_noticias.tpl"}

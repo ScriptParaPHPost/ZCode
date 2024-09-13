@@ -46,6 +46,19 @@
 
 	$username = $tsCore->setSecure($_GET['user']);
 	$usuario = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_activo, user_baneado FROM @miembros WHERE user_name = '$username'"));
+
+	if($tsUser->is_banned) {
+		$banned_data = $tsUser->getUserBanned();
+		if(!empty($banned_data)) {
+			// SI NO ES POR AJAX
+			if(empty($_GET['action'])){
+				$smarty->assign('tsBanned', $banned_data);
+				$smarty->display('suspension.tpl');
+			} else die('<div class="emptyError">Usuario suspendido</div>');
+			//
+			exit;
+		}
+	}
 	// EXISTE?
 	if(empty($usuario['user_id']) || ($usuario['user_activo'] != 1 && !$tsUser->permisos['movcud'] && !$tsUser->is_admod) || ($usuario['user_baneado'] != 0 && !$tsUser->permisos['movcus'] && !$tsUser->is_admod)) {
 		$tsPage = 'aviso';

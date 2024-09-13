@@ -55,6 +55,7 @@ RewriteRule ^perfil/([A-Za-z0-9_-]+)(/([0-9]+))?$ app/helpers/perfil.php?user=$1
 RewriteRule ^mi/$ index.php?do=portal [QSA,L]
 
 # POSTS
+RewriteRule ^posts/$ index.php?do=posts [QSA,L]
 RewriteRule ^posts/([a-z]+)/$ index.php?do=posts&cat=$1 [QSA,L]
 RewriteRule ^posts(/([a-z]+))?(pagina([0-9]+))?$ index.php?do=posts&action=$2&page=$4 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)(/pagina([0-9]+))?$ index.php?do=posts&cat=$1&page=$3 [QSA,L]

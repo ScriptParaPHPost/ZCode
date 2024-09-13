@@ -11,7 +11,11 @@ $menu_cuenta = [
 	],
 	'apariencia' => [
 		"icon" => "table-header", 
-		"name" => "Apariencia & Avatar"
+		"name" => "Apariencia"
+	],
+	'avatar' => [
+		"icon" => "picture", 
+		"name" => "Avatar"
 	],
 	'bloqueados' =>[
 		"icon" => "no-sign", 

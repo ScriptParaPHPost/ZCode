@@ -57,7 +57,7 @@ class tsCore extends tsZCode {
 		getSettings() :: CARGA DESDE LA DB LAS CONFIGURACIONES DEL SITIO
 	*/
 	public function getSettings() {
-		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @configuracion WHERE tscript_id = 1")); 
+		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @configuracion WHERE tscript_id = 1"));
 		$query['url'] = $this->getSSLProtocol() . '://' . $query['url'];
 		return $query;
 	}
@@ -693,43 +693,6 @@ class tsCore extends tsZCode {
 		return implode(', ', $sets);
 	}
 
-	/**
-	 * Establece el esquema de color del usuario
-	 *
-	 * @global tsUser $tsUser Objeto global que contiene información del usuario
-	 * @return array Array con el color y esquema del usuario o valores predeterminados
-	 */
-	public function setColorScheme(): array {
-		global $tsUser;
-		// Verifica si el usuario está registrado
-		if ($tsUser->is_member) {
-			include TS_ZCODE . 'datos.php';
-			// Obtiene el esquema de color del usuario desde la base de datos
-			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT `user_scheme`, `user_color`, `user_customize` FROM @perfil WHERE `user_id` = {$tsUser->uid}"));
-			return [
-				'color' => $tsColores[$data['user_color']] ?? 'default',
-				'scheme' => $tsSchemes[$data['user_scheme']] ?? 'light'
-			];
-		}
-		return ['color' => 'default', 'scheme' => 'light'];
-	}
-
-	/**
-	 * Establece el esquema de color del usuario
-	 *
-	 * @global tsUser $tsUser Objeto global que contiene información del usuario
-	 * @return array Array con el color y esquema del usuario o valores predeterminados
-	 */
-	public function setColorCustomize() {
-		global $tsUser;
-		// Verifica si el usuario está registrado
-		if ($tsUser->is_member) {
-			// Obtiene el esquema de color del usuario desde la base de datos
-			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT `user_customize` FROM @perfil WHERE `user_id` = {$tsUser->uid}"));
-			return explode(';', $data["user_customize"]);
-		}
-		
-	}
 	/**
 	 * Obtiene los tiempos de actividad del usuario
 	 *

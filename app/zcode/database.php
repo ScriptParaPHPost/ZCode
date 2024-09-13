@@ -93,9 +93,27 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_borradores` (
   PRIMARY KEY (`bid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci AUTO_INCREMENT=1 ;";
 
+$zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_supercategorias` (
+  `fid` int(11) NOT NULL AUTO_INCREMENT,
+  `super_nombre` varchar(60) NOT NULL DEFAULT '',
+  `super_descripcion` text NULL,
+  `super_color` varchar(40) NOT NULL DEFAULT '',
+  `super_img` varchar(40) NOT NULL DEFAULT '',
+  PRIMARY KEY (`fid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+
+$zcode_sql[] = "INSERT INTO `{$db['prefix']}posts_supercategorias` (`fid`, `super_nombre`, `super_descripcion`, `super_img`) VALUES
+(1, 'Oficial', 'Sección reservada para anuncios, novedades y reglas del foro. Aquí se publican actualizaciones importantes, normas de conducta y cualquier comunicación oficial de los administradores y moderadores. Un espacio clave para mantenerse al tanto de la vida del foro.', '1f4e2.svg'),
+(2, 'Tecnología', 'Espacio dedicado a las últimas innovaciones tecnológicas, gadgets, software y plataformas, donde los usuarios pueden compartir noticias, recursos y tutoriales.', '1f4bb.svg'),
+(3, 'Entretenimiento', 'Un lugar para disfrutar de todo lo relacionado con el ocio, desde animaciones y videojuegos hasta música, cómics y humor. Comparte y discute tus intereses favoritos.', '1f3aa.svg'),
+(4, 'Educación y Cultura', 'Sección orientada a la difusión del conocimiento, donde encontrarás materiales educativos, apuntes, arte y literatura para fomentar el aprendizaje y la creatividad.', '1f393.svg'),
+(5, 'Estilo de Vida', 'Aquí los usuarios pueden hablar sobre temas cotidianos que mejoran la calidad de vida, desde recetas y salud hasta viajes y hobbies como los autos y las mascotas.', '1f6c4.svg'),
+(6, 'Comunidad y Sociedad', 'Foro dedicado a temas que impactan a la comunidad, desde noticias y ecología hasta solidaridad y temas generales. Un espacio para debatir y compartir puntos de vista sobre el mundo que nos rodea.', '1f4ad.svg');";
+
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_categorias` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
   `c_orden` int(11) NOT NULL DEFAULT 0,
+  `c_foro` int(11) NOT NULL DEFAULT 0,
   `c_nombre` varchar(40) NOT NULL DEFAULT '',
   `c_seo` varchar(40) NOT NULL DEFAULT '',
   `c_img` varchar(40) NOT NULL DEFAULT '',
@@ -104,40 +122,40 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_categorias` (
   PRIMARY KEY (`cid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
-$zcode_sql[] = "INSERT INTO `{$db['prefix']}posts_categorias` (`cid`, `c_orden`, `c_nombre`, `c_seo`, `c_img`, `c_descripcion`) VALUES
-(1, 1, 'Animaciones', 'animaciones', '1f4fd.svg', 'Discusión y contenido relacionado con películas animadas, series animadas y técnicas de animación.'),
-(2, 2, 'Apuntes y Monografías', 'apuntesymonografias', '1f4d1.svg', 'Recursos y discusiones sobre la elaboración y el uso de apuntes y monografías en estudios académicos.'),
-(3, 3, 'Arte', 'arte', '1f3a8.svg', 'Conversaciones sobre diferentes formas de expresión artística, como pintura, escultura, y arte digital.'),
-(4, 4, 'Autos y Motos', 'autosymotos', '1f698.svg', 'Noticias, discusiones y consejos relacionados con automóviles y motocicletas, incluyendo reparaciones y mantenimiento.'),
-(5, 5, 'Celulares', 'celulares', '1f4f1.svg', 'Información sobre teléfonos móviles, comparaciones de modelos, y consejos de uso.'),
-(6, 6, 'Ciencia y Educación', 'cienciayeducacion', '2697.svg', 'Temas relacionados con avances científicos, métodos educativos, y recursos educativos.'),
-(7, 7, 'Comics', 'comics', '1f4a5.svg', 'Discusiones sobre cómics, incluyendo series populares, eventos importantes, y cultura pop relacionada.'),
-(8, 8, 'Deportes', 'deportes', '26bd.svg', 'Conversaciones sobre eventos deportivos, equipos, jugadores destacados y discusiones generales sobre deportes.'),
-(9, 9, 'Downloads', 'downloads', '1f4bd.svg', 'Información y recursos relacionados con descargas de software, juegos u otros archivos digitales.'),
-(10, 10, 'E-books y Tutoriales', 'ebooksytutoriales', '1f4da.svg', 'Recomendaciones y discusiones sobre libros electrónicos y tutoriales en diversas áreas de interés.'),
-(11, 11, 'Ecología', 'ecologia', '267c.svg', 'Temas relacionados con la conservación del medio ambiente, sostenibilidad y problemas ambientales.'),
-(12, 12, 'Economía y Negocios', 'economiaynegocios', '1f4b5.svg', 'Análisis económico, noticias financieras, consejos empresariales y discusiones sobre estrategias de negocio.'),
-(13, 13, 'Femme', 'femme', '1f3f5.svg', 'Temas relacionados con mujeres, feminismo, derechos de la mujer y cultura femenina.'),
-(14, 14, 'Hazlo tu mismo', 'hazlotumismo', '1f6e0.svg', 'Proyectos, consejos y discusiones sobre bricolaje, reparaciones caseras y manualidades.'),
-(15, 15, 'Humor', 'humor', '1f3ad.svg', 'Contenido humorístico, chistes, memes y discusiones sobre comedia.'),
-(16, 16, 'Imágenes', 'imagenes', '1f5bc.svg', 'Compartir y discutir fotografías, ilustraciones y gráficos visuales.'),
-(17, 17, 'Info', 'info', '1f4d5.svg', 'Información general, noticias rápidas y actualizaciones sobre diversos temas.'),
-(18, 18, 'Juegos', 'juegos', '1f3ae.svg', 'Conversaciones sobre videojuegos, desde nuevos lanzamientos hasta clásicos y estrategias de juego.'),
-(19, 19, 'Links', 'links', '2693.svg', 'Compartir enlaces de interés, recursos útiles o contenido relevante en la web.'),
-(20, 20, 'Linux', 'linux', '1f4bf.svg', 'Discusiones y soporte técnico relacionado con el sistema operativo Linux y software de código abierto.'),
-(21, 21, 'Mac', 'mac', '1f4c0.svg', 'Temas específicos relacionados con el sistema operativo macOS, hardware de Apple y aplicaciones.'),
-(22, 22, 'Manga y Anime', 'mangayanime', '1f4ad.svg', 'Discusiones sobre cómics y animación japonesa, incluyendo series populares, noticias y cultura otaku.'),
-(23, 23, 'Mascotas', 'mascotas', '1f43e.svg', 'Cuidado de mascotas, consejos de adopción, comportamiento animal y salud de las mascotas.'),
-(24, 24, 'Música', 'musica', '1f3a7.svg', 'Discusiones sobre géneros musicales, bandas, artistas, conciertos y recomendaciones musicales.'),
-(25, 25, 'Noticias', 'noticias', '1f4f0.svg', 'Información actualizada y discusiones sobre eventos actuales y noticias relevantes.'),
-(26, 26, 'Off Topic', 'offtopic', '1f4ac.svg', 'Temas que no encajan en otras categorías principales, conversaciones variadas y aleatorias.'),
-(27, 27, 'Recetas y Cocina', 'recetasycocina', '1f36a.svg', 'Compartir recetas, técnicas de cocina, consejos gastronómicos y discusiones sobre alimentos.'),
-(28, 28, 'Salud y Bienestar', 'saludybienestar', '2624.svg', 'Consejos de salud, bienestar emocional, fitness y estilo de vida saludable.'),
-(29, 29, 'Solidaridad', 'solidaridad', '1f397.svg', 'Iniciativas, proyectos y discusiones sobre solidaridad, ayuda social y caridad.'),
-(30, 30, 'xxxxxxxxxx', 'xxxxxxxxxx', '1f4e2.svg', 'Noticias: Actualizaciones y novedades sobre nuestro sitio.'),
-(31, 31, 'Turismo', 'turismo', '1f3c2.svg', 'Destinos de viaje, consejos para viajeros, experiencias y recomendaciones sobre turismo.'),
-(32, 32, 'Streaming', 'streaming', '1f3ac.svg', 'Plataformas de streaming, series, películas y contenido digital en línea.'),
-(33, 33, 'Videos On-line', 'videosonline', '1f3a5.svg', 'Compartir y discutir videos en línea, desde cortometrajes hasta contenido viral y tutoriales.');";
+$zcode_sql[] = "INSERT INTO `{$db['prefix']}posts_categorias` (`cid`, `c_orden`, `c_foro`, `c_nombre`, `c_seo`, `c_img`, `c_descripcion`) VALUES
+(1, 1, 3, 'Animaciones', 'animaciones', '1f4fd.svg', 'Discusión y contenido relacionado con películas animadas, series animadas y técnicas de animación.'),
+(2, 2, 4, 'Apuntes y Monografías', 'apuntesymonografias', '1f4d1.svg', 'Recursos y discusiones sobre la elaboración y el uso de apuntes y monografías en estudios académicos.'),
+(3, 3, 4, 'Arte', 'arte', '1f3a8.svg', 'Conversaciones sobre diferentes formas de expresión artística, como pintura, escultura, y arte digital.'),
+(4, 4, 5, 'Autos y Motos', 'autosymotos', '1f698.svg', 'Noticias, discusiones y consejos relacionados con automóviles y motocicletas, incluyendo reparaciones y mantenimiento.'),
+(5, 5, 2, 'Celulares', 'celulares', '1f4f1.svg', 'Información sobre teléfonos móviles, comparaciones de modelos, y consejos de uso.'),
+(6, 6, 4, 'Ciencia y Educación', 'cienciayeducacion', '2697.svg', 'Temas relacionados con avances científicos, métodos educativos, y recursos educativos.'),
+(7, 7, 3, 'Comics', 'comics', '1f4a5.svg', 'Discusiones sobre cómics, incluyendo series populares, eventos importantes, y cultura pop relacionada.'),
+(8, 8, 6, 'Deportes', 'deportes', '26bd.svg', 'Conversaciones sobre eventos deportivos, equipos, jugadores destacados y discusiones generales sobre deportes.'),
+(9, 9, 2, 'Downloads', 'downloads', '1f4bd.svg', 'Información y recursos relacionados con descargas de software, juegos u otros archivos digitales.'),
+(10, 10, 4, 'E-books y Tutoriales', 'ebooksytutoriales', '1f4da.svg', 'Recomendaciones y discusiones sobre libros electrónicos y tutoriales en diversas áreas de interés.'),
+(11, 11, 6, 'Ecología', 'ecologia', '267c.svg', 'Temas relacionados con la conservación del medio ambiente, sostenibilidad y problemas ambientales.'),
+(12, 12, 5, 'Economía y Negocios', 'economiaynegocios', '1f4b5.svg', 'Análisis económico, noticias financieras, consejos empresariales y discusiones sobre estrategias de negocio.'),
+(13, 13, 6, 'Femme', 'femme', '1f3f5.svg', 'Temas relacionados con mujeres, feminismo, derechos de la mujer y cultura femenina.'),
+(14, 14, 6, 'Hazlo tu mismo', 'hazlotumismo', '1f6e0.svg', 'Proyectos, consejos y discusiones sobre bricolaje, reparaciones caseras y manualidades.'),
+(15, 15, 3, 'Humor', 'humor', '1f3ad.svg', 'Contenido humorístico, chistes, memes y discusiones sobre comedia.'),
+(16, 16, 3, 'Imágenes', 'imagenes', '1f5bc.svg', 'Compartir y discutir fotografías, ilustraciones y gráficos visuales.'),
+(17, 17, 6, 'Info', 'info', '1f4d5.svg', 'Información general, noticias rápidas y actualizaciones sobre diversos temas.'),
+(18, 18, 3, 'Juegos', 'juegos', '1f3ae.svg', 'Conversaciones sobre videojuegos, desde nuevos lanzamientos hasta clásicos y estrategias de juego.'),
+(19, 19, 1, 'Links', 'links', '2693.svg', 'Compartir enlaces de interés, recursos útiles o contenido relevante en la web.'),
+(20, 20, 2, 'Linux', 'linux', '1f4bf.svg', 'Discusiones y soporte técnico relacionado con el sistema operativo Linux y software de código abierto.'),
+(21, 21, 2, 'Mac', 'mac', '1f4c0.svg', 'Temas específicos relacionados con el sistema operativo macOS, hardware de Apple y aplicaciones.'),
+(22, 22, 3, 'Manga y Anime', 'mangayanime', '1f4ad.svg', 'Discusiones sobre cómics y animación japonesa, incluyendo series populares, noticias y cultura otaku.'),
+(23, 23, 5, 'Mascotas', 'mascotas', '1f43e.svg', 'Cuidado de mascotas, consejos de adopción, comportamiento animal y salud de las mascotas.'),
+(24, 24, 3, 'Música', 'musica', '1f3a7.svg', 'Discusiones sobre géneros musicales, bandas, artistas, conciertos y recomendaciones musicales.'),
+(25, 25, 6, 'Noticias', 'noticias', '1f4f0.svg', 'Información actualizada y discusiones sobre eventos actuales y noticias relevantes.'),
+(26, 26, 6, 'Off Topic', 'offtopic', '1f4ac.svg', 'Temas que no encajan en otras categorías principales, conversaciones variadas y aleatorias.'),
+(27, 27, 5, 'Recetas y Cocina', 'recetasycocina', '1f36a.svg', 'Compartir recetas, técnicas de cocina, consejos gastronómicos y discusiones sobre alimentos.'),
+(28, 28, 5, 'Salud y Bienestar', 'saludybienestar', '2624.svg', 'Consejos de salud, bienestar emocional, fitness y estilo de vida saludable.'),
+(29, 29, 6, 'Solidaridad', 'solidaridad', '1f397.svg', 'Iniciativas, proyectos y discusiones sobre solidaridad, ayuda social y caridad.'),
+(30, 30, 1, 'xxxxxxxxxx', 'xxxxxxxxxx', '1f4e2.svg', 'Noticias: Actualizaciones y novedades sobre nuestro sitio.'),
+(31, 31, 5, 'Turismo', 'turismo', '1f3c2.svg', 'Destinos de viaje, consejos para viajeros, experiencias y recomendaciones sobre turismo.'),
+(32, 32, 2, 'Streaming', 'streaming', '1f3ac.svg', 'Plataformas de streaming, series, películas y contenido digital en línea.'),
+(33, 33, 2, 'Videos On-line', 'videosonline', '1f3a5.svg', 'Compartir y discutir videos en línea, desde cortometrajes hasta contenido viral y tutoriales.');";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_comentarios` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
@@ -412,6 +430,8 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}perfil` (
   `user_scheme` int(1) NOT NULL DEFAULT 0,
   `user_color` int(2) NOT NULL DEFAULT 1,
   `user_customize` varchar(20) NOT NULL DEFAULT '#212121;#F4F4F4',
+  `user_font_family` varchar(20) NOT NULL DEFAULT 'tema',
+  `user_font_size` varchar(3) NOT NULL DEFAULT 'md',
   `p_nombre` varchar(50) NOT NULL DEFAULT '',
   `p_avatar` int(1) NOT NULL DEFAULT 0,
   `p_mensaje` varchar(60) NOT NULL DEFAULT '',
@@ -427,7 +447,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}portal` (
   `last_posts_visited` text NULL,
   `last_posts_shared` text NULL,
   `last_posts_cats` text NULL,
-  `c_monitor` varchar(255) NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14,f18',
+  `c_monitor` varchar(255) NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14,f18,f19,20,f21',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 
@@ -507,6 +527,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}configuracion` (
   `banner` varchar(100) NOT NULL DEFAULT '',
   `tema` varchar(30) NOT NULL DEFAULT 'default',
   `update_id` varchar(20) NOT NULL DEFAULT '',
+  `c_allow_foro` int(1) NOT NULL DEFAULT 0,
   `c_allow_fuentes` int(1) NOT NULL DEFAULT 0,
   `c_avatar` int(1) NOT NULL DEFAULT 0,
   `leaving` int(1) NOT NULL DEFAULT 0,

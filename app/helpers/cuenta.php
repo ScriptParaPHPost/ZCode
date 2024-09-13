@@ -43,9 +43,11 @@ if($tsContinue){
 	$tsCuenta = new tsCuenta();
 	
 	include TS_ZCODE . 'datos.php';
-	if(isset($_GET['accion']) AND $_GET['accion'] === 'apariencia') {
+	if(isset($_GET['accion']) AND in_array($_GET['accion'], ['avatar', 'apariencia'])) {
 		$smarty->assign('tsColoresValue', $tsColores);
 		$smarty->assign('tsColoresTxt', $tsColoresTxt);
+		$smarty->assign('tsFontFamily', $tsFontFamily);
+		$smarty->assign('tsFontSize', $tsFontSize);
 		$smarty->assign('tsAvatarSelect', $tsCuenta->getAvatarImages());
 		$smarty->assign('tsAvatarSocials', $tsCuenta->getAvatarSocials());
 	}

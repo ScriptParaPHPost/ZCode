@@ -8,7 +8,7 @@
  * Nombre: zCode
  * Proposito: Añadir las etiquetas necesarias dentro del <head>
  * Tipo: function 
- * Version: 1.5
+ * Version: 1.9
 */
 
 require TS_PLUGINS . 'zCode' . TS_PATH . 'zCode.class.php';
@@ -18,7 +18,7 @@ function smarty_function_zCode($params, &$smarty) {
 	# Inicializamos la clase
 	$pluginZCode = new SmartyZCode($smarty);
 
-	$pluginZCode->version = '1.8';
+	$pluginZCode->version = '1.9';
 
 	# Inicializamos la variable
 	$template = '';
@@ -26,7 +26,7 @@ function smarty_function_zCode($params, &$smarty) {
 	# Añadimos las hojas de estilos
 	if(isset($params["css"])) {
 		if(is_array($params["css"])) $template .= "<!-- Plugin ZCode: V{$pluginZCode->version} -->\n";
-		if(!in_array($smarty->tpl_vars['tsPage']->value, ['admin', 'moderacion',  'login', 'registro'])) {
+		if(!in_array($smarty->tpl_vars['tsPage']->value, ['admin', 'moderacion',  'login', 'registro']) && !isset($params['customizer'])) {
 			$template .= $pluginZCode->setStyleCustomized();
 		}
 		$template .= $pluginZCode->setStylesheets($params["css"]);

@@ -68,21 +68,20 @@ function desvincular(social) {
 
 $(document).ready(() => {
    // Event listener for avatar gif
-   if ($('input[name="avatar_active"]').length > 0) {
-      $('input[name="avatar_active"]').on('click', () => {
-         imported('cuenta/avatar-gif-active.js', 'updateAvatarGif', {});
-      });
+	if ($('input[name="pagina"]').val() === 'avatar') {
+      imported('cuenta/avatar.js', 'updateAvatarGif');
+    	imported('cuenta/avatar.js', 'changeAvatar');
    }
-   // Event listeners for color and scheme inputs
-   ['color', 'scheme'].forEach(name => {
-      const select = $(`select[name="${name}"]`);
-      if (select.length > 0) {
-         select.on('change', function() {
-         	const selected = parseInt($(this).val());
-         	imported('cuenta/apariencia.js', 'ColorScheme', { name, selected });
-         });
-      }
-   });
+
+   if ($('input[name="pagina"]').val() === 'apariencia') {
+   	imported('cuenta/apariencia.js', 'syncThemeSystem');
+   	imported('cuenta/apariencia.js', 'syncThemeColor');
+   	imported('cuenta/apariencia.js', 'syncThemeFont');
+   	if (!$('.customizar_tema').hasClass('d-none')) {
+   		imported('cuenta/customizar.js', 'handleChangeColor');
+   	}
+   }
+
 	// Tiene el mismo efecto que input[name="desktop"]
 	$('.avatar-big-cont').on('click', () =>$('input.browse[name="desktop"]').click());
 	//
@@ -108,23 +107,11 @@ $(document).ready(() => {
 	//
 
 	if ($('input[name="pagina"]').val() === 'seguridad') {
-    	imported('cuenta/security.js', 'TFactorAuthSecurity', {});
-    	if($('.remove_2fa').length > 0) imported('cuenta/TFactorAuth.js', 'twoFactorAuthRemove', {});
+    	imported('cuenta/security.js', 'TFactorAuthSecurity');
+    	if($('.remove_2fa').length > 0) imported('cuenta/TFactorAuth.js', 'twoFactorAuthRemove');
 		if($('.regenerate_token').length > 0) {
-			$('.regenerate_token').on('click', () => imported('cuenta/TFactorAuth.js', 'tokenRegenerate', {}));
+			$('.regenerate_token').on('click', () => imported('cuenta/TFactorAuth.js', 'tokenRegenerate'));
 		}
-	}
-	//
-	if ($('input[name="pagina"]').val() === 'apariencia') {
-    	imported('cuenta/apariencia.js', 'changeAvatar', {});
-
-    	const selectedValue = $('select[name="color"]');
-    	const toggleCustomizerTheme = value => $('.customizar_tema').toggleClass('d-none', parseInt(value) !== 0);
-    	selectedValue.on('change', function() {
-        	toggleCustomizerTheme($(this).val());
-    	});
-    	toggleCustomizerTheme(selectedValue.val());
-    	imported('cuenta/customizar.js', 'handleChangeColor', {});
 	}
 
 });

@@ -36,6 +36,7 @@
 </ul>
 <h4>Varios</h4>
 <ul class="cat-list">
+	<li id="a_foro"><a class="nav-item{if $tsAction == 'foro'} active{/if}" href="{$tsConfig.url}/admin/foro">Configurar foro</a></li>
 	<li id="a_socials"><a class="nav-item{if $tsAction == 'socials'} active{/if}" href="{$tsConfig.url}/admin/socials">Configurar redes sociales</a></li>
 	<li id="a_seo"><a class="nav-item{if $tsAction == 'seo'} active{/if}" href="{$tsConfig.url}/admin/seo">Configurar SEO</a></li>
 	<li id="a_database"><a class="nav-item{if $tsAction == 'database'} active{/if}" href="{$tsConfig.url}/admin/database">Base de datos</a></li>

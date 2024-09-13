@@ -331,10 +331,10 @@ class SmartyZCode {
   	}
 
   	public function setStyleCustomized() {
-  		global $tsCore, $tsUser;
+  		global $tsCore, $tsUser, $Theme;
   		if($tsUser->is_member > 0) {
 	  		include TS_PLUGINS . 'zCode' . TS_PATH . 'zCode.customizer.php';
-	  		$colores = $tsCore->setColorCustomize();
+	  		$colores = $Theme->setColorCustomize();
 	  		return (safe_count($colores) <= 1) ? '' : generateThemeColors('customizer', $colores[0], $colores[1]);
   		} return '';
   	}

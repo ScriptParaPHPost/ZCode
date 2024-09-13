@@ -46,6 +46,16 @@ class tsSmarty extends Smarty {
 		if ($loadFilter) $this->loadFilter('output', 'trimwhitespace');
 	}
 
+	private function getPage($page) {
+		$page = match ($page) {
+			'admin', 'moderacion' => 'main.tpl',
+			'saliendo' => 'assets/views/saliendo.html',
+			default => "t.$page.tpl"
+		};
+		$temp = $this->templateExists($page) ? $page : $this->template_error;
+		return $temp;
+	}
+
 	private function listDirectories() {
 		return [
 			'root' => TS_ROOT,
@@ -84,11 +94,8 @@ class tsSmarty extends Smarty {
 	 * @param string $page Nombre de la plantilla a cargar
 	 */
 	public function loadTemplate($page) {
-		$page = (in_array($page, ['admin', 'moderacion'])) ? "main.tpl" : "t.$page.tpl";
 		try {
-			if($page === 't.saliendo.tpl') $page = 'saliendo.html';
-			$temp = $this->templateExists($page) ? $page : $this->template_error;
-			$this->display($temp);
+			$this->display($this->getPage($page));
 		} catch (Exception $e) {
 			// Muestra un mensaje de error si no se puede cargar la plantilla
 			$message = $e->getMessage();
@@ -96,10 +103,8 @@ class tsSmarty extends Smarty {
 			$message_2 = preg_replace_callback($patron, function($matches) {
     			return "'<strong>{$matches[1]}</strong>'";
 			}, $message);
-			$show = <<<COMENTARIO
-			Lo sentimos, se produjo un error al cargar la plantilla <strong>$page</strong>.
-			<br>Debido al error:<br> <code style="font-size:1rem;line-height: 1.3rem;color: #d971ad;word-wrap: break-word;background: rgba(217, 113, 173, .12);display:block;padding:.5em;">$message_2</code>
-COMENTARIO;
+			$show = "Lo sentimos, se produjo un error al cargar la plantilla <strong>$page</strong>.
+			<br>Debido al error:<br> <code style=\"font-size:1rem;line-height: 1.3rem;color: #d971ad;word-wrap: break-word;background: rgba(217, 113, 173, .12);display:block;padding:.5em;\">$message_2</code>";
 			show_error($show, 'plantilla');
 		}
 	}

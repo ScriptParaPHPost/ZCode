@@ -16,7 +16,7 @@
          </dl>
          <dl>
             <dt><label for="ai_url">Direcci&oacute;n del sitio:</label></dt>
-            <dd><input type="text" id="ai_url" name="url" maxlength="32" value="{$tsConfig.url}" /></dd>
+            <dd><input type="text" id="ai_url" name="url" maxlength="32" value="{$tsConfig.domain|replace:'://':''}" /></dd>
          </dl>
          <dl>
             <dt><label for="ai_offline">Modo mantenimiento:</label><span>Esto har&aacute; al Sitio inaccesible a los usuarios. Si quiere, tambi&eacute;n puede introducir un breve mensaje (255 caracteres) para mostrar.</span></dt>
@@ -86,6 +86,12 @@
             <dt><label for="ai_fuentes">Activar fuentes (posts):</label><span>Los usuarios podr&aacute;n agregar las fuentes donde han obtenido la informacion.</span></dt>
             <dd>
                {html_radios name="c_allow_fuentes" id="ai_fuentes" values=[1, 0] output=['Si', 'No'] selected=$tsConfig.c_allow_fuentes class="radio"}
+            </dd>
+         </dl>
+         <dl>
+            <dt><label for="ai_foro">Activar foro:</label><span>Usar el inicio como foro.</span></dt>
+            <dd>
+               {html_radios name="c_allow_foro" id="ai_foro" values=[1, 0] output=['Activado', 'Desactivado'] selected=$tsConfig.c_allow_foro class="radio"}
             </dd>
          </dl>
          <dl>

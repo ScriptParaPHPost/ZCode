@@ -74,7 +74,7 @@ class tsCuenta {
 	public function loadHeadInfo(int $user_id = 0){
 		global $tsUser, $tsCore;
 		// INFORMACION GENERAL
-		$new = "u.user_verificado, p.user_gif, p.user_gif_active, p.user_portada, p.user_scheme, p.user_color, p.user_customize, p.p_socials";
+		$new = "u.user_verificado, p.user_gif, p.user_gif_active, p.user_portada, p.user_scheme, p.user_color, p.user_customize, p.user_font_family, p.user_font_size, p.p_socials";
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, $new, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_configs FROM @miembros AS u, @perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
       //
 		$data['avatar'] = $tsCore->getAvatar($user_id, 'use');
@@ -526,6 +526,15 @@ class tsCuenta {
 		return false;
    }
 
+   public function saveThemeFont(string $type = 'user_font_family') {
+		global $tsCore, $tsUser;
+		$selected = $tsCore->setSecure($_POST['selected']);
+		if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @perfil SET $type = '$selected' WHERE `user_id` = {$tsUser->uid}")) {
+			return true;
+		}
+		return false;
+   }
+
 	/*
 		savePerfil()
 	*/
@@ -583,7 +592,7 @@ class tsCuenta {
 			if(!is_dir(TS_AVATAR."user$uid")) mkdir(TS_AVATAR."user$uid", 0777);
 			$from_avatar = TS_AVATARES . $sexo . TS_PATH . $image;
 			copy($from_avatar, TS_AVATAR . TS_PATH . $image_new);
-			return $this->settings['avatar'] . "/$image_new";
+			return $tsCore->settings['avatar'] . "/$image_new";
 		}
 	}
 

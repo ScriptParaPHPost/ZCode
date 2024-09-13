@@ -264,4 +264,21 @@ class tsZCode {
 		}
 	}
 
+	public function verifiedIP(&$smarty) {
+		$ip = $this->executeIP(); 
+		if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM @blacklist WHERE type = 1 && value = '$ip' LIMIT 1"))) {
+			$smarty->assign('tsTitle', 'Bloqueado de ' . $tsCore->settings['titulo']);
+			$smarty->display('views/bloqueado.html');
+		}
+	}
+
+	public function verifiedMaintenance(&$smarty) {
+		global $tsUser;
+		if((int)$this->settings['offline'] === 1 && ((int)$tsUser->is_admod === 0 && $tsUser->permisos['govwm'] === NULL) && !in_array($_GET['action'], ['login-user', 'login'])) {
+			$smarty->assign('tsTitle', 'En mantenimiento | ' . $this->settings['titulo']);
+			$smarty->display('views/mantenimiento.html');
+			if(!in_array($_GET['action'], ['login-user', 'login'])) exit();
+		}
+	}
+
 }

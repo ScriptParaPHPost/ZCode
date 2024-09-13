@@ -34,12 +34,25 @@
 		<div class="col-12 col-lg-3">
 			<div class="zcode up-card">
 				<div class="up-card--header" data-icon="true">
-					<div class="up-header--icon">
-						{uicon name="cube"}
-					</div>
-					<div class="up-header--title">
-						<span>zCode</span>
-					</div>
+					<div class="up-header--icon">{uicon name="panel_bottom"}</div>
+					<div class="up-header--title"><span>Tema</span></div>
+				</div>
+				<ul class="pp_list up-card--body list-unstyled">
+					<li>
+						<div class="title text-body-secondary">Tema Actual</div>
+						<div class="body fw-bold" id="tema_actual">{$tsConfig.tema}</div>
+					</li>
+					<select class="w-100" id="change_theme">
+						{foreach $tsAllThemes key=i item=theme}
+							<option value="{$theme}"{if $theme == $tsConfig.tema} selected{/if}>{$theme}</option>
+						{/foreach}
+					</select>
+				</ul>
+			</div>
+			<div class="zcode up-card">
+				<div class="up-card--header" data-icon="true">
+					<div class="up-header--icon">{uicon name="cube"}</div>
+					<div class="up-header--title"><span>zCode</span></div>
 				</div>
 				<ul id="ultima_version" class="pp_list up-card--body list-unstyled">
 					<li class="list-clone">

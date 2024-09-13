@@ -7,7 +7,8 @@ $tsColores = [
    3 => 'green',
    4 => 'red',
    5 => 'slate',
-   6 => 'sky'
+   6 => 'sky',
+   7 => 'monokai'
 ];
 $tsColoresTxt = [
    0 => 'Customizar',
@@ -16,9 +17,28 @@ $tsColoresTxt = [
    3 => 'Verde / Green',
    4 => 'Rojo / Red',
    5 => 'Pizarra / Slate',
-   6 => 'Sky / Cielo'
+   6 => 'Sky / Cielo',
+   7 => 'Monokai'
 ];
 $tsSchemes = ['light', 'dark'];
+
+$tsFontFamily = [
+   'arial' => 'Arial',
+   'century' => 'Century gothic',
+   'dinpro' => 'Dinpro',
+   'inter' => 'Inter',
+   'pixellari' => 'Pixellari',
+   'roboto' => 'Roboto',
+   'system' => 'Del sistema',
+   'tema' => 'Fuente del tema',
+];
+$tsFontSize = [
+   'xs' => 'Muy pequeña',
+   'sm' => 'Pequeña',
+   'md' => 'mediana (Recomendada)',
+   'lg' => 'Grande',
+   'xl' => 'Muy grande'
+];
 
 // PRIVACIDAD
 $tsPrivacidad = [

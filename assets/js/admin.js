@@ -35,7 +35,7 @@ function sameModal(sametitle, samebody, sameaction) {
 		title: sametitle,
 		body: samebody,
 		buttons: {
-			confirmTxt: 'S&iacute;',
+			confirmTxt: 'Aceptar',
 			confirmAction: sameaction,
 			cancelShow: true,
 			cancelTxt: 'Cancelar'
@@ -53,9 +53,24 @@ function sameFn(page, params, element) {
    });
 }
 
-const htaccess = {
-	backup() {
-		$.get(`${ZCodeApp.url}/htaccess-backup.php?from=dashboard`, req => UPModal.alert('Bien', 'La copia fue creada correctamente', false))
+const foro = {
+	eliminar(fid, gew = true) {
+      if(gew){
+      	sameModal('Borrar Categoría', '&#191;Quiere borrar esta categoria?', `foro.eliminar(${fid}, false)`)
+      } else {
+      	$.post(`${ZCodeApp.url}/admin-eliminar-categoria.php?from=dashboard`, { fid }, req => {
+      		console.log(req)
+      		switch (req.charAt(0)) {
+      			case '0':
+      				UPModal.alert('Error', req.substring(3), false);
+      			break;
+      			case '1':
+      				UPModal.alert('Bien', req.substring(3), false);
+      				$(`#few_${fid}`).remove();
+      			break;
+      		}
+      	});
+      }
 	}
 }
 
@@ -314,6 +329,18 @@ $(document).ready(() => {
             $('#uploadForm button').html('Subir Imagen');
          }
       });
+   });
+
+   $('#change_theme').on('change', function(e) {
+   	let tema = $(this).val();
+   	console.log(tema);
+   	$.post(`${ZCodeApp.url}/admin-tema.php?from=dashboard`, { tema }, req => {
+   		console.log(req);
+         UPModal.alert((req.charAt(0) === '1' ? 'Bien' : 'Error'), req.substring(3), true);
+         if(req.charAt(0) === '1') {
+         	$('#tema_actual').html(tema);
+         }
+   	});
    });
 
 });

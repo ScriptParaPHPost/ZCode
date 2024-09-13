@@ -13,7 +13,6 @@ if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
 $files = [
    'cuenta-guardar' => ['n' => 2, 'p' => ''],
    'cuenta-avatar-gif' => ['n' => 2, 'p' => ''],
-   'cuenta-color' => ['n' => 2, 'p' => ''],
    'cuenta-avatar-change' => ['n' => 2, 'p' => ''],
    'cuenta-desvincular' => ['n' => 2, 'p' => ''],
    'cuenta-customizer' => ['n' => 2, 'p' => ''],
@@ -23,7 +22,11 @@ $files = [
 	'cuenta-delete-2fa' => ['n' => 2, 'p' => ''],
 	'cuenta-desactivate' => ['n' => 2, 'p' => ''],
 	'cuenta-eliminar-tiempo' => ['n' => 2, 'p' => ''],
-	'cuenta-avatar-social' => ['n' => 2, 'p' => '']
+	'cuenta-avatar-social' => ['n' => 2, 'p' => ''],
+   'cuenta-scheme' => ['n' => 2, 'p' => ''],
+   'cuenta-color' => ['n' => 2, 'p' => ''],
+   'cuenta-family' => ['n' => 2, 'p' => ''],
+   'cuenta-size' => ['n' => 2, 'p' => '']
 ];
 
 // REDEFINIR VARIABLES
@@ -56,6 +59,11 @@ switch($action){
 	case 'cuenta-scheme':
 		$columna = ($action === 'cuenta-color') ? 'user_color' : 'user_scheme';
 		echo $tsCuenta->saveColorScheme($columna);
+	break;
+	case 'cuenta-family':
+	case 'cuenta-size':
+		$columna = ($action === 'cuenta-family') ? 'user_font_family' : 'user_font_size';
+		echo $tsCuenta->saveThemeFont($columna);
 	break;
 	case 'cuenta-avatar-change':
 		echo $tsCuenta->changeAvatar();

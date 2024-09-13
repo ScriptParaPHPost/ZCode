@@ -125,15 +125,30 @@ if($tsContinue) {
 		// CLASE TOPS
 		include TS_MODELS."c.tops.php" ;
 		$tsTops = new tsTops();
-		// ULTIMOS POSTS
-		$tsLastPosts = $tsPosts->getLastPosts($category);
-		$smarty->assign("tsPosts", $tsLastPosts['data']);
-		$smarty->assign("tsPages", $tsLastPosts['pages']);
-	
-		// ULTIMOS POSTS FIJOS
-		$smarty->assign("tsPostsStickys", $tsPosts->getLastPostsStickys());
 		// CAT
 		$smarty->assign("tsCat", $category);
+		// TITULO
+		if(!empty($category)) {
+			$catData = $tsPosts->getCatData($category);
+			$tsTitle = $tsCore->settings['titulo'].' - '.$catData['c_nombre'];
+			$smarty->assign("tsCatData", $catData);
+		}
+		if((int)$tsCore->settings['c_allow_foro'] === 0 || !empty($category)) {
+			// ULTIMOS POSTS
+			$tsLastPosts = $tsPosts->getLastPosts($category);
+			$smarty->assign("tsPosts", $tsLastPosts['data']);
+			$smarty->assign("tsPages", $tsLastPosts['pages']);
+			// ULTIMOS POSTS FIJOS
+			$smarty->assign("tsPostsStickys", $tsPosts->getLastPostsStickys());
+			// AFILIADOS
+			$smarty->assign("tsAfiliados", $tsAfiliado->getAfiliados());
+		}
+		if((int)$tsCore->settings['c_allow_foro'] === 1) {
+			include TS_MODELS . 'c.foro.php';
+			$tsForo = new tsForo;
+			$smarty->assign("tsForos", $tsForo->getForoPosts());
+			#var_dump($tsForo->getForoPosts());
+		}
 		$smarty->assign("tsStats", $tsTops->getStats());
 		// ULTIMOS COMENTARIOS
 		$smarty->assign("tsComments", $tsComentarios->getLastComentarios());
@@ -141,17 +156,6 @@ if($tsContinue) {
 		$smarty->assign("tsTopPosts", $tsTops->getHomeTopPosts()['historico']);
 		// TOP USERS
 		$smarty->assign("tsTopUsers", $tsTops->getHomeTopUsers()['historico']);
-		// TITULO
-		if(!empty($category)) {
-			$catData = $tsPosts->getCatData($category);
-			$tsTitle = $tsCore->settings['titulo'].' - '.$catData['c_nombre'];
-			$smarty->assign("tsCatData", $catData);
-		}
-		  
-		// AFILIADOS
-		$smarty->assign("tsAfiliados", $tsAfiliado->getAfiliados());
-		// DO <= PARA EL MENU
-		$smarty->assign("tsDo", $_GET['do']);
 
 	}
 

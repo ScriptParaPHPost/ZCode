@@ -30,6 +30,8 @@
 		'admin-eliminar-noticia' => array('n' => 4, 'p' => ''),
 		'admin-system-update' => array('n' => 4, 'p' => ''),
 		'admin-upload-favicon' => array('n' => 4, 'p' => ''),
+		'admin-eliminar-categoria' => array('n' => 4, 'p' => ''),
+		'admin-tema' => array('n' => 4, 'p' => ''),
 	);
 
 /**********************************\
@@ -37,7 +39,7 @@
 * (VARIABLES LOCALES ESTE ARCHIVO)	*
 
 \*********************************/
-
+	
 	// REDEFINIR VARIABLES
 	$tsPage = 'php_files/p.admin.'.$files[$action]['p'];
 	$tsLevel = $files[$action]['n'];
@@ -59,9 +61,8 @@
 
 	include TS_MODELS . "c.admin.php";
    $tsAdmin = new tsAdmin();
-    //
 	// CODIGO
-	switch($action){
+	switch($action) {
 		case 'admin-medalla-borrar':
 			//<---
             echo $tsMedal->DelMedalla();
@@ -137,6 +138,9 @@
 		      echo $tsAdmin->delNoticia();
 			//--->
 		break;
+		case 'admin-tema':
+			echo $tsAdmin->changeTemaNow();
+		break;
 		case 'admin-system-update':
 			require_once TS_MODELS . "c.actualizacion.php";
 			$tsActualizacion = new tsActualizacion;
@@ -146,6 +150,11 @@
 			require_once TS_MODELS . "c.favicon.php";
     		$tsFavicon = new tsFavicon;
 			echo $tsFavicon->uploadFavicon();
+		break;
+		case 'admin-eliminar-categoria':
+			include TS_MODELS . "c.foro.php";
+			$tsForo = new tsForo();
+			echo $tsForo->delCategoria();
 		break;
       default:
          die('0: Este archivo no existe.');

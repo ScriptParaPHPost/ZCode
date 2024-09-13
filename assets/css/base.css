@@ -7,6 +7,18 @@
 	font-style: normal;
 	font-display: swap;
 }
+@font-face {
+	font-family: 'DINPro-Medium';
+	src: url('../fonts/dinpro.otf') format('opentype');
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'pixellari';
+	src: url('../fonts/pixellari.ttf') format('truetype');
+	font-style: normal;
+	font-display: swap;
+}
 :root {
 	color-scheme: light;
 
@@ -169,6 +181,61 @@
 	--main-bg-rgb: rgba(95, 189, 255, var(--opacity));
 }
 
+[data-theme-color="monokai"] {
+	--main-bg: #d3597b;
+	--main-bg-hover: #CF3C65;
+	--main-bg-active: #C5315A;
+	--main-bg-rgb: rgba(211, 89, 123, var(--opacity));
+}
+[data-theme="dark"][data-theme-color="monokai"] {
+	color-scheme: dark;
+	--main-bg: #ad6276;
+	--main-bg-hover: #A95168;
+	--main-bg-active: #A33C57;
+	--main-bg-rgb: rgba(173, 98, 118, var(--opacity));
+}
+
+[data-font-family="arial"] {
+	--setting-font-family: Arial, Helvetica, sans-serif;
+}
+[data-font-family="century"] {
+	--setting-font-family: 'Century gothic';
+}
+[data-font-family="dinpro"] {
+	--setting-font-family: 'DINPro-Medium';
+}
+[data-font-family="inter"] {
+	--setting-font-family: Inter;
+}
+[data-font-family="pixellari"] {
+	--setting-font-family: Pixellari;
+}
+[data-font-family="roboto"] {
+	--setting-font-family: 'Roboto';
+}
+[data-font-family="system"] {
+	--setting-font-family: system-ui, sans-serif;
+}
+[data-font-family="tema"] {
+	--setting-font-family: var(--sans-serif);
+}
+
+[data-font-size="xs"] {
+	--setting-font-size: .625rem/1.125rem;
+}
+[data-font-size="sm"] {
+	--setting-font-size: .75rem/1.25rem;
+}
+[data-font-size="md"] {
+	--setting-font-size: 1rem/1.5rem;
+}
+[data-font-size="lg"] {
+	--setting-font-size: 1.125rem/1.625rem;
+}
+[data-font-size="xl"] {
+	--setting-font-size: 1.325rem/1.75rem;
+}
+
 *::-webkit-scrollbar {
 	-webkit-appearance: none;
 }
@@ -223,7 +290,7 @@ html {
 	-webkit-text-size-adjust: 100%;
 }
 body {
-	font: normal normal 400 1rem/1.5rem var(--sans-serif);
+	font: normal normal 400 var(--setting-font-size) var(--setting-font-family);
 	background: var(--html-bg);
 	color: var(--body-color);
 	view-transition-name: __body;
@@ -7358,3 +7425,11 @@ select[size] {
 	 background-color: #FCFC5F22;
 	 transition: background-color 1s ease;
 }
+.font-arial { font-family: Arial, Helvetica, sans-serif; }
+.font-century { font-family: 'Century gothic'; }
+.font-dinpro { font-family: 'DINPro-Medium'; }
+.font-inter { font-family: Inter; }
+.font-pixellari { font-family: Pixellari; }
+.font-roboto { font-family: 'Roboto'; }
+.font-system { font-family: system-ui, sans-serif; }
+.font-tema { font-family: var(--sans-serif); }

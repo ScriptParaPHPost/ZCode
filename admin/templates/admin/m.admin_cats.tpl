@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
    });
    {/if}
+	// Se usa jquery despues, porque se ejecuta despues de cargar
    $('#cat_img').on('change', () => {
       var icono = $("#cat_img option:selected").val();
       $('#c_icon').css({
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	       	<th>Acción</th>
 	      </thead>
 			<tbody id="cats_orden">
-				{foreach from=$tsConfig.categorias item=c}
+				{foreach from=$tsCats item=c}
 				<tr id="{$c.cid}" data-id="{$c.cid}">
 					<td style="width:45px;" class="handle text-center fw-semibold">{$c.c_orden}</td>
 					<td style="width:45px;" class="text-center fw-semibold">{$c.cid}</td>
@@ -50,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
 						<div class="d-grid" style="grid-template-columns: 3rem 1fr;">
 							<img src="{$c.c_img}" alt="{$c.c_nombre} - {$c.c_seo}" class="avatar avatar-3">
 							<div>
-								<strong class="d-block">{$c.c_nombre}</strong>
+								<strong class="d-block" style="color:{$c.c_color}">{$c.c_nombre}</strong>
 								<small class="fst-italic">{$c.c_descripcion}</small>
 							</div>
 						</div>
@@ -85,6 +86,10 @@ document.addEventListener("DOMContentLoaded", function() {
 					<dt><label for="cat_descripcion">Descripción de la categor&iacute;a:</label></dt>
 					<dd><textarea name="c_descripcion" id="cat_descripcion" rows="13">{$tsCat.c_descripcion}</textarea></dd>
 				</dl>
+	         <dl>
+	            <dt><label for="ai_color">Color de la categoría:</label></dt>
+	            <dd><input type="color" id="ai_color" name="c_color" value="{$tsForo.c_color}" /></dd>
+	         </dl>
 				<dl>
 					<dt><label for="cat_img">Icono de la categor&iacute;a:</label></dt>
 					<dd>
@@ -108,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				<label for="h_mov" style="width:500px;">Borrar categor&iacute;a y mover las subcategor&iacute;as y demas datos a otra categor&iacute;a diferente. Mover datos a:</label>
 				<select name="ncid">
 					<option value="-1">Categor&iacute;as</option>
-					{foreach from=$tsConfig.categorias item=c}
+					{foreach from=$tsCats item=c}
 						{if $c.cid != $tsCID}
 							<option value="{$c.cid}">{$c.c_nombre}</option>
 						{/if}
@@ -124,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			<label style="width:500px;">Mover todos los posts de la categor&iacute;a </label>
 			<select name="oldcid">
 				<option value="-1">Categor&iacute;as</option>
-				{foreach from=$tsConfig.categorias item=c}
+				{foreach from=$tsCats item=c}
 					{if $c.cid != $tsCID}
 						<option value="{$c.cid}">{$c.c_nombre}</option>
 					{/if}
@@ -133,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			<label style="width:500px;"> a </label>
 			<select name="newcid">
 				<option value="-1">Categor&iacute;as</option>
-				{foreach from=$tsConfig.categorias item=c}
+				{foreach from=$tsCats item=c}
 					{if $c.cid != $tsCID}
 						<option value="{$c.cid}">{$c.c_nombre}</option>
 					{/if}

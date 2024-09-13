@@ -33,11 +33,11 @@ class tsCore {
 		$this->settings['assets'] = $this->settings['url'].'/assets';
 		$this->settings['css'] = $this->settings['assets'].'/css';
 		$this->settings['js'] = $this->settings['assets'].'/js';
-
+		$this->settings['categories'] = $this->settings['assets'].'/images/categorias';
 
 		$this->settings['avatar'] = $this->settings['url'].'/storage/avatar';
 		//
-		$favicon = $this->settings['url'] . '/assets/images/favicon/';
+		$this->settings['favicon'] = $this->settings['url'] . '/assets/images/favicon/';
 		$this->settings['logos'] = [
 			'big' => $favicon . $this->setSEO($this->settings['titulo']).'.webp',
 			'32' => $favicon . 'logo-32.webp',
@@ -52,11 +52,15 @@ class tsCore {
 		return urlencode($url);
 	}
 
+	public function imageCat(string $cat = '') {
+		return $this->settings['categories'] . "/$cat";
+	}
+
 	/*
 		getSettings() :: CARGA DESDE LA DB LAS CONFIGURACIONES DEL SITIO
 	*/
 	public function getSettings() {
-		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT titulo, slogan, url, email, update_id, c_avatar, leaving, c_last_active, c_allow_sess_ip, c_count_guests, c_reg_active, c_reg_activate, c_reg_rango, c_met_welcome, c_message_welcome, c_fotos_private, c_hits_guest, c_keep_points, c_allow_points, c_allow_edad, c_max_posts, c_max_com, c_max_nots, c_max_acts, c_newr_type, c_allow_sump, c_allow_firma, c_allow_upload, c_allow_portal, c_allow_live, c_see_mod, c_stats_cache, c_desapprove_post, offline, offline_message, pkey, skey, version, version_code FROM @configuracion WHERE tscript_id = 1"));
+		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @configuracion WHERE tscript_id = 1"));
 		$query['url'] = $this->getSSLProtocol() . '://' . $query['url'];
 		return $query;
 	}

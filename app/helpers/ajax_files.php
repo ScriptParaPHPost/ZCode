@@ -46,10 +46,10 @@
 	// QUE ARCHIVO NECESITAMOS?
 	$file = './ajax/ajax.'.$action_type.'.php';
 	if($_GET['from'] === 'dashboard') {
-		$file = '../../admin/helpers/' .  ltrim($file, './');
+		$file = TS_ADMIN .  ltrim($file, './');
 	}
 	//
-	if(file_exists($file)) include($file);
+	if(file_exists($file)) include $file;
 	else die("0: No se encontro el archivo que se ha solicitado." . $file);
 	
 /**********************************\
