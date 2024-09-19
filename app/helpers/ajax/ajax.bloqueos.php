@@ -37,7 +37,7 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg; die();}
     // CLASE
-	include("../class/c.cuenta.php");
+	include TS_MODELS . "c.cuenta.php";
 	$tsCuenta = new tsCuenta();
     //
     //echo $tsUser->getUserName($_GET['user']);

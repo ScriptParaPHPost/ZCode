@@ -42,12 +42,11 @@
 					<button type="button" class="drop-select--toggle">Selecciona un país</button>
 					<div class="drop-select--menu">
 						<div class="drop-select--item" data-value="">
-							<img class="avatar avatar-2" src="{$tsConfig.assets}/icons/flags/xx.svg" alt="xx">
 							<span>Selecciona un país</span>
 						</div>
 						{foreach from=$tsPaises key=code item=pais}
 							<div class="drop-select--item" data-value="{$code}"{if $code == $tsPerfil.user_pais} selected{/if}>
-								<img class="avatar avatar-2" src="{$tsConfig.assets}/icons/flags/{$code|lower}.svg" alt="{$code}">
+								{$tsPaisesSVG[$code|lower]}
 								<span>{$pais}</span>
 							</div>
 						{/foreach}
@@ -61,7 +60,6 @@
 					<button type="button" class="drop-select--toggle">Selecciona un rango</button>
 					<div class="drop-select--menu">
 						<div class="drop-select--item" data-value="">
-							<img class="avatar avatar-2" src="{$tsConfig.assets}/icons/flags/xx.svg" alt="xx">
 							<span>Selecciona un rango</span>
 						</div>
 						{foreach from=$tsRangos key=code item=r}

@@ -23,7 +23,7 @@ const afiliado = {
 	},
 	enviando(params) {
 		loading.start();
-		$.post(ZCodeApp.url + '/afiliado-enviando.php', params, h => {
+		$.post(ZCodeApp.url + '/afiliado-enviando.php?', params, h => {
 			UPModal.proccess_end();
 			switch(h.charAt(0)){
 				case '0':

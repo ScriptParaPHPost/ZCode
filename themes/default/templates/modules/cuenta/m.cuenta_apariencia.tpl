@@ -13,7 +13,7 @@
          </label>
 		</h5>
 
-		<div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+		<div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 row-cols-xl-4">
 			{foreach $tsColoresValue key=id item=color}
 				<div class="col">
 					<label class="d-block mb-4 syncThemeColor" role="button" data-color="{$id}">
@@ -58,7 +58,7 @@
 		<h3>Accesibilidad</h3>
 		<p>Mejore la experiencia en {$tsConfig.titulo} adaptando la web a sus necesidades</p>
 
-		<div class="upform-group d-grid column-gap-3" style="grid-template-columns: 200px 1fr;">
+		<div class="upform-group d-block d-md-grid column-gap-3" style="grid-template-columns: 200px 1fr;">
 			<label class="upform-label" for="font_family">Familia de la fuente</label>
 			<div class="upform-group-input">
 				<select class="upform-select" name="font_family" id="font_family">
@@ -69,7 +69,7 @@
 			</div>
 		</div>
 
-		<div class="upform-group d-grid column-gap-3" style="grid-template-columns: 200px 1fr;">
+		<div class="upform-group d-block d-md-grid column-gap-3" style="grid-template-columns: 200px 1fr;">
 			<label class="upform-label" for="font_size">Tamaño de la fuente</label>
 			<div class="upform-group-input">
 				<select class="upform-select" name="font_size" id="font_size">

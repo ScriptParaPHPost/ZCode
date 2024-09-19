@@ -80,11 +80,11 @@ class tsUpload {
 		if(!empty($error)) return [0, $error];
 		else {
 			$type = explode('/', $file['type']);
-			$ext = ($type[1] == 'jpeg' || $type[1] == 'url') ? 'jpg' : $type[1]; // EXTENCION
-			$key = uniqid('avatar_');
+			$ext = in_array($type[1], ['jpeg', 'url']) ? 'jpg' : $type[1]; // EXTENSION
+			$key = uniqid('image_');
 			$newName = "$key.$ext";
 			# IMAGEN
-			return ($this->type == 1) ? [1, $this->sendFile($file, $newName), $type[1]] : [
+			return ($this->type === 1) ? [1, $this->sendFile($file, $newName), $type[1]] : [
 				'msg' => $this->createImage($file, $newName), 
 				'error' => '', 
 				'key' => $key, 
@@ -105,7 +105,7 @@ class tsUpload {
 	*/
 	public function validFile($file, string $type = 'file'){
 		// ARCHIVO
-		if($type == 'file'){
+		if($type == 'file') {
 			// SE ENCONTRO EL ARCHIVO
 			if(empty($file['name'])) return 'No Found';
 			else $this->found = $this->found + 1;
@@ -119,7 +119,7 @@ class tsUpload {
 			$min_w = 160;
 			$min_h = 120;
 			// MAX PARA EVITAR CARGA LENTA
-			$max_w = 1024;
+			$max_w = 2048;
 			$max_h = $max_w;
 			$this->found = 1;
 			//

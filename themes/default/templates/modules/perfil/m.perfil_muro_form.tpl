@@ -1,4 +1,4 @@
-<div class="shout p-3 mb-3 rounded position-relative" id="muroStrem">
+<div class="shout p-3 mb-3 rounded position-relative overflow-hidden" id="muroStrem">
    <div class="shout__content position-relative">
       <textarea id="wall" class="py-2 px-3 rounded w-100" placeholder="{if $tsInfo.uid == $tsUser->uid}&iquest;Qu&eacute; est&aacute;s pensando?{else}Escribe algo....{/if}"></textarea>
       <div class="buttons position-absolute gap-1 d-flex py-1 px-2">

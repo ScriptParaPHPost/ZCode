@@ -18,9 +18,9 @@
             <dd><input type="text" id="keywords" name="keywords" value="{$tsSeo.seo_keywords}" /></dd>
          </dl>
          <dl>
-            <dt><label for="robots">Activar rasteadores:</label><small>Activar los rastreadores de los motores de búsqueda si pueden o no indexar una página.</small></dt>
+            <dt><label for="robots">Crear robots.txt:</label><small>Activar los rastreadores de los motores de búsqueda si pueden o no indexar una página.</small></dt>
             <dd>
-					{html_radios name="robots" id="robots" values=[1, 0] output=['Si', 'No'] selected=$tsSeo.seo_robots class="radio"}
+               {html_radios name="robots" id="robots" values=[1, 0] output=['Si', 'No'] selected=$tsSeo.seo_robots class="radio"}
             </dd>
          </dl>
          <dl>

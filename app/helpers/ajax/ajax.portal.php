@@ -40,7 +40,7 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
     // CLASS
-    include("../class/c.portal.php");
+    include TS_MODELS . "c.portal.php";
     $tsPortal = new tsPortal();
     //
 	// CODIGO

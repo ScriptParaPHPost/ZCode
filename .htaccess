@@ -103,7 +103,6 @@ RewriteRule ^([A-Za-z0-9_-]+)/?(([A-Za-z0-9_-]+))?/(([0-9]+))$ app/helpers/$1.ph
 	Deny from all
 </FilesMatch>
 
-
 # Seguridad contra patrones de consulta maliciosos
 RewriteCond %{QUERY_STRING} PHP[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} [NC]
 RewriteRule .* - [F]

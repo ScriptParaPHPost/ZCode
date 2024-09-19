@@ -150,11 +150,12 @@
 	
 	// Mensajes
 	$smarty->assign('tsMPs', $tsMP->mensajes);
-
-	$smarty->assign('tsSchemeColor', $Theme->setSchemeColor());
-	$smarty->assign('tsThemeFont', $Theme->setThemeFont());
+	
+	$smarty->assign('tsThemeSettings', $Theme->getSettingsTheme());
 
 	$smarty->assign('tsMenuCuenta', $menu_cuenta);
+
+	$smarty->assign('tsCookieConsent', isset($_COOKIE['cc_cookie']));
 
 	if (!extension_loaded('gd') && !function_exists('gd_info')) {
 		$smarty->assign('gd_info', 'La extensi&oacute;n GD no est&aacute; habilitada en tu servidor.');

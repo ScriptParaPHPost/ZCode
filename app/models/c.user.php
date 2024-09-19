@@ -490,6 +490,7 @@ class tsUser  {
 		// CONSULTA
 		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, p.user_pais, p.user_sexo, p.p_avatar, p.p_mensaje, u.user_rango, u.user_puntos, u.user_comentarios, u.user_posts, u.user_lastactive, u.user_baneado, r.r_name, r.r_color, r.r_image FROM @miembros AS u LEFT JOIN @perfil AS p ON u.user_id = p.user_id LEFT JOIN @rangos AS r ON r.rango_id = u.user_rango WHERE u.user_activo = 1 && u.user_baneado = 0 $filter ORDER BY u.user_id DESC LIMIT {$pages['limit']}");
 		// PARA ASIGNAR SI ESTA ONLINE HACEMOS LO SIGUIENTE
+		$SVG_FLAGS_ALL = json_decode(file_get_contents(TS_ASSETS . 'icons/flags.json'), true);
 		while($row = db_exec('fetch_assoc', $query)) {
 			$row['status'] = $tsCore->statusUser($row['user_id']);
 			// RANGO
@@ -499,7 +500,7 @@ class tsUser  {
 				'image' => $tsCore->settings['assets'] . "/images/rangos/{$row['r_image']}"
 			];
 			$row['pais'] = strtolower($row['user_pais'] ?? 'xx');
-			$row['pais_image'] = $tsCore->settings['assets'] . "/icons/flags/{$row['pais']}.svg";
+			$row['pais_image'] = $SVG_FLAGS_ALL[$row['pais']];
 			$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
 			// CARGAMOS
 			$data[] = $row;

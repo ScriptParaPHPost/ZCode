@@ -10,8 +10,9 @@ if (!defined('TS_HEADER'))
  */
 class tsSeo {
 
-	public $robots;
 	public $seo;
+
+	public $robots;
 
 	public function __construct() {
 		$this->robots = TS_ROOT . 'robots.txt';
@@ -21,10 +22,6 @@ class tsSeo {
 	# ===================================================
 	# SEO
 	# * getSEO() :: Obtenemos toda la informacion
-	# * getNoticia() :: Obtenemos la noticia por ID
-	# * delNoticia() :: Eliminamos la noticia por ID
-	# * newNoticia() :: Creamos una nueva notica
-	# * editNoticia() :: Editamos la noticia
 	# ===================================================
 	public function getSeo() {
 		$tsCore = new tsCore;
@@ -49,12 +46,18 @@ class tsSeo {
 	public function addRobotsTXT() {
 		global $tsCore;
 		$robots = "User-agent: *\n";
-		$disallow = ['access/', 'assets/', 'cache/', 'dashboard/', 'inc/', 'install/', 'themes/', 'update/', 'cuenta/', 'admin/', 'moderacion/', 'monitor/', 'mensajes/', 'favoritos.php', 'borradores.php', 'agregar/', 'agregar.php', 'ajax_files/', 'password/', 'validar/', 'fotos/editar/', 'fotos/agregar/', '*.webp', '*.js', '*.css', '*.txt', '*.php', '*.html'];
+		$disallow = ['admin/', 'app/', 'assets/', 'auth/', 'errors/', 'logs/', 'storage/', 'themes/', 'cuenta/', 'admin/', 'moderacion/', 'monitor/', 'mensajes/', 'favoritos.php', 'borradores.php', 'agregar/', 'agregar.php', 'ajax_files/', 'password/', 'validar/', 'fotos/editar/', 'fotos/agregar/', '*.webp', '*.js', '*.css', '*.txt', '*.php', '*.html'];
 		foreach($disallow as $dis) $robots .= "Disallow: /$dis\n";
 		if(file_exists(TS_ROOT . "sitemap.xml")) {
 			$robots .= "Sitemap: {$tsCore->settings['url']}/sitemap.xml\n";
 		}
 		if(!file_exists($this->robots)) file_put_contents($this->robots, trim($robots));
+	}
+
+	public function syncRobots() {
+		if(file_exists($this->robots)) unlink($this->robots);
+		$this->addRobotsTXT();
+		return true;
 	}
 
 }

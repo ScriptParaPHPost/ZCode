@@ -81,7 +81,7 @@
     	}
 
    // Foro
-   } elseif(in_array($action, ['foro', 'actualizacion', 'temas', 'users'])) {
+   } elseif(in_array($action, ['foro', 'actualizacion', 'temas', 'users', 'sitemap'])) {
    	include "$action.php";
 
    // Generador de favicon

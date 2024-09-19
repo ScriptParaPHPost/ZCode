@@ -598,4 +598,36 @@ class tsCore {
 		return $encode;
 	}
 
+	/**
+	 * Creates a URL based on the specified type and ID.
+	 *
+	 * @param string $type  The type of link to create ('post', 'perfil', 'foto').
+	 * @param mixed  $id    The ID associated with the link (post ID, user ID, etc.).
+	 * @param string $param Additional URL parameters.
+	 * @return string The generated URL.
+	 */
+	public function createLink(string $type = 'post', $id = '', string $param = ''): string {
+	   $url = '';
+	   $id = (int)$id; // Ensure $id is an integer to prevent SQL injection.
+
+	   switch ($type) {
+	      case 'post':
+	         $data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id, post_title, c_seo FROM @posts LEFT JOIN @posts_categorias ON cid = post_category WHERE post_id = $id"));
+	         if ($data) {
+	            $url = "/posts/{$data['c_seo']}/{$data['post_id']}/" . $this->setSEO($data['post_title'], true) . ".html{$param}";
+	         }
+	      break;
+	      case 'foto':
+	         $data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_name, foto_id, f_title FROM @miembros LEFT JOIN @fotos ON f_user = user_id WHERE foto_id = $id"));
+	         if ($data) {
+	            $url = "/fotos/{$data['user_name']}/{$data['foto_id']}/" . $this->setSEO($data['f_title'], true) . ".html{$param}";
+	         }
+	      break;
+	      case 'perfil':
+	         $url = "/perfil/$id$param";
+	      break;
+	   }
+	   return $this->settings['url'] . $url;
+	}
+
 }

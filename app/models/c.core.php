@@ -31,17 +31,18 @@ class tsCore extends tsZCode {
 		// CARGANDO CONFIGURACIONES
 		$this->settings = $this->getSettings();
 		$this->settings['domain'] = $this->withoutSSL();
+		// Theme
 		$this->settings['t_url'] = $this->settings['url'] . '/themes/' . $this->settings['tema'];
 		$this->settings['images'] = $this->settings['t_url'].'/images';
 		$this->settings['css'] = $this->settings['t_url'].'/css';
 		$this->settings['js'] = $this->settings['t_url'].'/js';
-		//
+		// Assets
 		$this->settings['assets'] = $this->settings['url'].'/assets';
 		$this->settings['favicon'] = $this->settings['assets'].'/images/favicon';
-		$this->settings['uploads'] = $this->settings['assets'].'/images/uploads';
 		$this->settings['categories'] = $this->settings['assets'].'/images/categorias';
+		// Storage
 		$this->settings['avatar'] = $this->settings['url'].'/storage/avatar';
-		$this->settings['categorias'] = $this->getCategorias();
+		$this->settings['uploads'] = $this->settings['url'].'/storage/uploads';
 		//
 		$this->settings['logos'] = [
 			'big' => $this->settings['favicon'] . '/'.$this->setSEO($this->settings['titulo']).'.webp',
@@ -50,6 +51,7 @@ class tsCore extends tsZCode {
 			'128' => $this->settings['favicon'] . '/logo-128.webp',
 			'256' => $this->settings['favicon'] . '/logo-256.webp'
 		];
+		$this->settings['categorias'] = $this->getCategorias();
 		$this->settings['canonical'] = urlencode($this->getSSLProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 	}
 

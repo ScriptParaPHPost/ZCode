@@ -40,20 +40,5 @@ function generateThemeColors($nameColor, $lightColor, $darkColor) {
 	$darkHover = lightenDarkenColor($darkColor, 20);
 	$darkActive = lightenDarkenColor($darkColor, -20);
 
-	return "
-<style id=\"customizer_style\">
-	[data-theme-color=\"$nameColor\"] {
-	  --main-bg: $lightColor;
-	  --main-bg-hover: $lightHover;
-	  --main-bg-active: $lightActive;
-	  --main-bg-rgb: rgba(" . hexToRgb($lightColor) . ", var(--opacity));
-	}
-	[data-theme=\"dark\"][data-theme-color=\"$nameColor\"] {
-		color-scheme: dark;
-	  --main-bg: $darkColor;
-	  --main-bg-hover: $darkHover;
-	  --main-bg-active: $darkActive;
-	  --main-bg-rgb: rgba(" . hexToRgb($darkColor) . ", var(--opacity));
-	}
-</style>";
+	return "<style id=\"customizer_style\">[data-theme-color=\"$nameColor\"]{--main-bg:$lightColor;--main-bg-hover:$lightHover;--main-bg-active:$lightActive;--main-bg-rgb:rgba(" . hexToRgb($lightColor) . ",var(--opacity));}[data-theme=\"dark\"][data-theme-color=\"$nameColor\"]{color-scheme:dark;--main-bg:$darkColor;--main-bg-hover:$darkHover;--main-bg-active:$darkActive;--main-bg-rgb:rgba(" . hexToRgb($darkColor) . ",var(--opacity));}</style>";
 }

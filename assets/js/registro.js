@@ -37,8 +37,7 @@ const registro = (() => {
 	let expresiones = {
 		nick: /^[a-zA-Z0-9\_\-]{4,20}$/,
 		password: /^.{4,32}$/,
-		email: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-	   nacimiento: /^\d{4}-\d{2}-\d{2}$/
+		email: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 	}
 
 	// Estado de aprobación de cada campo después de la validación
@@ -46,7 +45,6 @@ const registro = (() => {
 		nick: false,
 		password: false,
 		email: false,
-		nacimiento: false,
 		terminos: false
 	}
 
@@ -119,25 +117,8 @@ const registro = (() => {
 		Approved[inputNameElement] = validateField(inputNameElement, message)
    };
 
-   // Función para validar el campo Fecha de Nacimiento
-   function validarFechaNacimiento(inputNameElement, inputValue, inputIDElement) {
-		const fnac = new Date(inputValue);
-		const nacimiento = fnac.getFullYear();
-		const hoy = new Date();
-		// Comprobaciones condicionales
-		if (nacimiento >= hoy.getFullYear()) {
-		   displayMessage(inputIDElement, `La fecha no puede ser en el futuro`, 3);
-		} else if (nacimiento < parseInt($('#max').val())) {
-		   displayMessage(inputIDElement, `No puedes ser tan viejo!`, 3);
-		} else if (hoy.getFullYear() - nacimiento < 16) {
-		   displayMessage(inputIDElement, `Debes ser mayor de 16 años`, 3);
-		} else {		      
-		   // Si todas las condiciones se cumplen, se aprueba la fecha
-		  	Approved[inputNameElement] = validateField(inputNameElement, '1: Fecha válida!')
-		}
-   };
-
 	function verificarCampo(element) {
+		console.log(element)
 		const inputNameElement = $(element)[0].name;
 		const inputIDElement = `#${$(element)[0].id}`;
 		let inputValue = $(inputIDElement).val();
@@ -152,9 +133,6 @@ const registro = (() => {
 			case 'password':
 				validarContrasena(inputNameElement, inputIDElement);
 			break;
-			case 'nacimiento':
-				validarFechaNacimiento(inputNameElement, inputValue, inputIDElement);
-			break;
 			case 'terminos':
 				let isChecked = $(inputIDElement).prop('checked');
 				displayMessage(inputIDElement, (isChecked ? '' : 'Debes aceptar los terminos'), !isChecked);
@@ -165,7 +143,6 @@ const registro = (() => {
 
 	function sonTodosVerdaderos(obj) {
 	  	for (var prop in obj) {
-	  		console.log(obj[prop])
 	    	if (!obj[prop]) return false;
 	  	}
 	  	return true;
@@ -242,6 +219,11 @@ $('form').on('blur keyup', 'input', function() {
    registro.verificar(this);
 });
 
+// Asignar evento change para inputs tipo radio y checkbox
+$('form').on('change', 'input[type="checkbox"]', function() {
+   registro.verificar(this);
+});
+
 // Asignar evento submit al formulario de registro
 $('form').submit(function(e) {
    e.preventDefault();
@@ -249,7 +231,7 @@ $('form').submit(function(e) {
 });
 
 // Para generar contraseña aleatoria
-$('small#generar').on('click', () => registro.generar())
+$('#generar').on('click', () => registro.generar())
 
 // Auto-ejecutar nivel de seguridad en contraseña
 registro.constrasena();

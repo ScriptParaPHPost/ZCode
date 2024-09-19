@@ -245,3 +245,4 @@ $tsPaises = [
    'ZM' => 'Zambia',
    'ZW' => 'Zimbabue'
 ];
+$SVG_FLAGS_ALL = json_decode(file_get_contents(TS_ASSETS . 'icons/flags.json'), true);

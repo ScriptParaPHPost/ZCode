@@ -150,14 +150,10 @@ class tsRegistro {
 	public function registerUser() {
 		global $tsCore, $tsUser, $reCaptcha;
 		// DATOS NECESARIOS
-		$nac = explode('-', $_POST['nacimiento']);
 		$tsData = [
 			'user_nick' => $tsCore->parseBadWords($_POST['nick']),
 			'user_password' => $tsCore->parseBadWords($_POST['password']),
 			'user_email' => $tsCore->setSecure($_POST['email']),
-			'user_dia' => (int)$nac[2],
-			'user_mes' => (int)$nac[1],
-			'user_anio' => (int)$nac[0],
 			'user_sexo' => $tsCore->setSecure($_POST['sexo']),
 			'user_terminos' => $_POST['terminos'],
 			'user_captcha' => $_POST['response'],
@@ -197,7 +193,7 @@ class tsRegistro {
          $id = (int)$tsData['user_id'];
          $withAvatar = ($tsData['user_sexo'] === 'none') ? 0 : 1;
          // INSERTAMOS EL PERFIL
-			db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @perfil (`user_id`, `user_dia`, `user_mes`, `user_ano`, `user_sexo`, `p_avatar`) VALUES ($id, {$tsData['user_dia']}, {$tsData['user_mes']}, {$tsData['user_anio']}, '{$tsData['user_sexo']}', $withAvatar)");
+			db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @perfil (`user_id`, `user_sexo`, `p_avatar`) VALUES ($id, '{$tsData['user_sexo']}', $withAvatar)");
          db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @portal (`user_id`) VALUES ($id)");
          // CREAR AVATAR
          $this->createAvatar($tsData);

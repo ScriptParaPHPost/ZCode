@@ -79,7 +79,7 @@ function saveEnvData(array $array = []) {
 }
 //
 function isLocalhost() {
-   return (in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1', 'localhost']) || in_array($_SERVER['SERVER_NAME'], $whitelist));
+   return (in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1', 'localhost']));
 }
 
 // Obtenemos la url

@@ -8,7 +8,7 @@
  * Nombre: zCode
  * Proposito: Añadir las etiquetas necesarias dentro del <head>
  * Tipo: function 
- * Version: 1.9
+ * Version: 1.10
 */
 
 require TS_PLUGINS . 'zCode' . TS_PATH . 'zCode.class.php';
@@ -18,7 +18,7 @@ function smarty_function_zCode($params, &$smarty) {
 	# Inicializamos la clase
 	$pluginZCode = new SmartyZCode($smarty);
 
-	$pluginZCode->version = '1.9';
+	$pluginZCode->version = '1.10';
 
 	# Inicializamos la variable
 	$template = '';

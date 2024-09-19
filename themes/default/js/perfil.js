@@ -43,9 +43,9 @@ const muro = {
 	maxWidth: 463,
 	caracteres: 420, // 420 caracteres
 	placeholder: {
-		foto: ZCodeApp.url + '/files/images/ejemplo.png',
-		enlace: ZCodeApp.url + '/blog/A32s1/ejemplo.html',
-		video: 'https://www.youtube.com/watch?v=f_30BAGNqqA'
+		foto: ZCodeApp.url + '/files/images/imagen_' + string_random(3) + '.png',
+		enlace: ZCodeApp.url + '/blog/' + string_random(4) + '/ejemplo.html',
+		video: 'https://www.youtube.com/watch?v=' + string_random(11)
 	},
 	inpfile: '',
 	extensiones: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'jfif'],
@@ -220,7 +220,6 @@ const muro = {
 				'pid=' + $('#info').attr('pid')
 			].join('&');
 			$.post(`${ZCodeApp.url}/muro-stream.php?do=post&type=${muro.stream.type}`, params, req => {
-				console.log(req)
 				switch(req.charAt(0)){
 					case '0': //Error
 						UPModal.alert('Error al publicar', req.substring(3));
@@ -231,6 +230,7 @@ const muro = {
 						let plax = $('#wall').attr('placeholder');
 						$('#wall').val('').attr({ placeholder: plax }).focus();
 						muro.stream.load('status', $('#stMain'));
+						$('.input-append').html('');
 					break;
 				}
 				loading.end();

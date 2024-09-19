@@ -60,6 +60,7 @@ class tsSmarty extends Smarty {
 		return [
 			'root' => TS_ROOT,
 			'assets' => TS_ASSETS,
+			'views' => TS_ASSETS . 'views' . TS_PATH,
 			'dashboard' => TS_ADMIN,
 			'admin_mods' => TS_ADMIN . 'admin_mods' . TS_PATH,
 			'access' => TS_AUTH

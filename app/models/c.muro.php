@@ -13,7 +13,7 @@ class tsMuro {
 
    const MIN_IMAGE_SIZE = 130;
 
-   const MAX_IMAGE_SIZE = 1024;
+   const MAX_IMAGE_SIZE = 2048;
 
 	/*
 		  getPrivacity()
@@ -99,7 +99,7 @@ class tsMuro {
          $type = $this->validateType($_GET['type']);
          $url = $this->sanitizeUrl($urlin ?? $_POST['url']);
          
-         include_once TS_EXTRA . 'OpenGraph.php';
+         include_once TS_ZCODE . 'OpenGraph.php';
          $OpenGraph = new getOpenGraph;
          switch ($type) {
          	case 'foto':
@@ -228,6 +228,7 @@ class tsMuro {
 		}
 		return "1: <div class=\"muro-video\"><lite-youtube videoid=\"$videoId\" style=\"background-image: url('https://i.ytimg.com/vi/$videoId/maxresdefault.jpg');\"></lite-youtube><div class=\"muro-video--description\"><a href=\"http://www.youtube.com/watch?v=$videoId\" target=\"_blank\" class=\"muro-link--title\">$title</a><span class=\"muro-link--description\">$description</span></div></div>";
 	}
+
 	/**
     * Extrae el ID de un video de YouTube de una URL proporcionada.
     *

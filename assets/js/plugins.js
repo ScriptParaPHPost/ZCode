@@ -184,7 +184,7 @@ const UPModal = {
 			email: 'mail',
 			opt: 'fingerprint'
 		},
-		size: 'default',
+		size: 'md',
 		mask: false,
 		close: true,
 		scrolleable: false,
@@ -197,12 +197,12 @@ const UPModal = {
 		confirmAction: 'close',
 		cancelShow: false,
 		cancelTxt: 'Cancelar',
-		cancelClass: 'UPModal-button UPModal-button-outline',
+		cancelClass: 'UPModal-button UPModal-button-danger',
 		cancelAction: 'close'
 	},
 	template: `<div class="UPModal">
 		<div class="UPModal-mask"></div>
-		<div class="UPModal-dialog">
+		<div class="UPModal-dialog" data-modal-icon="false">
 			<div class="UPModal-header">
 				<div class="UPModal-icon"></div>
 				<div class="UPModal-title"></div>
@@ -229,7 +229,9 @@ const UPModal = {
 		//
 		$(window).on('resize', this.setModalCenter);
 		// Tamaño
-		$('.UPModal-dialog').addClass(`UPModal-dialog-${size || this.default.size}`);
+		$('.UPModal-dialog').css({ 
+			width: `var(--modal-size-` + (empty(size) ? this.default.size : size) + `)`
+		});
 	},
 	close() {
 		this.show = false;
@@ -250,8 +252,14 @@ const UPModal = {
 	   $('body').css({ overflow: (this.default.scrolleable ? 'auto' : 'hidden') });
 	},
 	setModalStatus(icon, status) {
+		let typeStatus = (!empty(status) && status !== 'info' && status !== 'question');
+		let styles = { 
+			'background': `var(--modal-background-` + (typeStatus ? status : 'default') + `)`,
+			'--color-icon': `var(--modal-icon-` + (typeStatus ? status : 'default') + `)`
+		};
+		if(!icon) delete styles['--color-icon'];
+		$('.UPModal-dialog').css(styles);
 		if (status !== '') {
-			$('.UPModal').attr('data-modal-status', status);
 			if(icon) {
 				this.setIconCreate(status);
 			} else {
@@ -310,7 +318,6 @@ const UPModal = {
 				buttonsHTML += `<input type="button" role="button" onclick="${myActionDeny}" value="${cancelTxt}" class="${cancelClass}">`;
 			}
 			$('.UPModal-buttons').html(buttonsHTML);
-			if(this.size !== 'small') $('.UPModal-dialog').addClass('UPModal-lg');
 		} else $('.UPModal-buttons').remove();
 	},
 	setInput({ label, type, name, placeholder, maxlength, id, required, inputmode }) {
@@ -333,7 +340,7 @@ const UPModal = {
 		}
 		this.setModal({ icon, status, title,  body, 
 			buttons: {
-				confirmShow: button,
+				confirmShow: button||true,
 				confirmTxt: 'Aceptar',
 				confirmAction: `UPModal.close();${reload ? 'location.reload();' : ''}`,
 				confirmClass: 'UPModal-button UPModal-button-' + (empty(status) ? 'success' : status)
@@ -463,7 +470,7 @@ $(() => {
 	   });
 	}
 	
-   // Una nueva forma de guardar...
+   // Una nueva forma de guardar... CTRL + S
    $(document).on('keydown', function(event) {
       if (event.ctrlKey && event.key === 's') {
          event.preventDefault(); // Evita que el navegador guarde la página
@@ -478,5 +485,5 @@ $(() => {
 	      $(this).attr({ href: `${ZCodeApp.url}/saliendo/?p=`  + base64_encode(url) });
 	   });
    }
-	
+
 });

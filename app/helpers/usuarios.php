@@ -40,8 +40,9 @@ if($tsLevelMsg != 1){
 if($tsContinue){
 
    // PAICES
-   include TS_ZCODE . "datos.php";
+   include TS_ZCODE . "Paises.php";
    $smarty->assign("tsPaises", $tsPaises);
+   $smarty->assign("tsPaisesSVG", $SVG_FLAGS_ALL);
    // USUARIOS
    $tsUsers = $tsUser->getUsuarios();
    $smarty->assign("tsUsers", $tsUsers['data']);

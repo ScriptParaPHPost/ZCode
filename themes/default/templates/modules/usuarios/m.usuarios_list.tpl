@@ -18,7 +18,7 @@
 								<span role="button" title="Enviar Mensaje" onclick="{if !$tsUser->is_member}location.href=ZCodeApp.url+'/registro/'{else}mensaje.nuevo('{$u.user_name}');return false{/if}">Enviar MP</span>
 							</div>
 						{/if}
-						<img src="{$u.pais_image}" class="avatar avatar-2 rounded-circle position-absolute" style="top:.125rem;left:.125rem;" alt="{$u.pais}">
+						<div class="avatar avatar-2 rounded-circle position-absolute" style="top:.125rem;left:.125rem;">{$u.pais_image}</div>
 					</div>
 				</div>
 			</div>

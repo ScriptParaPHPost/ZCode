@@ -38,7 +38,7 @@ class tsAfiliado {
 		if(insertDataInBase([__FILE__, __LINE__], '@afiliados', $dataIn, 'a_')) {
 			$afid = db_exec('insert_id');
 		  	// AVISO
-			$aviso = "<center><a href=\"{$dataIn['url']}\"><img src=\"{$dataIn['banner']}\" title=\"{$dataIn['titulo']}\"/></a></center> <br /><br /> {$dataIn['titulo']} quiere ser su afiliado, dir&iacute;jase a la administraci&oacute;n para aceptar o cancelarla.";
+			$aviso = "<center><a href=\"{$dataIn['url']}\"><img src=\"{$dataIn['banner']}\" title=\"{$dataIn['titulo']}\"/></a></center><br />{$dataIn['titulo']} quiere ser su afiliado, dir&iacute;jase a la administraci&oacute;n para aceptar o cancelarla.";
 			$tsMonitor->setAviso(1,'Nueva afiliaci&oacute;n', $aviso, 0);
 			//
 			$entit = $tsCore->settings['titulo'];
@@ -46,10 +46,10 @@ class tsAfiliado {
 			$enimg = $tsCore->settings['banner'];
 			//
 			$return = '1: <div class="emptyData">Tu afiliaci&oacute;n ha sido agregada!</div><br>';
-			$return .= '<div style="padding:0 35px;">Se le ha notificado al administrador tu afiliaci&oacute;n para que la apruebe, mientras tanto copia el siguiente c&oacute;digo, ser&aacute; con el cual nos debes enlazar.<br><br>';
-			$return .= '<div class="form-line">';
+			$return .= '<div>Se le ha notificado al administrador tu afiliaci&oacute;n para que la apruebe, mientras tanto copia el siguiente c&oacute;digo, ser&aacute; con el cual nos debes enlazar.<br><br>';
+			$return .= '<div class="form-group">';
 			$return .= '<label for="atitle">C&oacute;digo HTML</label>';
-			$return .= '<textarea tabindex="4" rows="10" style="height:60px; width:295px" onclick"select(this)"><a href="'.$enurl.'" target="_blank" title="'.$entit.'"><img src="'.$enimg.'"></a></textarea>';
+			$return .= '<textarea tabindex="4" rows="10" style="height:60px; width:100%" onclick"select(this)"><a href="'.$enurl.'" target="_blank" title="'.$entit.'"><img src="'.$enimg.'"></a></textarea>';
 			$return .= '</div>';
 			$return .= '</div>';
 		}

@@ -8,7 +8,7 @@
 <ul class="cat-list">
 	<li id="a_configs"><a class="nav-item{if $tsAction == 'configs'} active{/if}" href="{$tsConfig.url}/admin/configs">Configuraci&oacute;n </a></li>
 	<li id="a_registro"><a class="nav-item{if $tsAction == 'registro'} active{/if}" href="{$tsConfig.url}/admin/registro">Configurar registro </a></li>
-	<li id="a_temas"><a class="nav-item{if $tsAction == 'temas'} active{/if}" href="{$tsConfig.url}/admin/temas">Temas y apariencia</a></li>
+	{*<li id="a_temas"><a class="nav-item{if $tsAction == 'temas'} active{/if}" href="{$tsConfig.url}/admin/temas">Temas y apariencia</a></li>*}
 	<li id="a_news"><a class="nav-item{if $tsAction == 'news'} active{/if}" href="{$tsConfig.url}/admin/news">Noticias</a></li>
 	<li id="a_ads"><a class="nav-item{if $tsAction == 'ads'} active{/if}" href="{$tsConfig.url}/admin/ads">Publicidad</a></li>
 </ul>
@@ -41,4 +41,5 @@
 	<li id="a_seo"><a class="nav-item{if $tsAction == 'seo'} active{/if}" href="{$tsConfig.url}/admin/seo">Configurar SEO</a></li>
 	<li id="a_database"><a class="nav-item{if $tsAction == 'database'} active{/if}" href="{$tsConfig.url}/admin/database">Base de datos</a></li>
 	<li id="a_favicon"><a class="nav-item{if $tsAction == 'favicon'} active{/if}" href="{$tsConfig.url}/admin/favicon">Generar favicon</a></li>
+	<li id="a_sitemap"><a class="nav-item{if $tsAction == 'sitemap'} active{/if}" href="{$tsConfig.url}/admin/sitemap">Sitemap</a></li>
 </ul>

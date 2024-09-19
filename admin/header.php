@@ -73,6 +73,8 @@
 	// Crean requests
 	include TS_EXTRA . 'QueryString.php';
 
+	include TS_ZCODE . 'menu_user_account.php';
+
 /*
  * -------------------------------------------------------------------
  *  Inicializamos los objetos principales

@@ -1,29 +1,36 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es" data-theme="light" data-theme-color="default">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
 {meta facebook=true twitter=true}
-{zCode css=["base.css"]}
+{zCode css=["auth.css"]}
 </head>
-<body class="vh-100 align-content-center">
+<body class="flex justify-center items-center">
 
-	<div id="mydialog"></div>
-
-	<main class="my-3 rounded shadow mx-auto">
-		<section>
-			{if $tsAction == 'login'}
-				{assign "pageLogin" "active"}
-				{include "t.php_files/p.login.form.tpl"}
-			{else}
-				{include "t.$tsAction.tpl"}
-			{/if}
-		</section>
+	<main>
+		<header class="fixed w-100">
+			<div class="logo flex justify-start items-center column-gap-2">
+				<img src="{$tsConfig.logos.128}" alt="{$tsConfig.titulo} - {$tsConfig.slogan}">
+				<span>{$tsConfig.titulo}</span>
+			</div>
+		</header>
+		<form method="POST" class="py-5 px-4"{if $tsAction == 'registro'} disabled{/if}>
+			{include "t.$tsAction.tpl"}
+		</form>
+		<footer class="text-align-center">
+			<p class="text-align-center block">
+				<a href="{$tsConfig.url}/pages/terminos-y-condiciones/" class="link">T&eacute;rminos</a> |
+				<a href="{$tsConfig.url}/pages/privacidad/" class="link">Pol&iacute;ticas de privacidad</a> |
+				<span>Versi&oacute;n {SCRIPT_VERSION}</span>
+			</p>
+		</footer>
 	</main>
 
 	{if $tsAction == 'login'}
 		<script>
+			var TYPE_LOAD = 'page';
 			let reload = ['reload=false'];
 		</script>
 	{else}

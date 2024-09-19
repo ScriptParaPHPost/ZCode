@@ -24,7 +24,7 @@
 				{/if}
 
 				<div class="up-menu--item position-relative mb-3 mb-lg-0">
-					<a title="Ir a Inicio" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 d-flex justify-content-start justify-content-lg-center align-items-center column-gap-2{if $tsPage == 'home' || $tsPage == 'posts'} active{/if}" rel="internal" href="{$tsConfig.url}/mi/" data-dropopen="posts">
+					<a title="Ir a Inicio" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 d-flex justify-content-start justify-content-lg-center align-items-center column-gap-2{if $tsPage == 'home' || $tsPage == 'posts'} active{/if}" rel="internal" href="{$tsConfig.url}/{if $tsPage != 'home' || $tsPage != 'posts'}posts/{/if}" data-dropopen="posts">
 						{uicon name="document-stack" size="1.5rem"}
 						<span class="item--text">Posts</span>
 					</a>

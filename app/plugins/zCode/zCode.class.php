@@ -5,7 +5,7 @@
  * Fecha: Jul 03, 2024 
  * Nombre: SmartyZCode
  * Tipo: clase 
- * Version: 1.8
+ * Version: 1.10
 */
 
 class SmartyZCode {
@@ -283,7 +283,7 @@ class SmartyZCode {
 	 * @return void
 	*/
   	private function appendJS(array &$jsMain, $page, $file) {
-	   if ((is_array($page) && in_array($this->nucleo['tsPage'], $page)) || $this->nucleo['tsPage'] === $page || $this->nucleo['action'] === $page) {
+	   if ((is_array($page) && in_array($this->nucleo['tsPage'], $page)) || $this->nucleo['tsPage'] === $page || $this->nucleo['action'] === $page || in_array($this->nucleo['action'], $page)) {
 	      $jsMain = array_merge($jsMain, (array) $file);
 	   }
 	}
@@ -352,7 +352,7 @@ class SmartyZCode {
   		# Añadimos el editor
 	  	$this->appendJS($jsMain, $this->page_wysibb, 'wysibb.js');
 	  	# Añadimos complementos a cuenta, comunidades...
-	  	$this->appendJS($jsMain, 'home', "afiliado.js");
+	  	$this->appendJS($jsMain, ['home', 'afs'], "afiliado.js");
 	  	$this->appendJS($jsMain, ['cuenta', 'comunidades'], ["croppr.js", "avatar.js"]);
 	  	# Solo para registro
 	  	if($this->nucleo['action'] === 'registro' AND $this->nucleo["tsPage"] !== 'admin') {

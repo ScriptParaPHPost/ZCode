@@ -1,25 +1,8 @@
 <?php
 
-$tsColores = [
-   0 => 'customizer',
-   1 => 'default',
-   2 => 'orange',
-   3 => 'green',
-   4 => 'red',
-   5 => 'slate',
-   6 => 'sky',
-   7 => 'monokai'
-];
-$tsColoresTxt = [
-   0 => 'Customizar',
-   1 => 'Default',
-   2 => 'Naranja / Orange',
-   3 => 'Verde / Green',
-   4 => 'Rojo / Red',
-   5 => 'Pizarra / Slate',
-   6 => 'Sky / Cielo',
-   7 => 'Monokai'
-];
+$tsColores = ['customizer','default','orange','green','red','slate','sky','monokai'];
+$tsColoresTxt = ['Customizar','Default','Naranja','Verde','Rojo','Pizarra','Cielo','Monokai'];
+
 $tsSchemes = ['light', 'dark'];
 
 $tsFontFamily = [
@@ -27,10 +10,12 @@ $tsFontFamily = [
    'century' => 'Century gothic',
    'dinpro' => 'Dinpro',
    'inter' => 'Inter',
+   'neomatrix' => 'Neomatrix Code',
    'pixellari' => 'Pixellari',
-   'roboto' => 'Roboto',
+   'roboto' => 'Roboto Mono',
    'system' => 'Del sistema',
    'tema' => 'Fuente del tema',
+   'ubuntu' => 'Ubuntu Mono',
 ];
 $tsFontSize = [
    'xs' => 'Muy pequeña',
