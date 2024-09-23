@@ -731,6 +731,17 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}sitemap` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 
+$zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}sitemap_control` (
+  `sid` int(1) NOT NULL DEFAULT 0,
+  `register_post` int(1) NOT NULL DEFAULT 0,
+  `register_foto` int(1) NOT NULL DEFAULT 0,
+  `update_post` int(1) NOT NULL DEFAULT 0,
+  `update_foto` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`sid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+
+$zcode_sql[] = "INSERT INTO `{$db['prefix']}sitemap_control` (`sid`) VALUES (1);";
+
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}tickets` (
   `ticket_id` int(11) NOT NULL AUTO_INCREMENT,
   `ticket_user` int(11) NOT NULL DEFAULT 0,

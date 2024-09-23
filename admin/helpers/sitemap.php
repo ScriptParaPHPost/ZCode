@@ -5,6 +5,7 @@ $tsSitemap = new tsSitemap();
 
 $tsTitle = 'Administrar sitemap';
 if(empty($act)) {
+	$smarty->assign('tsURLs', $tsSitemap->getSitemap());
 
 } elseif($act === 'sync') {
 	if($_GET['type'] === 'robots') {
@@ -15,6 +16,15 @@ if(empty($act)) {
 	if($_GET['type'] === 'sitemap') {
 		if($tsSitemap->syncSitemap()) $tsCore->redireccionar('admin', $action, 'save=true');
 	}
-} elseif($act === 'generar') {
-	var_dump($tsSitemap->addSitemap());
+
+} elseif($act === 'nueva') {
+	if($tsSitemap->newUrlSitemap()) $tsCore->redireccionar('admin', $action, 'save=true');
+
+} elseif($act === 'editar') {
+	$smarty->assign('tsURL', $tsSitemap->SitemapEditID());
+	if($tsSitemap->SitemapSaveID()) $tsCore->redireccionar('admin', $action, 'save=true');
+
+} elseif($act === 'config') {
+	$smarty->assign('tsSitemap', $tsSitemap->setSettings());
+	if($tsSitemap->saveSettings()) $tsCore->redireccionar('admin', $action, 'save=true');
 }

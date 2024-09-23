@@ -185,7 +185,7 @@ class tsPosts {
 		$lastPosts['pages'] = $tsCore->system_pagination($posts['total'], $MaxTotal);
 		$limit = $tsCore->setPageLimit($MaxTotal, false, $posts['total']);
 		
-		$query = db_exec([__FILE__, __LINE__], 'query', $this->getLastSQL() . " $c_where AND p.post_sticky = 0 GROUP BY p.post_id ORDER BY p.post_id AND p.post_sponsored DESC LIMIT $limit");
+		$query = db_exec([__FILE__, __LINE__], 'query', $this->getLastSQL() . " $c_where AND p.post_sticky = 0 GROUP BY p.post_id ORDER BY p.post_id DESC LIMIT $limit");
 
 		$lastPosts['data'] = $this->getLastForeach(result_array($query));
 		return $lastPosts;

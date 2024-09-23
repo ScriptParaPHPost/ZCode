@@ -12,8 +12,8 @@
  * @description Para actualizar la base de datos sin intervencion
 **/
 
+$db['prefix'] = $_ENV['ZCODE_DB_PREFIX'];
 include TS_ZCODE . 'database.php';
-$prefix = $_ENV['ZCODE_DB_PREFIX'];
 
 // Función para verificar si una tabla existe en la base de datos
 function tableExists($mysqli, $table) {
@@ -41,7 +41,7 @@ foreach ($zcode_sql as $sql) {
       continue;
    }
    if (preg_match('/CREATE TABLE IF NOT EXISTS `(.+?)`/', $sql, $matches)) {
-     	$table = "$prefix$matches[1]";
+     	$table = "{$db['prefix']}$matches[1]";
      	// Verificar si la tabla existe
       if (tableExists($mysqli, $table)) {
          # echo "La tabla <strong>$table</strong> ya existe. Verificando columnas...<br>";
@@ -83,7 +83,7 @@ foreach ($zcode_sql as $sql) {
 }
 
 // Verificar si hay tablas en la base de datos que no estén en el archivo database.php
-$tablesInDb = $mysqli->query("SHOW TABLES LIKE '$prefix%'");
+$tablesInDb = $mysqli->query("SHOW TABLES LIKE '{$db['prefix']}%'");
 $tablesInDbArray = [];
 while ($row = $tablesInDb->fetch_array()) {
    $tablesInDbArray[] = $row[0];
@@ -103,7 +103,7 @@ foreach ($zcode_sql as $sql) {
 // Eliminar tablas que no están en el archivo database.php solo si realmente no son necesarias
 foreach ($tablesInDbArray as $tableInDb) {
    // Remover el prefijo antes de comparar con las tablas definidas en el archivo
-   $tableWithoutPrefix = str_replace($prefix, '', $tableInDb);
+   $tableWithoutPrefix = str_replace($db['prefix'], '', $tableInDb);
    
    if (!in_array($tableWithoutPrefix, $tablesInFileArray)) {
       // Si la tabla es importante, puedes agregar una condición adicional aquí

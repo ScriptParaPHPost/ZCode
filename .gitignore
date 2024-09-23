@@ -16,9 +16,6 @@ assets/images/portadas
 assets/images/uploads
 assets/images/favicon
 
-# No ignorar el archivo '.version' en 'storage'
-!storage/.version
-
 # Ignorar todo en la carpeta 'themes'
 themes/*
 
@@ -29,3 +26,4 @@ themes/*
 *.txt
 .env
 .lock
+sitemap.xml

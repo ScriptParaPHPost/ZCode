@@ -1,15 +1,14 @@
-![GitHub repo size](https://img.shields.io/github/repo-size/ScriptParaPHPost/ZCode?style=plastic)
-![GitHub forks](https://img.shields.io/github/forks/ScriptParaPHPost/ZCode?style=plastic)
-![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic)
-![Discord](https://img.shields.io/discord/1150516717617938543?style=plastic&logo=discord&logoColor=%23FFF&label=Discord&color=%237289DA)
+![Repo peso](https://img.shields.io/github/repo-size/ScriptParaPHPost/ZCode?style=plastic&label=Repo%20peso)
+![PHP 8](https://img.shields.io/badge/PHP-8.2.16-red?style=plastic)
+![Smarty 4.5.4](https://img.shields.io/badge/Smarty-4.5.4-red?style=plastic)
+![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic&label=Branch%20main)
+![GitHub Pre-Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?include_prereleases&style=plastic&label=Branch%20develop)
 
 # ZCode
-Es un sistema de compartimiento de enlaces que permite crear un sitio web similar a Taringa!
-> Esta versión solo funcionará bien con PHP 8.2, se puede llegar a usar PHP 7+, pero tendrá algunos errores!
 
 ### Actualizaciones
- * PHP 8.2+ (obligatorio)
- * Smarty 4.5.3
+ * PHP 8.2+ 
+ * Smarty 4.5.4
  * jQuery 3.7.1
  * Plugins de jQuery
 

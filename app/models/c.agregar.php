@@ -6,6 +6,9 @@
  * @author  Miguel92
  */
 
+include TS_MODELS . 'c.sitemap.php';
+$tsSitemap = new tsSitemap;
+
 class tsAgregar {
 
 	public $isMember;
@@ -184,7 +187,7 @@ class tsAgregar {
 	 * @return ID
 	*/
 	public function newPost() {
-		global $tsMonitor, $tsActividad, $tsImages, $tsUser, $tsCore;
+		global $tsMonitor, $tsActividad, $tsImages, $tsUser, $tsCore, $tsSitemap;
 		//
 		if(!($tsUser->is_admod || $tsUser->permisos['gopp'])) return 'No tienes permiso para crear posts.';
 		# ID USUARIO
@@ -241,6 +244,8 @@ class tsAgregar {
 					$updates[] = "UPDATE @posts SET `post_portada` = '$portada' WHERE `post_id` = $pid";
 				}
 				foreach($updates as $sql) db_exec([__FILE__, __LINE__], 'query', $sql);
+				// Añadimos al sitemap
+				$tsSitemap->addSitemapInfo('add', $pid);
 				// AGREGAR AL MONITOR DE LOS USUARIOS QUE ME SIGUEN
 				$tsMonitor->setFollowNotificacion(5, 1, $user_id, $pid);
 				// REGISTRAR MI ACTIVIDAD
@@ -299,7 +304,7 @@ class tsAgregar {
 	 * @return ID
 	*/
 	public function savePost() {
-		global $tsCore, $tsUser, $tsImages;
+		global $tsCore, $tsUser, $tsImages, $tsSitemap;
 		// Buscamos el post por ID tsUser
 		$post_id = (int)$_GET['pid'];
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_user, post_sponsored, post_sticky, post_status FROM @posts WHERE post_id = $post_id LIMIT 1"));
@@ -316,6 +321,8 @@ class tsAgregar {
 		// ACTUALIZAMOS
 		if((int)$tsUser->uid === (int)$data['post_user'] || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moedpo'])) {
 			if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET {$tsCore->getIUP($postData, 'post_')} WHERE post_id = $post_id")) {
+				// Añadimos al sitemap (No le veo el sentido a este)
+				# $tsSitemap->addSitemapInfo('update', $post_id);
 				// Guardamos en el historial de moderación
 				if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $_POST['razon']) {
 					include_once TS_MODELS . "c.moderacion.php";

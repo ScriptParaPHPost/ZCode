@@ -4,17 +4,14 @@
 <div id="res" class="boxy-content">
   {if $tsAct == ''}
 		<ol style="list-style: decimal;">
-			<li>Estas son las URLs que hay en la BD (base de datos), cuando las hayas seleccionado y editado, haz click donde pone Generar Sitemap para que tus cambios tengan efecto.</li>
-		   <li>Si quieres restaurar el sitemap como por defecto solo pulsa donde dice Restaurar sitemap.</li>
-		   <li>Y si quiere editar cualquiera URL de las ya creadas simplemente haga click en la acción que desee de las disponibles a la derecha de cada columna de la siguiente tabla.</li>
-		   <li>El botón de "<strong>Generar Sitemap</strong>" sirve para, cuando borras, o añades una URL manualmente desde la admin, para que cuando acabes de eliminar y añadir todas las URLs que quieras, estas se carguen en el sitemap.</li>
-		   <li>El botón "<strong>Configuración</strong>" te llevará a la sección donde puedes seleccionar la configuración del sitemap</li>
-		   <li>El botón "<strong>Ver URLs incluídas en el sitemap</strong>", te mostrará las URLs ya incluídas en tu sitemap.</li>
+			<li class="d-block py-1"><strong class="d-block">Sincronizar:</strong> Esto revisara toda la base de datos y agregará todas las urls que no esten y actualizará el archivo sitemap.xml</li>
+		   <li class="d-block py-1"><strong class="d-block">Agregar:</strong> También puedes agregar las urls manualmente.</li>
+		   <li class="d-block py-1"><strong class="d-block">Configuración:</strong> Podrás configurar si se añaden url de forma automática o no</li>
 		</ol>
 		<hr class="separator" />
 		
 		<strong>Lista de URLs en la base de datos</strong>
-		<table cellpadding="0" cellspacing="0" border="0" class="admin_table" width="100%">
+		<table class="admin_table">
 			<thead>
 				<th>ID</th>
 				<th>URL</th>
@@ -24,16 +21,16 @@
 				<th>Acciones</th>
 			</thead>
 			<tbody>
-				{foreach from=$tsURLs.data item=u}
-					<tr style="font-size:.8rem;">
-						<td style="text-align:center;font-weight:bold;">{$u.id}</td>
-						<td style="text-align:left;width:50%"><a href="{$u.url}">{$u.url}</a></td>
-						<td style="text-align:center;font-weight:bold;">{$u.frecuencia}</td>
-						<td style="text-align:center;font-weight:bold;">{$u.prioridad}</td>
-						<td>{$u.fecha|hace}</td>
+				{foreach from=$tsURLs item=u}
+					<tr>
+						<td class="text-center fw-bold">{$u.id}</td>
+						<td><a href="{$u.url}" class="text-decoration-none" target="_blank">{$u.url|truncate:40}</a></td>
+						<td class="text-center">{$u.frecuencia}</td>
+						<td class="text-center">{$u.prioridad}</td>
+						<td class="text-center">{$u.fecha|hace:true}</td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/sitemap/?act=editar&id={$u.id}"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar URL" /></a>
-							<a href="{$tsConfig.url}/admin/sitemap?act=borrar&id={$u.id}"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar URL" /></a>
+							<a href="{$tsConfig.url}/admin/sitemap?act=editar&id={$u.id}" title="Editar URL">{uicon name="pen"}</a>
+							<a href="{$tsConfig.url}/admin/sitemap?act=borrar&id={$u.id}" title="Borrar URL">{uicon name="trash"}</a>
 						</td>
 					</tr>
 				{/foreach}
@@ -43,42 +40,41 @@
 			</tfoot>
 		</table>
 		<div style="display:flex;justify-content:flex-start;align-items:center;gap:.3rem;padding:1rem 0">
-	      <a href="{$tsConfig.url}/admin/sitemap/?act=generar-sitemap" class="button">Generar Sitemap</a>
-	      <a href="{$tsConfig.url}/admin/sitemap/?act=actualizar" class="button">Actualizar</a>
-	     	<a href="{$tsConfig.url}/admin/sitemap/?act=config" class="button">Configuración</a>
-	      <a href="{$tsConfig.url}/admin/sitemap/?act=actual" class="button">Ver URLs añadidas</a>
+	      <a href="{$tsConfig.url}/admin/sitemap/?act=sync&type=sitemap" class="btn">Sincronizar</a>
+	      <a href="{$tsConfig.url}/admin/sitemap/?act=nueva" class="btn">Agregar</a>
+	     	<a href="{$tsConfig.url}/admin/sitemap/?act=config" class="btn">Configuración</a>
 		</div>
 	{elseif $tsAct == 'config'}
 		<form action="" method="post" autocomplete="off">
          <fieldset>
             <legend>Configuraci&oacute;n del Sitemap</legend>
             <dl>
-               <dt><label for="sm_posts">Agregar automáticamente al sitemap los nuevos posts:</label></dt>
+               <dt><label for="register_post">Agregar automáticamente al sitemap los nuevos posts:</label></dt>
                <dd>
-               	{html_radios name="sm_posts" values=[1,0] output=["S&iacute;", "No"] selected=$tsConfig.sm_posts}
+               	{html_radios name="register_post" values=[1,0] output=["S&iacute;", "No"] selected=$tsSitemap.register_post}
                </dd>  
            	</dl>
             <dl>
-               <dt><label for="sm_fotos">Agregar automáticamente al sitemap las nuevas fotos:</label></dt>
+            	<dt><label for="update_post">Actualizar fecha de modificación al editar posts:</label></dt>
+            	<dd>
+               	{html_radios name="update_post" values=[1,0] output=["S&iacute;", "No"] selected=$tsSitemap.update_post}
+               </dd>    
+            </dl>
+            <dl>
+               <dt><label for="register_foto">Agregar automáticamente al sitemap las nuevas fotos:</label></dt>
        			<dd>
-               	{html_radios name="sm_fotos" values=[1,0] output=["S&iacute;", "No"] selected=$tsConfig.sm_fotos}  
+               	{html_radios name="register_foto" values=[1,0] output=["S&iacute;", "No"] selected=$tsSitemap.register_foto}  
                </dd>    
             </dl>
             <dl>
-            	<dt><label for="sm_update_p">Actualizar fecha de modificación al editar posts:</label></dt>
+            	<dt><label for="update_foto">Actualizar fecha de modificación al editar fotos:</label></dt>
             	<dd>
-               	{html_radios name="sm_update_p" values=[1,0] output=["S&iacute;", "No"] selected=$tsConfig.sm_update_p}
-               </dd>    
-            </dl>
-            <dl>
-            	<dt><label for="sm_update_f">Actualizar fecha de modificación al editar fotos:</label></dt>
-            	<dd>
-               	{html_radios name="sm_update_f" values=[1,0] output=["S&iacute;", "No"] selected=$tsConfig.sm_update_f}
+               	{html_radios name="update_foto" values=[1,0] output=["S&iacute;", "No"] selected=$tsSitemap.update_foto}
             	</dd>
             </dl>
 				<div class="buttons">
-					<input type="submit" name="save" value="Guardar Cambios" class="button"/>
-					<a href="{$tsConfig.url}/admin/sitemap/" class="button">Volver</a>
+					<input type="submit" name="save" value="Guardar Cambios" class="btn"/>
+					<a href="{$tsConfig.url}/admin/sitemap/" class="btn">Volver</a>
 				</div>
          </fieldset>
       </form>
@@ -94,7 +90,7 @@
 					<dt><label for="prioridad">Prioridad:</label><span>Prioridad de la URL (Utilizar valores desde 0 a 1 ambos incluídos) Ejemplos: 1, 0.8, 0.3 etc..{$tsURL.prioridad}</span></dt>
 					<dd>
 						<select name="prioridad" id="prioridad">
-							{html_options values=[0,1,2,3,4,5,6,7,8,9,10] output=['Prioridad 1','Prioridad 0.9','Prioridad 0.8','Prioridad 0.7','Prioridad 0.6','Prioridad 0.5','Prioridad 0.4','Prioridad 0.3','Prioridad 0.2','Prioridad 0.1','Prioridad 0'] selected=$tsPrioridad[$tsURL.prioridad]}
+							{html_options values=[0,1,2,3,4,5,6,7,8,9,10] output=['Prioridad 1','Prioridad 0.9','Prioridad 0.8','Prioridad 0.7','Prioridad 0.6','Prioridad 0.5','Prioridad 0.4','Prioridad 0.3','Prioridad 0.2','Prioridad 0.1','Prioridad 0'] selected=$tsURL.prioridad}
 						</select>
 					</dd>
 				</dl>
@@ -102,13 +98,13 @@
 					<dt><label for="frecuencia">Frecuencia de cambio:</label><span>Frecuencia de cambio de la página. ¿Cada cuanto aproximadamente se modificará el contenido de la página?:</span></dt>
 					<dd>
 						<select name="frecuencia" id="frecuencia">
-							{html_options values=[0,1,2,3,4,5,6] output=['Never (nunca)','Always (siempre)','Daily (diariamente)','Hourly (cada hora)','Weekly (semanalmente)','Monthly (mensualmente)','Yearly (anualmente)'] selected=$tsFrecuencia[$tsURL.frecuencia]}
+							{html_options values=[0,1,2,3,4,5,6] output=['Never (nunca)','Always (siempre)','Daily (diariamente)','Hourly (cada hora)','Weekly (semanalmente)','Monthly (mensualmente)','Yearly (anualmente)'] selected=$tsURL.frecuencia}
 						</select>				
 					</dd>
 				</dl>
 				<div class="buttons">
-					<input type="submit" name="save" value="Añadir URL" class="button"/>
-					<a href="{$tsConfig.url}/admin/sitemap/" class="button">Volver</a>
+					<input type="submit" name="save" value="{if $tsAct == 'nueva'}Agregar{else}Editar{/if} URL" class="btn"/>
+					<a href="{$tsConfig.url}/admin/sitemap/" class="btn">Volver</a>
 				</div>
 			</fieldset>
 		</form>
@@ -126,7 +122,7 @@
 			</tbody>
 		</table>
 		<div style="display:flex;justify-content:center;align-items:center;padding:1rem 0">
-			<a href="{$tsConfig.url}/admin/sitemap/" class="button">Volver</a>
+			<a href="{$tsConfig.url}/admin/sitemap/" class="btn">Volver</a>
 		</div>
 	{/if}
 </div>
