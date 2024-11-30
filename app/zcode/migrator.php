@@ -14,7 +14,7 @@
 
 $db['prefix'] = $_ENV['ZCODE_DB_PREFIX'];
 include TS_ZCODE . 'database.php';
-
+exit('Aun produce errores, no usar');
 // Función para verificar si una tabla existe en la base de datos
 function tableExists($mysqli, $table) {
    $result = $mysqli->query("SHOW TABLES LIKE '$table'");

@@ -45,6 +45,29 @@
                </div>
             </dd>
          </dl>
+         <hr />
+         <dl>
+            <dt><label for="ver_vistas_global">Los visitantes suman visitas</label><span>Contar las visitas de los visitantes al sitio.</span></dt>
+            <dd>
+               {html_radios name="c_ver_vistas_global" id="ver_vistas_global" values=[1, 0] output=['Si', 'No'] selected=$tsConfig.c_ver_vistas_global class="radio"}
+            </dd>
+         </dl>
+         <dl>
+            <dt><label for="quitar_vistas_global">Quitar visitas</label><span>Esto hará que el contador cuente la cantidad actual de usuario en el sitio.</span></dt>
+            <dd>
+               {html_radios name="c_quitar_vistas_global" id="quitar_vistas_global" values=[1, 0] output=['Si', 'No'] selected=$tsConfig.c_quitar_vistas_global class="radio"}
+            </dd>
+         </dl>
+         <dl>
+            <dt><label for="quitar_vistas_global">Tiempo de visitas</label><span>Esto expresado en minutos eliminará la visita del usuario inactivo.</span></dt>
+            <dd>
+               <div class="input-group" style="width:100px!important">
+                  <input type="text" id="ai_active" name="c_visitas_tiempo" maxlength="2" value="{$tsConfig.c_visitas_tiempo}" /> 
+                  <span>min.</span>
+               </div>
+            </dd>
+         </dl>
+         <hr />
          <dl>
             <dt><label for="ai_sess_ip">Login por IP:</label><span>Por seguridad cada que un usuario cambie de IP se le pedir&aacute; loguearse nuevamente.</span></dt>
             <dd>

@@ -60,16 +60,22 @@ var avatar = {
 		});
 	},
 	vistaPrevia: function (coords) {
-		let rx = avatar.size / coords.width;
-		let ry = avatar.size / coords.height;
-		$('#avatar-img').css({
-			width: Math.round(rx * coords.width) + 'px',
-			height: Math.round(ry * coords.height) + 'px',
-			marginLeft: '-' + Math.ceil(rx * coords.x) + 'px',
-			marginTop: '-' + Math.round(ry * coords.y) + 'px'
-		});
-	},
-	recargar: () => $("#avatar-img, #avatar-menu").attr("src", avatar.current + '?t=' + string_random(10)),
+      let rx = avatar.size / coords.width;
+      let ry = avatar.size / coords.height;
+      $('#avatar-img').css({
+         width: Math.round(rx * $('.avatar-cortar').width()) + 'px',
+         height: Math.round(ry * $('.avatar-cortar').height()) + 'px',
+         marginLeft: '-' + Math.ceil(rx * coords.x) + 'px',
+         marginTop: '-' + Math.round(ry * coords.y) + 'px'
+      });
+   },
+   recargar: function () {
+      const avatarLoader = $(".avatar_loader");
+      $.each(avatarLoader, function() {
+         const avatarImage = `${avatar.current}?t=${string_random(10)}`;
+         $(this).css('').attr("src", avatarImage)
+      });
+   },
 	guardar: async () => {
 		if (empty(avatar.informacion)) cuenta.alerta('Debes seleccionar una parte de la foto', 0);
 		else {

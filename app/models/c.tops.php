@@ -180,10 +180,36 @@ class tsTops {
 		}
 
 		db_exec([__FILE__, __LINE__], 'query', "UPDATE @stats SET stats_time = $time $ndat $timen");
+		if((int)$tsCore->settings['c_ver_vistas_global']) $return['stats_global'] = $this->updateActivity();
+		if((int)$tsCore->settings['c_quitar_vistas_global']) $this->cleanInactiveUsers();
 		//
 		return $return;
 	}
-	/******************************************************************************/
+
+	public function updateActivity() {
+	   global $tsUser; // Si tienes un sistema de usuarios
+   	$ip = $tsUser->info['session_ip'] ?? $_SERVER['REMOTE_ADDR']; 
+   	$session_id = session_id(); // ID único de la sesión
+   	$user_id = $tsUser->info['user_id'] ?? 0; // ID único del usuario (si aplica)
+   	$current_time = time();
+
+   	// Identificador único: combina sesión y usuario
+   	$unique_id = $user_id ? $user_id : $session_id;
+
+   	// Insertar o actualizar actividad
+   	db_exec([__FILE__, __LINE__], 'query', " INSERT INTO @conexion_actual (ip, session_id, last_activity) VALUES ('$ip', '$unique_id', $current_time) ON DUPLICATE KEY UPDATE last_activity = $current_time");
+	   $result = db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(*) AS total_visitas FROM @conexion_actual");
+	   $data = db_exec('fetch_assoc', $result)['total_visitas'];
+	   return (int)$data;
+	}
+
+	public function cleanInactiveUsers() {
+		global $tsCore;
+	   $timeout = time() - ((int)$tsCore->settings['c_visitas_tiempo'] * 60); // Usuarios inactivos por más de 5 minutos
+	   db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @conexion_actual WHERE last_activity < $timeout");
+	}
+	
+
 	/*
 		setTime($fecha)
 	*/

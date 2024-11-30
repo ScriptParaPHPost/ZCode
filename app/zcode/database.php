@@ -529,6 +529,9 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}configuracion` (
   `update_id` varchar(20) NOT NULL DEFAULT '',
   `c_allow_foro` int(1) NOT NULL DEFAULT 0,
   `c_allow_fuentes` int(1) NOT NULL DEFAULT 0,
+  `c_ver_vistas_global` int(1) NOT NULL DEFAULT 0,
+  `c_quitar_vistas_global` int(1) NOT NULL DEFAULT 0,
+  `c_visitas_tiempo` int(2) NOT NULL DEFAULT 5,
   `c_avatar` int(1) NOT NULL DEFAULT 0,
   `leaving` int(1) NOT NULL DEFAULT 0,
   `ads_300` text NULL,
@@ -696,6 +699,15 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}visitas` (
   PRIMARY KEY (`id`),
   INDEX (`for`, `type`, `user`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+
+$zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}conexion_actual` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(50) NOT NULL DEFAULT '',
+  `session_id` varchar(100) NOT NULL DEFAULT '',
+  `last_activity` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (ip, session_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}social` (
   `social_id` int(11) NOT NULL AUTO_INCREMENT,

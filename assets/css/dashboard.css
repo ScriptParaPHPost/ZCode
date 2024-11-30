@@ -5,6 +5,10 @@ body {
 	--main-bg-rgb: rgba(7, 40, 83, var(--opacity));
 	font-family: 'Inter';
 }
+hr {
+	border-bottom: 1px solid #CCC;
+	margin: 1rem auto;
+}
 /**
  * LIVE
 */

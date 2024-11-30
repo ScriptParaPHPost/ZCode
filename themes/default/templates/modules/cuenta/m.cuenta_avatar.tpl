@@ -18,7 +18,7 @@
 								{uicon name="ring-resize" folder="spinner" class="avatar avatar-6"}
 							</div>
 						</div>
-						<img src="{$tsUser->avatar['img']}" class="avatar-big avatar avatar-19" id="avatar-img" loading="lazy"/>
+						<img src="{$tsUser->avatar['img']}" class="avatar-big avatar avatar-19 avatar_loader" id="avatar-img" loading="lazy"/>
 					</div>
 					<div class="panel w-100">
 						<div class="panel--pc">

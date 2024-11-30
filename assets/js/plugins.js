@@ -364,14 +364,6 @@ const UPModal = {
 		}, 300);
 	},
 	proccess_start(content = 'Espere, por favor', title = '') {
-		if(!this.isShow) {
-			this.setModal({
-				status: 'default',
-				title: '', 
-				body: '', 
-				buttons: { confirmShow: false }
-			});
-		}
 		if(!empty(title)) {
 			this.setModalTitle(title);
 		}
