@@ -81,7 +81,7 @@ article[itemscope].baneado_1::before {
 	grid-template-columns: repeat(3, 1fr);
 }
 .up-card--stats .uicon-svg {
-	top: .325rem;
+	top: .125rem;
 	left: .5rem;
 	opacity: .1;
 }

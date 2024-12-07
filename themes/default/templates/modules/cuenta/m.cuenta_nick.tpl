@@ -16,9 +16,7 @@
 		  	<div class="upform-group">
 				<label class="upform-label" for="password">Contrase&ntilde;a actual</label>
 				<div class="upform-group-input upform-icon">
-					<div class="upform-input-icon">
-						{uicon name="lock"}
-					</div>
+					<div class="upform-input-icon">{uicon name="lock"}</div>
 					<input class="upform-input" type="password" name="password" id="password" maxlength="32">
 				</div>
 			</div>

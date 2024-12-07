@@ -11,8 +11,14 @@
 	</div>
 	
 {elseif $tsAction == 'agregar' || $tsAction == 'editar'}
-	{include "m.fotos_add_form.tpl"}
-	{include "m.fotos_add_sidebar.tpl"}
+	<div class="row">
+		<div class="col-12 col-lg-12 col-xl-8">
+			{include "m.fotos_add_form.tpl"}
+		</div>
+		<div class="col-12 col-lg-12 col-xl-4">
+			{include "m.fotos_add_sidebar.tpl"}
+		</div>
+	</div>
 
 {elseif $tsAction == 'ver'}
 	<div class="row">

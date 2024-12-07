@@ -34,7 +34,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}fotos_favoritos` (
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}fotos` (
   `foto_id` int(11) NOT NULL AUTO_INCREMENT,
   `f_album` int(11) NOT NULL DEFAULT 0,
-  `f_title` varchar(40) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `f_title` varchar(80) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `f_date` int(10) NOT NULL DEFAULT 0,
   `f_update` int(10) NOT NULL DEFAULT 0,
   `f_description` text COLLATE utf8mb4_general_ci NULL,

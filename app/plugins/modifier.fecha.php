@@ -16,45 +16,27 @@
 */
 
 function smarty_modifier_fecha($fecha, $format = false) {
-   $_meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-   $_dias = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
-   
-   // FORMATO
-      $dia = date("d", $fecha);
-      $mes = date("m", $fecha);
-      $mes_int = date("n", $fecha) - 1;
-      $ano = date("Y", $fecha);
-      $hora = date("H", $fecha);
-      $minuto = date("i", $fecha);
-      $segundos = date("s", $fecha);
-      $week = date("N", $fecha);
-      $e_ano = date("Y", time());
-      
-      switch ($format) {
-         case 'd_Ms_a':
-            $ano_match = "$dia de {$_meses[$mes_int]}" . ($e_ano === $ano ? '' : " de $ano");
-         break;
-         case 'd-m-Y':
-            $ano_match = date("d-m-Y", $fecha);
-         break;
-         case 'd/m/Y':
-            $ano_match = date("d/m/Y", $fecha);
-         break;
-         case 'Y-m-d':
-            $ano_match = date("Y-m-d", $fecha);
-         break;
-         case 'date':
-            $ano_match = "$dia {$_meses[$mes_int]} $ano";
-         break;
-         case 'date-hours':
-            $ano_match = "{$_dias[$week]}, $dia {$_meses[$mes_int]} $ano $hora:$minuto:$segundos";
-         break;
-         
-         default:
-            $ano_match = date('d.m.y', $fecha);
-         break;
-      }
-      
-      return $ano_match;
+   // Predefinir arrays de nombres de días y meses
+   static $MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+   static $DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 
+   // Obtener la información básica de fecha
+   $dia = date("d", $fecha);
+   $mes_int = date("n", $fecha) - 1; // Ajuste para el índice de mes
+   $ano = date("Y", $fecha);
+   $hora = date("H", $fecha);
+   $minuto = date("i", $fecha);
+   $segundos = date("s", $fecha);
+   $week = date("N", $fecha); // Índice de día de la semana (1 = lunes, 7 = domingo)
+   $e_ano = date("Y"); // Año actual
+
+   return match ($format) {
+      'd_Ms_a' => "$dia de {$MESES[$mes_int]}" . ($e_ano === $ano ? '' : " de $ano"),
+      'd-m-Y' => date("d-m-Y", $fecha),
+      'd/m/Y' => date("d/m/Y", $fecha),
+      'Y-m-d' => date("Y-m-d", $fecha),
+      'date' => "$dia {$MESES[$mes_int]} $ano",
+      'date-hours' => "{$DIAS[$week - 1]}, $dia {$MESES[$mes_int]} $ano $hora:$minuto:$segundos",
+      default => date('d.m.y', $fecha),
+   };
 }

@@ -162,7 +162,7 @@ class tsPosts {
 		return $data;
 	}
 
-	public function getLastPosts(string $category = NULL) {
+	public function getLastPosts(?string $category = NULL) {
 		global $tsCore;
 		// TIPO DE POSTS A MOSTRAR
 		$c_where = '';

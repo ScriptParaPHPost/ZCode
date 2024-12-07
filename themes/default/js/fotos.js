@@ -5,16 +5,60 @@ function countUpperCase(string) {
 	percent = (len  - strip) / (len - strip2) * 100;
 	return percent;
 }
-// Mostramos el error
-function error(objeto, mensaje, tipo){
-	let addRemove = tipo ? 'addClass' : 'removeClass';
-	let showHide = tipo ? 'show' : 'hide';
-	objeto.parent().parent().children('.upform-status')[addRemove]('error').html(mensaje)[showHide]();
+// Función para mostrar u ocultar errores
+function manejarError(elemento, mensaje, esError) {
+   let metodoClase = esError ? 'addClass' : 'removeClass';
+   let metodoVisibilidad = esError ? 'show' : 'hide';
+   elemento.closest('.upform-status')[metodoClase]('error').html(mensaje)[metodoVisibilidad]();
 }
 
-var fotos = {
-	regex: /^(ht|f)tps?:\/\/\w+([\.\-\w]+)?\.([a-z]{2,3}|info|mobi|aero|asia|name)(:\d{2,5})?(\/)?((\/).+)?$/i,
+const fotos = {
+   regexUrl: /^(ht|f)tps?:\/\/\w+([\.\-\w]+)?\.([a-z]{2,3}|info|mobi|aero|asia|name)(:\d{2,5})?(\/)?((\/).+)?$/i,
 	extensiones: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'jfif'],
+	validaUrl(obj, url) {
+		let extension = url.split('.').pop().toLowerCase();
+		// URL VALIDA
+		if (!this.regexUrl.test(url)) {
+         manejarError(elemento, 'No es una dirección válida.', true);
+         return false;
+      }
+      if (!this.extensiones.includes(extension)) {
+         manejarError(elemento, 'Solo se permiten imágenes con extensiones válidas.', true);
+         return false;
+      }
+      return true;
+	},
+	agregar(){
+		let hayError = false;
+		$('.required').each(function () {
+         let campo = $(this);
+         let valor = $.trim(campo.val());
+         if (!valor) {
+            manejarError(campo, 'Este campo es obligatorio.', true);
+            hayError = true;
+            return false;
+         }
+
+         if (campo.attr('name') === 'url' && !fotos.validaUrl(campo, valor)) {
+            hayError = true;
+            return false;
+         }
+      });
+		//
+		if (hayError) return false;
+		let descripcion = $('textarea[name="description"]');
+      if (descripcion.val().length > 1500) {
+         manejarError(descripcion, 'La descripción no debe exceder los 1500 caracteres.', true);
+         return false;
+      }
+		// ENVIAMOS
+		$('.fade_out').fadeOut("slow", () => $('.loader').fadeIn());
+		$('form[name=add_foto]').submit();
+	},
+	comentar(type) {
+		let obj = { type, mostrar_resp: true }
+		imported('posts/comentario-nuevo.js', 'handleCommentAndReply', obj);
+	},
 	// VOTAR FOTO
 	votar(voto, fotoid) {
 		// VARS
@@ -27,53 +71,6 @@ var fotos = {
 			if (parseInt(req.charAt(0)) === 1) element.text(++totalVotos);
 			loading.end();
 		});
-	},
-
-	validaUrl: function(obj, url) {
-		let ext = url.substr(-3);
-		// URL VALIDA
-		if(this.regex.test(url) == false){
-			error(obj, 'No es una direcci&oacute;n v&aacute;lida', true);
-			return false;
-		} else if(ext != 'gif' && ext != 'png' && ext != 'jpg'){
-			error(obj, 'S&oacute;lo se permiten im&aacute;genes .gif, .png y .jpg', true);
-			return false; 
-		} else return true;
-	},
-	agregar: function(){
-		let error = false;
-		$('.required').each(function(){
-			if (!$.trim($(this).val())) {
-				error(this, 'Este campo es obligatorio', true);
-				error = true;
-				return false;
-			} else if($(this).attr('name') == 'url'){
-				var rimg = fotos.validaUrl(this, $(this).val());
-					 if(rimg != true) {
-						  error = true;
-						  return false;
-					 } else error = false;
-			}
-		  });
-		  //
-		  if (error) {
-			return false;
-		} 
-		  //
-		  if ($('textarea[name=desc]').val().length > 1500) {
-			showError($('textarea[name=desc]').get(0), 'La descripci&oacute;n no debe exeder los 1500 caracteres.');
-			return false;
-		}
-		  // ENVIAMOS
-		  $('.fade_out').fadeOut("slow",function(){
-				$('.loader').fadeIn();  
-		  })
-		  //
-		  $('form[name=add_foto]').submit();
-	},
-	comentar(type) {
-		let obj = { type, mostrar_resp: true }
-		imported('posts/comentario-nuevo.js', 'handleCommentAndReply', obj);
 	},
 	// BORRAR COMENTARIO/ FOTO
 	borrar:function(id, type){
@@ -143,16 +140,13 @@ var fotos = {
 $(function() {
 	const $titulo = $('input[name=titulo]');
 	// Cargamos el editor
-	//$('textarea[name="cuerpo"]').css({height: 400}).wysibb();
 	// Chequeamos el titulo
 	$titulo.on('keyup', () => {
 		const titleVal = $titulo.val();
 		let checkTitle = (titleVal.length >= 5 && countUpperCase(titleVal) > 59) 
-		error($titulo, 'El t&iacute;tulo no debe estar en may&uacute;sculas', checkTitle);
+		manejarError($titulo, 'El t&iacute;tulo no debe estar en may&uacute;sculas', checkTitle);
 		return false;
 	});
-	// Contador
-	UPEffects.decrypt('up-effect--decrypt');
 	//Editor de posts comentarios
 	if( $('#boxComentar').length ) {
 		$('#boxComentar').css({ height: 80 }).html('').wysibb({ buttons: "smilebox,|,bold,italic,underline,strike,img,link" });

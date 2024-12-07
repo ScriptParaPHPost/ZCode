@@ -173,19 +173,12 @@ class tsZCode {
 	   $avatar_img = "$avatar_root/web" . uniqid('.webp?');
 	   $avatar_gif = $query['user_gif'] ?? '';
 		//
-		switch ($type) {
-			case 'use':
-				return ((int)$query['user_gif_active'] === 1 && !empty($avatar_gif) ? $avatar_gif : $avatar_img_type);
-			break;
-			case 'img':
-				return $avatar_img;
-			break;
-			case 'gif':
-				return $avatar_gif;
-			break;
-			default:
-				return $this->settings['images'] . '/favicon/logo-128.webp';
-		}
+		return match ($type) {
+  		   'use' => ((int)$query['user_gif_active'] === 1 && !empty($avatar_gif) ? $avatar_gif : $avatar_img),
+  		   'img' => $avatar_img,
+  		   'gif' => $avatar_gif,
+  		   default => $this->settings['images'] . '/favicon/logo-128.webp',
+  		};
 	}
 
 	/**
@@ -242,26 +235,13 @@ class tsZCode {
 	}
 
 	public function getFormatImage($match, $source, $data = '') {
-		// Create an image resource from the source image
-		switch ($match) {
-			case IMAGETYPE_JPEG:
-				return imagecreatefromjpeg($source);
-			break;
-			case IMAGETYPE_PNG:
-				return imagecreatefrompng($source);
-			break;
-			case IMAGETYPE_GIF:
-				return imagecreatefromgif($source);
-			break;
-			case IMAGETYPE_WEBP:
-				return imagecreatefromwebp($source);
-			break;
-			
-			default:
-				if(!empty($data)) die("Tipo de imagen no admitido: $data");
-        		return false;
-			break;
-		}
+	   return match ($match) {
+	      IMAGETYPE_JPEG => imagecreatefromjpeg($source),
+	      IMAGETYPE_PNG => imagecreatefrompng($source),
+	      IMAGETYPE_GIF => imagecreatefromgif($source),
+	      IMAGETYPE_WEBP => imagecreatefromwebp($source),
+	      default => !empty($data) ? die("Tipo de imagen no admitido: $data") : false,
+	   };
 	}
 
 	public function verifiedIP(&$smarty) {

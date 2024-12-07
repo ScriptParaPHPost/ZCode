@@ -31,6 +31,4 @@ error_reporting(($_ENV['DEBUG_MODE'] === 'true' ? E_ALL ^ E_WARNING ^ E_NOTICE :
 
 ini_set('display_errors', ($_ENV['DEBUG_MODE'] === 'true'));
 
-ini_set('display_startup_errors', ($_ENV['DEBUG_MODE'] === 'true'));
-
-ini_set('log_errors', ($_ENV['DEBUG_MODE'] === 'true'));
+ini_set('log_errors', ($_ENV['DEBUG_MODE'] === 'false'));

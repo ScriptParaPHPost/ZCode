@@ -1,14 +1,14 @@
 ![Repo peso](https://img.shields.io/github/repo-size/ScriptParaPHPost/ZCode?style=plastic&label=Repo%20peso)
 ![PHP 8](https://img.shields.io/badge/PHP-8.2.16-red?style=plastic)
-![Smarty 4.5.4](https://img.shields.io/badge/Smarty-4.5.4-red?style=plastic)
+![Smarty 4.5.5](https://img.shields.io/badge/Smarty-4.5.5-red?style=plastic)
 ![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic&label=Branch%20main)
 ![GitHub Pre-Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?include_prereleases&style=plastic&label=Branch%20develop)
 
-# ZCode
+# ZCode v2.0.7
 
 ### Actualizaciones
- * PHP 8.2+ 
- * Smarty 4.5.4
+ * PHP 8.2+ (requerido)
+ * Smarty 4.5.5
  * jQuery 3.7.1
  * Plugins de jQuery
 

@@ -64,15 +64,12 @@
 
 \*********************************/
 
-		switch($action){
-			case 'posts':
-				$smarty->assign("tsTops", $tsTops->getTopPosts($fecha, $cat));
-			break;
-         case 'usuarios':
-            $smarty->assign("tsTops", $tsTops->getTopUsers($fecha, $cat));
-         break;
-		}
-
+		match($action){
+			'posts' => $smarty->assign("tsTops", $tsTops->getTopPosts($fecha, $cat)),
+			'usuarios' => $smarty->assign("tsTops", $tsTops->getTopUsers($fecha, $cat)),
+			default => null
+		};
+		
 /**********************************\
 
 * (AGREGAR DATOS GENERADOS | SMARTY) *

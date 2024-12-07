@@ -1,72 +1,95 @@
-				{if ($tsAction == 'agregar' && ($tsUser->permisos.gopf || $tsUser->is_admod)) || ($tsAction == 'editar' && ($tsUser->permisos.moedfo || $tsUser->is_admod))} 
-                <div id="centroDerecha" style="width: 630px; float: left;">
-                	<div class="">
-                        <h2 style="font-size: 15px;">{if $tsAction == 'agregar'}Agregar nueva{else}Editar{/if} foto</h2>
-                    </div>
-                    <form name="add_foto" method="post" action="" enctype="multipart/form-data" id="foto_form" class="form-add-post" autocomplete="off">
-                    <div class="loader">
-                        <img src="{$tsConfig.images}/loading_bar.gif" /><br />
-                        <h2>Cargando foto, espere por favor....</h2>
-                    </div>
-                    <div class="fade_out">
-                        <ul class="clearbeta">
-                            <li>
-                            <label for="ftitle">T&iacute;tulo</label>
-                            <span style="display: none;" class="errormsg"></span>
-                            <input type="text" tabindex="1" name="titulo" id="ftitle" maxlength="40" class="text-inp required" value="{$tsFoto.f_title}"/>
-                            </li>
-                        {if $tsAction != 'editar'}
-                            {if $tsConfig.c_allow_upload == 1}
-                            <li>
-                            <label for="ffile">Archivo</label>
-                            <input type="file" name="file" id="ffile" />
-                            </li>
-                            {else}
-                            <li>
-                            <label for="furl">URL</label>
-                            <span style="display: none;" class="errormsg"></span>
-                            <input type="text" tabindex="2" name="url" id="furl" maxlength="200" class="text-inp required" value="{$tsFoto.f_url}"/>
-                            </li>                            
-                            {/if}
-                        {/if}
-                            <li>
-                            <label for="fdesc">Descripci&oacute;n (<small>Max 500 car.</small>)</label>
-                            <span style="display: none;" class="errormsg"></span>
-                            <textarea name="desc" id="fdesc" cols="60" rows="5" onkeydown="return ControlLargo(this);" onkeyup="return ControlLargo(this);">{$tsFoto.f_description}</textarea>
-                            </li>
-                            <li>
-                            <label>Opciones</label>
-                            <div class="option clearbeta">  
-                                <input type="checkbox" class="floatL" id="sin_comentarios" name="closed"{if $tsFoto.f_closed == 1} checked="true"{/if}/>
-                                <p class="floatL">
-                                    <label for="sin_comentarios">Cerrar Comentarios</label>
-                                    Si no quieres recibir comentarios en tu foto.
-                                </p>
-                            </div>
-							<div class="option clearbeta">  
-                                <input type="checkbox" class="floatL" id="visitas" name="visitas"  {if $tsFoto.f_visitas == 1} checked="true"{/if}/>
-                                <p class="floatL">
-                                    <label for="visitas">&Uacute;ltimos visitantes</label>
-                                    Se mostrar&aacute;n los &uacute;ltimos visitantes.
-                                </p>
-                            </div>
-                            </li>
-                        </ul>
-						{if $tsUser->is_admod > 0 && $tsAction == 'editar' && $tsFoto.f_user  != $tsUser->uid}
-                                    <li style="clear:both;">
-                                    <label>Raz&oacute;n</label>
-                                    <input type="text" tabindex="8" name="razon" maxlength="150" size="60" class="text-inp" value=""/>
-                                     Si has modificado el contenido de esta foto, ingresa la raz&oacute;n.
-                                    </li>
-                                    {/if}
-                        <div class="end-form clearbeta">
-                        	<input type="button" style="width: auto; margin-left: 5px;" class="mBtn btnGreen" name="new" value="{if $tsAction == 'agregar'}Agregar foto{else}Guardar cambios{/if}" onclick="fotos.agregar()"/>
-                        </div>
-                    </div>                    
-                    </form>
-                </div>
-				{else}
-						<div class="emptyData clearfix">
-                    	Lo sentimos, pero no puedes {if $tsAction == 'agregar'}agregar{else}editar{/if} una nueva foto.
+{if ($tsAction == 'agregar' && ($tsUser->permisos.gopf || $tsUser->is_admod)) || ($tsAction == 'editar' && ($tsUser->permisos.moedfo || $tsUser->is_admod))}
+	<section class="up-card">
+		<div class="up-card--header" icon="true">
+			<div class="up-header--icon">{uicon name="button_add"}</div>
+			<div class="up-header--title">
+				<span>{if $tsAction == 'agregar'}Agregar nueva{else}Editar{/if} foto</span>
+			</div>
+		</div>
+		<div class="up-card--body">
+			<form name="add_foto" method="post" action="" enctype="multipart/form-data" id="foto_form" class="form-add-post position-relative" autocomplete="off">
+				<div class="loader h-100 w-100 z-99" style="display: none;">
+					<div class="d-flex justify-content-center align-items-center flex-column row-gap-3 py-5">
+						<img src="{$tsConfig.assets}/images/loading_bar.gif" />
+						<h2>Cargando foto, espere por favor....</h2>
+					</div>
+				</div>
+				<div class="fade_out">
+
+					<div class="upform-group">
+						<label class="upform-label" for="titulo">T&iacute;tulo</label>
+						<div class="upform-group-input upform-icon">
+							<div class="upform-input-icon">{uicon name="pen"}</div>
+							<input class="upform-input required" type="text" name="titulo" id="titulo" placeholder="T&iacute;tulo de la foto" value="{$tsFoto.f_title}" required>
 						</div>
+						<small class="upform-status help"></small>
+					</div>
+
+					{if $tsAction != 'editar'}
+						{if $tsConfig.c_allow_upload == 1}
+							<div class="upform-group">
+								<label class="upform-label" for="ffile">Archivo</label>
+								<div class="upform-group-input">
+									<input class="upform-input" type="file" name="file" id="ffile">
+								</div>
+							</div>
+						{else}
+							<div class="upform-group">
+								<label class="upform-label" for="furl">URL</label>
+								<div class="upform-group-input upform-icon">
+									<div class="upform-input-icon">{uicon name="chain"}</div>
+									<input class="upform-input required" type="text" name="url" id="furl" placeholder="{$tsConfig.url}/image/something.png" value="{$tsFoto.f_url}">
+								</div>
+							</div>
 						{/if}
+					{/if}
+
+					<div class="upform-group">
+						<label class="upform-label" for="fdesc">Descripci&oacute;n</label>
+						<div class="upform-group-input upform-icon">
+							<div class="upform-input-icon">{uicon name="create"}</div>
+							<textarea name="description" id="fdesc" class="upform-textarea">{$tsFoto.f_description}</textarea>
+						</div>
+						<small class="upform-status">Max. 500 car.</small>
+					</div>
+
+					<div class="upform-group">
+					   <span class="fw-bold">Opciones</span>
+					   <div class="upform-check mb-3">
+					      <label>
+					         <input type="checkbox" name="closed" id="sin_comentarios"{if $tsFoto.f_closed == 1} checked{/if}>
+					         <span class="upform-check-icon"></span>
+					         <span>Cerrar Comentarios <small class="d-block">Si no quieres recibir comentarios en tu foto.</small></span>
+					      </label>
+					   </div>
+					   <div class="upform-check mb-3">
+					      <label>
+					         <input type="checkbox" name="visitas" id="visitas"{if $tsFoto.f_visitas == 1} checked{/if}>
+					         <span class="upform-check-icon"></span>
+					         <span>&Uacute;ltimos visitantes <small class="d-block">Se mostrar&aacute;n los &uacute;ltimos visitantes.</small></span>
+					      </label>
+					   </div>
+					</div>
+
+					{if $tsUser->is_admod > 0 && $tsAction == 'editar' && $tsFoto.f_user  != $tsUser->uid}
+						<div class="upform-group">
+							<label class="upform-label" for="razon">Raz&oacute;n</label>
+							<div class="upform-group-input upform-icon">
+								<div class="upform-input-icon">{uicon name="pen"}</div>
+								<input class="upform-input" type="text" name="razon" id="razon" placeholder="Si has modificado el contenido de esta foto, ingresa la raz&oacute;n.">
+							</div>
+							<small class="upform-status help">Si has modificado el contenido de esta foto, ingresa la raz&oacute;n.</small>
+						</div>
+					{/if}
+					<div class="end-form clearbeta">
+						<input type="button" style="width: auto; margin-left: 5px;" class="btn btnGreen" name="new" value="{if $tsAction == 'agregar'}Agregar foto{else}Guardar cambios{/if}" onclick="fotos.agregar()"/>
+					</div>
+				</div>
+			</form>
+		</div>
+	</section>
+{else}
+	<div class="empty clearfix">
+		Lo sentimos, pero no puedes {if $tsAction == 'agregar'}agregar{else}editar{/if} una nueva foto.
+	</div>
+{/if}

@@ -56,9 +56,9 @@ RewriteRule ^mi/$ index.php?do=portal [QSA,L]
 
 # POSTS
 RewriteRule ^posts/$ index.php?do=posts [QSA,L]
-RewriteRule ^posts/([a-z]+)/$ index.php?do=posts&cat=$1 [QSA,L]
-RewriteRule ^posts(/([a-z]+))?(pagina([0-9]+))?$ index.php?do=posts&action=$2&page=$4 [QSA,L]
-RewriteRule ^posts/([A-Za-z0-9_-]+)(/pagina([0-9]+))?$ index.php?do=posts&cat=$1&page=$3 [QSA,L]
+RewriteRule ^posts/pagina([0-9]+)$ index.php?do=posts&page=$1 [QSA,L]
+RewriteRule ^posts/([A-Za-z0-9_-]+)/$ index.php?do=posts&cat=$1 [QSA,L]
+RewriteRule ^posts/([A-Za-z0-9_-]+)/pagina([0-9]+)$ index.php?do=posts&cat=$1&page=$2 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/([0-9]+)/(.*)\.html$ index.php?do=posts&cat=$1&post_id=$2&title=$3 [QSA,L]
 RewriteRule ^posts/editar/([0-9]+)$ app/helpers/agregar.php?action=editar&pid=$1 [QSA,L]
 
@@ -70,7 +70,10 @@ RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ app/helpers/password.php?hash=$1&typ
 RewriteRule ^validar/(.+)$ app/helpers/validar.php?encode=$1 [QSA,L]
 
 # FOTOS
-RewriteRule ^fotos/([A-Za-z0-9_-]+)(/([0-9]+))?(.*)\.html?$ app/helpers/fotos.php?action=album&user=$1&page=$3&fid=$4 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+).php$ app/helpers/fotos.php?action=$1 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)$ app/helpers/fotos.php?action=album&user=$1 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)$ app/helpers/fotos.php?action=album&user=$1&page=$2 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ app/helpers/fotos.php?action=ver&user=$1&fid=$2 [QSA,L]
 
 # MODERACION
 RewriteRule ^moderacion/buscador/([0-2]+)/([0-2]+)/(.+)$ app/helpers/moderacion.php?action=buscador&act=search&m=$1&t=$2&texto=$3 [QSA,L]

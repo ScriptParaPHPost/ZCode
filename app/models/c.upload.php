@@ -155,6 +155,16 @@ class tsUpload {
 		// REGRESAMOS LA URL
 		return $tsCore->settings['uploads'].'/'.$name;
 	}
+	private function getMimeImage(?string $type = '', ?string $image = '') {
+		return match ($type) {
+			'image/url' => imagecreatefromstring($tsCore->getUrlContent($image)),
+			'image/jpeg', 'image/jpg' => imagecreatefromjpeg($image),
+			'image/gif' => imagecreatefromgif($image),
+			'image/png' => imagecreatefrompng($image),
+			'image/webp' => imagecreatefromwebp($image),
+			default => null
+		};
+	}
 	 /*
 		* createImage()
 	 */
@@ -176,28 +186,7 @@ class tsUpload {
 				$_height = round($this->image_size['h']);
 			}
 			// TIPO
-			switch ($file['type']) {
-				case 'image/url':
-					$img = imagecreatefromstring($tsCore->getUrlContent($file['tmp_name']));
-				break;
-				case 'image/jpeg':
-				case 'image/jpg':
-					$img = imagecreatefromjpeg($file['tmp_name']);
-				break;
-				case 'image/gif':
-					$img = imagecreatefromgif($file['tmp_name']);
-				break;
-				case 'image/png':
-					$img = imagecreatefrompng($file['tmp_name']);
-				break;
-				case 'image/webp':
-					$img = imagecreatefromwebp($file['tmp_name']);
-				break;
-				
-				default:
-					$img = null;
-				break;
-			}
+			$img = $this->getMimeImage($file['type'], $file['tmp_name']);
 			// ESCALAMOS NUEVA IMAGEN
 			$newimg = imagecreatetruecolor($_width, $_height); 
 			imagecopyresampled($newimg, $img, 0, 0, 0, 0, $_width, $_height, $width, $height);
@@ -231,22 +220,7 @@ class tsUpload {
 		// TAMA�OS
 		$width_pin = 160;
 		// CREAMOS LA IMAGEN DEPENDIENDO EL TIPO
-		switch ($size['mime']) {
-			case 'image/jpeg':
-			case 'image/jpg':
-				$img = imagecreatefromjpeg($source);
-			break;
-			case 'image/gif':
-				$img = imagecreatefromgif($source);
-			break;
-			case 'image/gif':
-				$img = imagecreatefrompng($source);
-			break;
-			
-			default:
-				$img = null;
-			break;
-		}
+		$img = $this->getMimeImage($size['mime'], $source);
 		if(!$img) return ['error' => 'No pudimos crear tu avatar...'];
 		//
 		$width = imagesx($img);

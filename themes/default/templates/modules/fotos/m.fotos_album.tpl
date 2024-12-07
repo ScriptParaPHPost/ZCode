@@ -6,7 +6,7 @@
 		</div>
 	</div>
 	<div class="up-card--body">
-		<div class="fotos-content d-block d-md-flex flex-wrap column-gap-3 py-2">
+		<div class="fotos-content">
 			{foreach from=$tsFotos.data item=f}
 				{assign "thisAlbum" true}
 				{include "m.fotos_content_album.tpl"}

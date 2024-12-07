@@ -19,10 +19,6 @@ class tsFotos {
 		global $tsCore;
 		$data = [
 			'title' => $tsCore->setSecure($tsCore->parseBadWords($_POST['titulo']), true),
-			'foto' => [
-				'url' => $tsCore->setSecure($tsCore->parseBadWords($_POST['url'])), 
-				'file' => $_FILES['file']
-			],
 			'description' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['description'], 0, 500)), true),
 			'closed' => empty($_POST['closed']) ? 0 : 1,
 			'visitas' => empty($_POST['visitas']) ? 0 : 1,
@@ -31,50 +27,71 @@ class tsFotos {
 		if($type === 'edit') {
 			$data['razon'] = $tsCore->setSecure($_POST['razon'] ?? 'undefined', true);
 			$data['update'] = time();
+		} else {
+			if(isset($_POST['url'])) {
+				$data['foto']['url'] = $tsCore->setSecure($tsCore->parseBadWords($_POST['url']));
+			}
+			if(isset($_FILES['file'])) {
+				$data['foto']['file'] = $_FILES['file'];
+			}
 		}
 		return $data;
+	}
+
+	private function antifloodImage(array $data = []) {
+		global $tsUser, $tsCore;
+		$antiflood = (int)($tsUser->permisos['goaf'] * 5);
+		$af_date = (time() - $antiflood);
+		$af_date_or = ($af_date * 12);
+
+		$antiflood = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(foto_id) AS f FROM @fotos WHERE (f_date > $af_date AND f_user = {$tsUser->uid}) OR (f_title = '{$data['title']}' AND f_date > $af_date_or AND f_user = {$tsUser->uid}) LIMIT 1"));
+
+		if($antiflood[0]) die('Espere '.$antiflood.' segundos para continuar.'); 
+		// COMPROBAR CAMPOS
+		if(empty($data['title'])) $error['titulo'] = 'true';
+		// ANTI FLOOD original (?)
+		$tsCore->antiFlood(true, 'foto', 'Para el carro, chacho...');
+
+	}
+
+	private function typeUploadImage(array $foto = []) {
+		global $tsCore, $tsUser;
+		// SE PERMITE SUBIDA DE ARCHIVOS?
+		if((int)$tsCore->settings['c_allow_upload'] === 1) {
+			if(empty($foto['file']['name'])) return 'No has seleccionado ningun archivo.';
+		} else {
+			if(empty($foto['url'])) return 'No has ingresado ninguna URL.';
+		}
+		// UPLOAD
+		require_once TS_MODELS . 'c.upload.php';
+		$tsUpload = new tsUpload();
+		$tsUpload->image_scale = true;
+		// HACER
+		$type = 1;
+		if((int)$tsCore->settings['c_allow_upload'] !== 1 AND empty($foto['file']['name'])) {
+			$type = 2;
+			$tsUpload->file_url = $foto['url'];
+		}
+		$result = $tsUpload->newUpload($type);
+		if($tsUser->is_member && $tsUser->is_admod) {
+			die;
+		}
+		return $result;
 	}
 
 	/*
 		newFoto()
 	*/
-	public function newFoto(){
+	public function newFoto() {
 		global $tsCore, $tsUser, $tsMonitor, $tsActividad;
 		//
 		if($tsUser->is_member && $tsUser->info['user_baneado'] == 0 && $tsUser->info['user_activo'] == 1 && ($tsUser->is_admod || $tsUser->permisos['gopf'])) {
 			$fData = $this->newEditFoto();
-		
-			$antiflood = (int)($tsUser->permisos['goaf'] * 5);
-			$af_date = (time() - $antiflood);
-			$af_date_or = ($af_date * 12);
-
-		  	$antiflood = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(foto_id) AS f FROM @fotos WHERE (f_date > $af_date AND f_user = {$tsUser->uid}) OR (f_url = '{$fData['foto']['url']}' OR (f_title = '{$fData['titulo']}' AND f_date > $af_date_or AND f_user = {$tsUser->uid}) ) LIMIT 1"));
-			if($antiflood[0]) die('Espere '.$antiflood.' segundos para continuar.'); 
-			// COMPROBAR CAMPOS
-			if(empty($fData['titulo'])) $error['titulo'] = 'true';
-			// SE PERMITE SUBIDA DE ARCHIVOS?
-			if((int)$tsCore->settings['c_allow_upload'] === 1){
-				if(empty($fData['foto']['url']) AND empty($fData['foto']['file']['name'])) return 'No has seleccionado ningun archivo.';
-			} else {
-				if(empty($fData['foto']['url'])) return 'No has ingresado ninguna URL.';
-			}
-			
-			// ANTI FLOOD original (?)
-			$tsCore->antiFlood(true, 'foto', 'Para el carro, chacho...');
-			// UPLOAD
-			require_once TS_MODELS . 'c.upload.php';
-			$tsUpload = new tsUpload();
-			$tsUpload->image_scale = true;
-			// HACER
-			$type = 1;
-			if((int)$tsCore->settings['c_allow_upload'] !== 1 AND empty($fData['foto']['file']['name'])) {
-				$type = 2;
-				$tsUpload->file_url = $fData['foto']['url'];
-			}
-			$result = $tsUpload->newUpload($type);
-		  //
-		  if($result[0][0] == 0) return $result[0][1];
-		  else {
+			$this->antifloodImage($fData);
+			$result = $this->typeUploadImage($fData['foto']);
+		  	//
+		  	if($result[0][0] === 0) return $result[0][1];
+		  	else {
 				$fData['url'] = $result[0][1];
 				if(empty($fData['url'])) return 'Lo sentimos ocurri&oacute; un error al subir la imagen.';
 				// INSERTAMOS
@@ -82,88 +99,83 @@ class tsFotos {
 				// LA ULTIMA DEJA DE SERLO
 				$fData['user'] = $tsUser->uid;
 				$fData['last'] = 1;
-				$fData['ip'] = $tsCore->executeIP($postData['ip']);
+				$fData['ip'] = $tsCore->executeIP();
+				// Eliminamos el array $data['foto'] = ['url' => '...', 'file' => '...']
+				unset($fData['foto']);
+				// Insertamos la foto
 				if(insertDataInBase([__FILE__, __LINE__], '@fotos', $fData, 'f_')) {
-
-				}
-			if(db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO @fotos (f_title, f_date, f_description, f_url, f_user, f_closed, f_visitas, f_last, f_ip) VALUES (\''.$fData['titulo'].'\', \''.time().'\', \''.$fData['desc'].'\',  \''.$img_url.'\', \''.$tsUser->uid.'\', \''.$fData['closed'].'\', \''.$fData['visitas'].'\', \'1\', \''.$fData['ip'].'\')')) {
-					 $fid = db_exec('insert_id');
-					 // Estadísticas
-					 db_exec([__FILE__, __LINE__], 'query', 'UPDATE @stats SET `stats_fotos` = stats_fotos + \'1\' WHERE `stats_no` = \'1\'');
-					 //db_exec([__FILE__, __LINE__], 'query', 'UPDATE @miembros SET `user_fotos` = user_fotos + \'1\' WHERE `user_id` = \''.$tsUser->uid.'\''); // Eliminado en 1.1.000.9
-				// AGREGAR AL MONITOR DE LOS USUARIOS QUE ME SIGUEN
-				$tsMonitor->setFollowNotificacion(10, 1, $tsUser->uid, $fid);
-					 // ACTIVIDAD
-					 $tsActividad->setActividad(9, $fid);
-					 //
-					 return $fid;
-				}
-				else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
-		 // } else return 'fewlolazsp';       
-		  }
-		  
-		}else return 'No tienes permiso para continuar.';
-		
+					$fid = db_exec('insert_id');
+					db_exec([__FILE__, __LINE__], 'query', "UPDATE @stats SET `stats_fotos` = stats_fotos + 1 WHERE `stats_no` = 1");
+					// AGREGAR AL MONITOR DE LOS USUARIOS QUE ME SIGUEN
+					$tsMonitor->setFollowNotificacion(10, 1, $tsUser->uid, $fid);
+					// ACTIVIDAD
+					$tsActividad->setActividad(9, $fid);
+					return $fid;
+				} else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );    
+		  	}
+		} else return 'No tienes permiso para continuar.';	
 	}
-	 /*
-		  getFotoEdit()
-	 */
-	 function getFotoEdit(){
-		  global $tsCore, $tsUser;
-		  //
-		  $fid = $tsCore->setSecure($_GET['id']);
-		  // DATOS
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM @fotos WHERE foto_id = \''.(int)$fid.'\' LIMIT 1');
-		  $data = db_exec('fetch_assoc', $query);
-		  
-		  //
-		  if(!empty($data['f_user'])){
-				// ES EL DUEÑO DE LA FOTO?
-				if($data['f_user'] == $tsUser->uid || $tsUser->is_admod || $tsUser->permisos['moedfo']){
-					 return $data;
-				} else return 'La foto que intentas editar no es tuya.';
-		  } else return 'La foto que intentas editar no existe.';
-	 }
-	 /*
-		  editFoto()
-	 */
-	 function editFoto(){
-		  global $tsCore, $tsUser, $tsMonitor;
-		  //
-		  $fid = (int)$_GET['id'];
-		  // DATOS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT f.foto_id, f.f_title, f.f_user, u.user_name FROM @fotos AS f LEFT JOIN @miembros AS u ON f.f_user = u.user_id WHERE f.foto_id = \''.(int)$fid.'\' LIMIT 1');
-		  $data = db_exec('fetch_assoc', $query);
-		  
-		  //
-		  if(!empty($data['f_user'])){
-				// ES EL DUEÑO DE LA FOTO?
-				if($data['f_user'] == $tsUser->uid || $tsUser->is_admod || $tsUser->permisos['moedfo']){
-				$fData = array(
-						  'titulo' => $tsCore->setSecure($tsCore->parseBadWords($_POST['titulo']), true),
-						  'desc' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['desc'], 0, 1500)), true),
-						  'privada' => empty($_POST['privada']) ? 0 : 1,
-						  'closed' => empty($_POST['closed']) ? 0 : 1,
-					'visitas' => empty($_POST['visitas']) ? 0 : 1,
-					'razon' => empty($_POST['razon']) ? 'undefined' : $tsCore->setSecure($_POST['razon'], true),
-				);
-					 // UPDATES
-				db_exec([__FILE__, __LINE__], 'query', 'UPDATE @fotos SET f_title = \''.$fData['titulo'].'\', f_description = \''.$fData['desc'].'\',  f_closed = \''.$fData['closed'].'\', f_visitas = \''.$fData['visitas'].'\' WHERE foto_id = \''.(int)$fid.'\'');
-				
-				if($data['f_user'] != $tsUser->uid){
-					 $aviso = 'Hola <b>'.$tsUser->getUserName($data['f_user'])."</b>\n\n Te informo que tu foto <a href=".$tsCore->settings['url'].'/fotos/'.$data['user_name'].'/'.$data['foto_id'].'/'.$tsCore->setSEO($data['f_title']).'.html'."><b>".$data['f_title']."</b></a> ha sido editada por <a href=\"#\" class=\"hovercard\" uid=\"".$tsUser->uid."\">".$tsUser->nick."</a>\n\n Causa: <b>".$fData['razon']."</b>\n\n \n\n Te recomendamos leer el <a href=\"".$tsCore->settings['url']."/pages/protocolo/\">protocolo</a> para evitar futuras sanciones.\n\n Muchas gracias por entender!";
-						  $tsMonitor->setAviso($data['f_user'], 'Foto editada', $aviso, 2);
-					 $_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-					 if(!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) { die('Su ip no se pudo validar.'); }
-					 db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO @historial (`pofid`, `action`, `type`, `mod`, `reason`, `date`, `mod_ip`) VALUES (\''.(int)$data['foto_id'].'\', \'1\', \'2\', \''.$tsUser->uid.'\', \''.$fData['razon'].'\', \''.time().'\', \''.$tsCore->setSecure($_SERVER['REMOTE_ADDR']).'\')');
-				}
-				// REDIRIGIMOS
-					 $url = $tsCore->settings['url'].'/fotos/'.$data['user_name'].'/'.$fid.'/'.$tsCore->setSEO($fData['titulo']).'.html';
-					 //
-					 $tsCore->redirectTo($url);
-				} else return 'La foto que intentas editar no es tuya.';
-		  } else return 'La foto que intentas editar no existe.';
-	 }
+
+	private function editPhotoPrivacity(int $uid = 0) {
+  		global $tsUser;		
+		// Verificar si la foto existe
+  		if (empty($uid) || !is_numeric($uid)) return 'La foto que intentas editar no existe.';
+   	// Verificar permisos del usuario
+   	if ($uid !== $tsUser->uid && !$tsUser->is_admod && empty($tsUser->permisos['moedfo'])) {
+   	   return 'No tienes permisos para editar esta foto.';
+   	}
+	}
+	/*
+		getFotoEdit()
+	*/
+	public function getFotoEdit() {
+   	// Validar parámetro ID
+   	if (empty($_GET['id']) || !is_numeric($_GET['id'])) return 'Parámetro inválido.';
+  		// Sanitizar ID de la foto
+  		$fotoId = (int)$_GET['id'];
+    	// Consultar datos de la foto
+    	$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT f_album, f_title, f_date, f_description, f_url, f_user, f_closed, f_visitas, f_status, f_hits FROM @fotos WHERE foto_id = $fotoId LIMIT 1"));
+  		$this->editPhotoPrivacity($data['f_user']);
+   	// Retornar datos de la foto
+   	return $data;
+	}
+
+	private function photoMsgUser(array $data = [], string $razon = '') {
+		global $tsCore, $tsUser, $tsMonitor;
+		$username = $tsUser->getUserName($data['f_user']);
+		$crearLink = $tsCore->createLink('foto', $data['foto_id']);
+		$quien = $tsCore->createLink('perfil', $tsUser->nick);
+		//
+		$aviso = "Hola <strong>$username</strong>\n\n Te informo que tu foto <a href=\"$crearLink\">{$data['f_title']}</a> ha sido editada por <a href=\"$quien\">{$tsUser->nick}</a>\n\n Causa: <strong>$razon</strong> \n\n Te recomendamos leer el <a href=\"{$tsCore->settings['url']}/pages/protocolo/\">protocolo</a> para evitar futuras sanciones.\n\n Muchas gracias por entender!";
+		//
+		$tsMonitor->setAviso($data['f_user'], 'Foto editada', $aviso, 2);
+		$miIP = $tsCore->executeIP();
+		db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @historial (`pofid`, `action`, `type`, `mod`, `reason`, `date`, `mod_ip`) VALUES ({$data['foto_id']}, 1, 2, {$tsUser->uid}, '$razon', time(), '$miIP')");
+	}
+
+	/*
+		editFoto()
+	*/
+	public function editFoto(){
+		global $tsCore, $tsUser;
+		//
+		$fid = (int)$_GET['id'];
+		// DATOS
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT f.foto_id, f.f_title, f.f_user, u.user_name FROM @fotos AS f LEFT JOIN @miembros AS u ON f.f_user = u.user_id WHERE f.foto_id = $fid LIMIT 1"));
+		//
+		$this->editPhotoPrivacity($data['f_user']);
+		$fData = $this->newEditFoto('edit');
+		if((int)$data['f_user'] !== (int)$tsUser->uid) {
+			// En caso de que un administrador o moderador haya editado la foto
+			$this->photoMsgUser($data, $fData['razon']);
+		}
+		unset($fData['razon']);
+		$fotoUpdate = $tsCore->getIUP($fData, 'f_');
+		// UPDATES
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE @fotos SET $fotoUpdate WHERE foto_id = $fid");
+		// REDIRIGIMOS
+		$tsCore->redirectTo($tsCore->createLink('foto', $fid));
+	}
 	 /*
 		  delFoto()
 	 */
@@ -193,7 +205,7 @@ class tsFotos {
 	 /*
 		  getLastFotos()
 	 */
-	public function getLastFotos(){
+	public function getLastFotos() {
 		global $tsCore, $tsUser;
 		//
 		$max = 15; // MAXIMO A MOSTRAR
@@ -254,7 +266,7 @@ class tsFotos {
 	 /*
 		  getFoto()
 	 */
-	public function getFoto(){
+	public function getFoto() {
 		global $tsCore, $tsUser;
 		//
 		$fid = (int)$_GET['fid'];

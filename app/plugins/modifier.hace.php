@@ -21,31 +21,28 @@
  * @param string
  * @return string
  */
-function smarty_modifier_hace(int $fecha = null, $show = false){
-		# Creamos
-		$tiempo = time() - $fecha;
-		if($fecha <= 0) return "Nunca";
-		// Declaración de unidades de tiempo, aunque es un aproximado
-		// Ya que existe años bisiestos 366 días
-		$unidades = [
-		  31536000 => ["a&ntilde;o", "a&ntilde;os"],
-		  2678400 => ["mes", "meses"],
-		  604800 => ["semana", "semanas"],
-		  86400 => ["d&iacute;a", "d&iacute;as"],
-		  3600 => ["hora", "horas"],
-		  60 => ["minuto", "minutos"],
-		];
-		foreach($unidades as $segundos => $nombre){
-			$round = round($tiempo / $segundos);
-			$s = ($segundos === 2678400) ? 'es' : 's';
-			if($tiempo <= 60) $hace = "instantes";
-			else {
-				if($round > 0) {
-					$hace = "{$round} {$nombre[($round > 1 ? 1 : 0)]}";
-					break;
-				}
-			}
-		}
-		// Si se ha establecido la opción $show, se agrega 'Hace' al resultado
-		return ($show ? "Hace " : "") . $hace;
-	}
+function smarty_modifier_hace(?int $fecha = null, bool $show = false) {
+   if (!$fecha) return "Nunca";
+
+   $tiempo = time() - $fecha; // Tiempo transcurrido desde la fecha proporcionada
+   if ($tiempo < 0) return "Nunca";
+
+   // Definimos unidades de tiempo en segundos con su formato singular/plural
+   $unidades = [
+      31536000 => ["a&ntilde;o", "a&ntilde;os"], // Un año: 365 días
+      2678400 => ["mes", "meses"],           // Un mes: ~30 días
+      604800 => ["semana", "semanas"],      // Una semana: 7 días
+      86400 => ["d&iacute;a", "d&iacute;as"],  // Un día: 24 horas
+      3600 => ["hora", "horas"],           // Una hora: 60 minutos
+      60 => ["minuto", "minutos"]         // Un minuto: 60 segundos
+   ];
+   if ($tiempo <= 60) return $show ? "Hace instantes" : "instantes";
+   foreach ($unidades as $segundos => $nombre) {
+      $round = round($tiempo / $segundos);
+      if ($round >= 1) {
+         $hace = "{$round} " . ($round > 1 ? $nombre[1] : $nombre[0]);
+         break;
+      }
+   }
+   return $show ? "Hace $hace" : $hace;
+}

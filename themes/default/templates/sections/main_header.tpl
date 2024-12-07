@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
 {meta facebook=true twitter=true}
+<meta name="google-site-verification" content="_6Olpr8n01KGgFYU8coI91bMy3Cz1n7OMctT32PKXKo" />
 {zCode css=["base.css","theme.css"]}
 </head>
 <body>

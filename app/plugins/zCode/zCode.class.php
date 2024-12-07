@@ -122,14 +122,11 @@ class SmartyZCode {
 		$extension = pathinfo($htmltag, PATHINFO_EXTENSION);
 		$withoutCached = false;
 		$fileCache = $htmltag . ($withoutCached ? '' : $this->getCached());
-		switch ($extension) {
-			case 'css':
-				return "<link rel=\"stylesheet\" href=\"$fileCache\" type=\"text/css\"/>\n";
-			break;
-			case 'js':
-				return "<script src=\"$fileCache\"></script>\n";
-			break;
-		}
+		return match ($extension) {
+			'css' => "<link rel=\"stylesheet\" href=\"$fileCache\" type=\"text/css\"/>\n",
+			'js' => "<script src=\"$fileCache\"></script>\n",
+			default => null
+		};
 	}
 
   	/**

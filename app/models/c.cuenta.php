@@ -540,23 +540,14 @@ class tsCuenta {
 	*/
 	public function saveSettings(string $save = ''){
 		// GUARDAR...
-		switch ($save) {
-			case '':
-				return $this->saveCuenta();
-			break;
-			case 'seguridad':
-				return $this->saveSeguridad();
-			break;
-			case 'privacidad':
-				return $this->savePrivacidad();
-			break;
-			case 'nick':
-				return $this->saveNick();
-			break;
-			case 'perfil':
-				return $this->savePerfil();
-			break;
-		}
+		return match ($save) {
+			'' => $this->saveCuenta(),
+			'seguridad' => $this->saveSeguridad(),
+			'privacidad' => $this->savePrivacidad(),
+			'nick' => $this->saveNick(),
+			'perfil' => $this->savePerfil(),
+			default => null
+		};
 	}
 
 	public function getAvatarImages() {

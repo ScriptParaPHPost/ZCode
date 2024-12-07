@@ -32,19 +32,19 @@
 					<div class="text-center text-uppercase small py-3 position-relative">
 						{uicon name="graph-box" class="position-absolute z-1 iconify-62" size="5rem" stroke="var(--main-bg)"}
 						<span class="z-2 fw-bold position-relative body-color">
-							<span class="h3 d-block m-0 up-effect up-effect--decrypt" data-count="{$tsStats.stats_miembros}">0</span> Miembros
+							<span class="h3 d-block m-0">{$tsStats.stats_miembros|human}</span> Miembros
 						</a>
 					</div>
 					<div class="text-center text-uppercase small py-3 position-relative">
 						{uicon name="picture" class="position-absolute z-1 iconify-62" size="5rem" stroke="var(--main-bg)"}
 						<span class="z-2 fw-bold position-relative body-color">
-							<span class="h3 d-block m-0 up-effect up-effect--decrypt" data-count="{$tsStats.stats_fotos}">0</span> Fotos
+							<span class="h3 d-block m-0">{$tsStats.stats_fotos|human}</span> Fotos
 						</a>
 					</div>
 					<div class="text-center text-uppercase small py-3 position-relative">
 						{uicon name="thread" class="position-absolute z-1 iconify-62" size="5rem" stroke="var(--main-bg)"}
 						<span class="z-2 fw-bold position-relative body-color">
-							<span class="h3 d-block m-0 up-effect up-effect--decrypt" data-count="{$tsStats.stats_foto_comments}">0</span> Comentarios
+							<span class="h3 d-block m-0">{$tsStats.stats_foto_comments|human}</span> Comentarios
 						</span>
 					</div>
 				</div>

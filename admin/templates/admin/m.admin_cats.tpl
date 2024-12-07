@@ -15,6 +15,13 @@ document.addEventListener("DOMContentLoaded", function() {
          set: sortable => $.post(global_data.url + `/admin-ordenar-categorias.php`, 'cats=' + sortable.toArray().join(','))
       }
    });
+   {elseif $tsAct == 'editar' || $tsAct == 'nueva'}
+   const catName = $('#cat_name');
+   catName.on('keyup', e => {
+		let normalized = catName.val().normalize("NFD");
+		let cleaned = normalized.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+		$('#cat_slug').val(cleaned)
+   });
    {/if}
 	// Se usa jquery despues, porque se ejecuta despues de cargar
    $('#cat_img').on('change', () => {
@@ -83,12 +90,16 @@ document.addEventListener("DOMContentLoaded", function() {
 					<dd><input type="text" id="cat_name" name="c_nombre" value="{$tsCat.c_nombre}" /></dd>
 				</dl>
 				<dl>
+					<dt><label for="cat_slug">Slug de la categor&iacute;a:</label></dt>
+					<dd><input type="text" id="cat_slug" name="c_seo" value="{$tsCat.c_seo}" /></dd>
+				</dl>
+				<dl>
 					<dt><label for="cat_descripcion">Descripción de la categor&iacute;a:</label></dt>
 					<dd><textarea name="c_descripcion" id="cat_descripcion" rows="13">{$tsCat.c_descripcion}</textarea></dd>
 				</dl>
 	         <dl>
 	            <dt><label for="ai_color">Color de la categoría:</label></dt>
-	            <dd><input type="color" id="ai_color" name="c_color" value="{$tsForo.c_color}" /></dd>
+	            <dd><input type="color" id="ai_color" name="c_color" value="{$tsCat.c_color}" /></dd>
 	         </dl>
 				<dl>
 					<dt><label for="cat_img">Icono de la categor&iacute;a:</label></dt>

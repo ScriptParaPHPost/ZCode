@@ -306,9 +306,10 @@ class tsAdmin {
 	private function dataCat(string $type = '', int $orden = 0) {
 		global $tsCore;
 		$nombre = $tsCore->setSecure($tsCore->parseBadWords($_POST['c_nombre']));
+		$seo = $tsCore->setSecure($tsCore->parseBadWords($_POST['c_seo']));
 		$categoria = [
 			"nombre" => $nombre,
-			"seo" => $tsCore->setSEO($nombre),
+			"seo" => $seo,
 			"img" => $tsCore->setSecure($_POST['c_img']),
 			"color" => $tsCore->setSecure($_POST['c_color']),
 			"descripcion" => $tsCore->setSecure($_POST['c_descripcion']),
@@ -340,7 +341,7 @@ class tsAdmin {
 		# Obtenemos la ID de la categoría
 		$cid = (int)$_GET['cid'];
 		# Obtenemos la información
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_nombre, c_descripcion, c_seo, c_img FROM @posts_categorias WHERE cid = $cid LIMIT 1"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_nombre, c_descripcion, c_seo, c_img, c_color FROM @posts_categorias WHERE cid = $cid LIMIT 1"));
 		# Retornamos los daots
 		return $data;
 	}

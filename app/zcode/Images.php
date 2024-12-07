@@ -85,19 +85,15 @@ class Images {
     * @param string $type El tipo de información a obtener (extension, filename, basename).
     * @return mixed La información solicitada o false si no se reconoce el tipo.
    */
-	protected function getInformationImage(string $image = '', string $type = '') {
-		switch ($type) {
-			case 'extension':
-				return strtolower(pathinfo($image, PATHINFO_EXTENSION));
-			break;
-			case 'filename':
-				return pathinfo($image, PATHINFO_FILENAME);
-			break;
-			case 'basename':
-				return pathinfo($image, PATHINFO_BASENAME);
-			break;
-		}
+	protected function getInformationImage(string $image = '', string $type = ''): string {
+	   return match ($type) {
+	      'extension' => strtolower(pathinfo($image, PATHINFO_EXTENSION)),
+	      'filename' => pathinfo($image, PATHINFO_FILENAME),
+	      'basename' => pathinfo($image, PATHINFO_BASENAME),
+	      default => '',
+	   };
 	}
+
 
 	/**
 	 * Registra un mensaje de error.
@@ -130,7 +126,7 @@ class Images {
     * @param string $image El nombre de la imagen.
     * @throws Exception Si ocurre un error al mover o guardar la imagen.
    */
-	private function moveImage($files, string $imageToSave = null) {
+	private function moveImage($files, ?string $imageToSave = null) {
 		$image = TS_UPLOADS . $imageToSave;
 		if(file_exists($image)) return $image;
 		$imageData = file_get_contents($files["tmp_name"]);
@@ -152,7 +148,7 @@ class Images {
 	  * @param string $filename El nombre de la imagen (opcional).
 	  * @return string El nombre generado para la imagen de portada.
 	  */
-	private function setGenerateNewName(string $filename = ''): string {
+	private function setGenerateNewName(?string $filename = ''): string {
 		# MD5 lo usamos para la imagen temporal
 		return md5($this->getInformationImage($filename, 'filename'));
 	}
@@ -165,17 +161,12 @@ class Images {
     * @return string La ruta completa.
    */
 	private function getRoute(string $folder = '', string $type = 'link'): string {
-		switch ($type) {
-			case 'link':
-				return $this->storage . '/' . $folder . '/';
-			break;
-			case 'temp':
-				return TS_UPLOADS;
-			break;
-			case 'cover':
-				return TS_PORTADAS;
-			break;
-		}
+	   return match ($type) {
+	      'link' => $this->storage . '/' . $folder . '/',
+	      'temp' => TS_UPLOADS,
+	      'cover' => TS_PORTADAS,
+	      default => '',
+	   };
 	}
 
 	private function setNameCreate(string $image = '') {
@@ -450,7 +441,7 @@ class Images {
     * @param string|null $image URL de la imagen original.
     * @return array Un arreglo con las URLs de las imágenes redimensionadas.
    */
-	public function createImage(int $pid = 0, string $image = null) {
+	public function createImage(int $pid = 0, ?string $image = null) {
 		$encoded = $this->setEncodeNameFolder($pid);
    	$returnImages = $this->defaultImages();
    	#
@@ -469,7 +460,7 @@ class Images {
     * @param string|null $bodyContent El contenido del post.
     * @return array Un arreglo de URLs de imágenes extraídas o la imagen predeterminada si no se encuentra ninguna.
    */
-   public function getImageOfContent(string $bodyContent = null, int $pid = 0, string $encoded = '') {
+   public function getImageOfContent(?string $bodyContent = null, int $pid = 0, string $encoded = '') {
    	// Si no hay datos
      	if (empty($bodyContent)) {
          return $this->defaultImages();

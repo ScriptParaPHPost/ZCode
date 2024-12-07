@@ -5,8 +5,8 @@
 			<span>&Uacute;ltimas fotos</span>
 		</div>
 	</div>
-	<div class="up-card--body">
-		<div class="fotos-content d-flex flex-wrap column-gap-3 p-2">
+	<div class="up-card--body p-2">
+		<div class="fotos-content">
 			{foreach from=$tsLastFotos.data item=f}
 				{assign "thisAlbum" false}
 				{include "m.fotos_content_album.tpl"}

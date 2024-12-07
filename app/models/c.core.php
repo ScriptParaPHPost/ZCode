@@ -152,7 +152,7 @@ class tsCore extends tsZCode {
 	/*
 		setLevel($tsLevel) :: ESTABLECE EL NIVEL DE LA PAGINA | MIEMBROS o VISITANTES
 	*/
-	public function setLevel(int $tsLevel = null, bool $message = false) {
+	public function setLevel(?int $tsLevel = null, bool $message = false) {
 		global $tsUser;
 		// Los mensajes
 		$setMessages = [

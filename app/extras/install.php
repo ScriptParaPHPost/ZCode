@@ -112,10 +112,10 @@ switch ($page) {
 			*/
 			$replace = [
 				'__status__' => (isLocalhost() ? 'DEVELOPMENT' : 'PRODUCTION'), 
-				'__mode__' => 'true', 
+				'__mode__' => isLocalhost(), 
 				'__session_name__' => key_generator('session'), 
 				'__development__' => 'http://localhost/feed', 
-				'__production__' => 'https://zcode.newluckies.com/feed', 
+				'__production__' => 'https://zcodev.alwaysdata.net/feed', 
 				'__install__' => time(),
 				'__script__' => 'WkNvZGVVcGdyYWRl',
 				'__key__' => key_generator('verify'),
@@ -138,7 +138,7 @@ switch ($page) {
 			$text = $action ? $text : 'No ' . $text;
 			return ['class' => $color, 'text' => $text];
 		}
-		$version_support = '7.4.33';
+		$version_support = '8.2';
 		$head = 'Requisitos del sistema';
 		$disabled = false;
 		
