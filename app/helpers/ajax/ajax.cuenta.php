@@ -26,7 +26,8 @@ $files = [
    'cuenta-scheme' => ['n' => 2, 'p' => ''],
    'cuenta-color' => ['n' => 2, 'p' => ''],
    'cuenta-family' => ['n' => 2, 'p' => ''],
-   'cuenta-size' => ['n' => 2, 'p' => '']
+   'cuenta-size' => ['n' => 2, 'p' => ''],
+   'cuenta-pagebox' => ['n' => 2, 'p' => '']
 ];
 
 // REDEFINIR VARIABLES
@@ -64,6 +65,9 @@ switch($action){
 	case 'cuenta-size':
 		$columna = ($action === 'cuenta-family') ? 'user_font_family' : 'user_font_size';
 		echo $tsCuenta->saveThemeFont($columna);
+	break;
+	case 'cuenta-pagebox':
+		echo $tsCuenta->saveThemePageBox();
 	break;
 	case 'cuenta-avatar-change':
 		echo $tsCuenta->changeAvatar();

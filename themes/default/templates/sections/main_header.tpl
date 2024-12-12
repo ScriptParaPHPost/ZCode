@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
 {meta facebook=true twitter=true}
-<meta name="google-site-verification" content="_6Olpr8n01KGgFYU8coI91bMy3Cz1n7OMctT32PKXKo" />
 {zCode css=["base.css","theme.css"]}
+{analytics id=""}
 </head>
 <body>
 	
 	<div class="UIBeeper" id="BeeperBox"></div>
 
-	<div class="container">
-		<main id="brandday" class="my-3 rounded">
+	<div id="pagebox-one" class="{if $tsThemeBox}no-{/if}container">
+		<main id="brandday" class="{if !$tsThemeBox}my-3 rounded{/if}">
 			{include "head_header.tpl"}
-			<section class="container py-3 px-3">
+			<section id="pagebox-two" class="container{if $tsThemeBox}-fluid{/if} py-3 px-3">
 				{include "head_noticias.tpl"}
 				<a name="cielo"></a>

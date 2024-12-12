@@ -12,6 +12,23 @@ export function syncThemeSystem() {
    });
 };
 
+function updateClasses() {
+   $('#pagebox-one').toggleClass('container no-container');
+   $('#brandday').toggleClass('my-3 my-0');
+   $('#pagebox-two').toggleClass('container container-fluid');
+}
+
+export function syncThemePageBox() {
+   $('#pagebox').on('click', function() {
+      const { themes } = ZCodeApp;
+      let selected = ($('#pagebox').prop('checked') === true) ? 1 : 0;
+     $.post(`${ZCodeApp.url}/cuenta-pagebox.php`, { selected }).done(request => {
+         if(request) updateClasses()
+      })
+     .fail(() => UPModal.alert('Error', `No se pudo actualizar el esquema de pagebox.`, false));
+   });
+};
+
 export function syncThemeColor() {
    const { url, colores } = ZCodeApp;
    const themesColor = $('.syncThemeColor');

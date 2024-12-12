@@ -432,6 +432,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}perfil` (
   `user_customize` varchar(20) NOT NULL DEFAULT '#212121;#F4F4F4',
   `user_font_family` varchar(20) NOT NULL DEFAULT 'tema',
   `user_font_size` varchar(3) NOT NULL DEFAULT 'md',
+  `user_pagebox` varchar(1) NOT NULL DEFAULT 0,
   `p_nombre` varchar(50) NOT NULL DEFAULT '',
   `p_avatar` int(1) NOT NULL DEFAULT 0,
   `p_mensaje` varchar(60) NOT NULL DEFAULT '',
@@ -729,6 +730,8 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}seo` (
   `seo_robots_data` text NULL,
   `seo_robots` int(1) NULL DEFAULT 0,
   `seo_sitemap` int(1) NULL DEFAULT 0,
+  `seo_google_verification` varchar(60) NULL DEFAULT '',
+  `seo_google_verification_active` int(1) NULL DEFAULT 0,
   PRIMARY KEY (`seo_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 

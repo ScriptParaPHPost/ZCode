@@ -47,7 +47,8 @@ function smarty_function_uicon(array $params, &$smarty): string {
       'role' => htmlspecialchars($params['role'] ?? ''),
       'style' => htmlspecialchars($params['style'] ?? ''),
       'title' => htmlspecialchars($params['title'] ?? ''),
-      'fill' => htmlspecialchars($params['fill'] ?? '')
+      'fill' => htmlspecialchars($params['fill'] ?? ''),
+      'onclick' => htmlspecialchars($params['onclick'] ?? '')
    ];
 
    // Insertar las clases y atributos en el código SVG

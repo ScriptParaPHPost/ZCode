@@ -59,6 +59,10 @@ function smarty_function_meta($params, &$smarty) {
 		$meta .= "<meta name=\"{$nameRobots[$robots_data['name']]}\" content=\"{$contentRobots[$robots_data['content']]}\" />\n";
 	}
 
+	if(!empty($data['seo_google_verification']) AND (int)$data['seo_google_verification_active'] === 1) {
+		$meta .= "<meta name=\"google-site-verification\" content=\"{$data['seo_google_verification']}\" />\n";
+	}
+
 	$meta .= $tsSeo->addRobotsTXT();
 	if((int)$data['seo_sitemap']) {
 		$meta .= "<link rel=\"sitemap\" type=\"application/xml\" title=\"Mapa del sitio\" href=\"{$tsCore->settings['url']}/sitemap.xml\">\n";

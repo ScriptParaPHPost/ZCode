@@ -152,6 +152,7 @@
 	$smarty->assign('tsMPs', $tsMP->mensajes);
 	
 	$smarty->assign('tsThemeSettings', $Theme->getSettingsTheme());
+	$smarty->assign('tsThemeBox', $Theme->getSettingPageBox());
 
 	$smarty->assign('tsMenuCuenta', $menu_cuenta);
 

@@ -77,6 +77,7 @@ $(document).ready(() => {
    	imported('cuenta/apariencia.js', 'syncThemeSystem');
    	imported('cuenta/apariencia.js', 'syncThemeColor');
    	imported('cuenta/apariencia.js', 'syncThemeFont');
+   	imported('cuenta/apariencia.js', 'syncThemePageBox');
    	if (!$('.customizar_tema').hasClass('d-none')) {
    		imported('cuenta/customizar.js', 'handleChangeColor');
    	}

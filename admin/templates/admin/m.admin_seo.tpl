@@ -18,6 +18,16 @@
             <dd><input type="text" id="keywords" name="keywords" value="{$tsSeo.seo_keywords}" /></dd>
          </dl>
          <dl>
+            <dt><label for="google_verification_active">Activar verificaci&oacute;n de google:</label><br><small>Para activar hasta verificar, luego desactivalo</small></dt>
+            <dd>
+               {html_radios name="google_verification_active" id="google_verification_active" values=[1, 0] output=['Si', 'No'] selected=$tsSeo.seo_google_verification_active class="radio"}
+            </dd>
+         </dl>
+         <dl>
+            <dt><label for="google_verification">Verificaci&oacute;n de google:</label><br><small>Para que puedas verificar con google</small></dt>
+            <dd><input type="text" id="google_verification" name="google_verification" minlength="40" maxlength="60" value="{$tsSeo.seo_google_verification}" /></dd>
+         </dl>
+         <dl>
             <dt><label for="robots">Crear robots.txt:</label><small>Activar los rastreadores de los motores de búsqueda si pueden o no indexar una página.</small></dt>
             <dd>
                {html_radios name="robots" id="robots" values=[1, 0] output=['Si', 'No'] selected=$tsSeo.seo_robots class="radio"}

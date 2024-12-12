@@ -66,6 +66,15 @@ class Theme {
 		}
 	}
 
+	public function getSettingPageBox() {
+		global $tsUser;
+		// Verifica si el usuario está registrado
+		if ($tsUser->is_member) {
+			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT `user_pagebox` FROM @perfil WHERE `user_id` = {$tsUser->uid}"));
+			return (int)$data["user_pagebox"] === 1;
+		}
+	}
+
 	public function getSettingsTheme() {
 		$attrs = [
 			"data-theme=\"{$this->setSchemeColor('scheme')}\"",

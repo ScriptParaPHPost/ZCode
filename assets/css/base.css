@@ -6659,7 +6659,7 @@ lite-youtube.lyt-activated > .lty-playbtn {
 }
 .UPModal-dialog {
 	color: var(--modal-color);
-	min-height: var(--modal-height);
+	max-height: var(--modal-height);
 	border: 1px solid var(--modal-border-color);
 	border-radius: var(--modal-border-radius);
 	box-shadow: var(--modal-box-shadow);
