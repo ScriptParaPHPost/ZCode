@@ -1,21 +1,25 @@
-<div class="d-flex justify-content-start align-items-center column-gap-3 mb-3">
-	{assign var="imageCount" value=$tsGeneral.fotos|count}
-	{foreach from=$tsGeneral.fotos item=f key=i}
-		{if $f.foto_id}
-			<div style="width:calc(calc(100% - 3rem) / 6)">
-				<div class="foto rounded shadow w-100" style="height:120px;">
-					<a href="{$tsConfig.url}/fotos/{$tsInfo.nick}/{$f.foto_id}/{$f.f_title|seo}.html" title="{$f.f_title}">
-						<img class="image rounded w-100 h-100 object-fit-cover d-block" src="{$tsConfig.assets}/images/favicon/logo-128.webp" data-src="{$f.f_url}" />
-					</a>
-				</div>
+{if $tsGeneral.fotos_total > 0}
+	<section class="up-card">
+		<div class="up-card--header" icon="true">
+			<div class="up-header--icon">
+				{uicon name="picture"}
 			</div>
-		{/if}
-	{/foreach}
-	{section name=emptyImage loop=6-$imageCount}
-		<div style="width:calc(calc(100% - 3rem) / 6)">
-		  <div class="foto rounded shadow w-100" style="height:120px;">
-				<!-- Este contenedor no tiene una imagen y se llenará con el fondo de color #CCC -->
-		  </div>
+			<div class="up-header--title">
+				<span>&Uacute;ltimas fotos</span>
+			</div>
 		</div>
-	{/section}
-</div>
+		<div class="up-card--body">
+			<div id="perfil-foto-bar" class="gap-3 p-2">
+				{foreach from=$tsGeneral.fotos item=f key=i}
+					{if $f.foto_id}
+						<div class="foto rounded mb-3">
+							<a href="{$tsConfig.url}/fotos/{$tsInfo.nick}/{$f.foto_id}/{$f.f_title|seo}.html" title="{$f.f_title}">
+								<img class="image rounded w-100 h-100 object-fit-cover d-block" src="{$tsConfig.assets}/images/favicon/logo-128.webp" data-src="{$f.f_url}" />
+							</a>
+						</div>
+					{/if}
+				{/foreach}
+			</div>
+		</div>
+	</section>
+{/if}

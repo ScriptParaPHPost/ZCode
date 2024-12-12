@@ -210,7 +210,7 @@ class tsAgregar {
 			// Agregamos estos items al array
 			$postData['user'] = $user_id;
 			$postData['status'] = (!$tsUser->is_admod AND ((int)$tsCore->settings['c_desapprove_post'] === 1)) ? 3 : 0;
-			// Generamos la imagene para la portada ya sea desde archivo o url
+			// Generamos la imagen para la portada ya sea desde archivo o url
 			$postData['portada'] = $tsImages->getImageOfInput();
 			// INSERTAMOS
 			if(insertDataInBase([__FILE__, __LINE__], '@posts', $postData, 'post_')) {

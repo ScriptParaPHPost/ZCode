@@ -1,7 +1,4 @@
 <div id="perfil_wall" status="activo">
-	{if $tsGeneral.fotos_total > 0}
-		<div id="perfil-foto-bar">{include "m.perfil_muro_fotos.tpl"}</div>
-	{/if}
 	<div id="perfil-form" class="widget">
 		{if $tsPrivacidad.mf.v == true}
 			{include "m.perfil_muro_form.tpl"}

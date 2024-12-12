@@ -1,15 +1,15 @@
 			</section>
 			<footer>
-				<div class="links p-2">
-					<div class="links-left py-1 d-flex justify-content-center align-items-center column-gap-2">
-						<a class="text-decoration-none fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/ayuda/" title="Ayuda">Ayuda</a>
-						<a class="text-decoration-none fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/contacto/" title="Contacto">Contacto</a>  
-						<a class="text-decoration-none fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/protocolo/" title="Protocolo">Protocolo</a>
+				<div class="links p-2 d-flex d-lg-block justify-content-around align-items-center">
+					<div class="links-left text-center text-lg-start py-1 d-block d-lg-flex justify-content-around justify-content-lg-center align-items-center column-gap-2">
+						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/ayuda/" title="Ayuda">Ayuda</a>
+						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/contacto/" title="Contacto">Contacto</a>  
+						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/protocolo/" title="Protocolo">Protocolo</a>
 					</div>
-					<div class="links-right py-1 d-block d-md-flex justify-content-center align-items-center column-gap-2">
-						<a class="text-decoration-none d-block fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/terminos-y-condiciones/" title="T&eacute;rminos y condiciones">T&eacute;rminos y condiciones</a>
-						<a class="text-decoration-none d-block fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/privacidad/" title="Privacidad de datos">Privacidad de datos</a>
-						<a class="text-decoration-none d-block fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/dmca/" title="Report Abuse - DMCA">Report Abuse - DMCA</a>
+					<div class="links-right text-center text-lg-start py-1 d-block d-lg-flex justify-content-around justify-content-lg-center align-items-center column-gap-2">
+						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/terminos-y-condiciones/" title="T&eacute;rminos y condiciones">T&eacute;rminos y condiciones</a>
+						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/privacidad/" title="Privacidad de datos">Privacidad de datos</a>
+						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/dmca/" title="Report Abuse - DMCA">Report Abuse - DMCA</a>
 					</div>
 				</div>
 				<div class="footer-copyright text-center translucent-bg text-uppercase border-top small py-3">

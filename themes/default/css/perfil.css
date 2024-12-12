@@ -205,3 +205,14 @@
 	border: 1px solid var(--border-color);
 	padding: .5rem .5rem .5rem calc(var(--total) + .65rem);
 }
+#perfil-foto-bar {
+	columns: 3;
+	.foto {
+		height: 80px;
+	}
+}
+@media (width <= 992px) {
+	#perfil-foto-bar {
+		columns: 6;
+	}
+}

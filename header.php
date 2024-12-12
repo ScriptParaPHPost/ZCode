@@ -159,7 +159,7 @@
 
 	if (!extension_loaded('gd') && !function_exists('gd_info')) {
 		$smarty->assign('gd_info', 'La extensi&oacute;n GD no est&aacute; habilitada en tu servidor.');
-	}	 
+	}
 
 /*
  * -------------------------------------------------------------------

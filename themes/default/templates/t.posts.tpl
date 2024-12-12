@@ -33,24 +33,4 @@
 		{include "m.posts_related.tpl"}
 	</div>
 </div>
-{*
-
-
-<div class="post-wrapper">
-	{include "m.posts_autor.tpl"}
-	{include "m.posts_content.tpl"}
-	<div class="floatR" style="width: 766px;">
-		{include "m.posts_related.tpl"}
-		{include "m.posts_banner.tpl"}
-		<div class="clearfix"></div>
-	</div>
-	
-	<br />
-	{if !$tsUser->is_member}
-		<div class="emptyData clearfix">Para poder comentar necesitas estar <a onclick="registro_load_form(); return false" href="">Registrado.</a> O.. ya tienes usuario? <a onclick="open_login_box('open')" href="#">Logueate!</a></div>
-	{elseif $tsPost.block > 0}
-		<div class="emptyData clearfix">&iquest;Te has portado mal? {$tsPost.user_name} te ha bloqueado y no podr&aacute;s comentar sus post.</div>
-	{/if}
-	
-</div>*}
 {include "main_footer.tpl"}

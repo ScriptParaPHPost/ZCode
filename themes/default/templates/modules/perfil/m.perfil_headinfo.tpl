@@ -2,15 +2,15 @@
 	<a href="{$tsConfig.url}/perfil/{$tsInfo.nick}" class="mx-auto d-block avatar avatar-16 avatar-status status-{$tsInfo.status.css} overflow-hidden rounded shadow">
 		<img loading="lazy" src="{$tsInfo.avatar}" alt="{$tsInfo.nick}" class="w-100 h-100">
 	</a>
-	<div class="d-block d-md-flex justify-content-md-between align-items-md-center py-3 px-md-0 d-lg-grid gap-3 info-data flex-grow-1">
-		<div class="left w-100 text-center text-md-start">
+	<div class="d-block d-lg-flex justify-content-lg-between align-items-lg-center py-3 px-md-0 d-lg-grid gap-3 info-data flex-grow-1">
+		<div class="left w-100 text-center text-lg-start">
 			<h3 class="m-0 fw-bold">{$tsInfo.nick|verificado}</h3>
 			<div class="d-block">
 				<span>{uicon name="{$tsInfo.pais.icon}" folder="flags" alt="{$tsInfo.pais.name}" class="flag me-2"}{$tsInfo.stats.r_name} - Puntos {$tsInfo.stats.user_puntos|human}</span>
 				{if $tsInfo.p_mensaje}<span class="fst-italic d-block">{$tsInfo.p_mensaje}</span>{/if}
 			</div>
 			{if $tsUser->uid != $tsInfo.uid && $tsUser->is_member}
-				<div class="acciones d-flex justify-content-start align-items-center gap-3 mt-3">
+				<div class="acciones d-flex justify-content-center justify-content-lg-start align-items-center gap-3 mt-3">
 					<span role="button" onclick="mensaje.nuevo('{$tsInfo.nick}');" title="Enviar mensaje privado">{uicon name="thread"}</span>
 					<span role="button" onclick="denuncia.nueva('usuario',{$tsInfo.uid}, '', '{$tsInfo.nick}'); return false">Denunciar</span>
 					<span role="button" onclick="bloquear({$tsInfo.uid}, {if $tsInfo.block.bid}false{else}true{/if}, 'perfil')" id="bloquear_cambiar">{if $tsInfo.block.bid}Desbloquear{else}Bloquear{/if}</span>
@@ -24,7 +24,7 @@
 				</div>
 			{/if}
 		</div>
-		<div class="right d-flex justify-content-center justify-content-md-end align-items-center">
+		<div class="right d-flex justify-content-center justify-content-lg-end align-items-center">
 			<div class="d-block py-2 px-3 stats-item text-center text-md-end">
 				<strong class="d-block h2 fw-bold m-0">{$tsInfo.stats.user_amigos|human}</strong>
 				<span class="d-block text-uppercase small fw-semibold">Amigos</span>

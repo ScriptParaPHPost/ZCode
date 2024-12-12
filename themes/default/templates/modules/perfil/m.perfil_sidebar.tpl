@@ -1,5 +1,6 @@
 {include "m.global_ads_300.tpl"}
 <br>
+{include "m.perfil_muro_fotos.tpl"}
 {if $tsInfo.p_socials != ''}
 	<section class="up-card">
 		<div class="up-card--header" icon="true">

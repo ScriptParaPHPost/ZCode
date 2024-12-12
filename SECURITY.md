@@ -6,14 +6,14 @@ Actualmente es compatible con la última versión Smarty 4.
 
 | Version | Soportado          |
 | ------- | ------------------ |
-| 4.5.4   | :white_check_mark: |
+| 4.5.5   | :white_check_mark: |
 
 Actualmente es compatible con la última versión PHP.
 
 | Version | Soportado          |
 | ------- | ------------------ |
-|   8.x   | :white_check_mark: |
-|   7.x   | :white_check_mark: |
+|   8.2+  | :white_check_mark: |
+|   7.x   | :x: 					 |
 
 ## Informar de una vulnerabilidad
 

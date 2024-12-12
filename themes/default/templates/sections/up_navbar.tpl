@@ -1,4 +1,4 @@
-<nav class="up-navbar d-flex justify-content-between align-items-center body-bg z-99 w-100 px-3">
+<nav class="up-navbar d-flex justify-content-between align-items-center body-bg z-99 px-3">
 
 	<div class="up-navbar-menu d-flex justify-content-start align-items-center" data-menu="main">
 
@@ -81,9 +81,7 @@
 					</div>
 				{/if}
 			</div>
-
 		</div>
-		
 	</div>
 	
 	<div class="up-navbar-menu d-flex justify-content-end align-items-center" data-menu="secondary">
@@ -125,7 +123,7 @@
 			{include "head_menu_user.tpl"}
 		{else}
 			<div class="up-menu--item">
-				<a title="Identificarme!" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 up-menu--login d-flex justify-content-center align-items-center" rel="internal" href="javascript:login_modal()">
+				<a title="Identificarme!" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 up-menu--login d-flex justify-content-center align-items-center" rel="internal" href="{$tsConfig.url}/login/">
 					{uicon name="door-alt" size="1.5rem"}
 					<span class="item--text">Iniciar sesión</span>
 				</a>
