@@ -124,7 +124,7 @@ class SmartyZCode {
 		$fileCache = $htmltag . ($withoutCached ? '' : $this->getCached());
 		return match ($extension) {
 			'css' => "<link rel=\"stylesheet\" href=\"$fileCache\" type=\"text/css\"/>\n",
-			'js' => "<script src=\"$fileCache\"></script>\n",
+			'js' => "<script src=\"$fileCache\" defer></script>\n",
 			default => null
 		};
 	}
@@ -229,7 +229,7 @@ class SmartyZCode {
 	 * @return string La cadena JavaScript del objeto global.
 	*/
 	private function createObject(array $claves = [], $data = null): string {
-  		global $tsUser, $tsCore;
+  		global $tsUser, $tsCore, $smarty;
 	   include TS_ZCODE . 'datos.php';
 
 	   $quitar = explode(';', $data);
@@ -254,19 +254,20 @@ class SmartyZCode {
 	   if($quitar[1] !== 'themes') $jsObjectString .= "\tthemes: ". json_encode($tsSchemes) ."\n";
 	   $jsObjectString .= "};";
 	   
-	   if($tsUser->uid != 0 AND $this->nucleo['tsPage'] == 'cuenta') {
-			// Avatar por defecto en caso de no exister el avatar del usuario
-			$avatar = $tsCore->getAvatar($tsUser->uid, 'use');
-			$portada = '';//$this->nucleo['tsPerfil']['user_portada'];
-			$portada = isset($portada) ? "\n\tavatar.cover = '$portada';" : '';
-			$jsObjectString .= <<< LINEA
-			\ndocument.addEventListener("DOMContentLoaded", function() {
-				avatar.uid = {$tsUser->uid};
-				avatar.current = '$avatar';$portada
-			});
-			LINEA;
-		}
-		
+	   if($tsUser->uid !== 0) {
+		   if($this->nucleo['tsPage'] === 'cuenta') {
+				// Avatar por defecto en caso de no exister el avatar del usuario
+				$avatar = $tsCore->getAvatar($tsUser->uid, 'use');
+				$portada = '';//$this->nucleo['tsPerfil']['user_portada'];
+				$portada = isset($portada) ? "\n\tavatar.cover = '$portada';" : '';
+				$jsObjectString .= <<< LINEA
+				\ndocument.addEventListener("DOMContentLoaded", function() {
+					avatar.uid = {$tsUser->uid};
+					avatar.current = '$avatar';$portada
+				});
+				LINEA;
+			}
+	   }
 	   return trim($jsObjectString);
   	}
 
@@ -408,6 +409,18 @@ class SmartyZCode {
 		}
 		ksort($claves);
 		return "<script>\n{$this->createObject($claves, $data)}\n</script>";
+  	}
+
+  	public function setScriptNotifica() {
+  		global $tsUser;
+  		$isNots = (int)$smarty->tpl_vars['tsNots']->value;
+  		$isMps = (int)$smarty->tpl_vars['tsMPs']->value;
+
+		$nots = 'notifica.popup('.(int)$isNots.');';
+		$mps = 'mensaje.popup('.(int)$isMps.');';
+		$html = "<script>document.addEventListener(\"DOMContentLoaded\",function(){{$nots}{$mps}});</script>\n";
+	
+		return trim($html);
   	}
 
 }

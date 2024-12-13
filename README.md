@@ -4,7 +4,8 @@
 ![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic&label=Branch%20main)
 ![GitHub Pre-Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?include_prereleases&style=plastic&label=Branch%20develop)
 
-# ZCode v2.0.8
+# ZCode v2.0.10
+> Próxima actualización se reescribirá varias líneas de código | próxima versión 2.1.10 :: sin fecha
 
 ### Actualizaciones
  * PHP 8.2+ (requerido)

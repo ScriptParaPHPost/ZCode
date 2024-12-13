@@ -27,19 +27,10 @@ class tsSeo {
 	# * editNoticia() :: Editamos la noticia
 	# ===================================================
 	public function getSeo() {
-		$tsCore = new tsCore;
-		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_id, seo_titulo, seo_descripcion, seo_portada, seo_favicon, seo_keywords, seo_images, seo_robots_data, seo_robots, seo_sitemap, seo_google_verification, seo_google_verification_active FROM @seo WHERE seo_id = 1'));
-		if($sql == null) return [];
-		if(empty($sql['seo_robots_data'])) {
-			$robots = [];
-		} else {
-			$robots = json_decode($sql['seo_robots_data'], true);
-		}
-		
-		$sql['robots_name'] = $robots['name'];
-		$sql['robots_content'] = $robots['content'];
+		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_id, seo_titulo, seo_descripcion, seo_portada, seo_favicon, seo_keywords, seo_images, seo_robots_data, seo_robots, seo_sitemap, seo_google_verification, seo_google_verification_active, seo_google_analytics FROM @seo WHERE seo_id = 1'));
+		if($sql === null) return [];
+		$sql['seo_robots_data'] = empty($sql['seo_robots_data']) ? [] : json_decode($sql['seo_robots_data'], true);
 		$sql['seo_images'] = empty($sql['seo_images']) ? : json_decode($sql['seo_images'], true);
-
 		return $sql;
 	}
 

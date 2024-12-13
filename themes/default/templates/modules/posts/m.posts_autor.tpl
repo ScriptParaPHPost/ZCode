@@ -35,15 +35,15 @@
 			<span class="txtData" style="font-size: 0.875rem;">Seguidores</span>
 		</div>
 		<div class="stat--item text-uppercase fw-semibold rounded shadow py-3 text-center">
-			<span class="d-block h3 m-0 nData" style="color: #0196ff">{$tsAutor.user_puntos|human}</span>
-			<span class="txtData" id="puntos_post" style="font-size: 0.875rem;">Puntos</span>
+			<span class="d-block h3 m-0 nData" id="puntos_post" data-total="{$tsAutor.user_puntos}" style="color: #0196ff">{$tsAutor.user_puntos|human}</span>
+			<span class="txtData" style="font-size: 0.875rem;">Puntos</span>
 		</div>
 		<div class="stat--item text-uppercase fw-semibold rounded shadow py-3 text-center">
 			<span class="d-block h3 m-0 nData">{$tsAutor.user_posts|human}</span>
 			<span class="txtData" style="font-size: 0.875rem;">Posts</span>
 		</div>
 		<div class="stat--item text-uppercase fw-semibold rounded shadow py-3 text-center">
-			<span class="d-block h3 m-0 nData" style="color: #456c00">{$tsAutor.user_comentarios|human}</span>
+			<span class="d-block h3 m-0 nData" id="total_comentarios" data-total="{$tsAutor.user_comentarios}" style="color: #456c00">{$tsAutor.user_comentarios|human}</span>
 			<span class="txtData" style="font-size: 0.875rem;">Comentarios</span>
 		</div>			
 	</div>

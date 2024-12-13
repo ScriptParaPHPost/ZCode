@@ -22,10 +22,10 @@ function smarty_function_zCode($params, &$smarty) {
 
 	# Inicializamos la variable
 	$template = '';
+	$template .= "<!-- Plugin ZCode: V{$pluginZCode->version} -->\n";
 
 	# Añadimos las hojas de estilos
 	if(isset($params["css"])) {
-		if(is_array($params["css"])) $template .= "<!-- Plugin ZCode: V{$pluginZCode->version} -->\n";
 		if(!in_array($smarty->tpl_vars['tsPage']->value, ['admin', 'moderacion',  'login', 'registro']) && !isset($params['customizer'])) {
 			$template .= $pluginZCode->setStyleCustomized();
 		}
@@ -33,7 +33,6 @@ function smarty_function_zCode($params, &$smarty) {
 	}
 
 	if(isset($params['scriptGlobal'])) {
-		$template .= "<!-- Plugin ZCode: V{$pluginZCode->version} -->\n";
 		$template .= $pluginZCode->setScriptLineGlobal($params['remove'] ?? '');
 	}
 
@@ -47,6 +46,10 @@ function smarty_function_zCode($params, &$smarty) {
 		if(isset($smarty->tpl_vars['tsMuro']->value['total'])) {
 			$template .= "\n<script>\n\tmuro.stream.total = " . (int)$smarty->tpl_vars['tsMuro']->value['total'] . ";\n</script>";
 		}
+	}
+
+	if(isset($params['notifica'])) {
+		$template .= "\n".$pluginZCode->setScriptNotifica();
 	}
 
 	return $template;

@@ -30,14 +30,6 @@
 {if $tsUser->is_admod && $tsConfig.c_see_mod && $tsNovemods.total}
 	<div id="stickymsg" class="position-fixed py-1 px-3 small toast-box toast-box--danger fw-semibold" style="cursor:default;">Hay <span class="fw-bold">{$tsNovemods.total} contenido{if $tsNovemods.total != 1}s{/if}</span> esperando revisi&oacute;n</div>
 {/if}
-
-{zCode js=["acciones.js","dropdown.js"] scriptGlobal=true more=true}
-<script>
-	$(document).ready(() => {
-		notifica.popup({$tsNots});
-		mensaje.popup({$tsMPs});
-	});
-</script>
 {include "cookie-consent.tpl"}
 </body>
 </html>

@@ -732,6 +732,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}seo` (
   `seo_sitemap` int(1) NULL DEFAULT 0,
   `seo_google_verification` varchar(60) NULL DEFAULT '',
   `seo_google_verification_active` int(1) NULL DEFAULT 0,
+  `seo_google_analytics` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`seo_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 

@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
 {meta facebook=true twitter=true}
-{zCode css=["base.css","theme.css"]}
-{analytics id=""}
+{zCode css=["base.css","theme.css"] js=["acciones.js","dropdown.js"] scriptGlobal=true more=true notifica=true}
 </head>
 <body>
 	

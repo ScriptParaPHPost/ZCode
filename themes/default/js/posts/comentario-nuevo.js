@@ -8,6 +8,7 @@ export function handleCommentAndReply({ type = 'posts', cid = 0, mostrar_resp = 
 	let auser = parseInt($('#auser_post').val());
 	let comentario = encodeURIComponent(text);
 	let totalComments = parseInt($('#ncomments').text());
+	let totalAutorComments = parseInt($('#total_comentarios').data('total'));
 	btnComment.attr({ disabled: 'disabled' });
 	verify(btnComment, text, textarea);
 	// Mostramos el mensaje de enviar comentario...
@@ -35,6 +36,7 @@ export function handleCommentAndReply({ type = 'posts', cid = 0, mostrar_resp = 
 				if(cid > 0) $('.miComentario').html('<div class="empty">Tu comentario fue agregado correctamente!</div>');
 			});
 			$('#ncomments').text(totalComments + 1);
+			$('#total_comentarios').data('total', totalAutorComments + 1).text(totalAutorComments + 1);
 			$('.wysibb-body').html('');
 		}
 		loading.end()
