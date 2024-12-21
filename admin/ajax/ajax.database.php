@@ -19,6 +19,7 @@
 		'database-check' => array('n' => 2, 'p' => ''),
 		'database-all' => array('n' => 2, 'p' => ''),
 		'database-backup' => array('n' => 2, 'p' => ''),
+		'database-backup-del' => array('n' => 2, 'p' => ''),
 	);
 
 
@@ -65,6 +66,11 @@
 		case 'database-backup':
 			//<---
          echo $tsDatabase->createBackup();
+			//--->
+		break;
+		case 'database-backup-del':
+			//<---
+         echo $tsDatabase->delBackup();
 			//--->
 		break;
 	}

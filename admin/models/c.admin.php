@@ -310,12 +310,17 @@ class tsAdmin {
 		$categoria = [
 			"nombre" => $nombre,
 			"seo" => $seo,
+			"foro" => $tsCore->setSecure($_POST['c_foro']),
 			"img" => $tsCore->setSecure($_POST['c_img']),
 			"color" => $tsCore->setSecure($_POST['c_color']),
 			"descripcion" => $tsCore->setSecure($_POST['c_descripcion']),
 		];
 		if($type === 'nueva') $categoria['orden'] = $orden;
 		return $categoria;
+	}
+	private function getSqlCats(int $cid = 0) {
+		$where = ($cid > 0) ? "WHERE cid = $cid" : "";
+		return db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_foro, c_nombre, c_descripcion, c_seo, c_img, c_color, c_private FROM @posts_categorias $where");
 	}
 	public function saveOrden() {
 		$ordenado = [];
@@ -330,7 +335,7 @@ class tsAdmin {
 	public function getCats() {
 		global $tsCore;
 		# Obtenemos la información
-		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_nombre, c_descripcion, c_seo, c_color, c_img FROM @posts_categorias"));
+		$data = result_array($this->getSqlCats());
 		foreach($data as $k => $super) {
 			$data[$k]['c_img'] = $tsCore->imageCat($super['c_img'] ?? '1f30d.svg');
 		}
@@ -341,7 +346,7 @@ class tsAdmin {
 		# Obtenemos la ID de la categoría
 		$cid = (int)$_GET['cid'];
 		# Obtenemos la información
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_nombre, c_descripcion, c_seo, c_img, c_color FROM @posts_categorias WHERE cid = $cid LIMIT 1"));
+		$data = db_exec('fetch_assoc', $this->getSqlCats((int)$_GET['cid']));
 		# Retornamos los daots
 		return $data;
 	}
@@ -462,7 +467,7 @@ class tsAdmin {
 			'image' => $tsCore->setSecure($post['r_img']),
 			'cant' => empty($post['global-cantidadrequerida']) ? 0 : (int)$post['global-cantidadrequerida'],
 			'type' => $post['global-type'] > 4 ? 0 : $post['global-type'],
-			'allows' => self::optionsRange($post)
+			'allows' => $this->optionsRange($post)
 		];
 		if (empty($retornar['name'])) return 'Debes ingresar el nombre del nuevo rango.';
 		if ($post['global-pointsforposts'] > $post['global-pointsforday']) return 'El rango no puede dar m&aacute;s puntos de los que tiene al d&iacute;a.';
@@ -472,14 +477,14 @@ class tsAdmin {
 		global $tsCore;
 		//
 		$rid = (int)$_GET['rid'];
-		$r = self::sameArrayRango($_POST);
+		$r = $this->sameArrayRango($_POST);
 		$set = $tsCore->getIUP($r, 'r_');
 		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE @rangos SET $set WHERE rango_id = $rid")) return true;
 		else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
 	}
 	public function newRango() {
 		global $tsCore;
-		$r = self::sameArrayRango($_POST);
+		$r = $this->sameArrayRango($_POST);
 		// Insertamos los datos
 		if (insertDataInBase([__FILE__, __LINE__], '@rangos', $r, 'r_')) return true;
 	}

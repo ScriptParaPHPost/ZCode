@@ -6,6 +6,7 @@
 	{if $tsAct == ''}
    	<a href="{$tsConfig.url}/admin/database/backup" class="btn">Crear copia de seguridad</a>
    	<a href="{$tsConfig.url}/admin/database/lista" class="btn">Lista de backups</a>
+
    	<div style="overflow-x:auto;">
 		   <table class="admin_table mt-3">
 				<thead>
@@ -88,13 +89,14 @@
 			<tbody>
 				{foreach $tsBackupSQL key=t item=sql}
 					<tr>
-						<td>{$sql.id}</td>
+						<td style="text-align: center;">{$sql.id}</td>
 						<td>{$sql.name}</td>
 						<td class="text-center">{$sql.size}</td>
 						<td class="text-center">{$sql.date|hace:true}</td>
 						<td>
 							<div class="admin_actions d-flex justify-content-center align-items-center column-gap-2">
-								<a href="{$sql.file}" download="{$sql.code_name}.sql" class="text-decoration-none fw-semibold">Descargar</a>
+								{if $tsUser->uid == 1}<a href="{$sql.file}" download="{$sql.code_name}.sql" class="text-decoration-none fw-semibold">Descargar</a>{/if}
+								<span role="button" onclick="database.delete_backup('{$sql.name}')" class="fw-semibold">Eliminar</span>
 							</div>
 						</td>
 					</tr>

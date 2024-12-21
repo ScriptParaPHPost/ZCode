@@ -52,6 +52,20 @@ const database = {
 			let type = (parseInt(req.charAt(0)) === 0) ? 'Error' : 'Bien';
 			let msg = req.substring(3);
 			UPModal.alert(type, msg, false);
+			if(parseInt(req.charAt(0)) === 1) setTimeout(() => document.location.href = `${ZCodeApp.url}/admin/database/lista`, 1000);
+		});
+	},
+	delete_backup(file) {
+		loading.start();
+		$.post(`${ZCodeApp.url}/database-backup-del.php?from=dashboard`, { file }, req => {
+			let type = (parseInt(req.charAt(0)) === 0);
+			let msg = req.substring(3);
+			toast.start({ 
+				title: (type ? 'Error' : 'Bien'), 
+				content: msg, 
+				type: (type ? 'danger' : 'success') 
+			});
+			if(!type) setTimeout(() => location.reload(), 1000);
 			loading.end();
 		});
 	}

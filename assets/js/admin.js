@@ -1,54 +1,23 @@
-const favs = {
-	add: () => {
-		UPModal.setModal({
-			title: 'Añadir favicon',
-			body: `<div class="upform-group">
-			<label class="upform-label" for="size">Tamaño</label>
-				<div class="upform-group-input">
-					<input class="upform-input" type="number" name="size" id="size" placeholder="16">
-				</div>
-			</div>`,
-			buttons: {
-				confirmTxt: `S&iacute;`,
-				confirmAction: `favs.insert()`,
-				cancelShow: true
-			}
-		});
-	},
-	insert: () => {
-		let size = empty($('input#size').val()) ? 16 : $('input#size').val();
-		const html = `<div class="input-group w-100 mb-3">
-          <span class="input-group-text text-center d-block" style="width: 90px;" id="pixeles">${size}x${size}</span>
-      	<input class="form-control" type="text" id="images" name="images[${size}]" value="" />
-      	<button type="button" class="btn btnOk" onclick="$(this).parent().remove()">Quitar</button>
-      </div>`;
-      $('#addFavs').append(html);
-      UPModal.close();
-	}
-}
 /**
- * Con estas funciones "sameModal()" y "sameFn()"
+ * Con estas funciones "configureAndShowModal()" y "postRequestWithModal()"
  * y de esta forma simplificamos
 */
-function sameModal(sametitle, samebody, sameaction) {
-   UPModal.setModal({
-		title: sametitle,
-		body: samebody,
-		buttons: {
-			confirmTxt: 'Aceptar',
-			confirmAction: sameaction,
-			cancelShow: true,
-			cancelTxt: 'Cancelar'
-		}
-	});
+function configureAndShowModal(title, body, action) {
+	const buttons = {
+		confirmTxt: 'Aceptar',
+		confirmAction: action,
+		cancelShow: true
+	};
+   UPModal.setModal({ title, body, buttons });
 }
-function sameFn(page, params, element) {
+function postRequestWithModal(page, params, element) {
    loading.start();
    UPModal.proccess_start();
-	$.post(`${ZCodeApp.url}/${page}.php?from=dashboard`, params, a => {
+	$.post(`${ZCodeApp.url}/${page}.php?from=dashboard`, params, response => {
    	UPModal.proccess_end();
-   	UPModal.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-   	if(a.charAt(0) == '1') $(element).fadeOut().remove(); 
+   	let tpy = parseInt(response.charAt(0)) === 1;
+   	UPModal.alert((tpy ? 'Hecho' : 'Opps!'), response.substring(3), false);
+   	if(tpy) $(element).fadeOut().remove(); 
    	loading.end();
    });
 }
@@ -56,20 +25,9 @@ function sameFn(page, params, element) {
 const foro = {
 	eliminar(fid, gew = true) {
       if(gew){
-      	sameModal('Borrar Categoría', '&#191;Quiere borrar esta categoria?', `foro.eliminar(${fid}, false)`)
+      	configureAndShowModal('Borrar Categoría', '&#191;Quiere borrar esta categoria?', `foro.eliminar(${fid}, false)`)
       } else {
-      	$.post(`${ZCodeApp.url}/admin-eliminar-categoria.php?from=dashboard`, { fid }, req => {
-      		console.log(req)
-      		switch (req.charAt(0)) {
-      			case '0':
-      				UPModal.alert('Error', req.substring(3), false);
-      			break;
-      			case '1':
-      				UPModal.alert('Bien', req.substring(3), false);
-      				$(`#few_${fid}`).remove();
-      			break;
-      		}
-      	});
+      	postRequestWithModal('admin-eliminar-categoria', { fid }, `#few_${fid}`);
       }
 	}
 }
@@ -79,8 +37,8 @@ var admin = {
 	afs: {
 	   borrar(afid, gew) {
          if(!gew){
-         	sameModal('Borrar Afiliado', '&#191;Quiere borrar este afiliado?', `admin.afs.borrar(${afid}, 1)`)
-	      } else sameFn('afiliado-borrar', { afid }, `#few_${afid}`);
+         	configureAndShowModal('Borrar Afiliado', '&#191;Quiere borrar este afiliado?', `admin.afs.borrar(${afid}, 1)`)
+	      } else postRequestWithModal('afiliado-borrar', { afid }, `#few_${afid}`);
    	},
    	accion(aid) {
    		loading.start()
@@ -109,9 +67,9 @@ var admin = {
 		},
 		borrar(nid, gew) {
 	    	if(!gew) {
-         	sameModal('Eliminar Noticia', '&#191;Quiere eliminar la noticia?', `admin.news.borrar(${nid}, true)`);
+         	configureAndShowModal('Eliminar Noticia', '&#191;Quiere eliminar la noticia?', `admin.news.borrar(${nid}, true)`);
          } else {
-         	sameFn('admin-eliminar-noticia', { nid }, `[nid="${nid}"]`);
+         	postRequestWithModal('admin-eliminar-noticia', { nid }, `[nid="${nid}"]`);
          }
 		}
 	},
@@ -120,48 +78,48 @@ var admin = {
 	  	accion(nid, accion, gew) {
 	    	if(!gew){
 	    		apd = (accion == 'aprobar') ? 'Aprobar' : 'Denegar';
-         	sameModal(apd + ' Cambio', '&#191;Quiere ' + apd.toLowerCase() + ' el cambio?', `admin.nicks.accion(${nid}, '${accion}', true)`);
-	      } else sameFn('admin-nicks-change', { nid, accion }, `#nick_${nid}`);
+         	configureAndShowModal(apd + ' Cambio', '&#191;Quiere ' + apd.toLowerCase() + ' el cambio?', `admin.nicks.accion(${nid}, '${accion}', true)`);
+	      } else postRequestWithModal('admin-nicks-change', { nid, accion }, `#nick_${nid}`);
 	  	}
 	},
 	// SESIONES
 	sesiones: {
 	   borrar(sid, gew) {
          if(!gew){
-         	sameModal('Cerrar sesi&oacute;n', '&#191;Quiere cerrar la sesi&oacute;n de este usuario/visitante? Se borrar&aacute; la sesi&oacute;n', `admin.sesiones.borrar(${sid}, true)`);
-        	} else sameFn('posts-sesiones-borrar', `sesion_id=${sid}`, `#sesion_${sid}`);
+         	configureAndShowModal('Cerrar sesi&oacute;n', '&#191;Quiere cerrar la sesi&oacute;n de este usuario/visitante? Se borrar&aacute; la sesi&oacute;n', `admin.sesiones.borrar(${sid}, true)`);
+        	} else postRequestWithModal('posts-sesiones-borrar', `sesion_id=${sid}`, `#sesion_${sid}`);
       }
 	},
 	// TODOS LOS POSTS
 	posts: {
 	   borrar(postid, gew) {
          if(!gew){
-         	sameModal('Borrar Post', '&#191;Quiere borrar este post permanentemente?', `admin.posts.borrar(${postid}, 1)`);		
-        	} else sameFn('posts-admin-borrar', { postid }, `#post_${postid}`);
+         	configureAndShowModal('Borrar Post', '&#191;Quiere borrar este post permanentemente?', `admin.posts.borrar(${postid}, 1)`);		
+        	} else postRequestWithModal('posts-admin-borrar', { postid }, `#post_${postid}`);
       }
 	},
 	// LISTA NEGRA
 	blacklist: {
 	   borrar(bid, gew) {
          if(!gew) {
-         	sameModal('Retirar Bloqueo', '&#191;Quiere retirar este bloqueo?', `admin.blacklist.borrar(${bid}, true)`);
-        	} else sameFn('admin-blacklist-delete', { bid }, `#block_${bid}`)
+         	configureAndShowModal('Retirar Bloqueo', '&#191;Quiere retirar este bloqueo?', `admin.blacklist.borrar(${bid}, true)`);
+        	} else postRequestWithModal('admin-blacklist-delete', { bid }, `#block_${bid}`)
    	}
 	},
 	// CENSURAS
 	badwords: {
 	   borrar(wid, gew) {
          if(!gew){
-         	sameModal('Retirar Filtro', '&#191;Quiere retirar este filtro?', `admin.badwords.borrar(${wid}, true)`);
-         } else sameFn('admin-badwords-delete', { wid }, `#wid_${wid}`)
+         	configureAndShowModal('Retirar Filtro', '&#191;Quiere retirar este filtro?', `admin.badwords.borrar(${wid}, true)`);
+         } else postRequestWithModal('admin-badwords-delete', { wid }, `#wid_${wid}`)
 	   }
 	},
 	// TODAS LAS FOTOS
 	fotos: {
 	   borrar(foto_id, gew) {
          if(!gew){
-         	sameModal('Borrar Foto', '&#191;Quiere borrar esta foto permanentemente?', `admin.badwords.borrar(${foto_id}, true)`);
-         } else sameFn('admin-foto-borrar', { foto_id }, `#foto_${foto_id}`)
+         	configureAndShowModal('Borrar Foto', '&#191;Quiere borrar esta foto permanentemente?', `admin.badwords.borrar(${foto_id}, true)`);
+         } else postRequestWithModal('admin-foto-borrar', { foto_id }, `#foto_${foto_id}`)
 	   },
 	   // Cerramos o Abrimos los comentario en foto
 	   setOpenClosed(fid) {
@@ -192,29 +150,33 @@ var admin = {
 	medallas : {
 	   borrar(medal_id, gew) {
 	   	if(!gew) {
-	   		sameModal('Borrar Medalla', '&#191;Quiere borrar esta medalla?', `admin.medallas.borrar(${medal_id}, 2)`);
-		  	} else if(gew == '2') {
-	   		sameModal('Borrar Medalla', 'Si borra la medalla, los usuarios que tengan esta medalla la perder&aacute;n, &#191;seguro que quiere continuar?', `admin.medallas.borrar(${medal_id}, 3)`);
-	   	} else sameFn('admin-medalla-borrar', { medal_id }, `#medal_id_${medal_id}`)
+	   		configureAndShowModal('Borrar Medalla', '&#191;Quiere borrar esta medalla?', `admin.medallas.borrar(${medal_id}, 2)`);
+		  	} else if(gew === '2') {
+	   		configureAndShowModal('Borrar Medalla', 'Si borra la medalla, los usuarios que tengan esta medalla la perder&aacute;n, &#191;seguro que quiere continuar?', `admin.medallas.borrar(${medal_id}, 3)`);
+	   	} else postRequestWithModal('admin-medalla-borrar', { medal_id }, `#medal_id_${medal_id}`)
    	},   
    	borrar_asignacion(aid, medal_id, gew) {
          if(!gew) {
-	   		sameModal('Borrar Asignacion', '&#191;Quiere continuar borrando esta asignaci&oacute;n?', `admin.medallas.borrar_asignacion(${aid}, ${medal_id}, true)`);
-       	} else sameFn('admin-medallas-borrar-asignacion', { aid, medal_id }, `#assign_id_${medal_id}`)
+	   		configureAndShowModal('Borrar Asignacion', '&#191;Quiere continuar borrando esta asignaci&oacute;n?', `admin.medallas.borrar_asignacion(${aid}, ${medal_id}, true)`);
+       	} else postRequestWithModal('admin-medallas-borrar-asignacion', { aid, medal_id }, `#assign_id_${medal_id}`)
       },
 	   asignar(medal_id, gew) {
 	   	if(!gew){
 	   		var form = `<div id="AFormInputs">
-	   			<div class="form-line">
-	   				<label for="m_usuario">Al usuario (nombre):</label>
-	   				<input name="m_usuario" id="m_usuario"/><br />
-	   				<label for="m_post">Al post (id):</label>
-	   				<input name="m_post" id="m_post"/><br />
-	   				<label for="m_foto">A la foto (id):</label>
-	   				<input name="m_foto" id="m_foto"/>
+	   			<div class="upform-group">
+	   				<label class="upform-label" for="m_usuario">Al usuario (nombre):</label>
+	   				<div class="upform-group-input"><input class="upform-input" name="m_usuario" id="m_usuario"/></div>
+	   			</div>
+	   			<div class="upform-group">
+	   				<label class="upform-label" for="m_post">Al post (id):</label>
+	   				<div class="upform-group-input"><input class="upform-input" name="m_post" id="m_post"/></div>
+	   			</div>
+	   			<div class="upform-group">
+	   				<label class="upform-label" for="m_foto">A la foto (id):</label>
+	   				<div class="upform-group-input"><input class="upform-input" name="m_foto" id="m_foto"/></div>
 	   			</div>
 	   		</div>`;
-	   		sameModal('Asignar medalla', form, `admin.medallas.asignar(${medal_id}, true)`);
+	   		configureAndShowModal('Asignar medalla', form, `admin.medallas.asignar(${medal_id}, true)`);
 		 	} else {
 				loading.start()
 				var params = [
@@ -224,7 +186,6 @@ var admin = {
 					'fid=' + $('#m_foto').val()
 				].join('&');
 				$.post(ZCodeApp.url + '/admin-medalla-asignar.php?from=dashboard', params, c => {
-					console.log(c)
 					UPModal.alert((c.charAt(0) == '0' ? 'Opps!' : 'Hecho'), c.substring(3), false);
 			   	if(c.charAt(0) != '0') {
 						var nmeds = parseInt($('#total_med_assig_' + medal_id).text());
@@ -245,8 +206,7 @@ var admin = {
 				let color = (number === 1) ? 'green' : 'purple';
 				let text = (number === 1) ? 'A' : 'Ina';
 				$('#status_user_' + uid).html(`<font color="${color}">${text}ctivo</font>`);
-		      loading.end()
-		      loading.end()
+		      loading.end();
 			});
 		}
    }
@@ -269,7 +229,6 @@ var ad_afiliado = {
    }
 }
 
-
 $(document).ready(() => {
 
 	const { url } = ZCodeApp;
@@ -278,25 +237,6 @@ $(document).ready(() => {
 		if(selectJquery.val().length > 0) $('#ai_met_welcome, #desc_message_welcome').slideDown();
 	});
 	//
-	let redirectURI = $('#redirect_uri');
-	if(empty(redirectURI.val())) redirectURI.val(`${url}/discord.php`)
-   $('#social_name').on('change', () => {
-   	let replace = $('#social_name option:selected').val() ;
-   	redirectURI.val(`${url}/${replace}`);
-   });
-   $("#botonCopiar").on("click", () => {
-      redirectURI.select();
-      document.execCommand("copy");
-      window.getSelection().removeAllRanges();
-      redirectURI.parent().find('small').html("Redirect URL ha sido copiado correctamente!");
-      setTimeout(() => redirectURI.parent().find('small').html(''), 5000);
-   });
-
-   if(typeof preview !== 'undefined' && preview) {
-    	$('#titulo').on('keyup', () => $('.result .title').html($('#titulo').val()))
-      $('#descripcion').on('keyup', () => $('.result .description').html($('#descripcion').val()))
-      $('#image').on('keyup', () => $('.result .image').attr({ src: $('#image').val() }))
-   }
 
    if($('input[name="tables[all]"]').length) {
    	$('input[type="checkbox"][value="all"]').change(function() {
@@ -308,34 +248,9 @@ $(document).ready(() => {
 		});
    }
 
-   $('#uploadForm').on('submit', function(e) {
-      e.preventDefault();
-      var formData = new FormData(this);
-      $('#uploadForm button').html('Generando...');
-      $.ajax({
-         url: `${ZCodeApp.url}/admin-upload-favicon.php?from=dashboard`,
-         type: 'POST',
-         data: formData,
-         contentType: false,
-         processData: false,
-         success: function(response) {
-         	let typeAct = parseInt(response.charAt(0));
-         	let typeMsg = response.substring(3);
-         	UPModal.alert((typeAct === 1 ? 'Bien' : 'Error'), typeMsg, true);
-         	$('#uploadForm button').html('Subir Imagen');
-         },
-         error: function() {
-         	UPModal.alert('Error', 'Error al subir la imagen.', false);
-            $('#uploadForm button').html('Subir Imagen');
-         }
-      });
-   });
-
    $('#change_theme').on('change', function(e) {
    	let tema = $(this).val();
-   	console.log(tema);
    	$.post(`${ZCodeApp.url}/admin-tema.php?from=dashboard`, { tema }, req => {
-   		console.log(req);
          UPModal.alert((req.charAt(0) === '1' ? 'Bien' : 'Error'), req.substring(3), true);
          if(req.charAt(0) === '1') {
          	$('#tema_actual').html(tema);

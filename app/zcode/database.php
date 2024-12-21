@@ -456,7 +456,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}rangos` (
   `rango_id` int(3) NOT NULL AUTO_INCREMENT,
   `r_allows` varchar(1000) NOT NULL DEFAULT '',
   `r_cant` int(5) NOT NULL DEFAULT 0,
-  `r_color` varchar(6) NOT NULL DEFAULT '171717',
+  `r_color` varchar(12) NOT NULL DEFAULT '171717',
   `r_image` varchar(32) NOT NULL DEFAULT 'new.png',
   `r_name` varchar(32) NOT NULL DEFAULT '',
   `r_type` int(1) NOT NULL DEFAULT 0,

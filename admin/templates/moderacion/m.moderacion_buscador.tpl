@@ -24,7 +24,7 @@
 												<option value="1">IP</option>
 												<option value="2">Texto</option>
 											</select>
-										<input type="submit" name="buscar" value="Buscar Contenido" class="btn_g"/>
+										<input type="submit" name="buscar" value="Buscar Contenido" class="button"/>
 									</form>
 									{elseif $tsAct == 'search'}
 									<form action="" method="post">
@@ -37,7 +37,7 @@
 									<option value="1" {if $tsContenido.tipo == 1}selected{/if}>IP</option>
 									<option value="2" {if $tsContenido.tipo != 1}selected{/if}>Texto</option>
 									</select>
-									<input type="submit" name="buscar" value="Buscar Contenido" class="btn_g"/>
+									<input type="submit" name="buscar" value="Buscar Contenido" class="button"/>
 									</form>
 									<hr class="separator" />
                                     <table cellpadding="0" cellspacing="0" border="0" class="admin_table" width="100%" align="center" id="usuarios">

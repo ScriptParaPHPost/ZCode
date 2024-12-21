@@ -45,7 +45,7 @@
 				</dd>
 		  </dl>
 		<dl>
-		  <p><input type="submit" name="save" value="Guardar Cambios" class="btn_g"/></p>
+		  <p><input type="submit" name="save" value="Guardar Cambios" class="button"/></p>
 	 </fieldset>
 	 </form>
 </div>

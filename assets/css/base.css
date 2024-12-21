@@ -292,8 +292,8 @@
 	background: transparent;
 	background-color: transparent;
 }
-@view-transition {
-	navigation: auto; /* enabled! */
+/* @view-transition {
+	navigation: auto; /* enabled! 
 }
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -312,7 +312,7 @@
 @keyframes scaleOut {
 	from { transform: scale(1); }
 	to { transform: scale(0); }
-}
+} */
 html {
 	-webkit-text-size-adjust: 100%;
 }
@@ -320,9 +320,9 @@ body {
 	font: normal normal 400 var(--setting-font-size) var(--setting-font-family);
 	background: var(--html-bg);
 	color: var(--body-color);
-	view-transition-name: __body;
+	/* view-transition-name: __body; */
 	/* En algunos navegadores puede funcionar */
-	scrollbar-color: var(--main-bg) var(--body-bg);
+	/* scrollbar-color: var(--main-bg) var(--body-bg); */
 }
 main {
 	background: var(--body-bg);
@@ -6659,7 +6659,6 @@ lite-youtube.lyt-activated > .lty-playbtn {
 }
 .UPModal-dialog {
 	color: var(--modal-color);
-	max-height: var(--modal-height);
 	border: 1px solid var(--modal-border-color);
 	border-radius: var(--modal-border-radius);
 	box-shadow: var(--modal-box-shadow);
@@ -7131,7 +7130,7 @@ table.strip tr:nth-child(2n+1) {
 /**
  * Transiciones
 */
-.entry-animation {
+/* .entry-animation {
 	view-timeline-name: --entry-animation;
 	view-timeline-axis: block;
 	animation-timeline: --entry-animation;
@@ -7147,7 +7146,7 @@ table.strip tr:nth-child(2n+1) {
 		opacity: 1;
 		scale: 100%;
 	}
-}
+} */
 .toast {
 	position: fixed;
 	top: 0;

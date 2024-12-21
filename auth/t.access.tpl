@@ -9,14 +9,14 @@
 </head>
 <body class="flex justify-center items-center">
 
-	<main>
+	<main class="mt-3">
 		<header class="fixed w-100">
 			<div class="logo flex justify-start items-center column-gap-2">
 				<img src="{$tsConfig.logos.128}" alt="{$tsConfig.titulo} - {$tsConfig.slogan}">
 				<span>{$tsConfig.titulo}</span>
 			</div>
 		</header>
-		<form method="POST" class="py-5 px-4"{if $tsAction == 'registro'} disabled{/if}>
+		<form method="POST" class="py-5 px-4{if $tsAction == 'registro'} mt-3{/if}"{if $tsAction == 'registro'} disabled{/if}>
 			{include "t.$tsAction.tpl"}
 		</form>
 		<footer class="text-align-center">

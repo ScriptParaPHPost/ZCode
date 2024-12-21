@@ -199,7 +199,7 @@
 	{else}
 		<div class="empty hero">Pendiente</div>
 	{/if}
-	<p><input type="submit" name="save" value="Enviar Cambios" class="btn_g"/></p>
+	<p><input type="submit" name="save" value="Enviar Cambios" class="button"/></p>
 	</fieldset>
 </form>
 {/if}

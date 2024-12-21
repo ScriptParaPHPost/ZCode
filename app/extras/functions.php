@@ -68,7 +68,7 @@ if(isset($_GET['migrator']) && $_GET['migrator'] === 'true' || (int)$tsUser->is_
  */
 function db_exec() {	
 	global $mysqli, $tsUser, $tsAjax, $display;
-
+   //
 	$args = func_get_args();
 	$info = $args[0] ?? null;
 	$type = $args[1] ?? null;
@@ -76,7 +76,6 @@ function db_exec() {
 	if(isset($data)) {
 		$data = withPrefix($data);
 	}
-	 
 	// Si la primera variable contiene un string, se entiende que es la consulta que debe ejecutarse. Esto lo prepara para ello.
 	if(is_array($info)) {
 		if(!$tsUser->is_admod && $display['msgs'] !== 2) { 

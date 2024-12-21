@@ -202,7 +202,7 @@
 					{html_radios name="c_newr_type" id="ai_nfu" values=[1, 0] output=['Todos sus post', 'Solo en un post'] selected=$tsConfig.c_newr_type class="radio"}
             </dd>
          </dl>
-         <p><input type="submit" name="save" value="Guardar Cambios" class="btn_g" /></p>
+         <p><input type="submit" name="save" value="Guardar Cambios" class="button" /></p>
       </fieldset>
    </form>
 </div>

@@ -20,12 +20,13 @@ if(is_string($commits) AND !empty($getUpdated)) {
 	$smarty->assign('tsFilesStatus', $files);
 
 	if($act === 'actualizar') {
-		if($tsActualizacion->getFilesUpdate()) {
+		$smarty->assign('tsAlerta', "No se recomienda esta acción!");
+		/*if($tsActualizacion->getFilesUpdate()) {
 			$tsActualizacion->saveIDUpdate('save', '');
 			$unset = ['sha', 'commit', 'files'];
 			foreach($unset as $del) unset($_SESSION[$del]);
 			$tsCore->redireccionar('admin', $action);
-		}
+		}*/
 	} elseif($act === 'commits') {
 		$smarty->assign('tsLastCommits', $tsActualizacion->getLastCommits());
 	}

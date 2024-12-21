@@ -204,7 +204,7 @@ form .auth-header {
 .btn {
 	border-radius: .325rem;
 	display: block;
-	width: auto;
+	width: 100%;
 	padding: .875rem 2rem;
 	margin: 1rem auto;
 	text-align: center;
@@ -247,11 +247,13 @@ p.p {
 }
 
 .upform-check input[type="checkbox"] {
-  	display: none;
-  	visibility: hidden;
+	display: none;
+	visibility: hidden;
 }
 .upform-check .cbx {
-	margin: auto;
+	display: flex;
+	width: 100%;
+	padding: 1rem 0;
 	user-select: none;
 	cursor: pointer;
 }
@@ -262,9 +264,10 @@ p.p {
 }
 .upform-check .cbx span:first-child {
 	position: relative;
-	width: 18px;
-	height: 18px;
+	width: 20px;
+	height: 20px;
 	border-radius: 3px;
+	margin-top: 2px;
 	transform: scale(1);
 	vertical-align: middle;
 	border: 1px solid #9098a9;
@@ -272,8 +275,8 @@ p.p {
 }
 .upform-check .cbx span:first-child svg {
 	position: absolute;
-	top: 3px;
-	left: 2px;
+	top: 4px;
+	left: 3px;
 	fill: none;
 	stroke: #ffffff;
 	stroke-width: 2;
@@ -296,10 +299,10 @@ p.p {
 	border-radius: 50%;
 }
 .upform-check .cbx span:last-child {
-  	padding-left: 8px;
+		padding-left: 8px;
 }
 .upform-check .cbx:hover span:first-child {
-  	border-color: var(--main);
+		border-color: var(--main);
 }
 .upform-check .inp-cbx:checked + .cbx span:first-child {
 	background: var(--main);
@@ -307,35 +310,35 @@ p.p {
 	animation: wave 0.4s ease;
 }
 .upform-check .inp-cbx:checked + .cbx span:first-child svg {
-  	stroke-dashoffset: 0;
+		stroke-dashoffset: 0;
 }
 .upform-check .inp-cbx:checked + .cbx span:first-child::before {
-  	transform: scale(3.5);
-  	opacity: 0;
-  	transition: all 0.6s ease;
-}
-
-@keyframes wave {
-  50% {
-    transform: scale(0.9);
-  }
+		transform: scale(3.5);
+		opacity: 0;
+		transition: all 0.6s ease;
 }
 .buttons-social {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	column-gap: 1rem;
-	margin-bottom: 1rem;
+	margin: 1rem 0;
 	.social {
+		text-decoration: none;
+		padding: 0 .5rem;
+		margin-bottom: 0.5rem;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		width: calc(100% / 4);
-		height: 2rem;
+		height: 2.5rem;
 		border-radius: .325rem;
 		font-size: 1.325rem;
 		background: var(--button-social-color);
 		fill: #FFF;
+		.btn--icon {
+			margin: 0 .325rem;
+		}
+		span {
+			font-size: .875rem;
+			font-weight: 500;
+			color: #FFF;
+		}
 	}
 }
 .social--discord { --button-social-color: var(--discord); }

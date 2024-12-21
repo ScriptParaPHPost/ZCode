@@ -2,13 +2,6 @@
 	<h2>Iniciar sesión</h2>
 	<h4>Para continuar a {$tsConfig.titulo}</h4>
 </div>
-{if $SocialMager}
-	<div class="buttons-social">
-		{foreach $SocialMager key=i item=social}
-			<a class="social social--{$i} btn-active" href="{$social}">{uicon name="$i" folder="prime" class="btn--icon"}</a>
-		{/foreach}
-	</div>
-{/if}
 
 <div class="upform-group">
 	<label class="upform-label" for="nick">Dirección de correo electronico o nombre de usuario</label>
@@ -33,22 +26,31 @@
 		</div>
 	</div>
 	<small class="upform-status help"></small>
+	<small class="block text-align-center" data-toggle="forget_password" style="float:right;">¿Olvidaste tu contraseña?</small>	
 </div>
 
 <div class="upform-check">
 	<input type="checkbox" class="inp-cbx" name="rem" id="remember" value="true" checked />
-	<label for="remember" class="cbx"><span>
-		<svg viewBox="0 0 12 10" height="10px" width="12px"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg></span>
+	<label for="remember" class="cbx">
+		<span>
+			<svg viewBox="0 0 12 10" height="10px" width="12px"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg>
+		</span>
 		<span>Mantener mi sesión iniciada...</span>
 	</label>
 </div>
 
 <div class="upform-buttons">
-	<input type="submit" class="btn btn-block" value="Iniciar sesion">
+	<input type="submit" class="btn btn-block w-100" value="Iniciar sesion">
 </div>
 
 <div class="text-center">
-	<p class="p">No tienes una cuenta? <a href="{$tsConfig.url}/registro/" class="link">Registrarme</a></p>
-	<hr>
-	<p class="p"><span class="block text-align-center" data-toggle="forget_password">¿Olvidaste tu contraseña?</span></p>
+	<p style="text-align:center;">No tienes una cuenta? <a href="{$tsConfig.url}/registro/" class="link">Registrarme</a></p>
+	{if $SocialMager}
+		<hr>
+		<div class="buttons-social">
+			{foreach $SocialMager key=i item=social}
+				<a class="social social--{$i} btn-active" href="{$social}">{uicon name="$i" folder="prime" class="btn--icon"} <span>Iniciar con {$i}</span></a>
+			{/foreach}
+		</div>
+	{/if}
 </div>

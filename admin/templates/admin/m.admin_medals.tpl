@@ -103,44 +103,46 @@
 						<label onclick="$('#ai_cond_user').slideUp(); $('#ai_cond_user_rango').slideUp();  $('#ai_cond_foto').slideUp(); $('#ai_cond_post').slideDown();"><input name="med_type" type="radio" id="ay_type" value="2" {if $tsMed.m_type == 2}checked{/if} class="radio"/>Post</label>
 						<label onclick="$('#ai_cond_user').slideUp(); $('#ai_cond_user_rango').slideUp();  $('#ai_cond_post').slideUp(); $('#ai_cond_foto').slideDown();"><input name="med_type" type="radio" id="ay_type" value="3" {if $tsMed.m_type == 3}checked{/if} class="radio"/>Foto</label>
 						<span>consiga</span>
-						<input type="text" id="ai_cant" name="med_cant" style="width:7%" maxlength="5" value="{$tsMed.m_cant}" {if $tsMed.m_cond_user == 9} style="display:none;"{/if} />
-						<select name="med_cond_user" id="ai_cond_user" style="width:125px;{if $tsMed.m_type != 1}display:none;{/if}" onchange="if($('#ai_cond_user').val() == 9) $('#ai_cond_user_rango').slideDown();  else  $('#ai_cond_user_rango').slideUp();">
-							<option value="1"{if $tsMed.m_cond_user == 1} selected{/if}>Puntos</option>
-							<option value="2"{if $tsMed.m_cond_user == 2} selected{/if}>Seguidores</option>
-							<option value="3"{if $tsMed.m_cond_user == 3} selected{/if}>Siguiendo</option>
-							<option value="4"{if $tsMed.m_cond_user == 4} selected{/if}>Comentarios en posts</option>
-							<option value="5"{if $tsMed.m_cond_user == 5} selected{/if}>Comentarios en fotos</option>
-							<option value="6"{if $tsMed.m_cond_user == 6} selected{/if}>Posts</option>
-							<option value="7"{if $tsMed.m_cond_user == 7} selected{/if}>Fotos</option>
-							<option value="8"{if $tsMed.m_cond_user == 8} selected{/if}>Medallas</option>
-							<option value="9"{if $tsMed.m_cond_user == 9} selected{/if}>Rango</option>
-						</select>
-						<select name="med_cond_user_rango" id="ai_cond_user_rango" {if $tsMed.m_type != 1 || $tsMed.m_cond_user != 9}style="display:none;"{/if}  onchange="if($('#ai_cond_user').val() != 9) $('#ai_cond_user_rango').slideUp();">
-							{foreach from=$tsRangos item=r}
-								<option value="{$r.rango_id}" style="color:#{$r.r_color}"{if $r.rango_id == $tsMed.m_cond_user_rango} selected{/if}>{$r.r_name}</option>
-							{/foreach}
-						</select>
-						<select name="med_cond_post" id="ai_cond_post" style="width:125px;{if $tsMed.m_type != 2}display:none;{/if}">
-							<option value="1"{if $tsMed.m_cond_post == 1} selected{/if}>Puntos</option>
-							<option value="2"{if $tsMed.m_cond_post == 2} selected{/if}>Seguidores</option>
-							<option value="3"{if $tsMed.m_cond_post == 3} selected{/if}>Comentarios</option>
-							<option value="4"{if $tsMed.m_cond_post == 4} selected{/if}>Favoritos</option>
-							<option value="5"{if $tsMed.m_cond_post == 5} selected{/if}>Denuncias</option>
-							<option value="6"{if $tsMed.m_cond_post == 6} selected{/if}>Visitas</option>
-							<option value="7"{if $tsMed.m_cond_post == 7} selected{/if}>Medallas</option>
-							<option value="8"{if $tsMed.m_cond_post == 8} selected{/if}>veces compartido</option>
-						</select>
-						<select name="med_cond_foto" id="ai_cond_foto" style="width:125px;{if $tsMed.m_type != 3}display:none;{/if}">
-							<option value="1"{if $tsMed.m_cond_foto == 1} selected{/if}>Puntos positivos</option>
-							<option value="2"{if $tsMed.m_cond_foto == 2} selected{/if}>Puntos negativos</option>
-							<option value="3"{if $tsMed.m_cond_foto == 3} selected{/if}>Comentarios</option>
-							<option value="4"{if $tsMed.m_cond_foto == 4} selected{/if}>Visitas</option>
-							<option value="5"{if $tsMed.m_cond_foto == 5} selected{/if}>Medallas</option>
-						</select>
+						<div class="d-flex justify-content-start align-items-center column-gap-2">
+							<input type="text" id="ai_cant" name="med_cant" style="width:12%" maxlength="5" value="{$tsMed.m_cant}" {if $tsMed.m_cond_user == 9} style="display:none;"{/if} />
+							<select name="med_cond_user" id="ai_cond_user" style="width:125px;{if $tsMed.m_type != 1}display:none;{/if}" onchange="if($('#ai_cond_user').val() == 9) $('#ai_cond_user_rango').slideDown();  else  $('#ai_cond_user_rango').slideUp();">
+								<option value="1"{if $tsMed.m_cond_user == 1} selected{/if}>Puntos</option>
+								<option value="2"{if $tsMed.m_cond_user == 2} selected{/if}>Seguidores</option>
+								<option value="3"{if $tsMed.m_cond_user == 3} selected{/if}>Siguiendo</option>
+								<option value="4"{if $tsMed.m_cond_user == 4} selected{/if}>Comentarios en posts</option>
+								<option value="5"{if $tsMed.m_cond_user == 5} selected{/if}>Comentarios en fotos</option>
+								<option value="6"{if $tsMed.m_cond_user == 6} selected{/if}>Posts</option>
+								<option value="7"{if $tsMed.m_cond_user == 7} selected{/if}>Fotos</option>
+								<option value="8"{if $tsMed.m_cond_user == 8} selected{/if}>Medallas</option>
+								<option value="9"{if $tsMed.m_cond_user == 9} selected{/if}>Rango</option>
+							</select>
+							<select name="med_cond_user_rango" id="ai_cond_user_rango" {if $tsMed.m_type != 1 || $tsMed.m_cond_user != 9}style="display:none;"{/if}  onchange="if($('#ai_cond_user').val() != 9) $('#ai_cond_user_rango').slideUp();">
+								{foreach from=$tsRangos item=r}
+									<option value="{$r.rango_id}" style="color:#{$r.r_color}"{if $r.rango_id == $tsMed.m_cond_user_rango} selected{/if}>{$r.r_name}</option>
+								{/foreach}
+							</select>
+							<select name="med_cond_post" id="ai_cond_post" style="width:125px;{if $tsMed.m_type != 2}display:none;{/if}">
+								<option value="1"{if $tsMed.m_cond_post == 1} selected{/if}>Puntos</option>
+								<option value="2"{if $tsMed.m_cond_post == 2} selected{/if}>Seguidores</option>
+								<option value="3"{if $tsMed.m_cond_post == 3} selected{/if}>Comentarios</option>
+								<option value="4"{if $tsMed.m_cond_post == 4} selected{/if}>Favoritos</option>
+								<option value="5"{if $tsMed.m_cond_post == 5} selected{/if}>Denuncias</option>
+								<option value="6"{if $tsMed.m_cond_post == 6} selected{/if}>Visitas</option>
+								<option value="7"{if $tsMed.m_cond_post == 7} selected{/if}>Medallas</option>
+								<option value="8"{if $tsMed.m_cond_post == 8} selected{/if}>veces compartido</option>
+							</select>
+							<select name="med_cond_foto" id="ai_cond_foto" style="width:125px;{if $tsMed.m_type != 3}display:none;{/if}">
+								<option value="1"{if $tsMed.m_cond_foto == 1} selected{/if}>Puntos positivos</option>
+								<option value="2"{if $tsMed.m_cond_foto == 2} selected{/if}>Puntos negativos</option>
+								<option value="3"{if $tsMed.m_cond_foto == 3} selected{/if}>Comentarios</option>
+								<option value="4"{if $tsMed.m_cond_foto == 4} selected{/if}>Visitas</option>
+								<option value="5"{if $tsMed.m_cond_foto == 5} selected{/if}>Medallas</option>
+							</select>
+						</div>
 					</dd>
 				</dl>	
 				<hr />
-				<p><input type="submit" name="{if $tsAct == 'nueva'}save{else}edit{/if}" value="{if $tsAct == 'nueva'}Crear medalla{else}Guardar{/if}" class="btn_g"/></p>
+				<p><input type="submit" name="{if $tsAct == 'nueva'}save{else}edit{/if}" value="{if $tsAct == 'nueva'}Crear medalla{else}Guardar{/if}" class="button"/></p>
 			</fieldset>
 		</form>
 	{/if}

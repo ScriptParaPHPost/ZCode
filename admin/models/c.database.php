@@ -11,11 +11,14 @@ class tsDatabase {
  	/**
     * Convierte una fecha en formato de cadena a un timestamp.
     *
-    * @param string $date_original  La fecha en formato de cadena.
+    * @param string $timeformat  La fecha en formato de cadena.
     * @return int                   El timestamp correspondiente a la fecha.
    */
-	private function formatedDate(string $date_original = '') {
-		return (new DateTime($date_original))->getTimestamp();
+	private function formatedDate(?string $timeformat = ''): int {
+      if ($timeformat === null || $timeformat === '') {
+         $timeformat = 'now';
+      }
+      return (new DateTime($timeformat))->getTimestamp();
 	}
 
    /**
@@ -119,15 +122,18 @@ class tsDatabase {
     * @return string Mensaje indicando el éxito de la operación.
    */
    public function createBackup() {
+      global $tsCore;
    	$tables = $_POST['tablas'];
    	// Obtener todas las tablas de la base de datos
 	   if ($tables === '*') {
+         $is = 'full';
 	      $tables = [];
 	      $result = db_exec([__FILE__, __LINE__], 'query', "SHOW TABLES");
 	      while ($row = db_exec('fetch_row', $result)) {
 	         $tables[] = $row[0];
 	      }
 	   } else {
+         $is = 'partitial';
 	      $tables = is_array($tables) ? $tables : explode(',', $tables);
 	   }
       $save = date('d.m.Y H:i a');
@@ -158,7 +164,7 @@ class tsDatabase {
    	}
    	
    	// Guardar el archivo SQL en la carpeta especificada
-   	$backup_file = 'backup_' . time() . '.sql';
+   	$backup_file = 'backup_' . $is . '_' . time() . '.sql';
    	$backup_root = $this->backupFolder() . "/$backup_file";
    	$fileHandle = fopen($backup_root, 'w+');
    	fwrite($fileHandle, $backupSQL);
@@ -191,7 +197,32 @@ class tsDatabase {
    			'date' => filectime($file_route)
    		];
    	}
+      usort($allFiles, function ($a, $b) {
+         return $b['date'] <=> $a['date'];
+      });
    	return $allFiles;
+   }
+
+   public function delBackup() {
+      global $tsCore, $tsUser;
+      // Verificar permisos de usuario
+      if (!$tsUser->is_admod AND $tsUser->uid === 1) {
+         return '0: No eres el administrador principal, no puedes eliminar.';
+      }
+       // Validar que el archivo está definido y no está vacío
+      if (!isset($_POST['file']) || empty($_POST['file'])) {
+         return '0: No existe o no seleccionó el archivo a eliminar.';
+      }
+      $backup = $tsCore->setSecure($_POST['file']);
+      $searchFile = $this->backupFolder() . $backup . '.sql';
+      // Verificar si el archivo existe
+      if (!file_exists($searchFile)) {
+         return '0: El archivo no existe.';
+      }
+      if(!unlink($searchFile)) {
+         return '0: No se ha podido eliminar.';
+      }
+      return '1: Eliminado correctamente';
    }
 
 }

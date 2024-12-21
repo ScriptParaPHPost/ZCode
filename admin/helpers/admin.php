@@ -304,6 +304,9 @@
 				if($act === 'nueva') $smarty->assign("tsCID", $_GET['cid']);
 				// SOLO LAS CATEGORIAS TIENEN ICONOS
 				$smarty->assign("tsIcons", $tsAdmin->getExtraIcons());
+				require_once TS_MODELS . "c.foro.php";
+				$tsForo = new tsForo;
+				$smarty->assign('tsForos', $tsForo->getForos());
 			}
 		} elseif($act === 'change'){
 			$tsTitle = 'Cambiar categor&iacute;a';
@@ -338,14 +341,16 @@
 		} elseif(in_array($act, ['editar', 'nuevo'])) {
 			$tsTitle = ucfirst($act) . " rango";
 			if(!empty($_POST['save'])){
-				$both = ($act === 'editar') ? $tsAdmin->saveRango() : $tsAdmin->newRango();
-				if($both) $tsCore->redireccionar('admin', $action, 'save=true');
+				$execFunction = ($act === 'editar') ? $tsAdmin->saveRango() : $tsAdmin->newRango();
+				if($execFunction) $tsCore->redireccionar('admin', $action, 'save=true');
 			} else {
 				if($act === 'editar') $smarty->assign("tsRango", $tsAdmin->getRango());
             if($act === 'nuevo') $smarty->assign("tsError", $save); 
             $smarty->assign("tsType", $_GET['t']);
-				$smarty->assign("tsIcons", $tsAdmin->getExtraIcons('ran'));
+				$smarty->assign("tsIcons", $tsAdmin->getExtraIcons('rangos'));
 				$smarty->assign('tsColor', $tsAdmin->rangoColor());
+				require_once TS_ADMIN . 'admin-rangos-options.php';
+				$smarty->assign('tsOptions', $options);
 			}
 		// NUEVO RANGO
 		} elseif($act === 'borrar'){

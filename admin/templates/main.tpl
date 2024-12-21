@@ -8,6 +8,9 @@
 <link href="{$tsConfig.assets}/images/favicon/logo-32.webp?t={$smart.now}" rel="shortcut icon" type="image/webp" sizes="32x32" />
 <link href="{$tsConfig.assets}/images/favicon/logo-64.webp?t={$smart.now}" rel="shortcut icon" type="image/webp" sizes="64x64" />
 {zCode css=["base.css","dashboard.css"]}
+{zCode js=["acciones.js","dropdown.js"] scriptGlobal=true remove="colores;themes"}
+{if $tsPage == 'admin' && $tsAction == ''}{zCode js="versiones.js"}{/if}
+{if in_array($tsAction, ['database', 'favicon', 'seo', 'socials'])}{zCode js="components/admin.$tsAction.js"}{/if}
 </head>
 <body>
 
@@ -52,10 +55,5 @@
 {if $tsUser->is_admod && $tsConfig.c_see_mod && $tsNovemods.total}
 	<div id="stickymsg" class="position-fixed py-1 px-3 small toast-box toast-box--danger fw-semibold" style="cursor:default;">Hay <span class="fw-bold">{$tsNovemods.total} contenido{if $tsNovemods.total != 1}s{/if}</span> esperando revisi&oacute;n</div>
 {/if}
-{zCode js=["acciones.js","dropdown.js"] scriptGlobal=true remove="colores;themes"}
-{if $tsPage == 'admin' && $tsAction == ''}
-	{zCode js="versiones.js"}
-{/if}
-{zCode js="$tsAction.js"}
 </body>
 </html>

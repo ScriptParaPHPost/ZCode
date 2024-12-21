@@ -2,13 +2,6 @@
 	<h2>Crear una cuenta</h2>
 	<h4>Para continuar a {$tsConfig.titulo}</h4>
 </div>
-{if $SocialMager}
-	<div class="buttons-social">
-		{foreach $SocialMager key=i item=social}
-			<a class="social social--{$i} btn-active" href="{$social}">{uicon name="$i" folder="prime" class="btn--icon"}</a>
-		{/foreach}
-	</div>
-{/if}
 
 <div class="upform-group">
 	<label class="upform-label" for="nick">Nick</label>
@@ -91,4 +84,12 @@
 
 <div class="text-align-center">
 	<p class="block">Ya tengo una cuenta? <a href="{$tsConfig.url}/login/" class="link">Iniciar sesión</a></p>
+	{if $SocialMager}
+		<hr>
+		<div class="buttons-social">
+			{foreach $SocialMager key=i item=social}
+				<a class="social social--{$i} btn-active" href="{$social}">{uicon name="$i" folder="prime" class="btn--icon"} <span>Iniciar con {$i}</span></a>
+			{/foreach}
+		</div>
+	{/if}
 </div>

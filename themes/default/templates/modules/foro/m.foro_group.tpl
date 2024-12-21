@@ -1,5 +1,5 @@
 {foreach $tsForos key=i item=foro}
-	<div class="foro border rounded mb-3 shadow">
+	<div class="foro border rounded mb-3">
 		<div class="foro-header d-flex justify-content-start align-items-center column-gap-3 p-2 border-bottom">
 			<img src="{$foro.super_img}" alt="{$foro.super_nombre}" class="avatar avatar-2">
 			<h4 class="m-0 fw-normal">{$foro.super_nombre}</h4>

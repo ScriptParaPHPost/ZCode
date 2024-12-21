@@ -94,6 +94,16 @@ document.addEventListener("DOMContentLoaded", function() {
 					<dd><input type="text" id="cat_slug" name="c_seo" value="{$tsCat.c_seo}" /></dd>
 				</dl>
 				<dl>
+					<dt><label for="cat_foro">Asignar el bloque:</label></dt>
+					<dd>
+						<select name="c_foro" id="cat_foro" style="width:200px">
+							{foreach from=$tsForos key=i item=foro}
+								<option value="{$foro.fid}"{if $tsCat.c_foro == $foro.fid} selected{/if}>{$foro.super_nombre}</option>
+							{/foreach}
+						</select>
+					</dd>
+				</dl>
+				<dl>
 					<dt><label for="cat_descripcion">Descripción de la categor&iacute;a:</label></dt>
 					<dd><textarea name="c_descripcion" id="cat_descripcion" rows="13">{$tsCat.c_descripcion}</textarea></dd>
 				</dl>

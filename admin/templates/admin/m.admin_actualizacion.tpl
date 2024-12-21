@@ -36,7 +36,7 @@
 				{if !empty($tsFilesStatus)}
 					<div class="d-flex justify-content-between align-items-center">
 						<h4>Archivos</h4>
-						<a href="{$tsConfig.url}/admin/actualizacion?act=actualizar" class="btn">Actualizar</a>
+						{*<a href="{$tsConfig.url}/admin/actualizacion?act=actualizar" class="btn">Actualizar</a>*}
 					</div>
 					<small>El proceso de actualización tardará dependiendo de la cantidad de archivos modificados, esto puede tomar varios minutos. También existe la actualización de forma manual!</small>
 					<div style="overflow-x:auto;">
@@ -70,7 +70,7 @@
 				{/if}
 			{/if}
 		{elseif $tsAct === 'actualizar'}
-			<div class="empty">Este proceso tardará varios minutos</div>
+			<div class="empty">{$tsAlerta}{*Este proceso tardará varios minutos*}</div>
 		{/if}
 	
 	{/if}

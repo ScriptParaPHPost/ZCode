@@ -6,8 +6,7 @@
 	{if $tsError}<div class="empty empty-danger">{$tsError}</div>{/if}
 	{if !$tsAct}
 		{if !$tsBlackList.data}
-			<div class="empty hero">No hay nada en tu lista negra.</div>
-			<input type="button"  onclick="location.href = '{$tsConfig.url}/admin/blacklist?act=nuevo'" value="Agregar nuevo bloqueo" class="mBtn btnCancel"/>
+			<div class="empty">No hay nada en tu lista negra.</div>
 		{else}
 			<table class="admin_table">
 				<thead>
@@ -26,11 +25,11 @@
 						<td>{if $b.type == 1}IP{elseif $b.type == 2}Email{elseif $b.type == 3}Proveedor{elseif $b.type == 4}Nombre{else}Indefinido{/if}</td>
 						<td>{$b.value}</td>
 						<td>{$b.reason}</td>
-						<td><a href="{$tsConfig.url}/perfil/{$b.user_name}" class="hovercard" uid="{$b.user_id}">{$b.user_name}</a></td>
+						<td><a href="{$tsConfig.url}/perfil/{$b.user_name}" class="text-decoration-none fw-500">{$b.user_name}</a></td>
 						<td>{$b.date|hace}</td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/blacklist?act=editar&id={$b.id}"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar" /></a>
-							<a href="#" onclick="admin.blacklist.borrar({$b.id}); return false"><img src="{$tsConfig.public}/images/icons/close.png" title="Eliminar"/></a>
+							<a href="{$tsConfig.url}/admin/blacklist?act=editar&id={$b.id}" title="Editar">{uicon name="pen"}</a>
+							<span role="button" class="color" onclick="admin.blacklist.borrar({$b.id}); return false" title="Eliminar">{uicon name="trash"}</span>
 						</td>
 					</tr>
 					{/foreach}
@@ -39,9 +38,8 @@
 					<td colspan="7">P&aacute;ginas: {$tsBlackList.pages}</td>
 				</tfoot>
 			</table>
-			<br />
-			<input type="button"  onclick="location.href = '{$tsConfig.url}/admin/blacklist?act=nuevo'" value="Agregar nuevo bloqueo" class="mBtn btnOk"/>
 		{/if}
+		<a href="{$tsConfig.url}/admin/blacklist?act=nuevo" class="btn btnCancel">Agregar nuevo bloqueo</a>
 	{elseif $tsAct == 'editar' || $tsAct == 'nuevo'}
 		<form action="" method="post" autocomplete="off">
 			<fieldset>
@@ -69,7 +67,7 @@
 					</dl>
 				{/if}
 				<hr />
-			 	<p><input type="submit" name="{if $tsAct == 'editar'}edit{else}new{/if}" value="{if $tsAct == 'editar'}Guardar{else}Agregar{/if}" class="btn_g"/>
+			 	<p><input type="submit" name="{if $tsAct == 'editar'}edit{else}new{/if}" value="{if $tsAct == 'editar'}Guardar{else}Agregar{/if}" class="button"/>
 			</fieldset>
 		</form>
 	{/if}

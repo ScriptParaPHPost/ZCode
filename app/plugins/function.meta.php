@@ -120,7 +120,7 @@ function smarty_function_meta($params, &$smarty) {
 		$meta .= "<meta name=\"google-site-verification\" content=\"{$tsSeo['seo_google_verification']}\" />\n";
 	}
    // Validar el formato del ID
-   if (validarIDGoogleAnalytics($idGoogle) AND $params['analytics']) {
+   if (validarIDGoogleAnalytics($idGoogle) AND !empty($tsSeo['seo_google_analytics'])) {
 	   // Generar el código de Google Analytics
 	   $meta .= trim("<!-- Google tag (gtag.js) -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=$idGoogle\"></script>\n<script>window.dataLayer=window.dataLayer||[];const gtag=()=>dataLayer.push(arguments);gtag('js',new Date());gtag('config','$idGoogle');</script>");
 	}

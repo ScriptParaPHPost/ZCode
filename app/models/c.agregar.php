@@ -322,7 +322,7 @@ class tsAgregar {
 		if((int)$tsUser->uid === (int)$data['post_user'] || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moedpo'])) {
 			if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET {$tsCore->getIUP($postData, 'post_')} WHERE post_id = $post_id")) {
 				// Añadimos al sitemap (No le veo el sentido a este)
-				# $tsSitemap->addSitemapInfo('update', $post_id);
+				$tsSitemap->addSitemapInfo('update', $post_id);
 				// Guardamos en el historial de moderación
 				if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $_POST['razon']) {
 					include_once TS_MODELS . "c.moderacion.php";

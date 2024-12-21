@@ -198,6 +198,39 @@ hr {
 .avatar-13 { --avatar-size: 7rem; }
 .avatar-14 { --avatar-size: 7.5rem; }
 
+.button {
+	--button-bg: var(--main-bg);
+	--button-bg-hover: var(--main-bg-hover);
+	--button-bg-active: var(--main-bg-active);
+	--button-color: #FFF;
+	--button-padding: .375rem 1rem;
+	--button-border: var(--main-bg);
+	color: var(--button-color);
+	appearance: button;
+	text-align: center;
+	text-decoration: none;
+	vertical-align: middle;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+	border: 1px solid var(--button-border);
+	border-radius: var(--border-radius);
+	background-color: var(--button-bg);
+	padding: var(--button-padding);
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+.button:hover, .hover\:button {
+	--button-bg: var(--button-bg-hover);
+}
+.button:active, .active\:button {
+	--button-bg: var(--button-bg-active);
+}
+@keyframes wave {
+	50% {
+		transform: scale(0.9);
+	}
+}
 body {
 	--sidebar: 320px;
 	padding-top: 3rem;
@@ -733,6 +766,69 @@ section .boxy {
 	padding: 0 .875rem .75rem .875rem;
 	font-style: italic
 }
+.fs-1 {
+	font-size: calc(1.375rem + 1.5vw) !important;
+}
+
+.fs-2 {
+	font-size: calc(1.325rem + 0.9vw) !important;
+}
+
+.fs-3 {
+	font-size: calc(1.3rem + 0.6vw) !important;
+}
+
+.fs-4 {
+	font-size: calc(1.275rem + 0.3vw) !important;
+}
+
+.fs-5 {
+	font-size: 1.25rem !important;
+}
+
+.fs-6 {
+	font-size: 1rem !important;
+}
+
+.fs-7, .small {
+	font-size: .75rem !important;
+}
+
+.fst-italic {
+	font-style: italic !important;
+}
+
+.fst-normal {
+	font-style: normal !important;
+}
+
+.fw-lighter {
+	font-weight: lighter !important;
+}
+
+.fw-light {
+	font-weight: 300 !important;
+}
+
+.fw-normal {
+	font-weight: 400 !important;
+}
+
+.fw-medium {
+	font-weight: 500 !important;
+}
+
+.fw-semibold {
+	font-weight: 600 !important;
+}
+
+.fw-bold {
+	font-weight: 700 !important;
+}
+
+.fw-bolder {
+	font-weight: bolder !important;
+}
 pre code {
 	background: #CCC5;
 	color: #994B9E;
@@ -786,7 +882,7 @@ form dl dd select {
 	}
 }
 form dl dd select {
-  --arrow-down: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+	--arrow-down: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 	background: light-dark(#F5F5F5, #1C1C1C) var(--arrow-down) no-repeat right 0.75rem center / 1rem;
 }
 form dl dd label {
@@ -938,10 +1034,88 @@ form input[type="color"] {
 }
 .categoriaList h4 {
 	background: #CCC2;
+}
 .categoriaList ul {
 	list-style: none;
 	font-size: 1rem;
 }
 .categoriaList ul li:last-child {
 	border-bottom: 1px solid transparent!important;
+}
+.upform-check input[type="checkbox"] {
+	display: none;
+	visibility: hidden;
+}
+.upform-check .cbx {
+	display: flex;
+	width: 100%;
+	padding: 1rem 0;
+	user-select: none;
+	cursor: pointer;
+}
+.upform-check .cbx span {
+	display: inline-block;
+	vertical-align: middle;
+	transform: translate3d(0, 0, 0);
+}
+.upform-check .cbx span:first-child {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	border-radius: 3px;
+	margin-top: 2px;
+	transform: scale(1);
+	vertical-align: middle;
+	border: 1px solid #9098a9;
+	transition: all 0.2s ease;
+}
+.upform-check .cbx span:first-child svg {
+	position: absolute;
+	top: 4px;
+	left: 3px;
+	fill: none;
+	stroke: #ffffff;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-dasharray: 16px;
+	stroke-dashoffset: 16px;
+	transition: all 0.3s ease;
+	transition-delay: 0.1s;
+	transform: translate3d(0, 0, 0);
+}
+.upform-check .cbx span:first-child::before {
+	content: "";
+	width: 100%;
+	height: 100%;
+	background: var(--main-bg);
+	display: block;
+	transform: scale(0);
+	opacity: 1;
+	border-radius: 50%;
+}
+.upform-check .cbx span:last-child {
+	padding-left: 8px;
+}
+.upform-check .cbx:hover span:first-child {
+	border-color: var(--main-bg);
+}
+.upform-check .inp-cbx:checked + .cbx span:first-child {
+	background: var(--main-bg);
+	border-color: var(--main-bg);
+	animation: wave 0.4s ease;
+}
+.upform-check .inp-cbx:checked + .cbx span:first-child svg {
+	stroke-dashoffset: 0;
+}
+.upform-check .inp-cbx:checked + .cbx span:first-child::before {
+	transform: scale(3.5);
+	opacity: 0;
+	transition: all 0.6s ease;
+}
+
+@keyframes wave {
+	50% {
+		transform: scale(0.9);
+	}
 }

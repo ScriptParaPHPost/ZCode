@@ -9,9 +9,9 @@
             <div class="col-12 col-lg-6">
                <div class="rounded shadow border p-2 mb-3 position-relative" id="{$social.social_id}">
                   <div class="fw-semibold text-capitalize h4">{$social.social_name}</div>
-                  <div>Client ID: <pre><code>{$social.social_client_id}</code></pre></div>
-                  <div>Client Secret: <pre><code>{$social.social_client_secret}</code></pre></div>
-                  <div>Redirect URI: <pre><code>{$social.social_redirect_uri}</code></pre></div>
+                  <div class="mb-2">Client ID: <span class="d-block fw-bold">{$social.social_client_id|truncate:30}</span></div>
+                  <div class="mb-2">Client Secret: <span class="d-block fw-bold">{$social.social_client_secret|truncate:30}</span></div>
+                  <div class="mb-2">Redirect URI: <span class="d-block fw-bold">{$social.social_redirect_uri}</span></div>
                   <div class="position-absolute" style="top: 1rem; right: 1rem;">
                      <div class="admin_actions d-flex justify-content-end align-items-center column-gap-2">
                         <a href="{$tsConfig.url}/admin/socials?act=editar&id={$social.social_id}" title="Editar red social">{uicon name="pen" class="pe-none"}</a>
@@ -52,8 +52,8 @@
 	         <dl class="position-relative">
             	<dt><label for="redirect_uri">Redirect URL:</label></dt>
             	<dd><input class="form-control" type="text" id="redirect_uri" value="{$tsSocial.social_redirect_uri}" />
-                  <small class="position-absolute" style="right:4rem;top:1.325rem"></small>
-                  <span style="top:1.325rem;right:1.325rem;" role="button" class="position-absolute" id="botonCopiar" title="Copiar"><span uicon="replicate"></span></span>
+                  <small class="position-absolute" style="right:3rem;top:1.75rem"></small>
+                  <span style="top:1.4rem;right:1.325rem;" role="button" class="position-absolute" id="botonCopiar" title="Copiar">{uicon name="replicate" class="pe-none"}</span>
                </dd>
          	</dl>
 	         <p><input type="submit" name="save" value="Guardar Cambios" class="btn btn-primary" /></p>

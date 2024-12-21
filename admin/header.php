@@ -75,6 +75,7 @@
 
 	include TS_ZCODE . 'menu_user_account.php';
 
+
 /*
  * -------------------------------------------------------------------
  *  Inicializamos los objetos principales
@@ -114,3 +115,5 @@
 	
 	// Mensajes
 	$smarty->assign('tsMPs', $tsMP->mensajes);
+
+	$smarty->assign('tsMenuCuenta', $menu_cuenta);
