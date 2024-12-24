@@ -100,29 +100,31 @@ function smarty_function_meta($params, &$smarty) {
 		}
 	}
 
-	/**
-    * Valida si un ID de Google Analytics es válido
-    *
-    * @param string $id ID de Google Analytics a validar
-    * @return bool Verdadero si el ID es válido, falso en caso contrario
-    */
-   function validarIDGoogleAnalytics($id) {
-      // Expresiones regulares para los formatos de GA3 (UA) y GA4 (G-)
-      $regex_ua = '/^UA-\d{7,9}-\d{1,2}$/';  // Formato Universal Analytics
-      $regex_ga4 = '/^G-[A-Za-z0-9]{10}$/';  // Formato Google Analytics 4
-      return preg_match($regex_ua, $id) || preg_match($regex_ga4, $id);
-   }
-
-   $idGoogle = htmlspecialchars(trim($tsSeo['seo_google_analytics']), ENT_QUOTES, 'UTF-8');
-
 	# AÑADIMOS VERIFICACIÓN GOOGLE 
 	if(!empty($tsSeo['seo_google_verification']) AND (int)$tsSeo['seo_google_verification_active'] === 1) {
 		$meta .= "<meta name=\"google-site-verification\" content=\"{$tsSeo['seo_google_verification']}\" />\n";
 	}
-   // Validar el formato del ID
-   if (validarIDGoogleAnalytics($idGoogle) AND !empty($tsSeo['seo_google_analytics'])) {
-	   // Generar el código de Google Analytics
-	   $meta .= trim("<!-- Google tag (gtag.js) -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=$idGoogle\"></script>\n<script>window.dataLayer=window.dataLayer||[];const gtag=()=>dataLayer.push(arguments);gtag('js',new Date());gtag('config','$idGoogle');</script>");
+
+	if(!empty($tsSeo['seo_google_analytics'])) {
+		/**
+	    * Valida si un ID de Google Analytics es válido
+	    *
+	    * @param string $id ID de Google Analytics a validar
+	    * @return bool Verdadero si el ID es válido, falso en caso contrario
+	    */
+	   function validarIDGoogleAnalytics($id) {
+	      // Expresiones regulares para los formatos de GA3 (UA) y GA4 (G-)
+	      $regex_ua = '/^UA-\d{7,9}-\d{1,2}$/';  // Formato Universal Analytics
+	      $regex_ga4 = '/^G-[A-Za-z0-9]{10}$/';  // Formato Google Analytics 4
+	      return preg_match($regex_ua, $id) || preg_match($regex_ga4, $id);
+	   }
+
+	   $idGoogle = htmlspecialchars(trim($tsSeo['seo_google_analytics'] ?? ''), ENT_QUOTES, 'UTF-8');
+	   // Validar el formato del ID
+	   if (validarIDGoogleAnalytics($idGoogle)) {
+		   // Generar el código de Google Analytics
+		   $meta .= trim("<!-- Google tag (gtag.js) -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=$idGoogle\"></script>\n<script>window.dataLayer=window.dataLayer||[];const gtag=()=>dataLayer.push(arguments);gtag('js',new Date());gtag('config','$idGoogle');</script>");
+		}
 	}
 
 	// Retornamos

@@ -3,8 +3,8 @@
 ![Smarty 4.5.5](https://img.shields.io/badge/Smarty-4.5.5-red?style=plastic)
 ![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic&label=Branch%20main)
 
-# ZCode v2.0.11
-> Próxima actualización se reescribirá varias líneas de código | próxima versión 2.1.11 :: sin fecha
+# ZCode v2.0.11-1
+> Próxima actualización se reescribirá varias líneas de código | próxima versión 2.1.11-1 :: sin fecha
 
 ### Actualizaciones
  * PHP 8.2+ (requerido)
