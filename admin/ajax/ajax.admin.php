@@ -32,6 +32,8 @@
 		'admin-upload-favicon' => array('n' => 4, 'p' => ''),
 		'admin-eliminar-categoria' => array('n' => 4, 'p' => ''),
 		'admin-tema' => array('n' => 4, 'p' => ''),
+		'admin-eliminar-icono' => array('n' => 4, 'p' => ''),
+		'admin-subir-icono' => array('n' => 4, 'p' => ''), 
 	);
 
 /**********************************\
@@ -156,6 +158,12 @@
 			$tsForo = new tsForo();
 			echo $tsForo->delCategoria();
 		break;
+		case 'admin-eliminar-icono':
+         echo $tsAdmin->eliminar_icono_paquete();
+      break;
+      case 'admin-subir-icono':
+         echo $tsAdmin->subir_icono();
+      break; 
       default:
          die('0: Este archivo no existe.');
       break;

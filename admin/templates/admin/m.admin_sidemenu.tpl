@@ -42,4 +42,5 @@
 	<li id="a_database"><a class="nav-item{if $tsAction == 'database'} active{/if}" href="{$tsConfig.url}/admin/database">Base de datos</a></li>
 	<li id="a_favicon"><a class="nav-item{if $tsAction == 'favicon'} active{/if}" href="{$tsConfig.url}/admin/favicon">Generar favicon</a></li>
 	<li id="a_sitemap"><a class="nav-item{if $tsAction == 'sitemap'} active{/if}" href="{$tsConfig.url}/admin/sitemap">Sitemap</a></li>
+	<li id="a_packs"><a class="nav-item{if $tsAction == 'packs'} active{/if}" href="{$tsConfig.url}/admin/packs">Control de iconos</a></li>
 </ul>

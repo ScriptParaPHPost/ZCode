@@ -73,9 +73,6 @@ class tsFotos {
 			$tsUpload->file_url = $foto['url'];
 		}
 		$result = $tsUpload->newUpload($type);
-		if($tsUser->is_member && $tsUser->is_admod) {
-			die;
-		}
 		return $result;
 	}
 

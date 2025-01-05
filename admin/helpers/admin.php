@@ -91,6 +91,14 @@
     	$tsFavicon = new tsFavicon;
     	$smarty->assign('tsAllFavicons', $tsFavicon->getAllFavicons());
 
+   // Administrar imagenes categoras, medallas y rango
+   } elseif($action === 'packs') {
+		$tsTitle = 'Packs de iconos';
+   	$smarty->assign('tsDir', $_GET["path"]);
+	   if($act === 'abrir') {
+	      $smarty->assign('tsPack', $tsAdmin->obtener_paquete($_GET["path"]));
+	   } 
+
    // Configuraciones y Registro
 	} elseif(in_array($action, ['configs', 'registro'])) {
 		$tsTitle = ($action === 'configs') ? 'Configuraci&oacute;n' : 'Registro de ' . $tsTitle;

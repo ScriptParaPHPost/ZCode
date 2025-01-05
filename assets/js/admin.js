@@ -229,6 +229,66 @@ var ad_afiliado = {
    }
 }
 
+
+var packs = {
+  	reload(path) {
+  		location.href = ZCodeApp.url + '/admin/packs?act=abrir&path=' + path;
+  	},
+   subir() {
+      let formData = new FormData();
+      formData.append('file', $('#image')[0].files[0]);
+      formData.append('path', $('#path').val());
+      $.ajax({
+         url: `${ZCodeApp.url}/admin-subir-icono.php?from=dashboard`,
+         type: 'post',
+         data: formData,
+         contentType: false,
+         processData: false,
+         success: response => {
+            switch(response.charAt(0)) {
+               case '0':
+                  UPModal.alert('Error', response.substring(3), false);
+               break;
+               case '1':
+               	UPModal.setModal({
+							title: 'Bien',
+							body: response.substring(3),
+							buttons: {
+								confirmTxt: 'Continuar',
+								confirmAction: `packs.reload()`,
+								cancelShow: false
+							}
+						});
+               break;
+            }
+         }
+      });
+      return false;
+   },
+   borrar(carpeta, hash, status) {
+      if(!status) {
+         UPModal.setModal({
+				title: '¿Deseas eliminar ' + (carpeta == 'med' ? 'estos iconos' : 'este icono') + '?',
+				body: 'Esto eliminará el/los iconos de su tema',
+				buttons: {
+					confirmTxt: 'Continuar',
+					confirmAction: `packs.borrar('${carpeta}', '${hash}', true)`
+				}
+			});
+			return;
+      } 
+      let params = ['path=' + carpeta, 'hash=' + hash].join('&')
+      $.post(`${ZCodeApp.url}/admin-eliminar-icono.php?from=dashboard`, params, del => {
+         UPModal.close();
+         if(del) {
+            if(carpeta === 'medallas') {
+               $("tr." + hash).each( (inx, trh) => trh.remove())
+            } else $("tr." + hash).remove()
+         }
+      })
+   }
+}
+
 $(document).ready(() => {
 
 	const { url } = ZCodeApp;

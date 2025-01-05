@@ -1212,6 +1212,108 @@ class tsAdmin {
 		return $num;
 	}
 
+	private function hashFileIcon(string $icon = ''): string {
+		return substr(md5(pathinfo($icon, PATHINFO_FILENAME)), 0, 6);
+	}
+
+	# Obtenemos todas las imagenes de la carpeta
+   public function obtener_paquete(string $dir = '') {
+      global $tsCore;
+      # Aplicamos los permisos si no los tiene
+      foreach (["categorias", "medallas", "rangos"] as $carpeta) chmod(TS_IMAGES . $carpeta, 0777);
+      # Creamos un arreglo
+      $data = [];
+      # Buscamos en la carpeta...
+      $carpeta = TS_IMAGES . $dir;
+      $imagenes = opendir($carpeta);
+      # Recorremos la carpeta
+      while ($icono = readdir($imagenes)) {
+      	if(in_array($icono, ['.', '..'])) continue;
+         # Obtenemos información del archivo
+        	$archivo = $carpeta . '/' . $icono;
+        	$extension = pathinfo($archivo, PATHINFO_EXTENSION);
+     		$arr = [
+     		  	"hash" => $this->hashFileIcon($icono),
+     		  	"icon" => pathinfo($archivo, PATHINFO_FILENAME),
+     		  	"url" => $tsCore->settings["assets"] . '/images/' . $dir . '/' . $icono,
+     		];
+     		$this->getTypeImage($arr, $archivo, $extension);
+
+         if (isset($_GET["size"]) || isset($_GET["type"])) {
+            if (intval($_GET["size"]) === intval($arr["width"]) || 'image/' . $_GET["type"] === $arr["type"]) {
+               array_push($data, $arr);
+            }
+        	} else {
+         	array_push($data, $arr);
+        	}
+      }
+      closedir( $imagenes );
+      # Retornamos el arreglo
+      return $data;
+   }
+
+   private function getTypeImage(&$arr, string $archivo = '', string $extension = '') {
+   	if ($extension === 'svg') {
+         # Leer el archivo SVG para obtener width y height
+         $svgContent = file_get_contents($archivo);
+         if (preg_match('/<svg[^>]*width="([^"]+)"[^>]*height="([^"]+)"/i', $svgContent, $matches)) {
+            $arr["width"] = $matches[1];
+            $arr["height"] = $matches[2];
+         } else {
+            $arr["width"] = $arr["height"] = null; // Valores por defecto si no están definidos
+         }
+         $arr["type"] = "image/svg+xml";
+      } else {
+         # Usar getimagesize para otros formatos
+         $inf = getimagesize($archivo);
+         $arr["width"] = $inf[0];
+         $arr["height"] = $inf[1];
+         $arr["type"] = $inf["mime"];
+      }
+   }
+
+   public function subir_icono() {
+   	global $tsCore;
+      # Mover a...
+      $mover = TS_IMAGES . $tsCore->setSecure($_POST["path"]) . DIRECTORY_SEPARATOR;
+      $tipos_permitidos = [
+		   "image/jpg",     // JPG
+		   "image/jpeg",    // JPEG
+		   "image/png",     // PNG
+		   "image/gif",     // GIF
+		   "image/svg+xml", // SVG
+		   "image/jfif",    // JFIF
+		   "image/webp"     // WebP
+		];
+		if (in_array($_FILES["file"]["type"], $tipos_permitidos)) {
+         # Agregamos la imagen, si existe, esta será reemplazada por la nueva
+         return (move_uploaded_file($_FILES["file"]["tmp_name"], $mover . $_FILES['file']['name'])) ? '1: Imagen agregada correctamente...' : '0: No se pudo subir la imagen!';
+      } 
+      return '0: Este formato no esta permitido';
+   } 
+
+   public function eliminar_icono_paquete() {
+      global $tsCore;
+      # Buscamos en la carpeta...
+      $carpeta = TS_IMAGES . $tsCore->setSecure($_POST["path"]);
+      $tipos = [
+		   "image/jpg" => "jpg",     // JPG
+		   "image/jpeg" => "jpeg",    // JPEG
+		   "image/png" => "png",     // PNG
+		   "image/gif" => "gif",     // GIF
+		   "image/svg+xml" => "svg", // SVG
+		   "image/jfif" => "jfif",    // JFIF
+		   "image/webp" => "webp"     // WebP
+		];
+      # Eliminamos si son la misma imagen con difente tamaño
+      foreach($this->obtener_paquete($_POST["path"]) as $eliminar) {
+         if($eliminar["hash"] === $_POST["hash"]) {
+            $remove_icon = $carpeta . DIRECTORY_SEPARATOR . $eliminar["icon"] . '.' . $tipos[$eliminar["type"]];
+            return (unlink($remove_icon));
+         }
+      }
+   }
+
 	public function setUsuarioVerificado() {
 		global $tsCore;
       $user = (int)$_GET['id'];
