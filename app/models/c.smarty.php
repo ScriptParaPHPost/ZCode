@@ -104,7 +104,7 @@ class tsSmarty extends Smarty {
 			$message_2 = preg_replace_callback($patron, function($matches) {
     			return "'<strong>{$matches[1]}</strong>'";
 			}, $message);
-			$show = "Lo sentimos, se produjo un error al cargar la plantilla <strong>$page</strong>.
+			$show = "Lo sentimos, se produjo un error al cargar la plantilla <strong>t.$page.tpl</strong>.
 			<br>Debido al error:<br> <code style=\"font-size:1rem;line-height: 1.3rem;color: #d971ad;word-wrap: break-word;background: rgba(217, 113, 173, .12);display:block;padding:.5em;\">$message_2</code>";
 			show_error($show, 'plantilla');
 		}

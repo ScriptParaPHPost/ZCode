@@ -319,7 +319,7 @@ class tsAdmin {
 		return $categoria;
 	}
 	private function getSqlCats(int $cid = 0) {
-		$where = ($cid > 0) ? "WHERE cid = $cid" : "";
+		$where = ($cid === 0) ? "" : "WHERE cid = $cid";
 		return db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_foro, c_nombre, c_descripcion, c_seo, c_img, c_color, c_private FROM @posts_categorias $where");
 	}
 	public function saveOrden() {
