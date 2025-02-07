@@ -10,7 +10,6 @@ class tsMod {
 	public function multiAction(string $action = '') {
 		global $tsCore;
 		if($action === 'ocultar') {
-			var_dump($_POST);
 			return $this->OcultarPost($_POST['pid'], $tsCore->setSecure($_POST['razon']));
 		} elseif($action === 'reboot') {
 			return $this->rebootPost($_POST['id']);
@@ -219,7 +218,7 @@ class tsMod {
 			//
 			if (db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET `post_status` = 2 WHERE `post_id` = $pid")) {
 				// ELIMINAR DENUNCIAS
-				deleteFromId([__FILE__, __LINE__], '@denuncias', "obj_id = $pid AND d_type = 1");
+				removeDataById([__FILE__, __LINE__], '@denuncias', "obj_id = $pid AND d_type = 1");
 				// ENVIAR AVISO
 				$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_user, p.post_title, p.post_body, p.post_tags, p.post_category, u.user_name, u.user_email FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id WHERE p.post_id = $pid LIMIT 1"));
 				// RAZON
@@ -262,7 +261,7 @@ class tsMod {
 				$aviso = "Hola <strong>{$data['user_name']}</strong>\n\nLe informo de que el mensaje privado <strong>{$data['mp_subject']}</strong> ha sido eliminado.\n\n- Te recomendamos leer el <a href=\"{$tsCore->settings['url']}/pages/protocolo/\" rel=\"internal\">Protocolo</a> para evitar futuras sanciones.\nMuchas gracias por entender!";
 				$status = $tsMonitor->setAviso($data['mp_from'], 'Mensaje eliminado', $aviso, 1);
 				// ELIMINAR DENUNCIAS
-				deleteFromId([__FILE__, __LINE__], '@denuncias', "obj_id = $mid AND d_type = 2");
+				removeDataById([__FILE__, __LINE__], '@denuncias', "obj_id = $mid AND d_type = 2");
 				//LOS MPS SE ELIMINARAN DE LA LISTA DE MPS DEL USUARIO, PERO NO SE BORRARÁN.
 				db_exec([__FILE__, __LINE__], 'query', "UPDATE @mensajes SET mp_del_to = 1, mp_del_from = 1 WHERE `mp_id` = $mid");
 				// ELIMINAR MPS (Si quiere elimninarlos en vez de ocultarlos, descomente las dos siguientes líneas y comente la anterior "UPDATE")
@@ -309,7 +308,7 @@ class tsMod {
 					$status = $tsMonitor->setAviso($data['f_user'], 'Foto eliminada', $aviso, 1);
 				}
 				// ELIMINAR DENUNCIAS
-				deleteFromId([__FILE__, __LINE__], '@denuncias', "obj_id = $fid AND d_type = 4");
+				removeDataById([__FILE__, __LINE__], '@denuncias', "obj_id = $fid AND d_type = 4");
 				$this->setHistory('borrar', 'foto', $fid);
 				return '1: La foto ha sido eliminada.';
 			}
@@ -422,7 +421,7 @@ class tsMod {
 			db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET `user_baneado` = 1 WHERE `user_id` = $user_id");
 			if (db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @suspension (`user_id`, `susp_causa`, `susp_date`, `susp_termina`, `susp_mod`, `susp_ip`) VALUES ($user_id, $b_causa, $ahora, $termina, {$tsUser->uid}, '$myip')")) {
 				// ELIMINAR DENUNCIAS
-				deleteFromId([__FILE__, __LINE__], '@denuncias', "obj_id = $user_id AND d_type = 3");
+				removeDataById([__FILE__, __LINE__], '@denuncias', "obj_id = $user_id AND d_type = 3");
 				// RESTAR USUARIO EN ESTADÍSTICAS
 				statsUpdate([__FILE__, __LINE__], [
 					'table' => '@stats',
@@ -452,7 +451,7 @@ class tsMod {
 		global $tsUser;
 		if ($tsUser->is_admod || $tsUser->permisos['modu']) {
 			# PRIMERO BORRAMOS LA DENUNCIAS
-			deleteFromId([__FILE__, __LINE__], '@denuncias', "obj_id = $user_id AND d_type = 3");
+			removeDataById([__FILE__, __LINE__], '@denuncias', "obj_id = $user_id AND d_type = 3");
 			// HAY QUE QUITAR LA SUSPENSION?
 			if ($type === 'unban') {
 				$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT `susp_mod` FROM @suspension WHERE `user_id` = $user_id"));
@@ -460,8 +459,8 @@ class tsMod {
 				if (empty($data)) return '0: El usuario no est&aacute; suspendido.';
 				//
 				if ($tsUser->is_admod == 1 || $data['susp_mod'] == $tsUser->uid) {
-					deleteFromId([__FILE__, __LINE__], '@suspension', "user_id = $user_id");
-					updateId([__FILE__, __LINE__], '@miembros', "user_baneado = 0", "user_id = $user_id");
+					removeDataById([__FILE__, __LINE__], '@suspension', "user_id = $user_id");
+					updateRecordById([__FILE__, __LINE__], '@miembros', "user_baneado = 0", "user_id = $user_id");
 					statsUpdate([__FILE__, __LINE__], [
 						'table' => '@stats',
 						'columna' => 'stats_miembros',

@@ -472,7 +472,7 @@ class tsCuenta {
       	'time' => time(), 
       	'ip' => $myIP
       ];
-		if(insertDataInBase([__FILE__, __LINE__], '@nicks', $datos)) {
+		if(addDataToTable([__FILE__, __LINE__], '@nicks', $datos)) {
 			$message = 'Proceso iniciado, recibir&aacute; la respuesta en el correo indicado cuando valoremos el cambio.';
 		}
 		return $message;

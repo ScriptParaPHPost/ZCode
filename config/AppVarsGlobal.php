@@ -3,8 +3,8 @@
 /**
  * @name define.php
  * @copyright ZCode 2024
- * @link https://zcode.newluckies.com/ (DEMO)
- * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92

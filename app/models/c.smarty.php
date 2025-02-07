@@ -60,9 +60,10 @@ class tsSmarty extends Smarty {
 		return [
 			'root' => TS_ROOT,
 			'assets' => TS_ASSETS,
-			'views' => TS_ASSETS . 'views' . TS_PATH,
+			'elements' => TS_ASSETS . 'elements' . DIRECTORY_SEPARATOR,
+			'views' => TS_ASSETS . 'views' . DIRECTORY_SEPARATOR,
 			'dashboard' => TS_ADMIN,
-			'admin_mods' => TS_ADMIN . 'admin_mods' . TS_PATH,
+			'admin_mods' => TS_ADMIN . 'admin_mods' . DIRECTORY_SEPARATOR,
 			'access' => TS_AUTH
 		];
 	}
@@ -74,17 +75,17 @@ class tsSmarty extends Smarty {
 	 * @param string $tsPage Nombre de la página actual
 	 */
 	public function loadAllTemplates($tema, $tsPage = '') {
-		$templates = TS_THEMES . $tema . TS_PATH . 'templates' . TS_PATH;
-		$sections = $templates . 'sections' . TS_PATH;
-		$modules = $templates . 'modules' . TS_PATH;
+		$templates = TS_THEMES . $tema . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR;
+		$sections = $templates . 'sections' . DIRECTORY_SEPARATOR;
+		$modules = $templates . 'modules' . DIRECTORY_SEPARATOR;
 		$directorios = array_merge([
 			'tema' => TS_THEMES . $tema,
 			'templates' => $templates,
 			'sections' => $sections,
 			'modules' => $modules,
-			'pagina' => $modules . $tsPage . TS_PATH,
-			'global' => $modules . 'global' . TS_PATH,
-			'php_files' => $templates . 't.php_files' . TS_PATH
+			'pagina' => $modules . $tsPage . DIRECTORY_SEPARATOR,
+			'global' => $modules . 'global' . DIRECTORY_SEPARATOR,
+			'php_files' => $templates . 't.php_files' . DIRECTORY_SEPARATOR
 		], $this->listDirectories());
 		$this->addTemplateDir($directorios);
 	}

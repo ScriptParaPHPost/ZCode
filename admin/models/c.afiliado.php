@@ -77,7 +77,7 @@ class tsAfiliado {
 	public function DeleteAfiliado(int $aid = 0){
 		global $tsUser;
 		if($tsUser->is_admod == 1) {
-			if(deleteFromId([__FILE__, __LINE__], '@afiliados', "aid = $aid")) return '1: Afiliado eliminado';
+			if(removeDataById([__FILE__, __LINE__], '@afiliados', "aid = $aid")) return '1: Afiliado eliminado';
 		} else return '0: T&uacute;o, no puedes hacer eso';
 	}
 	public function SetActionAfiliado(){

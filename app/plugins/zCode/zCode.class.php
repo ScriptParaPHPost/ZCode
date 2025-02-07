@@ -107,9 +107,11 @@ class SmartyZCode {
   		return false;
   	}
 
-  	private function getCached() {
-  		return uniqid("?v{$this->version}");
-  	}
+	private function getVersionFile(string $file = '', string $extension = ''): string {
+   	$hash = md5_file($file);
+   	$version = 'ZC' . substr($hash, 0, 6);
+   	return "$file?$version";
+	}
 
   	/**
 	 * @access private
@@ -120,11 +122,10 @@ class SmartyZCode {
    */
 	private function generateHtmlTag(string $htmltag = '') {
 		$extension = pathinfo($htmltag, PATHINFO_EXTENSION);
-		$withoutCached = false;
-		$fileCache = $htmltag . ($withoutCached ? '' : $this->getCached());
+		$htmltag = $this->getVersionFile($htmltag, $extension);
 		return match ($extension) {
-			'css' => "<link rel=\"stylesheet\" href=\"$fileCache\" type=\"text/css\"/>\n",
-			'js' => "<script src=\"$fileCache\" defer></script>\n",
+			'css' => "<link rel=\"stylesheet\" href=\"$htmltag\" type=\"text/css\"/>\n",
+			'js' => "<script src=\"$htmltag\" defer></script>\n",
 			default => null
 		};
 	}
@@ -346,7 +347,7 @@ class SmartyZCode {
 	  	$tagsCreated = '';
   		# Si solamente es un solo archivo!
   		if(!is_array($scripts)) return $this->setBuildTag($scripts);
-  		$jsMain = ['zCode.js', 'plugins.js', ...$scripts];
+  		$jsMain = ['jQuery.min.js', 'plugins.js', ...$scripts];
   		# Añadimos el editor
 	  	$this->appendJS($jsMain, $this->page_wysibb, 'wysibb.js');
 	  	# Añadimos complementos a cuenta, comunidades...

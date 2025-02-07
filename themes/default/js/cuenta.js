@@ -1,6 +1,13 @@
 function desactivate(start = 0) {
 	imported('cuenta/desactivate.js', 'desactivate', { start });
 }
+const UPPassword = {
+	size: 18,
+	charset: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&_~|}{[]?-=",
+	generate(length = this.size) {
+		return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
+	}
+}
 const cuenta = {
 	generarContrasena() {
 		let inputPasswords = ['new_passwd', 'confirm_passwd'];

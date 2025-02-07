@@ -23,7 +23,7 @@ class tsCore extends tsZCode {
 	}
 
 	private function withoutSSL() {
-		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT url FROM @configuracion WHERE tscript_id = 1")); 
+		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT url FROM @configuracion WHERE tscript_id = 1"));
 		return $query['url'];
 	}
 

@@ -41,7 +41,7 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
 	// CLASE
-	require('../class/c.borradores.php');
+	require TS_MODELS . "c.borradores.php";
 	$tsDrafts = new tsDrafts();
 	// CODIGO
 	switch($action){

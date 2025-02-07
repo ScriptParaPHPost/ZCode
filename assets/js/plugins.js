@@ -113,29 +113,6 @@ const toast = {
 	  	}
 	}
 };
-
-const cookie = {
-	days: 90, /** 90 Días **/
-	create(name, value, expire = '', days = this.days) {
-   	if (days) {
-   	   let date = new Date();
-   	   date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-   	   expires = "; expires=" + date.toUTCString();
-   	}
-   	document.cookie = `${name}=${value}${expires}; path=/`;
-	},
-	get(nameEQ) {
-		nameEQ += '=';
-   	let ca = document.cookie.split(';');
-   	for (let i = 0; i < ca.length; i++) {
-   	   let c = ca[i];
-   	   while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-   	   if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-   	}
-   	return null;
-	}
-}
-
 const loading = {
 	timeout: 350,
 	start() {
@@ -143,14 +120,6 @@ const loading = {
 	},
 	end() {
 		setTimeout(() => $('#loading_start').remove(), this.timeout);
-	}
-}
-
-const UPPassword = {
-	size: 18,
-	charset: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&_~|}{[]?-=",
-	generate: function(length = this.size) {
-		return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
 	}
 }
 
@@ -383,74 +352,10 @@ $(document).on('keyup keydown', function(event) {
    }
 });
 
-// Solicitar permiso para mostrar notificaciones
-function requestNotificationPermission() {
-	imported('notification.js', 'permission', {}, 'assets');
-}
-// Función para mostrar la notificación
-function showNotification(title, body, icon = '', url = '') {
-   if (Notification.permission === 'granted') {
-      const notification = new Notification(title, {
-         body: body,
-         icon: icon
-      });
-      notification.onclick = function(event) {
-         event.preventDefault(); // Previene el comportamiento predeterminado
-         if (url) {
-            window.open(url, '_self'); // Abre la URL en una nueva pestaña
-         }
-      };
-   }
-}
-
-function decoded_email_protected() {
-	const PM = $('#protected_mail');
-	if ($('#protected_mail').length > 0) {
-		const PMailkey = PM.data('key');
-		const PMailpublic = PM.data('public');
-		const PMOrder = PMailkey.split("").sort().join("");
-		const keyMap = {};
-		// Crear un mapa de búsqueda para mejorar la eficiencia
-		for (let i = 0; i < PMailkey.length; i++) keyMap[PMailkey[i]] = PMOrder[i];
-		// Decodificar el correo usando el mapa
-		const EmailDecode = PMailpublic.split("").map(char => keyMap[char]).join("");
-		PM.html(`<a href="mailto:${EmailDecode}">${EmailDecode}</a>`);
-	}
-}
-
 $(() => {
-	
-	requestNotificationPermission();
-	decoded_email_protected();
 	
 	if($('lite-youtube').length > 0) {
 		imported('lite-youtube.js', 'liteYt', {}, 'assets');
-	}
-	// Ejecutamos LazyLoad - by Miguel92
-	if (typeof LazyLoad !== 'undefined') {
-	   const lazyLoadSelectors = ['img[src]', '[data-src]', '[data-bg]'];
-	   const { images: { assets: publicImagesPath } } = ZCodeApp;
-
-	   lazyLoadSelectors.forEach(selector => {
-	      const commonLazyLoadOptions = {
-	         elements_selector: selector,
-	         class_loading: 'lazy-loading',
-	         callback_error: element => {
-	            $(element).attr("src", publicImagesPath + "/500-error.png");
-	         }
-	      };
-
-	      let lazyLoadOptions = { ...commonLazyLoadOptions };
-
-	      if (selector === '[data-bg]') {
-	         lazyLoadOptions.class_loaded = 'lazy-loaded';
-	         delete lazyLoadOptions.use_native; // Remove use_native for [data-bg]
-	      } else {
-	         lazyLoadOptions.use_native = true;
-	      }
-	      $(selector).removeClass('placeholder placeholder-wave');
-	      new LazyLoad(lazyLoadOptions);
-	   });
 	}
 	
    // Una nueva forma de guardar... CTRL + S
@@ -468,5 +373,27 @@ $(() => {
 	      $(this).attr({ href: `${ZCodeApp.url}/saliendo/?p=`  + base64_encode(url) });
 	   });
    }
+
+	// Observer
+	const Observer = new IntersectionObserver((entries, self) => {
+	   entries.forEach((entry) => {
+	      if (entry.isIntersecting) {
+	         const Target = entry.target;
+	         const typeEntry = Target.localName === 'source' ? 'srcset' : 'src';
+	         const dataValue = Target.getAttribute(`data-${typeEntry}`);
+	         if (dataValue) {
+	            Target[typeEntry] = dataValue;
+	            Target.removeAttribute(`data-${typeEntry}`);
+	         }
+	         self.unobserve(Target);
+	      }
+	   });
+	}, {
+	   rootMargin: '50px',
+	});
+
+	// Seleccionar y observar imágenes con data-src o data-srcset
+	const $images = document.querySelectorAll('[data-src], [data-srcset]');
+	$images.forEach((image) => Observer.observe(image));
 
 });

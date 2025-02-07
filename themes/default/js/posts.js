@@ -242,4 +242,27 @@ $(document).ready(() => {
          }, 3000);
       }
    }
+   const $slider = $(".slider");
+    let isDragging = false;
+    let startX, scrollLeft;
+
+    $slider.on("mousedown touchstart", function (e) {
+        isDragging = true;
+        startX = e.pageX || e.originalEvent.touches[0].pageX;
+        scrollLeft = $slider.scrollLeft();
+        $slider.addClass("is-dragging");
+    });
+
+    $slider.on("mousemove touchmove", function (e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX || e.originalEvent.touches[0].pageX;
+        const walk = (x - startX) * 1.5; // Ajusta la velocidad
+        $slider.scrollLeft(scrollLeft - walk);
+    });
+
+    $slider.on("mouseup touchend mouseleave", function () {
+        isDragging = false;
+        $slider.removeClass("is-dragging");
+    });
 });

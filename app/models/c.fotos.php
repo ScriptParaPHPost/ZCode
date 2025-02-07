@@ -100,7 +100,7 @@ class tsFotos {
 				// Eliminamos el array $data['foto'] = ['url' => '...', 'file' => '...']
 				unset($fData['foto']);
 				// Insertamos la foto
-				if(insertDataInBase([__FILE__, __LINE__], '@fotos', $fData, 'f_')) {
+				if(addDataToTable([__FILE__, __LINE__], '@fotos', $fData, 'f_')) {
 					$fid = db_exec('insert_id');
 					db_exec([__FILE__, __LINE__], 'query', "UPDATE @stats SET `stats_fotos` = stats_fotos + 1 WHERE `stats_no` = 1");
 					// AGREGAR AL MONITOR DE LOS USUARIOS QUE ME SIGUEN

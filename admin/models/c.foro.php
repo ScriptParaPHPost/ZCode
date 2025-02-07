@@ -65,7 +65,7 @@ class tsForo {
 	public function delCategoria() {
 		global $tsCore;
 		$fid = (int)$_POST['fid'];
-		if (deleteFromId([__FILE__, __LINE__], '@posts_supercategorias', "fid = $fid")) return '1: Categoría eliminada';
+		if (removeDataById([__FILE__, __LINE__], '@posts_supercategorias', "fid = $fid")) return '1: Categoría eliminada';
 		return '0: Problemas al eliminar.';
 	}
 

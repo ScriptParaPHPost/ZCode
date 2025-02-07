@@ -29,7 +29,7 @@
 	         <dd>
 					{html_options name='c_met_welcome' id='c_met_welcome' options=[0 => 'No dar bienvenida', 1 => 'Muro', 2 => 'Mensaje privado', 3 => 'Aviso'] selected=$tsConfig.c_met_welcome class="select up-select--jquery"}
 	            <br />
-	            <textarea name="c_met_welcome" id="ai_met_welcome" style="height: 100px; {if $tsConfig.c_met_welcome == 0} display:none; {/if}">{$tsConfig.c_message_welcome}</textarea>
+	            <textarea name="c_message_welcome" id="ai_met_welcome" style="height: 100px; {if $tsConfig.c_met_welcome == 0} display:none; {/if}">{$tsConfig.c_message_welcome}</textarea>
 	         </dd>
 	      </dl>
 			<dl>

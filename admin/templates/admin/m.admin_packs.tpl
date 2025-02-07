@@ -54,7 +54,7 @@
 						<input type="file" class="form-control-file" name="image" id="image">
 					</div>
 		  		</div>
-			  <p><span role="button" onclick="packs.subir()" class="btn">Agregar</span></p>
+			  <p><span role="button" onclick="packs.subir('{$tsDir}')" class="btn">Agregar</span></p>
 	   </form>
 
    {/if}

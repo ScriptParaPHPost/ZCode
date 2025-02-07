@@ -1,3 +1,24 @@
+const cookie = {
+	days: 90, /** 90 Días **/
+	create(name, value, expire = '', days = this.days) {
+   	if (days) {
+   	   let date = new Date();
+   	   date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+   	   expires = "; expires=" + date.toUTCString();
+   	}
+   	document.cookie = `${name}=${value}${expires}; path=/`;
+	},
+	get(nameEQ) {
+		nameEQ += '=';
+   	let ca = document.cookie.split(';');
+   	for (let i = 0; i < ca.length; i++) {
+   	   let c = ca[i];
+   	   while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+   	   if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+   	}
+   	return null;
+	}
+}
 const live = {
 	update: 60000, /** 1Min - 60 s - 60.000 ms **/
 	hide: 60000, /** 1Min - 60 s - 60.000 ms **/

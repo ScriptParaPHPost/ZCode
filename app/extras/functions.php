@@ -63,6 +63,7 @@ if(isset($_GET['migrator']) && $_GET['migrator'] === 'true' || (int)$tsUser->is_
       die('No se pudo migrar correctamente...');
    }
 }
+
 /**
  * Ejecutar consulta
  */
@@ -130,7 +131,7 @@ function db_exec() {
 	}
 }
 
-function insertDataInBase(array $array = [], string $tabla = '', array $datos = [], string $prefijo = '') {
+function addDataToTable(array $array = [], string $tabla = '', array $datos = [], string $prefijo = '') {
    if(empty($tabla) OR empty($datos)) {
    	throw new InvalidArgumentException('No hay datos ingresados');
    }
@@ -150,7 +151,7 @@ function insertDataInBase(array $array = [], string $tabla = '', array $datos = 
    return db_exec($array, 'query', "INSERT INTO $tabla ($keys) VALUES $insertString");
 }
 
-function deleteFromId(array $fileline = [], string $isTable = '', string $where_id = '') {
+function removeDataById(array $fileline = [], string $isTable = '', string $where_id = '') {
    if (empty($isTable)) {
       throw new InvalidArgumentException('No hay tabla');
    }
@@ -177,7 +178,7 @@ function statsUpdate(array $fileline = [], array $isData = [], bool $sum = false
    db_exec($fileline, 'query', $query);
 }
 
-function updateId(array $fileline = [], string $isTable = '', string $isData = '', string $where_id = '') {
+function updateRecordById(array $fileline = [], string $isTable = '', string $isData = '', string $where_id = '') {
    if (empty($isTable)) {
       throw new InvalidArgumentException('No hay tabla');
    }

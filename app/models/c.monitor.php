@@ -95,7 +95,7 @@ class tsMonitor {
 		# NO PODEMOS ENVIAR A UN USUARIO BANEADO
 		if($data['user_baneado'] === 1) return true;
 		# INSERTAMOS EL AVISO
-		return (insertDataInBase([__FILE__, __LINE__], '@avisos', ['user_id' => $user_id, 'av_subject' => $tsCore->setSecure($subject), 'av_body' => $tsCore->setSecure($body), 'av_date' => time(), 'av_type' => $type])) ? true : false;
+		return (addDataToTable([__FILE__, __LINE__], '@avisos', ['user_id' => $user_id, 'av_subject' => $tsCore->setSecure($subject), 'av_body' => $tsCore->setSecure($body), 'av_date' => time(), 'av_type' => $type])) ? true : false;
 	}
 
 	/**
@@ -155,7 +155,7 @@ class tsMonitor {
 		# RETURN
 		if(empty($data['user_id']) || $data['user_id'] != $tsUser->uid && !$tsUser->is_admod == 1) return false;
 		else {
-			deleteFromId([__FILE__, __LINE__], '@avisos', 'av_id=' . (int)$av_id);
+			removeDataById([__FILE__, __LINE__], '@avisos', 'av_id=' . (int)$av_id);
 			return true;
 		 }
 	}
@@ -184,7 +184,7 @@ class tsMonitor {
 			$delid = $data[$ntotal-1]['not_id']; // ID DE ULTIMA NOTIFICACION
 			// ELIMINAR NOTIFICACIONES?
 			if((int)$ntotal > (int)$tsCore->settings['c_max_nots']) {
-				deleteFromId([__FILE__, __LINE__], '@monitor', 'not_id = ' . $delid);
+				removeDataById([__FILE__, __LINE__], '@monitor', 'not_id = ' . $delid);
 			}
 			// ACTUALIZAMOS / INSERTAMOS
 			if($not_db_type === 'update') {
@@ -195,7 +195,7 @@ class tsMonitor {
 				]);
 				$sql = db_exec([__FILE__, __LINE__], 'query', "UPDATE @monitor SET $sql WHERE not_id = {$not_data['not_id']}");
 			} else {
-				$sql = insertDataInBase([__FILE__, __LINE__], '@monitor', [
+				$sql = addDataToTable([__FILE__, __LINE__], '@monitor', [
 					'user_id' => $user_id,
 					'obj_user' => $obj_user,
 					'obj_uno' => $obj_uno,
@@ -593,7 +593,7 @@ class tsMonitor {
 		// SEGUIR
 		if(empty($data['follow_id'])){
 			if($tsUser->uid == $fw['obj'] && $fw['type'] == 1) return "1-{$fw['obj']}-0-No puedes seguirte a ti mismo.";
-			if(insertDataInBase([__FILE__, __LINE__], '@follows', ['user' => $tsUser->uid, 'id' => $fw['obj'], 'type' => $fw['type'], 'date' => time()], 'f_')){
+			if(addDataToTable([__FILE__, __LINE__], '@follows', ['user' => $tsUser->uid, 'id' => $fw['obj'], 'type' => $fw['type'], 'date' => time()], 'f_')){
 				// MONITOR?
 				if($fw['notUser'] > 0) 
 					$this->setNotificacion($notType, $fw['notUser'], $tsUser->uid);
@@ -733,7 +733,7 @@ class tsMonitor {
 		//
 		if($tsUser->uid != $data['post_user']) {
 			// GUARDAMOS EN FOLLOWS PUES ES LA RECOMENDACION PARA SU SEGUIDORES! xD
-			insertDataInBase([__FILE__, __LINE__], '@follows', ['id' => $postid, 'user' => $tsUser->uid, 'type' => 3, 'date' => time()], 'f_');
+			addDataToTable([__FILE__, __LINE__], '@follows', ['id' => $postid, 'user' => $tsUser->uid, 'type' => 3, 'date' => time()], 'f_');
 			// NOTIFICAR
 			if($this->setFollowNotificacion(6, 1, $tsUser->uid, $postid)) {
 				$tsActividad->setActividad(4, $postid);

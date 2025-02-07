@@ -213,12 +213,12 @@ class tsAgregar {
 			// Generamos la imagen para la portada ya sea desde archivo o url
 			$postData['portada'] = $tsImages->getImageOfInput();
 			// INSERTAMOS
-			if(insertDataInBase([__FILE__, __LINE__], '@posts', $postData, 'post_')) {
+			if(addDataToTable([__FILE__, __LINE__], '@posts', $postData, 'post_')) {
 				$pid = (int)db_exec('insert_id');
 				$time = time();
 				// Si está oculto, lo creamos en el historial e.e
 				if(!$tsUser->is_admod && ($this->isData['postDesapprove'] || $tsUser->permisos['gorpap'] == true)) {
-					insertDataInBase([__FILE__, __LINE__], '@historial', [
+					addDataToTable([__FILE__, __LINE__], '@historial', [
 						`pofid` => $pid, 
 						`action` => 3, 
 						`type` => 1, 

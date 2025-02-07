@@ -45,7 +45,7 @@ class tsAfiliado {
 		// FILTRAMOS URL
 		if(!filter_var($dataIn['url'], FILTER_VALIDATE_URL)) die('0: Url incorrecta'); 
 		//
-		if(insertDataInBase([__FILE__, __LINE__], '@afiliados', $dataIn, 'a_')) {
+		if(addDataToTable([__FILE__, __LINE__], '@afiliados', $dataIn, 'a_')) {
 			$afid = db_exec('insert_id');
 		  	// AVISO
 			$aviso = "<center><a href=\"{$dataIn['url']}\"><img src=\"{$dataIn['banner']}\" title=\"{$dataIn['titulo']}\"/></a></center> <br /><br /> {$dataIn['titulo']} quiere ser su afiliado, dir&iacute;jase a la administraci&oacute;n para aceptar o cancelarla.";
@@ -87,7 +87,7 @@ class tsAfiliado {
 	public function DeleteAfiliado(int $aid = 0){
 		global $tsUser;
 		if($tsUser->is_admod == 1) {
-			if(deleteFromId([__FILE__, __LINE__], '@afiliados', "aid = $aid")) return '1: Afiliado eliminado';
+			if(removeDataById([__FILE__, __LINE__], '@afiliados', "aid = $aid")) return '1: Afiliado eliminado';
 		} else return '0: T&uacute;o, no puedes hacer eso';
 	}
 	public function SetActionAfiliado(){

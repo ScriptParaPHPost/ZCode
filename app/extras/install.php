@@ -3,8 +3,8 @@
 /**
  * @name index.php
  * @copyright ZCode 2024
- * @link https://zcode.newluckies.com/ (DEMO)
- * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
@@ -459,7 +459,7 @@ switch ($page) {
 					<script>
 						$('#agree').on('click', function(e) {
 							let checked = $(this).prop('checked');
-							$('input[type="submit"').attr({ disabled: !checked });
+							$('input[type="submit"]').attr({ disabled: !checked });
 						});
 					</script>
 				<?php elseif($page === 'requisitos'): ?>

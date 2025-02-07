@@ -3,8 +3,8 @@
 /**
  * @name database.php
  * @copyright ZCode 2024
- * @link https://zcode.newluckies.com/ (DEMO)
- * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
@@ -189,6 +189,15 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_favoritos` (
   PRIMARY KEY (`fav_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
+$zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_collections` (
+  `col_id` int(11) NOT NULL AUTO_INCREMENT,
+  `col_title` varchar(30) NOT NULL DEFAULT '',
+  `col_cover` tinytext NULL,
+  `col_user` int(11) NOT NULL DEFAULT 0,
+  `col_date` int(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`col_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts` (
   `post_id` int(11) NOT NULL AUTO_INCREMENT,
   `post_category` int(4) NOT NULL DEFAULT 0,
@@ -197,6 +206,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts` (
   `post_user` int(11) NOT NULL DEFAULT 0,
   `post_cache` int(10) NOT NULL DEFAULT 0,
   `post_comments` bigint NOT NULL DEFAULT 0,
+  `post_collection` bigint NOT NULL DEFAULT 0,
   `post_favoritos` int(11) NOT NULL DEFAULT 0,
   `post_hits` int(11) NOT NULL DEFAULT 0,
   `post_portada` tinytext NULL,

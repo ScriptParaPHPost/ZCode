@@ -241,8 +241,8 @@ class tsMedal {
 	*/
 	public function DelMedalla() {
 		$medalla = (int)$_POST['medal_id'];
-		if(!deleteFromId([__FILE__, __LINE__], '@medallas', "medal_id = $medalla")) return '0: Hubo un problema al eliminar la medalla';
-		if(deleteFromId([__FILE__, __LINE__], '@medallas_assign', "medal_id = $medalla")) {
+		if(!removeDataById([__FILE__, __LINE__], '@medallas', "medal_id = $medalla")) return '0: Hubo un problema al eliminar la medalla';
+		if(removeDataById([__FILE__, __LINE__], '@medallas_assign', "medal_id = $medalla")) {
 			return '1: La medalla se ha eliminado, usuario/post/foto ha dejado de tenerla.';
 		} else return '0: Hubo un problema al matar al p&aacute;jaro, parece ser que se elimin&oacute; a la madre, pero quedan los hijos y te van a hacer mucho da&ntilde;o...';
 	}		
@@ -259,7 +259,7 @@ class tsMedal {
 	   if(!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM @medallas_assign WHERE id = $asignacion AND medal_id = $medalla LIMIT 1"))) 
 	   	$msg = '0: No se ha encontrado esa asignaci&oacute;n';
 	   // Eliminamos la asignación
-	   if(deleteFromId([__FILE__, __LINE__], '@medallas_assign', "id = $asignacion")) {
+	   if(removeDataById([__FILE__, __LINE__], '@medallas_assign', "id = $asignacion")) {
 	   	// Descontar la asignacion de medalla
 		   if(!db_exec([__FILE__, __LINE__], 'query', "UPDATE @medallas SET m_total = m_total - 1 WHERE medal_id = $medalla")) $msg = '0: Se elimin&oacute; la asignaci&oacute;n, pero no se descont&oacute; de las estad&iiacute;sticas.';
 	   } else $msg = '0: No se elimin&oacute; la asignaci&oacute;n, pero ahora sabemos que existe.';

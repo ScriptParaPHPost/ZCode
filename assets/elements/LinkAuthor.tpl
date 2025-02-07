@@ -1,0 +1,1 @@
+<a href="{$tsConfig.url}/perfil/{$user}" class="text-decoration-none{if !isset($normal)} fw-{if $semibold}semi{/if}bold{/if}{if $class} {$class}{/if}" itemprop="{$itemprop}" itemscope itemtype="https://schema.org/{$itemtype}"><span itemprop="name">{$user|verificado}</span></a>

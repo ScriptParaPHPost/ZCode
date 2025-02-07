@@ -17,6 +17,14 @@ const registro = (() => {
 		}
 	}
 
+	const UPPassword = {
+		size: 18,
+		charset: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&_~|}{[]?-=",
+		generate(length = this.size) {
+			return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
+		}
+	}
+
 	// Actualice el texto y el color según la seguridad de la contraseña
 	let colorLevelPass = { 
 		0: 'gray', 

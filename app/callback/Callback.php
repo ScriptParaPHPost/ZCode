@@ -3,8 +3,8 @@
 /**
  * @name Callback.php
  * @copyright ZCode 2024
- * @link https://zcode.newluckies.com/ (DEMO)
- * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
@@ -157,7 +157,7 @@ class Callback {
 			'user_registro' => time(), 
 			'user_activo' => $active
 		];
-		if(insertDataInBase([__FILE__, __LINE__], '@miembros', $info)) {
+		if(addDataToTable([__FILE__, __LINE__], '@miembros', $info)) {
 			$id = db_exec('insert_id');
 	     	// Creamos un avatar
 			copy("https://ui-avatars.com/api/?name={$UserData['nick']}&background=random&color=fff&size=160&font-size=0.50&bold=false&length=2", TS_AVATAR . "$id.webp");

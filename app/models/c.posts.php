@@ -6,16 +6,22 @@
  * @author  ZCode | PHPost
  */
 
+require TS_MODELS . 'c.cache.php';
+
 class tsPosts {
 
 	public $isAdmodSeeMod;
+
 	public $isMember;
+
+	private $cache;
 
 	public function __construct() {
 		global $tsCore, $tsUser;
 		//
 		$this->isAdmodSeeMod = ($tsUser->is_admod AND ((int)$tsCore->settings['c_see_mod'] === 1));
 		$this->isMember = $tsUser->is_member;
+		$this->cache = new tsCache;
 	}
 
 
@@ -163,33 +169,51 @@ class tsPosts {
 	}
 
 	public function getLastPosts(?string $category = NULL) {
-		global $tsCore;
-		// TIPO DE POSTS A MOSTRAR
-		$c_where = '';
-		$p_where = '';
-		if(!empty($category)) {
-			$category = $tsCore->setSecure($category);
-			// EXISTE LA CATEGORIA?
-		 	$cid = (int)db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM @posts_categorias WHERE c_seo = '$category' LIMIT 1"))['cid'];
-		 	if($cid > 0) {
-		 		$c_where = 'AND p.post_category = ' . $cid;
-		 		$p_where = ' && post_category = ' . $cid;
-		 	}
-		}
-		$MaxTotal = (int)$tsCore->settings['c_max_posts'];
-		// TOTAL DE POSTS
-		$isAdmodPost = $this->isAdmodPost();
-		$isAdmod = $this->isAdmod();
-		$posts['total'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(p.post_id) AS total FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id WHERE $isAdmodPost $p_where AND p.post_sticky = 0"))[0];
-		//
-		$lastPosts['pages'] = $tsCore->system_pagination($posts['total'], $MaxTotal);
-		$limit = $tsCore->setPageLimit($MaxTotal, false, $posts['total']);
-		
-		$query = db_exec([__FILE__, __LINE__], 'query', $this->getLastSQL() . " $c_where AND p.post_sticky = 0 GROUP BY p.post_id ORDER BY p.post_id DESC LIMIT $limit");
+	   global $tsCore;
 
-		$lastPosts['data'] = $this->getLastForeach(result_array($query));
-		return $lastPosts;
+	   // Configuración inicial
+	   $c_where = '';
+	   $p_where = '';
+	   $cacheKey = "getLastPosts_normal";
+	   
+	   if (!empty($category)) {
+	      $category = $tsCore->setSecure($category);
+	      $cacheKey .= "_$category";
+	      // Verificar existencia de la categoría
+	      $result = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM @posts_categorias WHERE c_seo = '$category' LIMIT 1"));
+	      $cid = isset($result['cid']) ? (int)$result['cid'] : 0;
+	      if ($cid > 0) {
+	         $c_where = 'AND p.post_category = ' . $cid;
+	         $p_where = ' && post_category = ' . $cid;
+	      }
+	   }
+
+	   $MaxTotal = (int)$tsCore->settings['c_max_posts'];
+
+	   $limit = $tsCore->setPageLimit($MaxTotal, false, $posts['total']);
+	   $cacheKey .= "_$limit";
+
+	   // Función para detectar cambios en los datos
+	   $changeDetector = function() {
+	      $latestPost = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT MAX(post_id) FROM @posts"))[0];
+	      return $latestPost ? (int)$latestPost : 0;
+	   };
+
+	   // Generar caché y procesar datos
+	   return $this->cache->generate($cacheKey, function() use ($tsCore, $c_where, $p_where, $limit, $MaxTotal) {
+	      // Calcular el total de posts
+	      $isAdmodPost = $this->isAdmodPost();
+	      $posts['total'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(p.post_id) AS total FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id WHERE $isAdmodPost $p_where AND p.post_sticky = 0"))[0];
+	   	// Configurar paginación y límite
+	  		$lastPosts['pages'] = $tsCore->system_pagination($posts['total'], $MaxTotal);
+	      // Consultar los posts
+	      $query = db_exec([__FILE__, __LINE__], 'query', $this->getLastSQL() . " $c_where AND p.post_sticky = 0 GROUP BY p.post_id ORDER BY p.post_id DESC LIMIT $limit");
+	      $lastPosts['data'] = $this->getLastForeach(result_array($query));
+
+	      return $lastPosts;
+	   }, $changeDetector);
 	}
+
 	/*
 		getPost()
 	*/
@@ -208,9 +232,9 @@ class tsPosts {
 			$tsDraft = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT b_title FROM @posts_borradores WHERE b_post_id = $post_id LIMIT 1"));
 			$text = (!empty($tsDraft['b_title'])) ? 'Este post no existe o fue eliminado.' : 'El post fue eliminado!';
 			return ['deleted','Oops! ' . $text];
-		} elseif($postData['post_status'] == 1 && (!$tsUser->is_admod && $tsUser->permisos['moacp'] == false)) return ['denunciado','Oops! El Post se encuentra en revisi&oacute;n por acumulaci&oacute;n de denuncias.'];
-		elseif($postData['post_status'] == 2 && (!$tsUser->is_admod && $tsUser->permisos['morp'] == false)) return ['deleted','Oops! El post fue eliminado!'];
-		elseif($postData['post_status'] == 3 && (!$tsUser->is_admod && $tsUser->permisos['mocp'] == false)) return ['denunciado','Oops! El Post se encuentra en revisi&oacute;n, a la espera de su publicaci&oacute;n.'];
+		} elseif($postData['post_status'] === 1 && (!$tsUser->is_admod && $tsUser->permisos['moacp'] === false)) return ['denunciado','Oops! El Post se encuentra en revisi&oacute;n por acumulaci&oacute;n de denuncias.'];
+		elseif($postData['post_status'] === 2 && (!$tsUser->is_admod && $tsUser->permisos['morp'] === false)) return ['deleted','Oops! El post fue eliminado!'];
+		elseif($postData['post_status'] === 3 && (!$tsUser->is_admod && $tsUser->permisos['mocp'] === false)) return ['denunciado','Oops! El Post se encuentra en revisi&oacute;n, a la espera de su publicaci&oacute;n.'];
 		elseif(!empty($postData['post_private']) && empty($tsUser->is_member)) return ['privado', $postData['post_title']];
   
 		//ESTADÍSTICAS
@@ -328,45 +352,46 @@ class tsPosts {
 	/*
 		lalala
 	*/
-	function getPunteador(){
+	public function getPunteador(){
 		global $tsUser, $tsCore;
-		
-		if($tsCore->settings['c_allow_points'] > 0) {
-		$data['rango'] = $tsCore->settings['c_allow_points'];
-		}elseif($tsCore->settings['c_allow_points'] == '-1') {
-		$data['rango'] = $tsUser->info['user_puntosxdar']; 
-		}else{
-		$data['rango'] = $tsUser->permisos['gopfp'];
-		  }
-		return $data;
+   	$allow = $tsCore->settings['c_allow_points'];
+    	$data['rango'] = ($allow > 0) ? $allow : (($allow == '-1')  ? $tsUser->info['user_puntosxdar'] : $tsUser->permisos['gopfp']);
+    	return $data;
 	}
 	
 	/*
 		deletePost()
 	*/
-	function deletePost(){
+	public function deletePost(){
 		global $tsCore, $tsUser;
 		//
-		$post_id = $tsCore->setSecure($_POST['postid']);
+		$post_id = (int)$_POST['postid'];
 		// ES SU POST EL Q INTENTA BORRAR?
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT post_id, post_title, post_user, post_body, post_category FROM @posts WHERE post_id = \''.(int)$post_id.'\' AND post_user = \''.$tsUser->uid.'\'');
-		$data = db_exec('fetch_assoc', $query);
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id, post_title, post_user, post_body, post_category FROM @posts WHERE post_id = $post_id AND post_user = {$tsUser->uid}"));
 		
-		  db_exec([__FILE__, __LINE__], 'query', 'UPDATE @stats SET `stats_posts` = stats_posts - \'1\' WHERE `stats_no` = \'1\'');
-		  db_exec([__FILE__, __LINE__], 'query', 'UPDATE @miembros SET `user_posts` = user_posts - \'1\' WHERE `user_id` = \''.$data['post_user'].'\'');
+		statsUpdate([__FILE__, __LINE__], ['table' => '@stats', 'columna' => `stats_posts`, 'donde' => "stats_no = 1"]);
+		statsUpdate([__FILE__, __LINE__], ['table' => '@miembros', 'columna' => `user_posts`, 'donde' => "user_id = {$data['post_user']}"]);
 		// ES MIO O SOY MODERADOR/ADMINISTRADOR...
-		if(!empty($data['post_id']) || !empty($tsUser->is_admod)){
-				// SI ES MIS POST LO BORRAMOS Y MANDAMOS A BORRADORES
-			if(db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM @posts WHERE post_id = \''.(int)$post_id.'\'')) {
-				if(db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM @posts_comentarios WHERE c_post_id = \''.(int)$post_id.'\'')) {
-						 if(db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO @posts_borradores (b_user, b_date, b_title, b_body, b_tags, b_category, b_status, b_causa) VALUES (\''.$tsUser->uid.'\', \''.time().'\', \''.$tsCore->setSecure($data['post_title']).'\', \''.$tsCore->setSecure($data['post_body']).'\', \'\', \''.$data['post_category'].'\', \'2\', \'\')'))
-						  return "1: El post fue eliminado satisfactoriamente.";  
-					  }
-			}else {
-				 if(db_exec([__FILE__, __LINE__], 'query', 'UPDATE @posts SET post_status = \'2\' WHERE post_id = \''.(int)$post_id.'\'')) return "1: El post se ha eliminado correctamente.";
+		if(empty($data['post_id']) || empty($tsUser->is_admod)) return '0: Lo que intentas no est&aacute; permitido.';
+		// SI ES MIS POST LO BORRAMOS Y MANDAMOS A BORRADORES
+		if(removeDataById([__FILE__, __LINE__], '@posts', "post_id = $post_id")) {
+			if(removeDataById([__FILE__, __LINE__], '@posts_comentarios', "c_post_id = $post_id")) {
+				$info = [
+					'user' => $tsUser->uid, 
+					'date' => time(), 
+					'title' => $tsCore->setSecure($data['post_title']), 
+					'body' => $tsCore->setSecure($data['post_body']), 
+					'tags' => '', 
+					'category' => $data['post_category'],
+					'status' => 2,
+					'causa' => ''
+				];
+				if(addDataToTable([__FILE__, __LINE__], '@posts_borradores', $info, 'b_')) return "1: El post fue eliminado satisfactoriamente.";  
 			}
-				
-		} else return '0: Lo que intentas no est&aacute; permitido.';
+		} else {
+			 if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET post_status = 2 WHERE post_id = $post_id")) return "1: El post se ha eliminado correctamente.";
+		}
+			
 	}
 	
 	function deleteAdminPost(){

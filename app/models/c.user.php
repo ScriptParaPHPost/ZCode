@@ -252,7 +252,7 @@ class tsUser  {
 			['@mensajes', "mp_to"],
 			['@visitas', "`for`"]
 		];
-		foreach($tablas as $k => $tabla) deleteFromId([__FILE__, __LINE__], $tabla[0], "{$tabla[1]} = $user_id");
+		foreach($tablas as $k => $tabla) removeDataById([__FILE__, __LINE__], $tabla[0], "{$tabla[1]} = $user_id");
 		$data = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_name FROM @miembros WHERE user_id = $user_id"));
 		$admin = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_email FROM @miembros WHERE user_id = 1"));
 		  

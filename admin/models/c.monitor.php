@@ -155,7 +155,7 @@ class tsMonitor {
 		# RETURN
 		if(empty($data['user_id']) || $data['user_id'] != $tsUser->uid && !$tsUser->is_admod == 1) return false;
 		else {
-			deleteFromId([__FILE__, __LINE__], '@avisos', 'av_id=' . (int)$av_id);
+			removeDataById([__FILE__, __LINE__], '@avisos', 'av_id=' . (int)$av_id);
 			return true;
 		 }
 	}
@@ -184,7 +184,7 @@ class tsMonitor {
 			$delid = $data[$ntotal-1]['not_id']; // ID DE ULTIMA NOTIFICACION
 			// ELIMINAR NOTIFICACIONES?
 			if((int)$ntotal > (int)$tsCore->settings['c_max_nots']) {
-				deleteFromId([__FILE__, __LINE__], '@monitor', 'not_id = ' . $delid);
+				removeDataById([__FILE__, __LINE__], '@monitor', 'not_id = ' . $delid);
 			}
 			// ACTUALIZAMOS / INSERTAMOS
 			if($not_db_type === 'update') {

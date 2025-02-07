@@ -3,18 +3,18 @@
 /**
  * @name migrator.php
  * @copyright ZCode 2024
- * @link https://zcode.newluckies.com/ (DEMO)
- * @link https://zcode.newluckies.com/feed/ (Informacion y actualizaciones)
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version v2.0.0
+ * @version v2.0.14
  * @description Para actualizar la base de datos sin intervencion
 **/
 
 $db['prefix'] = $_ENV['ZCODE_DB_PREFIX'];
 include TS_ZCODE . 'database.php';
-exit('Aun produce errores, no usar');
+
 // Función para verificar si una tabla existe en la base de datos
 function tableExists($mysqli, $table) {
    $result = $mysqli->query("SHOW TABLES LIKE '$table'");
@@ -41,7 +41,7 @@ foreach ($zcode_sql as $sql) {
       continue;
    }
    if (preg_match('/CREATE TABLE IF NOT EXISTS `(.+?)`/', $sql, $matches)) {
-     	$table = "{$db['prefix']}$matches[1]";
+     	$table = "$matches[1]";
      	// Verificar si la tabla existe
       if (tableExists($mysqli, $table)) {
          # echo "La tabla <strong>$table</strong> ya existe. Verificando columnas...<br>";
@@ -103,9 +103,7 @@ foreach ($zcode_sql as $sql) {
 // Eliminar tablas que no están en el archivo database.php solo si realmente no son necesarias
 foreach ($tablesInDbArray as $tableInDb) {
    // Remover el prefijo antes de comparar con las tablas definidas en el archivo
-   $tableWithoutPrefix = str_replace($db['prefix'], '', $tableInDb);
-   
-   if (!in_array($tableWithoutPrefix, $tablesInFileArray)) {
+   if (!in_array($tableInDb, $tablesInFileArray)) {
       // Si la tabla es importante, puedes agregar una condición adicional aquí
       #echo "Eliminando tabla <strong>$tableInDb</strong>...<br>";
       if (!$mysqli->query("DROP TABLE IF EXISTS $tableInDb")) {

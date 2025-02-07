@@ -14,11 +14,11 @@
 			<span class="flex-grow-1 d-block text-center small rounded py-1" role="button" data-active="false" data-category="topsUser" data-period="mes">Mes</span>
 			<span class="flex-grow-1 d-block text-center small rounded py-1" role="button" data-active="true" data-category="topsUser" data-period="historico">Hist&oacute;rico</span>
 		</div>
-		<div class="filterShow">
+		<div class="filterShow" itemscope itemtype="https://schema.org/ItemList">
 			{foreach from=$tsTopUsers key=i item=u}
 				<div class="filterShow-item d-flex entry-animation">
 					<div class="filterShow-item--position text-center fw-bold flex-grow-0">{if $i+1 < 10}0{/if}{$i+1}</div>
-					<div class="filterShow-item--title text-truncate flex-grow-1"><a href="{$tsConfig.url}/perfil/{$u.user_name}" rel="internal" class="text-truncate text-decoration-none w-100 d-block">{$u.user_name|verificado}</a></div>
+					<div class="filterShow-item--title text-truncate flex-grow-1">{include "LinkAuthor.tpl" user=$u.user_name itemprop="url" itemtype="Person" normal=true}</div>
 					<div class="filterShow-item--number text-center flex-grow-0">{$u.total}</div>
 				</div>
 			{foreachelse}

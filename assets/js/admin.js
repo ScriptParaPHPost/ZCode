@@ -234,7 +234,7 @@ var packs = {
   	reload(path) {
   		location.href = ZCodeApp.url + '/admin/packs?act=abrir&path=' + path;
   	},
-   subir() {
+   subir(path) {
       let formData = new FormData();
       formData.append('file', $('#image')[0].files[0]);
       formData.append('path', $('#path').val());
@@ -255,7 +255,7 @@ var packs = {
 							body: response.substring(3),
 							buttons: {
 								confirmTxt: 'Continuar',
-								confirmAction: `packs.reload()`,
+								confirmAction: `packs.reload(${path})`,
 								cancelShow: false
 							}
 						});

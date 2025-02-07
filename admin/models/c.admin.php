@@ -192,7 +192,7 @@ class tsAdmin {
 	public function delNoticia() {
 		$not_id = (int)$_POST['nid'];
 		if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT not_id FROM @noticias WHERE not_id = $not_id LIMIT 1"))) return '0: El id ingresado no existe.';
-		return (!deleteFromId([__FILE__, __LINE__], '@noticias', "not_id = $not_id")) ? '1: Noticia eliminada' : '0: No se pudo borrar noticia.';
+		return (!removeDataById([__FILE__, __LINE__], '@noticias', "not_id = $not_id")) ? '1: Noticia eliminada' : '0: No se pudo borrar noticia.';
 	}
 	public function newNoticia() {
 		global $tsCore, $tsUser;
@@ -263,7 +263,7 @@ class tsAdmin {
 		$tema = $this->getTema();
 		$id = (int)$tema['tid'];
 		if (!empty($id)) {
-			deleteFromId([__FILE__, __LINE__], '@temas', "tid = $id");
+			removeDataById([__FILE__, __LINE__], '@temas', "tid = $id");
 			return true;
 		} else return false;
 	}
@@ -381,7 +381,7 @@ class tsAdmin {
 		// MOVER
 		if (empty($ncid) and $ncid === 0) return 'Antes de eliminar una categor&iacute;a debes elegir a donde mover sus subcategor&iacute;as.';
 		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET post_category = $ncid WHERE post_category = $cid")) {
-			if(deleteFromId([__FILE__, __LINE__], '@posts_categorias', "cid = $cid")) return true;
+			if(removeDataById([__FILE__, __LINE__], '@posts_categorias', "cid = $cid")) return true;
 		// SI LLEGÓ HASTA AQUI HUBO UN ERROR.
 		} else return 'Lo sentimos ocurri&oacute; un error';
 	}
@@ -496,7 +496,7 @@ class tsAdmin {
 		if ($rid > 3) {
 			$new_rango = (int)$_POST['new_rango'];
 			if (db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_rango = $new_rango WHERE user_rango = $rid")) {
-				if (deleteFromId([__FILE__, __LINE__], '@rangos', "rango_id = $rid")) return true;
+				if (removeDataById([__FILE__, __LINE__], '@rangos', "rango_id = $rid")) return true;
 			}
 		} else return 'No es posible eliminar este rango';
 	}
@@ -636,55 +636,55 @@ class tsAdmin {
 		if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM @miembros WHERE user_id = {$tsUser->uid} && user_password = '$password'"))){
 			$c = $_POST['bocuenta'];
 			if($_POST['boposts'] || $c) 
-		  		deleteFromId([__FILE__, __LINE__], '@posts', "post_user = $user_id");
+		  		removeDataById([__FILE__, __LINE__], '@posts', "post_user = $user_id");
 			if($_POST['bofotos'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@fotos', "f_user = $user_id");
+				removeDataById([__FILE__, __LINE__], '@fotos', "f_user = $user_id");
 			if($_POST['boestados'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@muro', "p_user_pub = $user_id");
+				removeDataById([__FILE__, __LINE__], '@muro', "p_user_pub = $user_id");
 			if($_POST['bocomposts'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@posts_comentarios', "c_user = $user_id");
+				removeDataById([__FILE__, __LINE__], '@posts_comentarios', "c_user = $user_id");
 			if($_POST['bocomfotos'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@fotos_comentarios', "c_user = $user_id");
+				removeDataById([__FILE__, __LINE__], '@fotos_comentarios', "c_user = $user_id");
 			if($_POST['bocomestados'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@muro_comentarios', "c_user = $user_id");
+				removeDataById([__FILE__, __LINE__], '@muro_comentarios', "c_user = $user_id");
 			if($_POST['bolikes'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@muro_likes', "user_id = $user_id");
+				removeDataById([__FILE__, __LINE__], '@muro_likes', "user_id = $user_id");
 			if($_POST['boseguidores'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@follows', "f_id = $user_id && f_type = 1");
+				removeDataById([__FILE__, __LINE__], '@follows', "f_id = $user_id && f_type = 1");
 			if($_POST['bosiguiendo'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@follows', "f_user = $user_id && f_type = 1");
+				removeDataById([__FILE__, __LINE__], '@follows', "f_user = $user_id && f_type = 1");
 			if($_POST['bofavoritos'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@posts_favoritos', "fav_user = $user_id"); 
+				removeDataById([__FILE__, __LINE__], '@posts_favoritos', "fav_user = $user_id"); 
 			if($_POST['bovotosposts'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@posts_votos', "tuser = $user_id");
+				removeDataById([__FILE__, __LINE__], '@posts_votos', "tuser = $user_id");
 			if($_POST['bovotosfotos'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@fotos_votos', "v_user = $user_id");
+				removeDataById([__FILE__, __LINE__], '@fotos_votos', "v_user = $user_id");
 			if($_POST['boactividad'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@actividad', "user_id = $user_id");
+				removeDataById([__FILE__, __LINE__], '@actividad', "user_id = $user_id");
 			if($_POST['boavisos'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@avisos', "user_id = $user_id");
+				removeDataById([__FILE__, __LINE__], '@avisos', "user_id = $user_id");
 			if($_POST['bobloqueos'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@bloqueos', "b_user = $user_id");
+				removeDataById([__FILE__, __LINE__], '@bloqueos', "b_user = $user_id");
 			if($_POST['bomensajes'] || $c) { 
-				deleteFromId([__FILE__, __LINE__], '@mensajes', "mp_from = $user_id"); 
-				deleteFromId([__FILE__, __LINE__], '@respuestas', "mr_from = $user_id");
+				removeDataById([__FILE__, __LINE__], '@mensajes', "mp_from = $user_id"); 
+				removeDataById([__FILE__, __LINE__], '@respuestas', "mr_from = $user_id");
 			}
 			if($_POST['bosesiones'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@sessions', "session_user_id = $user_id");
+				removeDataById([__FILE__, __LINE__], '@sessions', "session_user_id = $user_id");
 			if($_POST['bovisitas'] || $c) 
-				deleteFromId([__FILE__, __LINE__], '@visitas', "user = $user_id");
+				removeDataById([__FILE__, __LINE__], '@visitas', "user = $user_id");
 		  
 		  	$data = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_name FROM @miembros WHERE user_id = $user_id"));
 		  	$admin = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_email FROM @miembros WHERE user_id = 1"));
 		  
 		  	if($c && $tsUser->uid != $user_id) {
-		  		deleteFromId([__FILE__, __LINE__], '@miembros', "user_id = $user_id");
-		  		deleteFromId([__FILE__, __LINE__], '@perfil', "user_id = $user_id");
-		  		deleteFromId([__FILE__, __LINE__], '@portal', "user_id = $user_id");
-		  		deleteFromId([__FILE__, __LINE__], '@denuncias', "d_user = $user_id");
-		  		deleteFromId([__FILE__, __LINE__], '@bloqueos', "b_auser = $user_id");
-		  		deleteFromId([__FILE__, __LINE__], '@mensajes', "mp_to = $user_id");
-		  		deleteFromId([__FILE__, __LINE__], '@visitas', "`for` = $user_id && type = 1");
+		  		removeDataById([__FILE__, __LINE__], '@miembros', "user_id = $user_id");
+		  		removeDataById([__FILE__, __LINE__], '@perfil', "user_id = $user_id");
+		  		removeDataById([__FILE__, __LINE__], '@portal', "user_id = $user_id");
+		  		removeDataById([__FILE__, __LINE__], '@denuncias', "d_user = $user_id");
+		  		removeDataById([__FILE__, __LINE__], '@bloqueos', "b_auser = $user_id");
+		  		removeDataById([__FILE__, __LINE__], '@mensajes', "mp_to = $user_id");
+		  		removeDataById([__FILE__, __LINE__], '@visitas', "`for` = $user_id && type = 1");
 		  	}
 		  	$avBody = "Hola, le informamos que el administrador {$tsUser->nick} ({$tsUser->uid}) ha eliminado ".($c ? 'la cuenta' : 'varios contenidos')." de {$data[0]}.";
 		  	insertDataInBase([__FILE__, __LINE__], '@avisos', [
@@ -777,7 +777,7 @@ class tsAdmin {
 		global $tsCore;
 		$session_id = $tsCore->setSecure($_POST['sesion_id']);
 		if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT session_id FROM @sessions WHERE session_id = '$session_id' LIMIT 1"))) {
-			if(deleteFromId([__FILE__, __LINE__], '@sessions', "session_id = '$session_id'")) return '1: Eliminado';
+			if(removeDataById([__FILE__, __LINE__], '@sessions', "session_id = '$session_id'")) return '1: Eliminado';
 		} else return '0: No existe esa sesi&oacute;n';
 	}
 	# ===================================================
@@ -1071,7 +1071,7 @@ class tsAdmin {
 	}
 	public function deleteBlock() {
 		$id = (int)$_POST['bid'];
-		return (deleteFromId([__FILE__, __LINE__], '@blacklist', "id = $id")) ? '1: Bloqueo retirado' : '0: Hubo un error al borrar';
+		return (removeDataById([__FILE__, __LINE__], '@blacklist', "id = $id")) ? '1: Bloqueo retirado' : '0: Hubo un error al borrar';
 	}
 	# ===================================================
 	# CENSURA

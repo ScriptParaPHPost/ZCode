@@ -38,7 +38,7 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
 	// CLASE
-	require('../class/c.tops.php');
+	require TS_MODELS . "c.tops.php";
 	$tsTops = new tsTops();
 	// CODIGO
 	switch($action) {
