@@ -424,9 +424,9 @@ class tsPosts {
 		$post_id = (int)$_POST['postid'];
 		// ES SU POST EL Q INTENTA BORRAR?
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id, post_title, post_user, post_body, post_category FROM @posts WHERE post_id = $post_id AND post_user = {$this->user->uid}"));
-		
-		statsUpdate([__FILE__, __LINE__], ['table' => '@stats', 'columna' => `stats_posts`, 'donde' => "stats_no = 1"]);
-		statsUpdate([__FILE__, __LINE__], ['table' => '@miembros', 'columna' => `user_posts`, 'donde' => "user_id = {$data['post_user']}"]);
+		//
+		statsUpdate([__FILE__, __LINE__], ['table' => '@stats', 'columna' => 'stats_posts', 'donde' => "stats_no = 1"]);
+		statsUpdate([__FILE__, __LINE__], ['table' => '@miembros', 'columna' => 'user_posts', 'donde' => "user_id = {$data['post_user']}"]);
 		// ES MIO O SOY MODERADOR/ADMINISTRADOR...
 		if(empty($data['post_id']) || empty($this->user->is_admod)) return '0: Lo que intentas no est&aacute; permitido.';
 		// SI ES MIS POST LO BORRAMOS Y MANDAMOS A BORRADORES

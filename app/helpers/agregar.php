@@ -31,6 +31,7 @@ if(!$tsLevelMsg) {
 	//
 	$tsContinue = false;
 }
+
 //
 if($tsContinue) {
 	$action = htmlspecialchars($_GET['action'] ?? '');
@@ -46,11 +47,12 @@ if($tsContinue) {
 		$tsBorrador = $tsDrafts->getDraft();
 		$smarty->assign("tsDraft", $tsBorrador);
 		//
-	} elseif($action == 'editar') {
+	} elseif($action === 'editar') {
 		// GUARDAR
 		if(!empty($_POST['titulo'])){
 		  $post_save = $tsAgregar->savePost();
-			if($post_save == 1) {
+
+			if($post_save === 1) {
 				$cid = (int)$_POST['categoria'];
 				$tsCat = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_seo FROM @posts_categorias AS c WHERE c.cid = $cid LIMIT 1"));
 				//

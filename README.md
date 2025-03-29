@@ -1,9 +1,9 @@
 ![Repo peso](https://img.shields.io/github/repo-size/ScriptParaPHPost/ZCode?style=plastic&label=Repo%20peso)
 ![PHP 8](https://img.shields.io/badge/PHP-8.2.16-red?style=plastic)
 ![Smarty 5.4.3](https://img.shields.io/badge/Smarty-5.4.3-red?style=plastic)
-![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic&label=Branch%20main)
+![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/zcode?display_name=release&style=flat)
 
-# ZCode v2.1.15
+# ZCode v2.1.16
 Actualización de Smarty y mucho más...
 
 ### Actualizaciones

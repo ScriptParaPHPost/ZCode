@@ -153,9 +153,9 @@ class tsAgregar {
 		// ESTOS PUEDEN IR VACIOS
 		$keys = ['visitantes', 'smileys', 'private', 'block_comments', 'sponsored', 'sticky'];
 		foreach ($keys as $key) {
-			$postData[$key] = ($_POST[$key] === 'on') ? 1 : 0;
+			$postData[$key] = isset($_POST[$key]) ? ($_POST[$key] === 'on' ? 1 : 0) : 0;
 			if ($key === 'sponsored' || $key === 'sticky') {
-				$postData[$key] = (!$tsUser->is_admod AND $tsUser->permisos['most'] != false) ? 0 : ($_POST[$key] === 'on' ? 1 : 0);
+				$postData[$key] = (!$tsUser->is_admod && $tsUser->permisos['most'] != false) ? 0 : (isset($_POST[$key]) && $_POST[$key] === 'on' ? 1 : 0);
 			}
 		}
 		return $postData;
@@ -181,7 +181,7 @@ class tsAgregar {
 		$categoria_privada = ($tsUser->is_admod) ? "" : "WHERE c_nombre != '{$tsCore->settings['titulo']}'";
 		$categorias = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_nombre, c_seo, c_color, c_descripcion, c_img FROM @posts_categorias $categoria_privada ORDER BY c_orden"));
 		foreach($categorias as $cid => $cat) {
-			$categorias[$cid]['c_img'] = $tsCore->settings['assets'] . "/images/categorias/{$cat['c_img']}";
+			$categorias[$cid]['c_img'] = $tsCore->setRoutes('assets', 'categories') . "/{$cat['c_img']}";
 		}
       //
       return $categorias;
@@ -310,12 +310,12 @@ class tsAgregar {
 	 * @return ID
 	*/
 	public function savePost() {
-		global $tsCore, $tsUser, $tsImages, $tsSitemap;
+		global $tsCore, $tsUser, $tsImages, $tsSitemap, $tsZCode;
 		// Buscamos el post por ID tsUser
 		$post_id = (int)$_GET['pid'];
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_user, post_sponsored, post_sticky, post_status FROM @posts WHERE post_id = $post_id LIMIT 1"));
 		//
-		if((int)$data['post_status'] != 0 && !$tsUser->is_admod && !$tsUser->permisos['moedpo']) return 'El post no puede ser editado.';
+		if((int)$data['post_status'] !== 0 && !$tsUser->is_admod && !$tsUser->permisos['moedpo']) return 'El post no puede ser editado.';
 		//
 		$postData = $this->newEditPost('edit');
 		// Pueden ir vacios
@@ -324,22 +324,27 @@ class tsAgregar {
 			$postData["portada"] = $tsImages->updateImagePost();
 		}
 		$postData["update"] = time();
+
 		// ACTUALIZAMOS
 		if((int)$tsUser->uid === (int)$data['post_user'] || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moedpo'])) {
 			if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @posts SET {$tsCore->getIUP($postData, 'post_')} WHERE post_id = $post_id")) {
 				// Añadimos al sitemap (No le veo el sentido a este)
 				$tsSitemap->addSitemapInfo('update', $post_id);
 				// Guardamos en el historial de moderación
-				if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $_POST['razon']) {
+				$razon = $_POST['razon'] ?? '';
+				// Vaciar cache/sql
+				$tsZCode->cleanerCacheSQL();
+				if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $razon) {
 					include_once TS_MODELS . "c.moderacion.php";
 					$tsMod = new tsMod();
 					return $tsMod->setHistory('editar', 'post', [
 						'post_id' => $post_id, 
 						'title' => $postData['title'], 
 						'autor' => $data['post_user'], 
-						'razon' => $tsCore->setSecure($_POST['razon'])
+						'razon' => $tsCore->setSecure($razon)
 					]);
-				} else return 1;
+				} 
+				return 1;
 			} else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
 		}
 	}

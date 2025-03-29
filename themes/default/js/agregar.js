@@ -175,11 +175,11 @@ const portada = {
 		}
 	},
 	load() {
-		let showPortada = pathImages;
+		let showPortada;
 		if(empty(portadaIMG)) {
-			showPortada += '/favicon/logo-128.webp';
+			showPortada = pathImages + '/favicon/logo-128.webp';
 		} else {
-			showPortada += '/portadas/' + portadaIMG + '/image_lg.webp';
+			showPortada = ZCodeApp.url + '/storage/portadas/' + portadaIMG + '/image_lg.webp';
 		}
 		this.image(showPortada);
 	}

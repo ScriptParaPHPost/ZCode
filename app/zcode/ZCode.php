@@ -278,4 +278,14 @@ class tsZCode {
 		}
 	}
 
+	public function cleanerCacheSQL() {
+		$folder = TS_CACHE . 'sql' . DIRECTORY_SEPARATOR;
+		$files = glob($folder . '*.json'); // Obtiene todos los archivos .json
+		foreach ($files as $file) {
+		   if (is_file($file)) {
+		      unlink($file); // Elimina el archivo
+		   }
+		}
+	}
+
 }

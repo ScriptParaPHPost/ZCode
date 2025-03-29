@@ -3,7 +3,7 @@ const {
 	titulo: baseTitle, 
 	images: { 
 		assets: pathImages 
-	} 
+	}
 } = ZCodeApp;
 
 function gget(data, sin_amp) {

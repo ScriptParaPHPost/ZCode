@@ -6,7 +6,7 @@
       <select class="upform-select" name="categoria" id="categoria" size="8">
          <option class="upform-select--option" value="" selected>Elegir una categor&iacute;a</option>
          {foreach from=$tsCategorias item=c}
-            <option class="upform-select--option" value="{$c.cid}"{if $tsDraft.b_category == $c.cid} selected{/if} style="background-image:url({$tsRoutes.assets.base}{$c.c_img})">{$c.c_nombre}</option>
+            <option class="upform-select--option" value="{$c.cid}"{if $tsDraft.b_category == $c.cid} selected{/if} style="background-image:url({if $tsAction != 'editar'}{$tsRoutes.assets.base}{/if}{$c.c_img})">{$c.c_nombre}</option>
          {/foreach}
       </select>
    </div>

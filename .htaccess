@@ -43,7 +43,8 @@ RewriteRule ^$ index.php?do=home [QSA,L]
 RewriteRule ^pagina([0-9]+)$ index.php?page=$1 [QSA,L]
 RewriteRule ^index.php$ index.php?do=home [QSA,L]
 RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ app/helpers/cuenta.php?accion=$1 [QSA,L]
-#RewriteRule ^agregar/$ app/helpers/agregar.php [QSA,L]
+#RewriteRule ^agregar/?$ app/helpers/agregar.php [QSA,L]
+#RewriteRule ^agregar/([A-Za-z_-]+)/([0-9]+)$ app/helpers/agregar.php?action=$1&pid=$2 [QSA,L]
 
 # CALLBACK PARA REDES SOCIALES
 RewriteRule ^(github|discord|google|facebook|reddit)\.php$ app/callback/$1.php [QSA,L]

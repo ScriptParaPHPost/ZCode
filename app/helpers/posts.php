@@ -60,7 +60,7 @@ if($tsContinue) {
 		// DATOS DEL POST
 		$tsPost = $tsPosts->getPost();
 		//
-		if($tsPost['post_id'] > 0) {
+		if(isset($tsPost['post_id']) && $tsPost['post_id'] > 0) {
 			// TITULO NUEVO
 			$tsTitle = $tsPost['post_title'].' - '.$tsTitle;
 			// ASIGNAMOS A LA PLANTILLA

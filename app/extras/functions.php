@@ -180,6 +180,7 @@ function removeDataById(array $fileline = [], string $isTable = '', string $wher
 
 function statsUpdate(array $fileline = [], array $isData = [], bool $sum = false) {
    // Verificar que las claves necesarias existen en el array $isData
+   var_dump($isData);
    if (!isset($isData['table']) || !isset($isData['columna']) || !isset($isData['donde'])) {
       throw new InvalidArgumentException("Faltan claves necesarias en el array isData.");
    }
