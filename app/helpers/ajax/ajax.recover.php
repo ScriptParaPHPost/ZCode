@@ -1,10 +1,24 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Controlador AJAX
- *
- * @name    ajax.recover.php
- * @author  ZCode | PHPost
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
+// NIVELES DE ACCESO Y PLANTILLAS DE CADA ACCI�N
+$files = [
+	'recover-pass' => ['n' => 1, 'p' => ''],
+];
+
+// REDEFINIR VARIABLES
+$tsPage = 'php_files/p.mensajes.'.$files[$action]['p'];
 
 $tsLevel = 1; // solo visitantes
 

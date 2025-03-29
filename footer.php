@@ -1,27 +1,23 @@
 <?php 
 
-if (!defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+if (!defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * El footer permite mostrar la plantilla
- *
- * @name    footer.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/*
- * -------------------------------------------------------------------
- *  Realizamos tareas para mostrar la plantilla
- * -------------------------------------------------------------------
-*/
+// Pï¿½gina solicitada
+$smarty->assign("tsPage", $tsPage);
+# Por si quieren cambiar la pï¿½gina de error
+# Si no encuentra la plantilla t.$tsPage.tpl
+# Mostrar esta pï¿½gina
+$smarty->template_error = '404.html';
 
-	// Página solicitada
-	$smarty->assign("tsPage", $tsPage);
-
-	# Por si quieren cambiar la página de error
-	# Si no encuentra la plantilla t.$tsPage.tpl
-	# Mostrar esta página
-	$smarty->template_error = '404.html';
-	
-	$smarty->loadAllTemplates(TS_TEMA, $tsPage);
-	$smarty->loadTemplate($tsPage);
+$smarty->loadAllTemplates(TS_TEMA, $tsPage);
+$smarty->loadTemplate($tsPage);

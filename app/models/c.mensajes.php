@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de los mensajes privados
- *
- * @name    c.mensajes.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsMensajes {
 	 
 	public $mensajes = 0; // SIN LEER
@@ -174,7 +181,7 @@ class tsMensajes {
 					 //
 					 $return['mp_date'] = time();
 				$return['mp_ip'] = $_SERVER['REMOTE_ADDR'];
-					 $return['mp_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($tsCore->parseBBCode($mp_body)), true);
+					 $return['mp_body'] = $tsCore->parseBadWords($tsCore->parseBBCode($mp_body, 'smiles'), true);
 					 //
 					 return $return;
 				}
@@ -185,7 +192,7 @@ class tsMensajes {
 		  :: FALTA LA PAGINACION :/
 	 */
 	public function getMensajes($type = 1, $unread = false, $where = 'normal'){
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		// MONITOR DE MENSAJES SOLO SI HAY MAS  DE 5 NUEVOS
 		if($type == 1) {
 			// SI HAY MAS DE 5 MENSAJES NUEVOS SOLO LEEMOS LOS NUEVOS
@@ -200,7 +207,7 @@ class tsMensajes {
 			$data['total'] = 0;
 			while($row = db_exec('fetch_assoc', $query)) {
 				$row['mp_from'] = ($row['mp_from'] == $tsUser->uid) ? $row['mp_to'] : $row['mp_from'];
-				$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
+				$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
 				$data['data'][$row['mp_date']] = $row;
 				// AHORA ACTUALIZAMOS PARA QUE NO SE VUELVAN A NOTIFICAR EN EL MONITOR
 				if($tsUser->uid == $row['mp_to']) $update = 'mp_read_mon_to = '.($where == 'live' ? '1' : '2');
@@ -227,7 +234,7 @@ class tsMensajes {
 			$query = db_exec([__FILE__, __LINE__], 'query', $sql.' LIMIT '.$pages['limit']);
 			while($row = db_exec('fetch_assoc', $query)){
 				// PARA SABER SI ES RESPUESTA O MENSAJE NORMAL
-				$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
+				$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
 				$row['mp_type'] = ($row['mp_from'] != $tsUser->uid) ? 1 : 2;
 				$row['mp_from'] = ($row['mp_from'] == $tsUser->uid) ? $row['mp_to'] : $row['mp_from'];
 				$row['mp_preview'] = $tsCore->parseBBcode($row['mp_preview']);
@@ -292,7 +299,7 @@ class tsMensajes {
 		  readMensaje()
 	*/
 	public function readMensaje(){
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		//
 		if(!ctype_digit($_GET['id'])) {
 		 	die('No existe ning&uacute;n mensaje as&iacute; mijo ._.');
@@ -317,8 +324,8 @@ class tsMensajes {
 		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT r.*, u.user_id, u.user_name FROM @respuestas AS r LEFT JOIN @miembros AS u ON r.mr_from = u.user_id WHERE r.mp_id = $mp_id ORDER BY mr_id");
 		//$history['res'] = result_array($query);
 		while($row = db_exec('fetch_assoc', $query)) {
-		  	$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
-		  	$row['mr_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($tsCore->parseBBCode($row['mr_body'])), true);
+		  	$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
+		  	$row['mr_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($row['mr_body'], 'smiles'), true);
 			$history['res'][] = $row;
 		}
 
@@ -420,13 +427,13 @@ class tsMensajes {
 	}
 
 	public function getLeerMensajePrivado(){
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		$mpid = (int)$_GET['mpid'];
 		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT m.mp_id, m.mp_to, m.mp_from, m.mp_subject, m.mp_preview, m.mp_date, u.user_id, u.user_name, u.user_rango, r.rango_id, r.r_name, r.r_color, r.r_image, v.mr_id, v.mp_id, v.mr_from, v.mr_body, v.mr_ip, v.mr_date FROM @mensajes AS m LEFT JOIN @miembros AS u ON u.user_id = m.mp_from LEFT JOIN @rangos AS r ON r.rango_id = u.user_rango LEFT JOIN @respuestas AS v ON v.mp_id = m.mp_id WHERE m.mp_id = $mpid ORDER BY v.mr_date ASC");
 		$data = result_array($query);
 		#var_dump($data);
 		foreach ($data as $mid => $message) {
-			$data[$mid]['avatar'] = $tsCore->getAvatar($message['mr_from'], 'use');
+			$data[$mid]['avatar'] = $tsZCode->getAvatar($message['mr_from'], 'use');
 		}
 		//
 		return $data;

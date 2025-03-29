@@ -6,17 +6,12 @@ const buscador = {
       autor: $('input[type="text"][name="autor"]'),
       category: $('select[name="category"]')
    },
-   values: {
-   	web: 'Buscar en Web!',
-   	tags: 'Buscar en Tags!',
-   	google: 'Buscar en Google!'
-   },
    obtener(type) {
       return this.input[type].val();
    },
    seleccionado(tipo) {
 	  	if(this.tipo == tipo) return;
-		this.input.query.attr({ placeholder: this.values[tipo] });
+		this.input.query.attr({ placeholder: `Buscar en ${tipo}!` });
 	
 		this.tipo = tipo;
 		if(tipo === 'google') {
@@ -63,23 +58,24 @@ function getParameterByName(name, url = window.location.href) {
 
 function updateQueryStringParameter(uri, key, value) {
    let re = new RegExp("([?&])" + key + "=.*?(&|#|$)(.*)", "gi");
-   let hash;
-   if (re.test(uri)) {
-      if (typeof value !== 'undefined' && value !== null) return uri.replace(re, '$1' + key + "=" + value + '$2$3');
-      else {
-         hash = uri.split('#');
-         uri = hash[0].replace(re, '$1$3').replace(/(&|\?)$/, '');
-         if (typeof hash[1] !== 'undefined' && hash[1] !== null) uri += '#' + hash[1];
-         return uri;
+   let hash = uri.split('#');
+   let baseUri = hash[0];
+   let fragment = hash[1] ? '#' + hash[1] : '';
+
+   if (re.test(baseUri)) {
+      if (value !== undefined && value !== null) {
+         return baseUri.replace(re, '$1' + key + "=" + value + '$2$3') + fragment;
+      } else {
+         baseUri = baseUri.replace(re, '$1$3').replace(/(&|\?)$/, '');
+         return baseUri + fragment;
       }
    } else {
-      if (typeof value !== 'undefined' && value !== null) {
-         let separator = uri.indexOf('?') !== -1 ? '&' : '?';
-         hash = uri.split('#');
-         uri = hash[0] + separator + key + '=' + value;
-         if (typeof hash[1] !== 'undefined' && hash[1] !== null)  uri += '#' + hash[1];
+      if (value !== undefined && value !== null) {
+         let separator = baseUri.indexOf('?') !== -1 ? '&' : '?';
+         return baseUri + separator + key + '=' + value + fragment;
+      } else {
          return uri;
-      } else return uri;
+      }
    }
 }
 

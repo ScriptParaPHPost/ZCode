@@ -1,12 +1,5 @@
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="browser"}
-		</div>
-		<div class="up-header--title">
-			<span>&Uacute;ltimos posts visitados</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="browser" label="&Uacute;ltimos posts visitados"}
 	<div class="up-card--body">
 		{foreach from=$tsLastPostsVisited item=p}
 			{if $p.post_title}

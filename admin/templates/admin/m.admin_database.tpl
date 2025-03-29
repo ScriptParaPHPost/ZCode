@@ -21,11 +21,11 @@
 				</thead>
 				<tbody>
 					{foreach $tsTablesSQL key=t item=table}
-						<tr data-id="{$table.id}">
+						<tr data-id="{$table.id}"{if $table.cache != 0} style="background: #f001;"{/if}>
 							<td class="text-center">
 								<input type="checkbox" class="up-checkbox" name="tables[{$table.name}]" value="{$table.name}">
 							</td>
-							<td>{$table.name} <small class="d-block">Caché <strong data-cache="{$table.id}">{if $table.cache === 0}Vacio{else}{$table.cache}{/if}</strong></small></td>
+							<td>{$table.short} <small class="d-block">Caché <strong data-cache="{$table.id}">{if $table.cache === 0}Vacio{else}{$table.cache}{/if}</strong></small></td>
 							<td>{$table.engine}</td>
 							<td class="text-center">{$table.rows}</td>
 							<td class="text-center">{$table.size}</td>

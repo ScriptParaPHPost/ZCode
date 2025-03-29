@@ -1,12 +1,26 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Clase para el manejo de los database
- *
- * @name    c.database.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsDatabase {
+
+   private $core;
+   private $user;
+
+   public function __construct() {
+      $this->core = new tsCore;
+      $this->user = new tsUser;
+   }
 
  	/**
     * Convierte una fecha en formato de cadena a un timestamp.
@@ -28,8 +42,7 @@ class tsDatabase {
     * @return mixed          El resultado de la ejecución de la consulta.
    */
 	private function resultAction(string $action = '') {
-	   global $tsCore;
-	   $tabla = $tsCore->setSecure($_POST['table']); 
+	   $tabla = $this->core->setSecure($_POST['table']); 
 	   return db_exec([__FILE__, __LINE__], 'query', "$action TABLE $tabla");
 	}
 
@@ -57,17 +70,17 @@ class tsDatabase {
     * @return array          Un array de arrays asociativos que contiene la información de cada tabla.
    */
 	public function getAllTables() {
-      global $tsCore;
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SHOW TABLE STATUS"));
 		$tables = [];
 		foreach($data as $key => $array) {
 			$tabla = [
 				'id' => ++$key,
-				'name' => $array['Name'],
+            'name' => $array['Name'],
+				'short' => ucfirst(str_replace([$_ENV['ZCODE_DB_PREFIX'], '_'], ['', ' '], $array['Name'])),
 				'engine' => $array['Engine'],
 				'rows' => (int)$array['Rows'],
-				'size' => $tsCore->formatBytes($array['Index_length']),
-				'cache' => ((int)$array['Data_free'] === 0 ? 0 : $tsCore->formatBytes($array['Data_free'])),
+				'size' => $this->core->formatBytes($array['Index_length']),
+				'cache' => ((int)$array['Data_free'] === 0 ? 0 : $this->core->formatBytes($array['Data_free'])),
 				'collation' => $array['Collation'],
 				'create' => $this->formatedDate($array['Create_time']),
 				'update' => $this->formatedDate($array['Update_time'])
@@ -122,8 +135,8 @@ class tsDatabase {
     * @return string Mensaje indicando el éxito de la operación.
    */
    public function createBackup() {
-      global $tsCore;
-   	$tables = $_POST['tablas'];
+   	$tables = isset($_POST['tablas']) ? $_POST['tablas'] : '*';
+    
    	// Obtener todas las tablas de la base de datos
 	   if ($tables === '*') {
          $is = 'full';
@@ -136,6 +149,7 @@ class tsDatabase {
          $is = 'partitial';
 	      $tables = is_array($tables) ? $tables : explode(',', $tables);
 	   }
+
       $save = date('d.m.Y H:i a');
 	   $backupSQL = "/**\n * Copia de seguridad\n * Fecha: $save\n*/\n";
 	   // Recorrer las tablas y obtener el SQL de respaldo
@@ -179,20 +193,19 @@ class tsDatabase {
     * @return array Arreglo de archivos de respaldo con sus respectivos detalles.
    */
    public function getBackups() {
-   	global $tsCore;
    	$folder = $this->backupFolder();
    	$files = scandir($folder);
    	$allFiles = [];
    	foreach($files as $f => $file) {
    		if(in_array($file, ['.', '..'])) continue;
    		$file_route = $folder . $file;
-   		$size = $tsCore->formatBytes(filesize($file_route));
+   		$size = $this->core->formatBytes(filesize($file_route));
    		$filename = pathinfo($file, PATHINFO_FILENAME);
    		$allFiles[$f] = [
    			'id' => $f,
    			'name' => $filename,
-   			'code_name' => uniqid($tsCore->settings['titulo'] . '_' . substr(md5($filename), 0, 8)),
-   			'file' => "{$tsCore->settings['url']}/storage/backup/$file",
+   			'code_name' => uniqid($this->core->settings['titulo'] . '_' . substr(md5($filename), 0, 8)),
+   			'file' => "{$this->core->settings['url']}/storage/backup/$file",
    			'size' => $size,
    			'date' => filectime($file_route)
    		];
@@ -204,16 +217,15 @@ class tsDatabase {
    }
 
    public function delBackup() {
-      global $tsCore, $tsUser;
       // Verificar permisos de usuario
-      if (!$tsUser->is_admod AND $tsUser->uid === 1) {
+      if (!$this->user->is_admod AND $this->user->uid === 1) {
          return '0: No eres el administrador principal, no puedes eliminar.';
       }
        // Validar que el archivo está definido y no está vacío
       if (!isset($_POST['file']) || empty($_POST['file'])) {
          return '0: No existe o no seleccionó el archivo a eliminar.';
       }
-      $backup = $tsCore->setSecure($_POST['file']);
+      $backup = $this->core->setSecure($_POST['file']);
       $searchFile = $this->backupFolder() . $backup . '.sql';
       // Verificar si el archivo existe
       if (!file_exists($searchFile)) {

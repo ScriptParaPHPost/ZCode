@@ -54,25 +54,9 @@
             <dt><label for="portada">Portada:</label></dt>
             <dd><input type="text" id="portada" name="portada" value="{$tsSeo.seo_portada}" /></dd>
          </dl>
-         <dl>
-            <dt><label for="favicon">Icono del sitio:</label></dt>
-            <dd><input type="text" id="favicon" name="favicon" value="{$tsSeo.seo_favicon}" /></dd>
-         </dl>
-         <dl>
-            <dt><label for="images">Otros iconos:</label><br><small>16x16, 32x32, 64x64, etc</small><br><button type="button" class="btn btnOk" onclick="favs.add()">Añadir</button></dt>
-            <dd id="addFavs">
-            	{foreach $tsSeo.seo_images key=i item=px}
-               	<div class="input-group w-100">
-                     <span class="input-group-text text-center d-block" style="width: 90px;" id="pixeles">{$i}x{$i}</span>
-               		<input type="text" id="images{$i}" name="images[{$i}]" value="{$tsSeo.seo_images.$i}" />
-               		<button type="button" class="btn btnOk" onclick="$(this).parent().remove()">Quitar</button>
-               	</div>
-            	{/foreach}
-            </dd>
-         </dl>
          <div class="search-results">
 	        	<div class="result">
-               <img class="image" src="{$tsConfig.assets}{$tsSeo.seo_portada}" alt="{$tsSeo.seo_titulo}">
+               <img class="image" src="{$tsRoutes.assets.favicon}{$tsSeo.seo_portada}" alt="{$tsSeo.seo_titulo}">
 	            <span class="title">{$tsSeo.seo_titulo}</span>
 	            <span class="url">{$tsConfig.url}</span>
 	            <span class="description">{$tsSeo.seo_descripcion}</span>

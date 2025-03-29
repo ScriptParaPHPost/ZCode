@@ -1,15 +1,18 @@
-<?php
-declare(strict_types=1);
+<?php 
 
-if (!defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+if (!defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * Modelo para el control del envío de emails.
- * @name    c.emails.php
- * @author  ZCode | PHPost & Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-ini_set('error_log', DIR_ERROR_LOG . 'mail_error.log');
+ini_set('error_log', EMAIL_LOG);
 ini_set('mail.add_x_header', '1');
 
 class tsEmail {
@@ -26,10 +29,15 @@ class tsEmail {
 
    public string $emailTemplate = 'zcode';
 
-   public function __construct(string $emailData = '', string $emailRef = '') {
+   private $core;
+
+   public function __construct(string $template = '', string $subjects = '') {
+      $this->core = new tsCore;
+      $this->emailTemplate = $template;
+      $this->emailHeaders = $subjects;
       $this->emailInfo = [
-         'data' => $emailData,
-         'ref' => $emailRef
+         'data' => $this->core->setSecure('nope'),
+         'ref' => $this->core->setSecure('chuck testa!')
       ];
    }
 
@@ -37,34 +45,32 @@ class tsEmail {
     * Setea los encabezados para el correo.
     */
    private function setHeaders(): string {
-      global $tsCore;
       return implode("\r\n", [
-      	'MIME-Version: 1.0',
-      	'X-Priority: 1',
-      	'Content-type: text/html; charset=UTF-8',
-      	sprintf('From: %s <%s>', $tsCore->settings['titulo'], $tsCore->settings['domain']),
-      	sprintf('Reply-To: no-reply@%s', $tsCore->settings['domain']),
-      	'X-Mailer: PHP/' . PHP_VERSION
+         'MIME-Version: 1.0',
+         'X-Priority: 1',
+         'Content-type: text/html; charset=UTF-8',
+         sprintf('From: %s <%s>', $this->core->setSecure($this->core->settings['titulo']), $this->core->setSecure($this->core->settings['domain'])),
+         sprintf('Reply-To: no-reply@%s', $this->core->setSecure($this->core->settings['domain'])),
+         'X-Mailer: PHP/' . PHP_VERSION
       ]);
    }
 
    /**
     * Genera el cuerpo del correo utilizando una plantilla.
     */
-   private function setBody(): string {
-      global $tsCore;
-      include_once TS_EXTRA . "emails/" . $this->emailTemplate . ".php";
+   private function setBody(): ?string {
+      include_once TS_EXTRA . "emails/" . $this->core->setSecure($this->emailTemplate) . ".php";
       
       // Definir búsqueda y reemplazo
-   	$placeholders = ['{url}', '{titulo}', '{slogan}', '{contenido}', '{asunto}'];
-   	// Por lo que vamos a reemplazar
-   	$replacements = [
-   		$tsCore->settings['url'], 
-   		$tsCore->settings['titulo'], 
-   		$tsCore->settings['slogan'], 
-   		$this->emailBody, 
-   		htmlentities($this->emailSubject, ENT_QUOTES | ENT_HTML401, 'UTF-8')
-   	];
+      $placeholders = ['{url}', '{titulo}', '{slogan}', '{contenido}', '{asunto}'];
+      // Por lo que vamos a reemplazar
+      $replacements = [
+         $this->core->setSecure($this->core->settings['url']), 
+         $this->core->setSecure($this->core->settings['titulo']), 
+         $this->core->setSecure($this->core->settings['slogan']), 
+         $this->emailBody, 
+         htmlentities($this->emailSubject, ENT_QUOTES | ENT_HTML401, 'UTF-8')
+      ];
       
       // Reemplazar contenido en la plantilla
       return str_replace($placeholders, $replacements, $plantilla);
@@ -74,7 +80,7 @@ class tsEmail {
     * Formatea la dirección de correo.
     */
    private function setTo(): string {
-      return sprintf("=?UTF-8?Q?%s?=", $this->emailTo);
+      return sprintf("=?UTF-8?Q?%s?=", $this->core->setSecure($this->emailTo));
    }
 
    /**

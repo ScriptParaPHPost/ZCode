@@ -20,11 +20,11 @@
 				<tbody>
 				 	{foreach from=$tsRangos.regular item=r}
 					<tr>
-						<td><a href="{$tsConfig.url}/admin/rangos/?act=list&rid={$r.id}&t=r"  class="text-decoration-none fw-500"style="color:#{$r.color}">{$r.name}</a></td>
+						<td><a href="{$tsConfig.url}/admin/rangos/?act=list&rid={$r.id}&t=r"  class="text-decoration-none fw-500"style="color:{$r.color}">{$r.name}</a></td>
 						<td>{$r.num_members}</td>
 						<td>{$r.user_puntos}</td>
 						<td>{$r.max_points}</td>
-						<td><img src="{$tsConfig.assets}/images/rangos/{$r.imagen}" class="avatar avatar-2" /></td>
+						<td><img src="{$tsRoutes.assets.images}/rangos/{$r.imagen}" class="avatar avatar-2" /></td>
 						<td class="admin_actions">
 							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=s" title="Editar Rango">{uicon name="pen" class="pe-none"}</a>
 							{if $r.id > 3}
@@ -63,13 +63,13 @@
 			 	<tbody>
 			 		{foreach from=$tsRangos.post item=r}
 					<tr>
-						<td><a href="{$tsConfig.url}/admin/rangos/?act=list&rid={$r.id}&t=p" class="text-decoration-none fw-500" style="color:#{$r.color}">{$r.name}</a></td>
+						<td><a href="{$tsConfig.url}/admin/rangos/?act=list&rid={$r.id}&t=p" class="text-decoration-none fw-500" style="color:{$r.color}">{$r.name}</a></td>
 						<td>{$r.num_members}</td>
 						<td>{if $r.type == 1}Puntos{elseif $r.type == 2}Posts{elseif $r.type == 3}Fotos{elseif $r.type == 4}Comentarios{/if}</td>
 						<td>{$r.cant}</td>
 						<td>{$r.user_puntos}</td>
 						<td>{$r.max_points}</td>
-						<td><img src="{$tsConfig.assets}/images/rangos/{$r.imagen}" class="avatar avatar-2" /></td>
+						<td><img src="{$tsRoutes.assets.images}/rangos/{$r.imagen}" class="avatar avatar-2" /></td>
 						<td class="admin_actions">
 							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=p" title="Editar Rango">{uicon name="pen" class="pe-none"}</a>
 							{if $r.id > 3}
@@ -132,7 +132,7 @@
 					</dl>
 					<dl>
 						<dt><label for="rColor">Color:</label><span>Color (<a href="http://es.wikipedia.org/wiki/Colores_HTML" target="_blank">hexadecimal</a>) del rango.</span></dt>
-						<dd><input type="color" id="rColor" name="rColor" value="{$tsRango.r_color|default:'#000000'}" style="color:#{$tsRango.r_color};"/></dd>
+						<dd><input type="color" id="rColor" name="rColor" value="{$tsRango.r_color|default:'#000000'}" style="color:{$tsRango.r_color};"/></dd>
 					</dl>
 					<dl>
 						 <dt><label for="gopfd">Puntos por d&iacute;a:</label><span>Puntos que puede otorgar este rango a otros usuarios al d&iacute;.</span></dt>
@@ -160,7 +160,7 @@
 					<dl>
 						<dt><label for="cat_img">Icono del rango:{$tsRango.r_image}</label></dt>
 						<dd class="d-flex justify-content-start column-gap-2">
-							<img src="{$tsConfig.assets}/images/rangos/{if $tsRango.r_image}{$tsRango.r_image}{else}{$tsIcons.0}{/if}" width="32" height="32" id="c_icon"/>
+							<img src="{$tsRoutes.assets.images}/rangos/{if $tsRango.r_image}{$tsRango.r_image}{else}{$tsIcons.0}{/if}" width="32" height="32" id="c_icon"/>
 							<select name="r_img" id="cat_img" style="width:164px">
 								{foreach from=$tsIcons key=i item=img}
 									<option value="{$img}"{if $tsRango.r_image == $img} selected{/if}>{$img}</option>

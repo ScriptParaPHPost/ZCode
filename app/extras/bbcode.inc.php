@@ -248,7 +248,7 @@ class BBCode {
 		$file = json_decode(file_get_contents(TS_ASSETS . 'icons/emojis/emoji.json'), true);
 		foreach($file as $name => $emoji) {
 			if($emoji['category'] == 'people' AND (int)$emoji['emoji_order'] <= 95) {
-				$image = $tsCore->settings['assets'] . "/icons/emojis/small/$name.png";
+				$image = $tsCore->setRoutes('assets', 'base') . "/icons/emojis/small/$name.png";
 				$bbcode[] = $emoji['shortname'];
 				if($useImage) {
 					$html[] = "<img title=\"{$emoji['name']}\" class=\"emoji emoji-people\" style=\"vertical-align:middle;\" src=\"$image\" />";

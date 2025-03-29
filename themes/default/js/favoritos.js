@@ -131,7 +131,7 @@ var favoritos = {
 	   loading.start()
 		$.ajax({
 			type: 'POST',
-			url: ZCodeApp.url + '/favoritos-borrar.php',
+			url: basePath + '/favoritos-borrar.php',
 			data: 'fav_id=' + fav_id + gget('key'),
 			success: function(h){
 				switch(h.charAt(0)){
@@ -194,7 +194,7 @@ var favoritos = {
         loading.start()
 		$.ajax({
 			type: 'POST',
-			url: ZCodeApp.url + '/favoritos-agregar.php',
+			url: basePath + '/favoritos-agregar.php',
 			data: 'postid=' + post_id + '&reactivar=' + fav_date + gget('key'),
 			success: function(h){
 				switch(h.charAt(0)){

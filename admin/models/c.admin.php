@@ -1,13 +1,17 @@
-<?php
+<?php 
 
-if (!defined('TS_HEADER'))
-	 exit('No se permite el acceso directo al script');
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para la adminitración
- *
- * @name    c.admin.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsAdmin {
 
 	# Extensiones para imagenes
@@ -49,6 +53,8 @@ class tsAdmin {
 			'moecf' => $post['mod-eliminarcomfotos'],
 			'moepm' => $post['mod-eliminarpubmuro'],
 			'moecm' => $post['mod-eliminarcommuro'],
+			'moat' => $post['mod-administrartickets'],
+			'moet' => $post['mod-eliminartickets'],
 			'godp' => $post['global-darpuntos'],
 			'gopp' => $post['global-publicarposts'],
 			'gopcp' => $post['global-publicarcomposts'],
@@ -80,21 +86,21 @@ class tsAdmin {
 		return $exists;
 	}
 
+	/**
+	 * Cambiar tema rápidd
+	*/ 
 	public function changeTemaNow() {
 		global $tsCore;
 		$tema = $tsCore->setSecure($_POST['tema']);
-		if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @configuracion SET tema = '$tema' WHERE tscript_id = 1")) {
-			return '1: Cambiado correctamente.';
-		}
-		return '0: Error al cambiar.';
+		return (db_exec([__FILE__, __LINE__], 'query', "UPDATE @configuracion SET tema = '$tema' WHERE tscript_id = 1")) ? '1: Cambiado correctamente.' : '0: Error al cambiar.';
 	}
 
 	/** 
 	 * Agregamos esta función ya que se repite 2 veces,
 	 * extraemos las imagenes
 	*/
-	public function getExtraIcons(string $folder = 'categorias', int $size = 16) {
-		$ruta = TS_ASSETS . "images" . TS_PATH  . $folder;
+	public function getExtraIcons(string $folder = 'categorias') {
+		$ruta = TS_ASSETS . "images" . DIRECTORY_SEPARATOR  . $folder;
 		# Accedemos a la carpeta de icons
 		$carpeta = scandir( $ruta );
 		# Recorremos la carpeta
@@ -177,7 +183,7 @@ class tsAdmin {
 	}
 	public function getNoticias() {
 		global $tsCore;
-		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, n.not_id, n.not_body, n.not_autor, n.not_date, n.not_type, n.not_active FROM @noticias AS n LEFT JOIN @miembros AS u ON n.not_autor = u.user_id  WHERE n.not_id > 0 ORDER BY n.not_id DESC"));
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, n.not_id, n.not_body, n.not_autor, n.not_date, n.not_type, n.not_active FROM @noticias AS n LEFT JOIN @miembros AS u ON n.not_autor = u.user_id WHERE n.not_id > 0 ORDER BY n.not_id DESC"));
 		foreach($data as $nid => $noticia) {
 			$data[$nid]['not_body'] = $tsCore->parseBBCode($noticia['not_body']);
 		}
@@ -198,7 +204,7 @@ class tsAdmin {
 		global $tsCore, $tsUser;
 		//
 		if (!empty($_POST['not_body'])) {
-			if(insertDataInBase([__FILE__, __LINE__], '@noticias', $this->sameNoticeSave(), 'not_')) return true;
+			if(addDataToTable([__FILE__, __LINE__], '@noticias', $this->sameNoticeSave(), 'not_')) return true;
 		}
 		//
 		return false;
@@ -246,13 +252,11 @@ class tsAdmin {
 		global $tsCore;
 		// No require el setSecure() ya que lo aplica la misma función getIUP()
 		$tema = $tsCore->getIUP(['url' => $_POST['url'], 'path' => $_POST['path']], 't_');
-		//
 		return (db_exec([__FILE__, __LINE__], 'query', "UPDATE @temas SET $tema WHERE tid = " . $this->getIdTheme()));
 	}
 	public function changeTema() {
 		$tema = $this->getTema();
 		$id = (int)$tema['tid'];
-		var_dump($tema, $id);
 		//
 		if (!empty($tema['tid'])) {
 			db_exec([__FILE__, __LINE__], 'query', "UPDATE @configuracion SET tema_id = $id WHERE tscript_id = 1");
@@ -266,20 +270,6 @@ class tsAdmin {
 			removeDataById([__FILE__, __LINE__], '@temas', "tid = $id");
 			return true;
 		} else return false;
-	}
-	public function newTema() {
-		global $tsCore;
-		//
-		$tema_path = $tsCore->setSecure($_POST['path']);
-		// ARCHIVO DE INSTALACION
-		include_once TS_THEMES . $tema_path . TS_PATH . 'install.php';
-		//
-		if(!isset($tema)) return '0: Revisa que el nombre de la carpeta sea correcto.';
-		if(in_array('', $tema)) return '0: El archivo de instalaci&oacute;n del tema es incorrecto. Recuerda utilizar temas oficiales.';
-		// Comprobamos que sea seguro
-		foreach ($tema as $key => $val) $tema[$key] = $tsCore->setSecure($val);
-		// Instalamos...
-		return (insertDataInBase([__FILE__, __LINE__], '@temas', ['name' => $tema['nombre'], 'url' => $tema['url'], 'path' => $tema_path, 'copy' => $tema['copy']], 't_')) ? '1: Tema instalado correctamente.' : '0: Ocurri&oacute; un error durante la instalaci&oacute;n.';
 	}
 	# ===================================================
 	# PUBLICIDADES
@@ -320,7 +310,7 @@ class tsAdmin {
 	}
 	private function getSqlCats(int $cid = 0) {
 		$where = ($cid === 0) ? "" : "WHERE cid = $cid";
-		return db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_foro, c_nombre, c_descripcion, c_seo, c_img, c_color, c_private FROM @posts_categorias $where");
+		return db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_foro, c_nombre, c_descripcion, c_seo, c_img, c_color FROM @posts_categorias $where");
 	}
 	public function saveOrden() {
 		$ordenado = [];
@@ -371,7 +361,7 @@ class tsAdmin {
 		$orden = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(cid) AS total FROM @posts_categorias'))['total'] + 1;
 		# Insertamos los datos
 		$categoria = $this->dataCat('nueva', $orden);
-		if (insertDataInBase([__FILE__, __LINE__], '@posts_categorias', $categoria, 'c_')) return true;
+		if (addDataToTable([__FILE__, __LINE__], '@posts_categorias', $categoria, 'c_')) return true;
 	}
 	public function delCat() {
 		global $tsCore;
@@ -486,7 +476,7 @@ class tsAdmin {
 		global $tsCore;
 		$r = $this->sameArrayRango($_POST);
 		// Insertamos los datos
-		if (insertDataInBase([__FILE__, __LINE__], '@rangos', $r, 'r_')) return true;
+		if (addDataToTable([__FILE__, __LINE__], '@rangos', $r, 'r_')) return true;
 	}
 	public function delRango() {
 		global $tsCore;
@@ -687,7 +677,7 @@ class tsAdmin {
 		  		removeDataById([__FILE__, __LINE__], '@visitas', "`for` = $user_id && type = 1");
 		  	}
 		  	$avBody = "Hola, le informamos que el administrador {$tsUser->nick} ({$tsUser->uid}) ha eliminado ".($c ? 'la cuenta' : 'varios contenidos')." de {$data[0]}.";
-		  	insertDataInBase([__FILE__, __LINE__], '@avisos', [
+		  	addDataToTable([__FILE__, __LINE__], '@avisos', [
 		  		'user_id' => 1,
 		  		'av_subject' => 'Contenido eliminado',
 		  		'av_body' => $avBody,
@@ -1067,7 +1057,7 @@ class tsAdmin {
 		// Ya existe el bloqueo?...
 		if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM @blacklist WHERE type = $type && value = '$value'"))) return 'Ya existe un bloqueo as&iacute;';
 		// Insertamos los datos
-		if (insertDataInBase([__FILE__, __LINE__], '@blacklist', ['type' => $type, 'value' => $value, 'reason' => $reason, 'author' => $tsUser->uid, 'date' => time()])) return true;
+		if (addDataToTable([__FILE__, __LINE__], '@blacklist', ['type' => $type, 'value' => $value, 'reason' => $reason, 'author' => $tsUser->uid, 'date' => time()])) return true;
 	}
 	public function deleteBlock() {
 		$id = (int)$_POST['bid'];
@@ -1099,71 +1089,57 @@ class tsAdmin {
 		return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @badwords WHERE wid = $wid LIMIT 1"));
 	}
 
-	 function saveBadWord()
-	 {
-		  global $tsCore, $tsUser;
+	private function saveNewWord(string $type = 'new') {
+		global $tsCore;
+		$data['method'] = (int)$_POST['method'] ?? 0;
+		$data['type'] = (int)$_POST['type'] ?? 0;
+		$data['before'] = $tsCore->setSecure($_POST['before'] ?? '');
+		$data['after'] = $tsCore->setSecure($_POST['after'] ?? '');
+		if($type === 'new') $data['reason'] = $tsCore->setSecure($_POST['reason'] ?? '');
+		return $data;
+	}
 
-		  $method = empty($_POST['method']) ? 0 : 1;
-		  $type = empty($_POST['type']) ? 0 : 1;
-		  if (empty($_POST['before']) || empty($_POST['after']))
-		  {
-				return 'Rellene todos los campos';
-		  } else
-		  {
-				if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT wid FROM @badwords WHERE LOWER(word) = \'' .
-					 $tsCore->setSecure(strtolower($_POST['before'])) . '\' && LOWER(swop) = \'' . $tsCore->
-					 setSecure(strtolower($_POST['after'])) . '\'')))
-				{
-					 if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE @badwords SET method = \'' . $method . '\', type = \'' .
-						  (int)$type . '\', word = \'' . $tsCore->setSecure($_POST['before']) . '\', swop = \'' .
-						  $tsCore->setSecure($_POST['after']) . '\', author = \'' . $tsUser->uid . '\' WHERE wid = \'' .
-						  (int)$_GET['id'] . '\''))
-						  return true;
-					 else
-						  return 'Error al guardar';
-				} else
-					 return 'Ya existe un filtro as&iacute;';
-		  }
-	 }
+	public function saveBadWord() {
+		global $tsCore, $tsUser;
 
-	 function newBadWord()
-	 {
-		  global $tsCore, $tsUser;
+		$method = empty($_POST['method']) ? 0 : 1;
+		$type = empty($_POST['type']) ? 0 : 1;
+		if (empty($_POST['before']) || empty($_POST['after'])) return 'Rellene todos los campos';
+		
+			if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT wid FROM @badwords WHERE LOWER(word) = \'' .
+				 $tsCore->setSecure(strtolower($_POST['before'])) . '\' && LOWER(swop) = \'' . $tsCore->
+				 setSecure(strtolower($_POST['after'])) . '\'')))
+			{
+				 if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE @badwords SET method = \'' . $method . '\', type = \'' .
+					  (int)$type . '\', word = \'' . $tsCore->setSecure($_POST['before']) . '\', swop = \'' .
+					  $tsCore->setSecure($_POST['after']) . '\', author = \'' . $tsUser->uid . '\' WHERE wid = \'' .
+					  (int)$_GET['id'] . '\''))
+					  return true;
+				 else
+					  return 'Error al guardar';
+			} else
+				 return 'Ya existe un filtro as&iacute;';
+		
+	}
 
-		  $method = empty($_POST['method']) ? 0 : 1;
-		  $type = empty($_POST['type']) ? 0 : 1;
-		  if (empty($_POST['before']) || empty($_POST['after']) || empty($_POST['reason']))
-		  {
-				return 'Rellene todos los campos';
-		  } else
-		  {
-				if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT wid FROM @badwords WHERE LOWER(word) = \'' .
-					 $tsCore->setSecure(strtolower($_POST['before'])) . '\' && LOWER(swop) = \'' . $tsCore->
-					 setSecure(strtolower($_POST['after'])) . '\'')))
-				{
-					 if (db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO @badwords (word, swop, method, type, author, reason, date) VALUES (\'' .
-						  $tsCore->setSecure($_POST['before']) . '\', \'' . $tsCore->setSecure($_POST['after']) .
-						  '\', \'' . (int)$method . '\', \'' . (int)$type . '\', \'' . $tsUser->uid . '\', \'' .
-						  $tsCore->setSecure($_POST['reason']) . '\', \'' . time() . '\')'))
-						  return true;
-					 else
-						  return 'Error al agregar';
-				} else
-					 return 'Ya existe un filtro as&iacute;';
-		  }
-	 }
+	public function newBadWord() {
+		global $tsCore, $tsUser;
+		$data = $this->saveNewWord('new');
+		if (empty($data['before']) || empty($data['after']) || empty($data['reason'])) return 'Rellene todos los campos';
+		
+		$lowb = strtolower($data['before']);
+		$lowa = strtolower($data['after']);
+		if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT wid FROM @badwords WHERE LOWER(word) = '$lowb' AND LOWER(swop) = '$lowa'"))) return 'Ya existe un filtro as&iacute;';
+		if (!db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @badwords (word, swop, method, type, author, reason, date) VALUES ('{$data['before']}', '{$data['after']}', {$data['method']}, {$data['type']}, {$tsUser->uid}, '{$data['reason']}', time())")) return 'Error al agregar';
+		return true;
+	}
 
-	 function deleteBadWord()
-	 {
-
-		  if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM @badwords WHERE wid = \'' . (int)$_POST['wid'] . '\''))
-				return '1: Filtro retirado';
-		  else
-				return '0: Hubo un error al borrar';
-
-	 }
+	public function deleteBadWord() {
+		$wid = (int)$_POST['wid'];
+		return (removeDataById([__FILE__, __LINE__], '@badwords', "wid = $wid")) ? '1: Filtro retirado' : '0: Hubo un error al borrar';
+	}
 	# ===================================================
-	# ESTADÍSTICASA
+	# ESTADÍSTICAS
 	# * GetAdminStats() :: Obtenemos todas las estadisticas
 	# ===================================================
 	public function GetAdminStats() {
@@ -1235,7 +1211,7 @@ class tsAdmin {
      		$arr = [
      		  	"hash" => $this->hashFileIcon($icono),
      		  	"icon" => pathinfo($archivo, PATHINFO_FILENAME),
-     		  	"url" => $tsCore->settings["assets"] . '/images/' . $dir . '/' . $icono,
+     		  	"url" => $tsCore->setRoutes("assets", "images") . "/$dir/$icono",
      		];
      		$this->getTypeImage($arr, $archivo, $extension);
 
@@ -1323,206 +1299,5 @@ class tsAdmin {
       	return $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user.'&save=true');
       } else return false;
    } 
-
-   public function getHtaccess() {
-   	return file_get_contents(TS_ROOT . '.htaccess');
-   }
-
-   public function createCopy() {
-   	return (copy(TS_ROOT . '.htaccess', TS_ROOT . '.htaccess-bak'));
-   }
-
-   public function setErrorDesc() {
-   	return [
-   		400 => [
-   			'type' => 'Bad Request',
-   			'description' => 'El servidor no puede o no procesará la solicitud debido a un error del cliente.'
-   		], 
-   		401 => [
-   			'type' => 'Unauthorized',
-   			'description' => 'La solicitud requiere autenticación del usuario. El usuario no está autorizado para acceder al recurso.'
-   		], 
-   		403 => [
-   			'type' => 'Forbidden',
-   			'description' => 'El servidor ha entendido la solicitud, pero se niega a autorizarla.'
-   		], 
-   		404 => [
-   			'type' => 'Not Found',
-   			'description' => 'El servidor no puede encontrar el recurso solicitado.'
-   		], 
-   		500 => [
-   			'type' => 'Internal Server Error',
-   			'description' => 'Error genérico del servidor cuando se encuentra una condición inesperada.'
-   		], 
-   		501 => [
-   			'type' => 'Not Implemented',
-   			'description' => 'El servidor no puede cumplir con la solicitud debido a que no tiene la funcionalidad necesaria.'
-   		]
-   	];
-   }
-
-   public function getError() {
-   	// Lee el contenido del archivo .htaccess
-   	$content = $this->getHtaccess();
-   	// Divide el contenido en líneas
-   	$lines = explode("\n", $content);
-   	// Inicializa el array de salida
-   	$salida = [];
-   	// Itera sobre cada línea
-   	foreach ($lines as $line) {
-   	   // Limpia los espacios en blanco al principio y al final de la línea
-   	   $line = trim($line);
-   	   // Verifica si la línea comienza con ErrorDocument
-   	   if (preg_match('/^#?ErrorDocument/', $line)) {
-   			$error = explode(' ', $line);
-   	      // Determina si la línea está comentada
-   	      $isActive = $line[0] !== '#';
-   	      // Agrega la información al array de salida
-   	      $salida[] = [
-   	         'active' => $isActive,
-   	         'lines'   => $error,
-   	         ...$this->setErrorDesc()[$error[1]]
-   	      ];
-   	   }
-   	}
-   	// Muestra las líneas (opcional)
-   	return $salida;
-   }
-
-   public function saveError() {
-   	// Obtiene el contenido actual del archivo .htaccess
-   	$content = $this->getHtaccess();
-   	// Divide el contenido en líneas
-   	$lines = explode("\n", $content);
-   	
-   	// Define los errores y sus líneas correspondientes
-   	$errores = [400, 401, 403, 404, 500, 501];
-   	$newLines = [];
-    
-    	// Genera las nuevas líneas para cada error basado en $_POST
-    	foreach ($errores as $error) {
-        	$hash = (in_array($error, $_POST['error'])) ? '' : '#';
-        	$newLines[] = "{$hash}ErrorDocument $error /$error.html";
-    	}
-    
-    	// Itera sobre las líneas actuales del archivo
-   	foreach ($lines as $line) {
-   	  	$line = trim($line);
-   	  	// Verifica si la línea contiene ErrorDocument
-   	  	if (preg_match('/^#?ErrorDocument (\d+)/', $line, $matches)) {
-   	  	   $errorCode = $matches[1];
-   	  	   if (in_array($errorCode, $errores)) {
-   	  	      continue;
-   	  	   }
-   	  	}
-   	  	$newLines[] = $line;
-   	}
-    	// Asegura que cada línea esté en una nueva línea
-    	$newContent = implode("\n", $newLines);
-    	// Asegura que el contenido esté en UTF-8 antes de guardar
-    	$newContent = mb_convert_encoding($newContent, 'UTF-8', 'UTF-8');
-   	// Guarda el contenido nuevo en el archivo .htaccess
-    	if(file_put_contents(TS_ROOT . '.htaccess', $newContent)) {
-    		return true;
-    	}
-    	return false;
-   }
-
-   public function getRewriteRules() {
-	   // Lee el contenido del archivo .htaccess
-	   $content = $this->getHtaccess();
-	   // Divide el contenido en líneas
-	   $lines = explode("\n", $content);
-	   // Inicializa el array de salida
-	   $salida = [
-	      'base' => [
-	         'active' => false,
-	         'site' => ''
-	      ],
-	      'rules' => []
-	   ];
-	   // Bandera para detectar si estamos en el bloque de Rewrite
-	   $inRewriteBlock = false;
-	   
-	   // Itera sobre cada línea
-	   foreach ($lines as $line) {
-	      // Limpia los espacios en blanco al principio y al final de la línea
-	      $line = trim($line);
-	      // Verifica si la línea es RewriteBase
-	      if (preg_match('/^#?RewriteBase/', $line)) {
-	         $inRewriteBlock = true;
-	         $isActive = ($line[0] !== '#') ? 1 : 0;
-	         $site = trim(str_replace(['RewriteBase', '/'], '', $line));
-	         $salida['base'] = [
-	            'active' => $isActive,
-	            'site' => $site
-	         ];
-	         continue;
-	      }
-	      
-	      // Verifica si la línea es RewriteCond o RewriteRule dentro del bloque de Rewrite
-	      if ($inRewriteBlock && preg_match('/^#?RewriteBase|RewriteCond|RewriteRule/', $line)) {
-	         $salida['rules'][] = $line;
-	      } elseif (empty($line) || preg_match('/^#/', $line)) {
-	         // Si la línea está vacía o es un comentario, resetea la bandera del bloque de Rewrite
-	         $inRewriteBlock = false;
-	      }
-	   }
-	   return $salida;
-	}
-
-	public function saveRewriteRules() {
-		global $tsCore;
-	   // Obtiene el contenido actual del archivo .htaccess
-	   $content = $this->getHtaccess();
-	   // Divide el contenido en líneas
-	   $lines = explode("\n", $content);
-	   
-	   // Reglas predeterminadas
-	   $defaultRules = [
-	      '#RewriteBase /',
-	      '#RewriteCond %{SERVER_PORT} 80',
-	      '#RewriteCond %{HTTP_HOST} ^http://TU_SITIO_WEB.com[NC,OR]',
-	      '#RewriteRule ^(.*)$ https://TU_SITIO_WEB.com/$1 [L,R=301,NC]'
-	   ];
-	   // Obtiene los datos de $_POST
-	   $baseActive = (isset($_POST['active']) AND (int)$_POST['active'] === 1) ? true : false;
-	   $site = isset($_POST['site']) ? $tsCore->setSecure($_POST['site']) : 'TU_SITIO_WEB.com';
-	   
-		// Prepara las nuevas líneas para la sección de Rewrite
-		$newRewriteLines = [];
-		$hash = $baseActive ? '' : '#'; // No agregar `#` si está activo
-		$newRewriteLines[] = "{$hash}RewriteBase /";
-		$newRewriteLines[] = "{$hash}RewriteCond %{SERVER_PORT} 80";
-		$newRewriteLines[] = "{$hash}RewriteCond %{HTTP_HOST} ^http://{$site}[NC,OR]";
-		$newRewriteLines[] = "{$hash}RewriteRule ^(.*)$ https://{$site}/$1 [L,R=301,NC]";
-		  
-		// Índice de las líneas que se deben reemplazar
-		$startLine = 12; // Cambia esto al índice de la primera línea que deseas reemplazar
-		$endLine = 15; // Cambia esto al índice de la última línea que deseas reemplazar
-
-		// Reemplaza las líneas específicas del bloque de reescritura
-		$i = 0;
-		foreach ($lines as &$line) {
-		   $i++;
-		   if ($i >= $startLine && $i <= $endLine) {
-		      $line = ($i - $startLine < count($newRewriteLines)) ? $newRewriteLines[$i - $startLine] : '';
-		   }
-		}
-
-   	// Si hay más nuevas líneas que líneas para reemplazar, agregar las nuevas líneas restantes
-   	if (count($newRewriteLines) > ($endLine - $startLine + 1)) {
-   	   $extraLines = array_slice($newRewriteLines, $endLine - $startLine + 1);
-   	   $lines = array_merge(array_slice($lines, 0, $endLine), $extraLines, array_slice($lines, $endLine));
-   	}
-
-   	// Asegura que cada línea esté en una nueva línea
-   	$newContent = implode("\n", $lines);
-   	// Asegura que el contenido esté en UTF-8 antes de guardar
-   	$newContent = mb_convert_encoding($newContent, 'UTF-8', 'UTF-8');
-	   // Guarda el contenido nuevo en el archivo .htaccess
-	   file_put_contents(TS_ROOT . '.htaccess', $newContent);
-	}
-
 
 }

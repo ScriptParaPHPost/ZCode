@@ -1,13 +1,24 @@
 <?php 
 
-if ( ! defined('TS_HEADER')) 
-	exit('No se permite el acceso directo al script');
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
+/**
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 if(!file_exists(TS_ROOT.'.env') || $_ENV['ZCODE_DB_HOST'] === 'dbhost') header("Location: ./install/");
 
 if ($_ENV['DEBUG_MODE'] === 'true') {
-   mysqli_debug("d:t:o," . DIR_ERROR_LOG . "mysqli_error.log");
+   mysqli_debug("d:t:o," . MYSQLI_LOG);
 }
+
+$display['msgs'] = $_ENV['MESSAGE_OUTPUT'] ?? 0;
 
 /**
  * Nueva forma de conectar a la base de datos
@@ -52,6 +63,12 @@ function withPrefix(string $query = '') {
       return $query;
    } else return $query;
 }
+
+if (!isset($tsUser)) {
+   $tsUser = new stdClass(); // Evita errores de propiedad en null
+   $tsUser->is_admod = false; // Asigna valores por defecto
+}
+
 /**
  * Todo lo que se añada a database.php
  * Se ejecutará automáticamente sin 
@@ -97,7 +114,7 @@ function db_exec() {
 		try {
 			$query = $mysqli->query($data);
 			if (!$query) {
-			  throw new Exception('No se pudo ejecutar una consulta en la base de datos. ' . $this->connection->error);
+			  throw new Exception('No se pudo ejecutar una consulta en la base de datos. ' . $mysqli->error);
 			}
 			return $query;
 		} catch (Exception $e) {
@@ -232,4 +249,4 @@ function show_error($error = 'Indefinido', $type = 'db', $info = []) {
 unset($db);
 
 # Importante para almacenar los logs
-if(!is_dir(DIR_ERROR_LOG)) mkdir(DIR_ERROR_LOG, 0777, true);
+if(!is_dir(ERROR_DIRECTORY)) mkdir(ERROR_DIRECTORY, 0777, true);

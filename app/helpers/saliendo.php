@@ -1,16 +1,14 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name 
- * @author  PHPost Team
-*/
-                                               
-/**********************************\
-
-*    (VARIABLES POR DEFAULT)        *
-
-\*********************************/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 $tsPage = "saliendo";    // tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
 
@@ -27,7 +25,7 @@ $tsTitle = "Saliendo de {$tsCore->settings['titulo']}";     // TITULO DE LA PAGI
     
 // VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
 $tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-if($tsLevelMsg != 1){    
+if(!$tsLevelMsg) {    
    $tsPage = 'aviso';
    $tsAjax = 0;
    $smarty->assign("tsAviso",$tsLevelMsg);

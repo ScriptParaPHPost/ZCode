@@ -1,58 +1,51 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Controlador AJAX
- *
- * @name    ajax.live.php
- * @author  ZCode | PHPost
-*/
-/**********************************\
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-*	(VARIABLES POR DEFAULT)		*
+// NIVELES DE ACCESO Y PLANTILLAS DE CADA ACCIï¿½N
+$files = [
+	'live-stream' => ['n' => 2, 'p' => 'stream'],
+	'live-avatar' => ['n' => 2, 'p' => ''],
+];
 
-\*********************************/
+// REDEFINIR VARIABLES
+$tsPage = 'php_files/p.live.'.$files[$action]['p'];
 
-	// NIVELES DE ACCESO Y PLANTILLAS DE CADA ACCIÓN
-	$files = array(
-		'live-stream' => array('n' => 2, 'p' => 'stream'),
-		'live-avatar' => array('n' => 2, 'p' => ''),
-	);
+$tsLevel = $files[$action]['n'];
 
-/**********************************\
+$tsAjax = empty($files[$action]['p']) ? 1 : 0;
 
-* (VARIABLES LOCALES ESTE ARCHIVO)	*
+// DEPENDE EL NIVEL
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if($tsLevelMsg != 1) { 
+	echo '0: '.$tsLevelMsg['mensaje']; 
+	die();
+}
 
-\*********************************/
-
-	// REDEFINIR VARIABLES
-	$tsPage = 'php_files/p.live.'.$files[$action]['p'];
-	$tsLevel = $files[$action]['n'];
-	$tsAjax = empty($files[$action]['p']) ? 1 : 0;
-
-/**********************************\
-
-*	(INSTRUCCIONES DE CODIGO)		*
-
-\*********************************/
-	
-	// DEPENDE EL NIVEL
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
-	// CODIGO
-	switch($action){
-		case 'live-stream':
-			// NOTIFICACIONES
-			$tsStream = ($_POST['notifications'] === 'ON') ? $tsMonitor->getNotificaciones(true) : 0;
-			
-			// MENSAJES
-			$tsMensajes = ($_POST['messages'] === 'ON') ? $tsMP->getMensajes(1, true, 'live') : 0;
-			
-			$smarty->assign("tsStream", $tsStream);
-			$smarty->assign("tsMensajes", $tsMensajes);
-		break;
-		case 'live-avatar':
-			echo $tsCore->getAvatar((int)$_GET['uid'], 'use');
-		break;
-		default:
-			die('0: Este archivo no existe.');
-		break;
-	}
+// CODIGO
+switch($action){
+	case 'live-stream':
+		// NOTIFICACIONES
+		$tsStream = (isset($_POST['notifications']) && $_POST['notifications'] === 'ON') ? $tsMonitor->getNotificaciones(true) : 0;
+		// MENSAJES
+		$tsMensajes = (isset($_POST['messages']) && $_POST['messages'] === 'ON') ? $tsMP->getMensajes(1, true, 'live') : 0;
+		$smarty->assign("tsStream", $tsStream);
+		$smarty->assign("tsMensajes", $tsMensajes);
+	break;
+	case 'live-avatar':
+		echo $tsZCode->getAvatar((int)$_GET['uid'], 'use');
+	break;
+	default:
+		die('0: Este archivo no existe.');
+	break;
+}

@@ -3,14 +3,7 @@
 {include "m.perfil_muro_fotos.tpl"}
 {if $tsInfo.p_socials != ''}
 	<section class="up-card">
-		<div class="up-card--header" icon="true">
-			<div class="up-header--icon">
-				{uicon name="cloud"}
-			</div>
-			<div class="up-header--title">
-				<span>Redes Sociales</span>
-			</div>
-		</div>
+		{include "CardHeader.tpl" iconName="cloud" label="Redes Sociales"}
 		<div class="up-card--body d-grid gap-3 p-2" style="grid-template-columns: repeat(5, 1fr);">
 
 		  	{assign var="redesConContenido" value=[]}
@@ -38,11 +31,7 @@
 {/if}
 
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">{uicon name="medal"}</div>
-		<div class="up-header--title"><span>Medallas</span></div>
-		<div class="up-header--icon">{$tsGeneral.m_total}</div>
-	</div>
+	{include "CardHeader.tpl" iconName="medal" label="Medallas" total=$tsGeneral.m_total}
 	<div class="up-card--body">
 		{if $tsGeneral.m_total}
 		<div class="medallas orden-21 d-grid gap-2 place-center py-2">
@@ -64,11 +53,7 @@
 </section>
 
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">{uicon name="users"}</div>
-		<div class="up-header--title"><span>Seguidores</span></div>
-		<div class="up-header--icon user_follow_count">{$tsInfo.stats.user_seguidores}</div>
-	</div>
+	{include "CardHeader.tpl" iconName="users" label="Seguidores" total=$tsInfo.stats.user_seguidores}
 	<div class="up-card--body reload_followed">
 		{if $tsGeneral.seguidores.data}
 			<div class="users orden-21 d-grid gap-2 place-center py-2">
@@ -90,11 +75,7 @@
 </section>
 
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">{uicon name="users"}</div>
-		<div class="up-header--title"><span>Siguiendo</span></div>
-		<div class="up-header--icon">{$tsInfo.stats.user_seguidos}</div>
-	</div>
+	{include "CardHeader.tpl" iconName="users" label="Siguiendo" total=$tsInfo.stats.user_seguidos}
 	<div class="up-card--body">
 		{if $tsGeneral.siguiendo.data}
 			<div class="users orden-21 d-grid gap-2 place-center py-2">
@@ -117,11 +98,7 @@
 
 {if $tsInfo.can_hits}
 	<section class="up-card">
-		<div class="up-card--header" icon="true">
-			<div class="up-header--icon">{uicon name="undo-history"}</div>
-			<div class="up-header--title"><span>&Uacute;ltimas visitas</span></div>
-			<div class="up-header--icon">{$tsInfo.visitas_total}</div>
-		</div>
+		{include "CardHeader.tpl" iconName="undo-history" label="&Uacute;ltimas visitas" total=$tsInfo.visitas_total}
 		<div class="up-card--body">
 			{if $tsInfo.visitas}
 				<div class="users orden-21 d-grid gap-2 place-center py-2">

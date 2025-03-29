@@ -1,49 +1,39 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    perfil.php
- * @author  ZCode | PHPost
-*/
-/**********************************\
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-*	(VARIABLES POR DEFAULT)		*
+$tsPage = "perfil";
 
-\*********************************/
+$tsLevel = 0;
 
-	$tsPage = "perfil";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-	$tsLevel = 0;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
+$tsContinue = true;
 
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
-	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
-	
-/*++++++++ = ++++++++*/
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
+$tsTitle = $tsCore->settings['titulo'];
 
-	$tsTitle = $tsCore->settings['titulo']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
-	
-	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
-		$tsPage = 'aviso';
-		$tsAjax = 0;
-		$smarty->assign("tsAviso",$tsLevelMsg);
-		//
-		$tsContinue = false;
-	}
+// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if(!$tsLevelMsg) {	
+	$tsPage = 'aviso';
+	$tsAjax = 0;
+	$smarty->assign("tsAviso",$tsLevelMsg);
 	//
-	if($tsContinue){
-/**********************************\
+	$tsContinue = false;
+}
 
-* (VARIABLES LOCALES ESTE ARCHIVO)	*
-
-\*********************************/
-
+if($tsContinue) {
+	
 	$username = $tsCore->setSecure($_GET['user']);
 	$usuario = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_activo, user_baneado FROM @miembros WHERE user_name = '$username'"));
 
@@ -71,13 +61,14 @@
 	} else {
 		//
 		include TS_ZCODE . 'RedesDataIcon.php';
+		include TS_ZCODE . 'Paises.php';
 		include TS_MODELS . "c.cuenta.php";
 		$tsCuenta = new tsCuenta();
 
 		$tsInfo = $tsCuenta->loadHeadInfo($usuario['user_id']);
 		$tsInfo['uid'] = $usuario['user_id'];
 		// IS ONLINE?
-		$tsInfo['status'] = $tsCore->statusUser($usuario['user_id']);
+		$tsInfo['status'] = $tsZCode->statusUser($usuario['user_id']);
 		// GENERAL
 		$tsGeneral = $tsCuenta->loadGeneral($usuario['user_id']);
 	 	$tsInfo['nick'] = $tsInfo['user_name'];

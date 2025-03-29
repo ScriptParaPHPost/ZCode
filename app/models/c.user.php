@@ -1,10 +1,16 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de los usuarios
- *
- * @name    c.user.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsUser  {
 
@@ -72,6 +78,7 @@ class tsUser  {
 	 * Puntos Actualizados
 	*/
 	public function puntos_actualizados() {
+		global $tsCore;
 		// HORA EN LA CUAL RECARGAR PUNTOS 0 = MEDIA NOCHE DEL SERVIDOR
 		$ultimaRecarga = $this->info['user_nextpuntos'];
 		$tiempoActual = time();
@@ -138,7 +145,7 @@ class tsUser  {
 		loadUser()
 	*/
 	public function loadUser($login = FALSE) {
-		global $tsCore;
+		global $tsZCode;
 		$time = time();
 		// Cargar datos
 		$sql = "SELECT u.*, s.* FROM @sessions s, @miembros u WHERE s.session_id = '{$this->session->ID}' AND u.user_id = s.session_user_id";
@@ -152,11 +159,13 @@ class tsUser  {
 		// PERMISOS SEGUN RANGO
 		$datis = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT r_allows FROM @rangos WHERE rango_id = {$this->info['user_rango']} LIMIT 1"));
 		$this->permisos = unserialize($datis['r_allows']);
+		if(!isset($this->permisos['moat'])) $this->permisos['moat'] = false;
+		if(!isset($this->permisos['sumo'])) $this->permisos['sumo'] = false;
 		/* ES MIEMBRO */
 		$this->is_member = 1;
-		if($this->permisos['sumo'] == false && $this->permisos['suad'] == true) {
+		if($this->permisos['sumo'] === false && $this->permisos['suad'] === true) {
 			$this->is_admod = 1;
-		} elseif($this->permisos['sumo'] == true && $this->permisos['suad'] == false) {
+		} elseif($this->permisos['sumo'] === true && $this->permisos['suad'] === false) {
 			$this->is_admod = 2;
 		} elseif($this->permisos['sumo'] || $this->permisos['suad']) {
 			$this->is_admod = true;
@@ -167,13 +176,13 @@ class tsUser  {
 		// NOMBRE
 		$this->nick = $this->info['user_name'];
 		$this->uid = $this->info['user_id'];
-		$this->email = $this->ProtectedEmail();
+		$this->email = $this->info['user_email'];
 		$this->is_banned = $this->info['user_baneado'];
-		$this->use_avatar = $tsCore->getAvatar($this->uid, 'use');
-		
+		$this->use_avatar = $tsZCode->getAvatar($this->uid, 'use');
+	
 		$this->avatar = [
-			'img' => $tsCore->getAvatar($this->uid, 'img'),
-			'gif' => $tsCore->getAvatar($this->uid, 'gif')
+			'img' => $tsZCode->getAvatar($this->uid, 'img'),
+			'gif' => $tsZCode->getAvatar($this->uid, 'gif')
 		];
 		$this->deleteUserOutTime($this->info['user_outtime_type'] ?? 0, $time);
 		
@@ -258,7 +267,7 @@ class tsUser  {
 		  
 		$avBody = "Hola, le informamos su cuenta ha sido eliminada con todo su contenido por inactividad elegida por {$data['user_name']}.";
 		include_once TS_MODELS . 'c.emails.php';
-		$tsEmail = new tsEmail(); 
+		$tsEmail = new tsEmail('delete'); 
 
 		$tsEmail->emailTemplate = 'delete';
 		$tsEmail->emailTo = $admin[0];
@@ -266,19 +275,6 @@ class tsUser  {
 		$tsEmail->emailBody = "Tu cuenta ha sido eliminada!<br>$avBody";
 		$tsEmail->sendEmail() or die('0: Hubo un error al intentar procesar lo solicitado');
 		return true;
-	}
-
-	private function ProtectedEmail() { 
-		$charrandom = '+-.0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
-		$random = str_shuffle($charrandom); 
-		$text = ''; 
-		$email = $this->info['user_email'];
-		for ( $i = 0; $i < strlen($email); $i += 1) $text .= $random[strpos($charrandom, $email[$i])];
-		$data = [
-			'key'	=>	$random,
-			'public' => $text
-		];
-		return $data;
 	}
 
 	/*
@@ -316,7 +312,7 @@ class tsUser  {
 		loginUser($username, $password, $remember = false, $redirectTo = NULL);
 	*/
 	function loginUser(string $username = '', string $password = '', bool $remember = false, bool $redirectTo = false){
-		global $tsCore;
+		global $tsCore, $tsZCode;
 		/* ARMAR VARIABLES */
 		$filter = filter_var($username, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 		/* CONSULTA */  
@@ -324,7 +320,7 @@ class tsUser  {
 		// Existe el usuario
 		if(empty($data)) return '0: El usuario no existe.';
 		// Solo cuando inicia sesion, no cuando activa la cuenta
-		if(!$tsCore->createPassword($data['user_name'], $password, $data['user_password'])) return '2: Tu contrase&ntilde;a es incorrecta.';
+		if(!$tsZCode->createPassword($data['user_name'], $password, $data['user_password'])) return '2: Tu contrase&ntilde;a es incorrecta.';
 		// El usuario esta activo
 		if((int)$data['user_activo'] === 0) return '3: Debes activar tu cuenta';
 		// Comprobando 2FA
@@ -467,7 +463,7 @@ class tsUser  {
 		getUsuarios()
 	*/
 	public function getUsuarios(){
-		global $tsCore;
+		global $tsCore, $tsZCode;
 		// FILTROS ||
 		$filter = '';
 		$active = $tsCore->lastActive();
@@ -501,7 +497,7 @@ class tsUser  {
 			];
 			$row['pais'] = strtolower($row['user_pais'] ?? 'xx');
 			$row['pais_image'] = $SVG_FLAGS_ALL[$row['pais']];
-			$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
+			$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
 			// CARGAMOS
 			$data[] = $row;
 		}

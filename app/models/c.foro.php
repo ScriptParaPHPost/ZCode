@@ -1,18 +1,24 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Clase para el manejo de los foro
- *
- * @name    c.foro.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsForo {
 
 	private function getPostsOfCategorie(array &$data = []) {
-		global $tsCore;
+		global $tsCore, $tsZCode;
 		foreach($data['super_subcategorias'] as $key => $posts) {
 			$lastPost = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', "SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_private, p.post_sponsored, p.post_sticky, p.post_block_comments, p.post_date, u.user_id, u.user_name, u.user_rango, r.r_name, r.r_color, c.c_nombre FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id LEFT JOIN @rangos AS r ON u.user_rango = r.rango_id LEFT JOIN @posts_categorias AS c ON p.post_category = c.cid WHERE p.post_category = {$posts['cid']} ORDER BY p.post_id DESC LIMIT 1"));
-			$lastPost['post_url'] = $tsCore->createLink('post', $lastPost['post_id']);
+			$lastPost['post_url'] = $tsZCode->createLink('post', $lastPost['post_id']);
 			$data['super_subcategorias'][$key]['ultimo'] = $lastPost;
 
 			$data['super_subcategorias'][$key]['super_stats'] = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', "SELECT COUNT(p.post_id) as posts, SUM(p.post_comments) as comentarios, SUM(post_hits) as hits FROM @posts AS p LEFT JOIN @posts_categorias AS c ON p.post_category = c.cid WHERE p.post_category = {$posts['cid']}"));

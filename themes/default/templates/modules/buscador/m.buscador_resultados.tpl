@@ -1,12 +1,7 @@
 <div class="resultados">
 	{foreach from=$tsResults.data item=p}
 		<div class="resultado rounded shadow p-2 mb-3 d-grid gap-3">
-			<picture class="user_avatar rounded shadow overflow-hidden">
-				<source srcset="{$p.portada.md}" media="(min-width: 800px)">
-				<source srcset="{$p.portada.lg}" media="(min-width: 400px)">
-				<source srcset="{$p.portada.sm}">
-				<img src="{$p.portada.sm}" loading="lazy" alt="{$p.post_title}" class="object-fit-cover w-100 h-100">
-			</picture>
+			{include "Picture.tpl" src=$p.portada alt=$p.post_title class="user_avatar rounded shadow overflow-hidden"}
 			<div class="resultado--info position-relative small">
 	         <a class="h5 text-decoration-none text-truncate d-block" href="{$p.post_url}">{$p.post_title}</a>
 		      <span class="d-block"><strong>Autor</strong>: <a href="{$tsConfig.url}/perfil/{$p.user_name}" class="text-decoration-none fw-semibold main-bg-color">{$p.user_name|verificado}</a></span>

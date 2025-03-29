@@ -1,14 +1,16 @@
 <?php 
 
-if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * Controlador AJAX
- *
- * @name    ajax.cuenta.php
- * @author  Miguel92
-*/
-
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 $files = [
    'cuenta-guardar' => ['n' => 2, 'p' => ''],
@@ -37,10 +39,10 @@ $tsAjax = empty($files[$action]['p']) ? 1 : 0;
 
 // DEPENDE EL NIVEL
 $tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-if($tsLevelMsg != 1):
+if($tsLevelMsg != 1) {
 	echo '0: '.$tsLevelMsg['mensaje']; 
 	die();
-endif;
+}
 
 // CLASE
 require_once TS_MODELS . "c.cuenta.php";
@@ -58,16 +60,20 @@ switch($action){
 	break;
 	case 'cuenta-color':
 	case 'cuenta-scheme':
-		$columna = ($action === 'cuenta-color') ? 'user_color' : 'user_scheme';
-		echo $tsCuenta->saveColorScheme($columna);
-	break;
 	case 'cuenta-family':
 	case 'cuenta-size':
-		$columna = ($action === 'cuenta-family') ? 'user_font_family' : 'user_font_size';
-		echo $tsCuenta->saveThemeFont($columna);
-	break;
 	case 'cuenta-pagebox':
-		echo $tsCuenta->saveThemePageBox();
+
+		$columna = match($action) {
+			'cuenta-color' => 'user_color',
+			'cuenta-scheme' => 'user_scheme',
+			'cuenta-family' => 'user_font_family',
+			'cuenta-size' => 'user_font_size',
+			'cuenta-pagebox' => 'user_pagebox',
+			default => null
+		};
+		
+		echo $tsCuenta->saveThemeOption($columna);
 	break;
 	case 'cuenta-avatar-change':
 		echo $tsCuenta->changeAvatar();

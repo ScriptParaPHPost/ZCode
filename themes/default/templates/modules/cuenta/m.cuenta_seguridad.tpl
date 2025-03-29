@@ -25,7 +25,7 @@
 				</div>
 
 				<div class="upform-group">
-					<span role="button" id="generar" class="btn" onclick="cuenta.generarContrasena()">Generar contraseña segura</span>
+					<span role="button" id="generar" class="btn" onclick="generarContrasena()">Generar contraseña segura</span>
 				</div>
 			</div>
 			<div class="col-12 col-lg-5">

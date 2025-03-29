@@ -1,10 +1,5 @@
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">{uicon name="picture"}</div>
-		<div class="up-header--title">
-			<span>&Uacute;ltimas fotos</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="picture" label="&Uacute;ltimas fotos"}
 	<div class="up-card--body p-2">
 		<div class="fotos-content">
 			{foreach from=$tsLastFotos.data item=f}

@@ -4,15 +4,28 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
-{meta facebook=true twitter=true}
-{zCode css=["auth.css"]}
+{meta}
+{if $tsAction == 'login'}
+<script>
+	let TYPE_LOAD = 'page';
+	let reload = ['reload=false'];
+</script>
+{else}
+<link rel="preconnect" href="https://www.google.com">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+{/if}
+{zCode 
+	css=["auth.css"] 
+	js=[] 
+	global=true 
+}
 </head>
 <body class="flex justify-center items-center">
 
 	<main class="mt-3">
 		<header class="fixed w-100">
 			<div class="logo flex justify-start items-center column-gap-2">
-				<img src="{$tsConfig.logos.128}" alt="{$tsConfig.titulo} - {$tsConfig.slogan}">
+				<img src="{$tsRoutes.logos.128}" alt="{$tsConfig.titulo} - {$tsConfig.slogan}">
 				<span>{$tsConfig.titulo}</span>
 			</div>
 		</header>
@@ -27,16 +40,5 @@
 			</p>
 		</footer>
 	</main>
-
-	{if $tsAction == 'login'}
-		<script>
-			var TYPE_LOAD = 'page';
-			let reload = ['reload=false'];
-		</script>
-	{else}
-		<link rel="preconnect" href="https://www.google.com">
-		<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-	{/if}
-	{zCode js=[] scriptGlobal=true}
 </body>
 </html>

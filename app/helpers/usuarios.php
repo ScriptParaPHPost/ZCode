@@ -1,43 +1,39 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    usuarios.php
- * @author  ZCode | PHPost
-*/
-/**********************************\
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-*	(VARIABLES POR DEFAULT)		*
+$tsPage = "usuarios";
 
-\*********************************/
+$tsLevel = 0;
 
-	$tsPage = "usuarios";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
-
-	$tsLevel = 0;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
-
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
+$tsContinue = true;
 	
-/*++++++++ = ++++++++*/
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan'];
 
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
 
 // VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
 $tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-if($tsLevelMsg != 1){	
+if(!$tsLevelMsg) {	
 	$tsPage = 'aviso';
 	$tsAjax = 0;
 	$smarty->assign("tsAviso",$tsLevelMsg);
 	//
 	$tsContinue = false;
 }
-//
-if($tsContinue){
+
+if($tsContinue) {
 
    // PAICES
    include TS_ZCODE . "Paises.php";
@@ -59,17 +55,16 @@ if($tsContinue){
    // RANGOS
 	$query = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT rango_id, r_name, r_image FROM @rangos ORDER BY rango_id'));
 	foreach($query as $rid => $rango) {
-		$query[$rid]['r_image'] = $tsCore->settings['assets'] . "/images/rangos/{$rango['r_image']}";
+		$query[$rid]['r_image'] = $tsCore->setRoutes('assets', 'images') . "/rangos/{$rango['r_image']}";
 	}
    $smarty->assign("tsRangos", $query);
     
 }
 
-if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
+if(empty($tsAjax)) {
 
-	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
-
-	/*++++++++ = ++++++++*/
+	$smarty->assign("tsTitle",$tsTitle);
+	
 	include TS_ROOT . 'footer.php';
-	/*++++++++ = ++++++++*/
+	
 }

@@ -30,7 +30,7 @@
 
 	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
+	if(!$tsLevelMsg) {	
 		$tsPage = 'aviso';
 		$tsAjax = 0;
 		$smarty->assign("tsAviso",$tsLevelMsg);
@@ -81,9 +81,11 @@
     	}
 
    // Foro
-   } elseif(in_array($action, ['foro', 'actualizacion', 'temas', 'users', 'sitemap'])) {
+   } elseif(in_array($action, ['foro', 'temas', 'users', 'sitemap'])) {
    	include "$action.php";
 
+   } elseif($action === 'actualizacion') {
+   	$tsCore->redireccionar('admin', '', '');
    // Generador de favicon
    } elseif($action === 'favicon') {
 		$tsTitle = 'Generador de favicon';
@@ -136,10 +138,10 @@
 	// Seo
 	} elseif($action === 'seo') {
     	// CLASE MEDAL
-    	require_once TS_MODELS . "c.seo.php";
-    	$tsSeo = new tsSeo();
-    	
 		$tsTitle = 'Configurar SEO';
+		require TS_MODELS . "c.seo.php";
+		$tsSeo = new tsSeo;
+    	
 		if(empty($act)) $smarty->assign('tsSeo', $tsSeo->getSeo());
 		if(!empty($_POST['titulo'])) {
 			if($tsSeo->saveSEO()) $tsCore->redireccionar('admin', $action, 'save=true');
@@ -252,7 +254,7 @@
       if(empty($act)) $smarty->assign("tsMedals", $tsMedal->adGetMedals());
       elseif(in_array($act, ['nueva', 'editar'])) {
 			$tsTitle = ucfirst($act) . ' medalla';
-         if($_POST['save'] OR $_POST['edit']) {
+         if(isset($_POST['save']) OR isset($_POST['edit'])) {
 				$status = ($act === 'nueva') ? $tsMedal->adNewMedal() : $tsMedal->editMedal();
 				//$param = ($act === 'editar') ? "act=editar&mid={$_GET['mid']}&" : "";
 				if($status == 1) $tsCore->redireccionar('admin', $action, 'save=true');
@@ -273,7 +275,7 @@
          	if($act === 'editar') $smarty->assign("tsMed", $tsMedal->adGetMedal());
          }
 			//ICONOS PARA LAS MEDALLAS
-			$smarty->assign("tsIcons", $tsAdmin->getExtraIcons('medallas', 32));
+			$smarty->assign("tsIcons", $tsAdmin->getExtraIcons('medallas'));
 			//RANGOS DISPONIBLES
 			$smarty->assign("tsRangos",$tsAdmin->getAllRangos());
       } elseif($act === 'showassign') {
@@ -391,7 +393,7 @@ if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO M
 
 	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 	
-	$smarty->assign("tsSave",$_GET['save']);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
+	$smarty->assign("tsSave", $_GET['save'] ?? false);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 	
 	/*++++++++ = ++++++++*/
 	include TS_ADMIN . 'footer.php';

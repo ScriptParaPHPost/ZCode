@@ -1,0 +1,14 @@
+.ver-ticket-autor {
+	.picture {
+		width: 48px!important;
+		height: 48px!important;
+	}
+}
+.ver-ticket-list {
+	li {
+		padding: 0.325rem;
+		&:nth-child(2n+1) {
+			background: var(--translucent-bg);
+		}
+	}
+}

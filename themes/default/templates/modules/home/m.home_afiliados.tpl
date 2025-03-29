@@ -1,12 +1,5 @@
 <section class="lastPosts up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="episodes"}
-		</div>
-		<div class="up-header--title">
-			<span>Afiliados</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="episodes" label="Afiliados"}
 	<div class="up-card--body up-card--afiliados overflow-hidden" style="max-height: 258px;">
 		{foreach from=$tsAfiliados item=afiliado}
 			<div role="button" class="item d-block my-2 rounded shadow" onclick="afiliado.detalles({$afiliado.aid}); return false;" title="{$afiliado.a_titulo}">

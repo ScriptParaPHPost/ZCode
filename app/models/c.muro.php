@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control del muro
- *
- * @name    c.muro.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsMuro {
 
    const MAX_URL_LENGTH = 400;
@@ -19,7 +26,7 @@ class tsMuro {
 		  getPrivacity()
 	*/
 	public function getPrivacity(int $user_id = 0, string $username = null, $follow = NULL, $yfollow = NULL){
-		global $tsUser;
+		global $tsCore, $tsUser;
 		$priv['m']['v'] = true;
 		$priv['mf']['v'] = true;
 		$priv['rmp']['v'] = true;
@@ -255,7 +262,7 @@ class tsMuro {
 		streamPost()
 	*/
 	public function streamPost(){
-		global $tsCore, $tsUser, $tsMonitor, $tsActividad;
+		global $tsCore, $tsUser, $tsMonitor, $tsActividad, $tsZCode;
 		//
 		$pid = (int)$_POST['pid'];
 		$data = $tsCore->setSecure($_POST['data'], true);
@@ -374,7 +381,7 @@ class tsMuro {
 			...$append_array
 		];
 		$return['user_name'] = $tsUser->nick;
-		$return['avatar'] = $tsCore->getAvatar($tsUser->uid, 'use');
+		$return['avatar'] = $tsZCode->getAvatar($tsUser->uid, 'use');
 		// MONITOR
 		$tsMonitor->setNotificacion(12, $pid, $tsUser->uid, $pub_id);
 		// ACTIVIDAD
@@ -425,7 +432,7 @@ class tsMuro {
 		  getNews()
 	 */
 	public function getNews($start = 0, $limit = 10){
-		  global $tsUser, $tsCore;
+		  global $tsUser, $tsCore, $tsZCode;
 		  // SOLO MOSTRAREMOS LAS ULTIMAS 100 PUBLICACIONES
 		  if($start > 90) return array('total' => '-1');
 		  // SEGUIDORES
@@ -452,7 +459,7 @@ class tsMuro {
 				if($row['p_comments'] > 0){
 					 $row['comments'] = $this->getPubExtras($row['pub_id'], 'comments', 2);
 				}
-				$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
+				$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
 				// MENCIONES
 				$row['p_body'] = $tsCore->parseBadWords($tsCore->setMenciones($row['p_body']), true);
 				// CARGAR ADJUNTOS
@@ -474,12 +481,13 @@ class tsMuro {
 		  getWall($count)
 	 */
 	function getWall($user_id, $start = 0){
-		global $tsCore;
+		global $tsCore, $tsZCode;
 		$type = '';
 		if(isset($_POST['type'])) {
 			$number = (int)$_POST['type'];
 		  	$type = " AND p.p_type ".($number === 1 ? '>= 0' : "= $number");
 		}
+		$data = [];
 		  // PUBLICACION
 		  $query = db_exec([__FILE__, __LINE__], 'query', "SELECT p.*, u.user_id, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user_pub = u.user_id WHERE p.p_user = $user_id $type ORDER BY p.pub_id DESC LIMIT $start,10");
 		  while($row = db_exec('fetch_array', $query)){
@@ -487,9 +495,9 @@ class tsMuro {
 				$row['likes'] = ($row['p_likes'] > 0) ? $this->getPubExtras($row['pub_id'], 'likes', $row['p_likes']) : ['link' => 'Me gusta'];
 				// CARGAR COMENTARIOS
 				if($row['p_comments'] > 0) $row['comments'] = $this->getPubExtras($row['pub_id'], 'comments', 2);
-				$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
+				$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
 				// MENCIONES
-				$row['p_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($tsCore->setMenciones($row['p_body'])), true);
+				$row['p_body'] = $tsCore->parseBadWords($tsCore->parseBBCode($tsCore->setMenciones($row['p_body']), 'smiles'), true);
 				$row['p_body'] = rawurldecode($row['p_body']);
 				// CARGAR ADJUNTOS
 				if($row['p_type'] != 1){
@@ -505,7 +513,7 @@ class tsMuro {
 		  getPubExtras($pud_id, $type)
 	 */
 	 function getPubExtras($pub_id, $type = 'likes', $likes = 0){
-		  global $tsUser, $tsCore;
+		  global $tsUser, $tsCore, $tsZCode;
 		  //
 		  switch($type){
 				case 'likes':
@@ -557,9 +565,9 @@ class tsMuro {
 					 //
 					 $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.*, u.user_id, u.user_name FROM @muro_comentarios AS c LEFT JOIN @miembros AS u ON c.c_user = u.user_id WHERE c.pub_id = \''.(int)$pub_id.'\' ORDER BY c.c_date DESC '.$limit.'');
 					 while($row = db_exec('fetch_array', $query)){
-						  $row['c_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($tsCore->setMenciones($row['c_body'])), true);
+						  $row['c_body'] = $tsCore->parseBadWords($tsCore->parseBBCode($tsCore->setMenciones($row['c_body']), 'smiles'), true);
 						  $row['like'] = 'Me gusta';
-						  $row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
+						  $row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
 						  // ME GUSTA?
 						  if($row['c_likes'] > 0){
 								//
@@ -586,7 +594,7 @@ class tsMuro {
 		  getStory()
 	 */
 	 function getStory($pub_id, $user_id){
-		  global $tsUser, $tsCore;
+		  global $tsUser, $tsCore, $tsZCode;
 		  // ELEGIMOS
 		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_id, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user_pub = u.user_id WHERE p.pub_id = \''.(int)$pub_id.'\' LIMIT 1');
 		  $pub = db_exec('fetch_assoc', $query);
@@ -602,7 +610,7 @@ class tsMuro {
 		  if($pub['p_comments'] > 0){
 				$pub['comments'] = $this->getPubExtras($pub['pub_id'], 'comments');
 		  }
-		  $pub['avatar'] = $tsCore->getAvatar($pub['user_id'], 'use');
+		  $pub['avatar'] = $tsZCode->getAvatar($pub['user_id'], 'use');
 		  // EXTRA
 		  $pub['hide_more_cm'] = true;
 		  // ADJUNTOS

@@ -8,6 +8,7 @@ let draftIsEnabled = true;
 let confirm = true;
 let tags = false;
 let currentTime = new Date();
+
 // Obtenemos hora
 const hours = [
 	currentTime.getHours(),
@@ -40,7 +41,7 @@ function guardar() {
 
 	if(!empty(borrador_id)) params += '&borrador_id=' + encodeURIComponent(borrador_id);
 	let page = 'borradores-' + (!empty(borrador_id) ? 'guardar' : 'agregar');
-	$.post(`${ZCodeApp.url}/${page}.php`, params, req => {
+	$.post(`${basePath}/${page}.php`, params, req => {
 		let reqType = parseInt(req.charAt(0));
 		if(reqType === 0) {
 			clearTimeout(draftSetTime);
@@ -86,7 +87,7 @@ function preliminar() {
 	});
 	// PREVIEW
 	const data = 'cuerpo=' + encodeURIComponent(loadWYSIBB.bbcode());
-	$.post(ZCodeApp.url + '/posts-preview.php?ts=true', data, req => {
+	$.post(basePath + '/posts-preview.php?ts=true', data, req => {
 		UPModal.setModal({
 			title: $('input[name=titulo]').val(),
 			body: req,
@@ -174,7 +175,6 @@ const portada = {
 		}
 	},
 	load() {
-		const { images: { assets: pathImages } } = ZCodeApp;
 		let showPortada = pathImages;
 		if(empty(portadaIMG)) {
 			showPortada += '/favicon/logo-128.webp';
@@ -204,7 +204,7 @@ $(document).ready(() => {
 	$titulo.on('blur', () => {
 		const titleVal = $titulo.val();
 		if(!empty(titleVal)) {
-			$.post(`${ZCodeApp.url}/posts-genbus.php?do=search`, { q: titleVal }, respuesta => $('#repost').html(respuesta))
+			$.post(`${basePath}/posts-genbus.php?do=search`, { q: titleVal }, respuesta => $('#repost').html(respuesta))
 		}
 	});
 	// Generamos etiquetas en base al titulo

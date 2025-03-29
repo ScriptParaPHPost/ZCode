@@ -147,7 +147,7 @@ var borradores = {
 		  loading.start()
 			$.ajax({
 				type: 'POST',
-				url: ZCodeApp.url + '/borradores-eliminar.php',
+				url: basePath + '/borradores-eliminar.php',
 				data: 'borrador_id=' + id,
 				success: function(h){
 					switch(h.charAt(0)){
@@ -205,7 +205,7 @@ var borradores = {
         loading.start()
 		$.ajax({
 			type: 'POST',
-			url: ZCodeApp.url + '/borradores-get.php',
+			url: basePath + '/borradores-get.php',
 			data: 'borrador_id=' + id,
 			success: function(h){
 				switch(h.charAt(0)){

@@ -15,7 +15,7 @@
 					<div class="autor">
 						<a href="{$tsConfig.url}/perfil/{$p.user_name}" class="fw-semibold text-decoration-none">{if $p.user_name == $tsUser->nick}{$tsUser->nick|verificado}{else}{$p.user_name|verificado}{/if}</a>
 					</div>
-					<span class="d-block my-2">{$p.p_body|quot}</span>
+					<span class="d-block my-2">{$p.p_body}</span>
 					{if $p.p_type != 1}
 						<div class="mvm px-3 clearfix">
 							{if $p.p_type == 2}

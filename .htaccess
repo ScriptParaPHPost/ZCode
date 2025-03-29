@@ -36,7 +36,7 @@ IndexIgnore *
 LimitRequestBody 10240000
 
 # Denegando acceso a estas carpetas
-RewriteRule ^(config|storage|admin|app|logs) - [F,L]
+RewriteRule ^(config|storage|app|logs) - [F,L]
 
 # INDEX
 RewriteRule ^$ index.php?do=home [QSA,L]
@@ -50,6 +50,9 @@ RewriteRule ^(github|discord|google|facebook|reddit)\.php$ app/callback/$1.php [
 
 #PERFIL
 RewriteRule ^perfil/([A-Za-z0-9_-]+)(/([0-9]+))?$ app/helpers/perfil.php?user=$1&pid=$3 [QSA,L]
+
+#TICKET
+RewriteRule ^tickets/([A-Za-z_-]+)?/(([0-9]+))?$ app/helpers/tickets.php?action=$1&tid=$2 [QSA,L]
 
 # PORTAL
 RewriteRule ^mi/$ index.php?do=portal [QSA,L]
@@ -96,6 +99,7 @@ RewriteRule ^(install|upgrade)/([A-Za-z0-9_-]+)?$ app/extras/$1.php?step=$2 [QSA
 RewriteRule ^(admin|moderacion)/?([A-Za-z0-9_-]+)?/?([A-Za-z0-9_-]+)?/?([0-9]+)?$ admin/helpers/$1.php?template=$1&action=$2&act=$3&id=$4 [QSA,L]
 
 # EXTRAS
+RewriteRule ^dashboard/([A-Za-z0-9_-]+).php$ admin/helpers/ajax.php?action=$1 [QSA,L]
 RewriteRule ^([A-Za-z0-9_-]+).php$ app/helpers/ajax_files.php?action=$1 [QSA,L]
 RewriteRule ^([A-Za-z0-9_-]+)/$ app/helpers/$1.php [QSA,L]
 RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ app/helpers/$1.php?action=$2 [QSA,L]

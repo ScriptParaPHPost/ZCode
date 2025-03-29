@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de los mensajes privados
- *
- * @name    c.mensajes.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsMensajes {
 	 
 	public $mensajes = 0; // SIN LEER
@@ -139,7 +146,8 @@ class tsMensajes {
 	 function newRespuesta(){
 		  global $tsCore, $tsUser;
 		  //
-		  $mp_id = (int)$_POST['id']; // Fix: 21/02/2014
+		  $update = '';
+		  $mp_id = (int)$_POST['id'];
 		  $mp_body = substr($_POST['body'],0,1000);
 		  if(str_replace(array("\n","\t",' '),'',$mp_body) == '') die('0: Debes ingresar tu respuesta.');
 		  //
@@ -174,7 +182,7 @@ class tsMensajes {
 					 //
 					 $return['mp_date'] = time();
 				$return['mp_ip'] = $_SERVER['REMOTE_ADDR'];
-					 $return['mp_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($tsCore->parseBBCode($mp_body)), true);
+					 $return['mp_body'] = $tsCore->parseBadWords($tsCore->parseBBCode($mp_body, 'smiles'), true);
 					 //
 					 return $return;
 				}
@@ -318,7 +326,7 @@ class tsMensajes {
 		//$history['res'] = result_array($query);
 		while($row = db_exec('fetch_assoc', $query)) {
 		  	$row['avatar'] = $tsCore->getAvatar($row['user_id'], 'use');
-		  	$row['mr_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($tsCore->parseBBCode($row['mr_body'])), true);
+		  	$row['mr_body'] = $tsCore->parseBadWords($tsCore->parseBBCode($row['mr_body'], 'smiles'), true);
 			$history['res'][] = $row;
 		}
 

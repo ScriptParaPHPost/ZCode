@@ -1,51 +1,39 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
-/**
- * Modelo para el control de la actividad
- *
- * @name    c.actividad.php
- * @author  ZCode | PHPost
- */
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * ACTIVIDAD
- * // POSTS
- * 1 => Creó un nuevo post
- * 2 => Agregó a favoritos el post
- * 3 => Dejó 10 puntos en el post
- * 4 => Recomend&oacute; el post
- * 5 => Comentó el post
- * 6 => Votó positivo/negativo un comentario en el post
- * 7 => Est&aacute; siguiendo el post
- * // FOLLOWS
- * 8 => Está siguiendo a
- * // FOTOS
- * 9 => Subió una nueva foto
- * // MURO
- * 10 => 
- *      0 => Publicó en su muro
- *      1 => Comentó su publicación
- *      2 => Publicó en el muro de
- *      3 => Comentó la publicación de
- * 11 => Le gusta
- *      0 => su publicación
- *      1 => su comentario
- *      2 => la publicación de
- *      3 => el comentario de
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsActividad {
 
 	private $actividad = [];
 
+	private $core;
+
+	private $user;
+
+	private $zcode;
+
 	public function __construct(){
-		# NO ES NESESARIO HACER ALGO EN EL CONSTRUCTOR
+		$this->core = new tsCore;
+		$this->user = new tsUser;
+		$this->zcode = new tsZCode;
 	}
 	/**
 	 * @name makeActividad
 	 * @access private
 	 * @params none
 	 * @return none
-	 */
-	private function makeActividad(){
+	*/
+	private function makeActividad() {
 		# ACTIVIDAD CON FORMATO | ID => array(TEXT, LINK, CSS_CLASS)
 		$this->actividad = [
 			// POSTS
@@ -76,108 +64,103 @@ class tsActividad {
 			12 => ['text' => ['Reaccio&oacute;', 'un comentario en el post'], 'css' => 'reaction']
 		];
 	}
+
 	/**
 	 * @name setActividad
 	 * @access public
 	 * @params none
 	 * @return void
 	 */
-	public function setActividad($ac_type = NULL, $obj_uno = NULL, $obj_dos = 0){
-		global $tsUser, $tsCore;
-		# VARIABLES LOCALES{
+	public function setActividad($ac_type = NULL, $obj_uno = NULL, $obj_dos = 0) {
 		$ac_date = time();
 		# BUSCAMOS ACTIVIDADES				
-		$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT `ac_id` FROM @actividad WHERE user_id = \''.$tsUser->uid.'\' ORDER BY ac_date DESC'));
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT `ac_id` FROM @actividad WHERE user_id = {$this->user->uid} ORDER BY ac_date DESC"));
 		//
 		$ntotal = safe_count($data);
-		$delid = $data[$ntotal-1]['ac_id']; // ID DE ULTIMA NOTIFICACION
+		$delid = $data[$ntotal - 1]['ac_id']; // ID DE ULTIMA NOTIFICACION
 		// ELIMINAR ACTIVIDADES?
-		if($ntotal >= (int)$tsCore->settings['c_max_acts']) {			
-			db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM @actividad WHERE `ac_id` = '.$delid);
+		if($ntotal >= (int)$this->core->settings['c_max_acts']) {			
+			db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @actividad WHERE ac_id = $delid");
 		}
 		# SE HACE UN CONTEO PROGRESIVO SI HACE ESTA ACCON MAS DE 1 VEZ AL DIA
-		if($ac_type == 5) {
-			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT `ac_id`, `ac_date` FROM @actividad WHERE user_id = {$tsUser->uid} AND obj_uno = $obj_uno AND ac_type = $ac_type LIMIT 1"));
+		if($ac_type === 5) {
+			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT ac_id, ac_date FROM @actividad WHERE user_id = {$this->user->uid} AND obj_uno = $obj_uno AND ac_type = $ac_type LIMIT 1"));
 			$hace = $this->makeFecha($data['ac_date']);
-			if($hace == 'today') {                
+			if($hace === 'today') {                
 				if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @actividad SET obj_dos = obj_dos + 1 WHERE ac_id = {$data['ac_id']} LIMIT 1")) return true;			
 			}
 		}
 		# INSERCION DE DATOS        
-		return (db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @actividad (`user_id`, `obj_uno`, `obj_dos`, `ac_type`, `ac_date`) VALUES ({$tsUser->uid}, $obj_uno, $obj_dos, $ac_type, $ac_date)"));
+		return (db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @actividad (`user_id`, `obj_uno`, `obj_dos`, `ac_type`, `ac_date`) VALUES ({$this->user->uid}, $obj_uno, $obj_dos, $ac_type, $ac_date)"));
 	}
+
 	/**
 	 * @name getActividad
 	 * @access public
 	 * @params int(3)
 	 * @return array
-	 */
-	public function getActividad(int $user_id = 0, $ac_type = 0, $start = 0, $v_type = NULL){
-		# CREAR ACTIVIDAD
+	*/
+	public function getActividad(int $user_id = 0, $ac_type = 0, $start = 0, $v_type = NULL) {
 		$this->makeActividad();
 		# VARIABLES LOCALES
-		$ac_type = ($ac_type != 0) ? ' AND ac_type = \''.$ac_type.'\'' : '';
+		$ac_type = ($ac_type !== 0) ? " AND ac_type = $ac_type" : '';
 		# CONSULTA
-		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT `ac_id`, `user_id`, `obj_uno`, `obj_dos`, `ac_type`, `ac_date` FROM @actividad WHERE user_id = $user_id $ac_type ORDER BY ac_date DESC LIMIT $start, 25"));
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT ac_id, user_id, obj_uno, obj_dos, ac_type, ac_date FROM @actividad WHERE user_id = $user_id $ac_type ORDER BY ac_date DESC LIMIT $start, 25"));
 		# ARMAR ACTIVIDAD
 		$actividad = $this->armActividad($data);
 		# RETORNAR ACTIVIDAD
 		return $actividad;
 	}
+
 	/**
 	 * @name getActividadFollows
 	 * @access public
 	 * @param none
 	 * @return array
 	 */
-	public function getActividadFollows(int $start = 0){
-		global $tsCore, $tsUser;
+	public function getActividadFollows(int $start = 0) {
 		# CREAR ACTIVIDAD
 		$this->makeActividad();
 		// SOLO MOSTRAREMOS LAS ULTIMAS 100 ACTIVIDADES
-		if($start > 90) return array('total' => '-1');
+		if($start > 90) return ['total' => '-1'];
 		// SEGUIDORES
-		$follows = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT `f_id` FROM @follows WHERE f_user = {$tsUser->uid} AND f_type = 1"));
+		$follows = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT f_id FROM @follows WHERE f_user = {$this->user->uid} AND f_type = 1"));
 		// ORDENAMOS 
 		foreach($follows as $key => $val) $amigos[] = "'{$val['f_id']}'";
 		// ME AGREGO A LA LISTA DE AMIGOS
-		$amigos[] = $tsUser->uid;
+		$amigos[] = $this->user->uid;
 		// CONVERTIMOS EL ARRAY EN STRING
 		$amigos = implode(', ',$amigos);
 		// OBTENEMOS LAS ULTIMAS PUBLICACIONES
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT a.*, u.user_id, u.user_name AS usuario FROM @actividad AS a LEFT JOIN @miembros AS u ON a.user_id = u.user_id WHERE a.user_id IN($amigos) ORDER BY ac_date DESC LIMIT $start, 25"));
-
 		# ARMAR ACTIVIDAD
 		if(empty($data)) return 'No hay actividad o no sigues a ning&uacute;n usuario.';
 		$actividad = $this->armActividad($data);
 		# RETORNAR ACTIVIDAD
 		return $actividad;
 	}
+
 	/**
 	 * @name delActividad
 	 * @access public
 	 * @param none
 	 * @return string
-	 */
+	*/
 	public function delActividad(){
-		global $tsUser;
-		# VARIABLES LOCALES
 		$ac_id = (int)$_POST['acid'];
 		# CONSULTAS		
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM @actividad WHERE ac_id = $ac_id LIMIT 1"));
 		# COMPROBAMOS
-		if($data['user_id'] == $tsUser->uid) {			
-			if(db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @actividad WHERE ac_id = $ac_id")) return '1: Actividad borrada';
-		}
-		//
-		return '0: No puedes borrar esta actividad.';
+		if($data['user_id'] !== $this->core->uid) return '0: No puedes borrar esta actividad.';		
+		if(db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @actividad WHERE ac_id = $ac_id")) return '1: Actividad borrada';
 	}
+
 	/**
 	 * @name armActividad
 	 * @access private
 	 * @params array
 	 * @return array
-	 */
+	*/
 	private function armActividad($data = NULL){
 		# VARIABLES LOCALES
 		$actividad = [
@@ -218,7 +201,7 @@ class tsActividad {
 	 */
 	private function makeConsulta($data = NULL){
 		# CON UN SWITCH ESCOGEMOS LA CONSULTA APROPIADA
-		switch($data['ac_type']){
+		switch((int)$data['ac_type']) {
 			// DEL TIPO 1 al 7 USAMOS LA MISMA CONSULTA
 			case 1:
 			case 2:
@@ -240,7 +223,7 @@ class tsActividad {
 			// PUBLICACION EN EL MURO & LE GUSTA
 			case 10:
 			case 11:
-				if($data['obj_dos'] == 0 || $data['obj_dos'] == 2) {
+				if($data['obj_dos'] === 0 || $data['obj_dos'] === 2) {
 				 	return 'SELECT p.pub_id, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user = u.user_id WHERE p.pub_id = \''.(int)$data['obj_uno'].'\' LIMIT 1';
 				} else {
 				 	return 'SELECT c.pub_id, c.c_body, u.user_name FROM @muro_comentarios AS c LEFT JOIN @muro AS p ON c.pub_id = p.pub_id LEFT JOIN @miembros AS u ON p.p_user = u.user_id WHERE cid = \''.(int)$data['obj_uno'].'\' LIMIT 1';
@@ -253,13 +236,11 @@ class tsActividad {
 	}
 
 	private function linkMonitorOfPost(array $data = [], string $param = '') {
-		global $tsCore;
-		return $tsCore->createLink('post', $data['post_id'], $param);
+		return $this->core->createLink('post', $data['post_id'], $param);
 	}
 
 	private function linkMonitorOfFoto(array $data = [], string $param = '') {
-		global $tsCore;
-		return $tsCore->createLink('foto', $data['foto_id'], $param);
+		return $this->core->createLink('foto', $data['foto_id'], $param);
 	}
 	/**
 	 * @name makeOracion
@@ -268,15 +249,14 @@ class tsActividad {
 	 * @return array
 	 **/
 	private function makeOracion($data = NULL){
-		global $tsCore;
 		# VARIABLES LOCALES
 		$ac_type = $data['ac_type'];
-		$site_url =  $tsCore->settings['url'];
+		$site_url =  $this->core->settings['url'];
 		$oracion['id'] = $data['ac_id'];
 		$oracion['style'] = $this->actividad[$ac_type]['css'];
 		$oracion['date'] = $data['ac_date'];
 		$oracion['user'] = $data['usuario'];
-		$oracion['uid'] = $tsCore->getAvatar($data['user_id'], 'use');
+		$oracion['uid'] = $this->zcode->getAvatar($data['user_id'], 'use');
 		# CON UN SWITCH ESCOGEMOS QUE ORACION CONSTRUIR
 		switch($ac_type){
 			# DEL TIPO 1-2, 4 y 7 USAMOS LA MISMA
@@ -284,6 +264,7 @@ class tsActividad {
 			case 2:
 			case 4:
 			case 7:
+			case 12:
 				$oracion['text'] = $this->actividad[$ac_type]['text'];
 				$oracion['link'] = $this->linkMonitorOfPost([
 					'c_seo' => $data['c_seo'],
@@ -314,8 +295,8 @@ class tsActividad {
 			# ESTA SIGUIENDO A..
 			case 8:
 				// AVATARES
-				$img_uno = '<img class="avatar avatar-1" src="'.$tsCore->getAvatar($data['user_id'], 'use').'"/>';
-				$img_dos = '<img class="avatar avatar-1" src="'.$tsCore->getAvatar($data['avatar'], 'use').'"/>';
+				$img_uno = '<img class="avatar avatar-1" src="'.$this->zcode->getAvatar($data['user_id'], 'use').'"/>';
+				$img_dos = '<img class="avatar avatar-1" src="'.$this->zcode->getAvatar($data['avatar'], 'use').'"/>';
 				// ORACION
 				$oracion['text'] = $img_uno.' '.$this->actividad[$ac_type]['text'].' '.$img_dos;
 				$oracion['link'] = $site_url.'/perfil/'.$data['user_name'];
@@ -359,9 +340,6 @@ class tsActividad {
 					$oracion['ltext'] = substr($data['c_body'],0,30).$end_text;
 				}
 			break;
-			case 12:
-				var_dump($data);
-			break;
 		}
 		//
 		return $oracion;
@@ -377,11 +355,12 @@ class tsActividad {
 		$tiempo = time() - $time; 
 		$dias = round($tiempo / 86400);
 		//
-		if($dias < 1) return 'today';
-		elseif($dias < 2) return 'yesterday';
-		elseif($dias <= 7) return 'week';
-		elseif($dias <= 30) return 'month';
-		else return 'old';
-		#
+		return match (true) {
+     		$dias < 1 => 'today',
+     		$dias < 2 => 'yesterday',
+     		$dias <= 7 => 'week',
+     		$dias <= 30 => 'month',
+     		default => 'old',
+    	};
 	}
 }

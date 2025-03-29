@@ -1,15 +1,13 @@
-<?php 
+<?php
 
 /**
- * @name Callback.php
- * @copyright ZCode 2024
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
  * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
- * @author Miguel92
- * @version v2.0.0
- * @description Para realizar el logueo o registro de usuarios
 **/
 
 require realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
@@ -26,8 +24,14 @@ class Callback {
 	 * @access public
 	*/
 	public $social_version = '';
+
+	private $auth;
 	
-	public function __construct() {}
+	public function __construct() {
+		global $OAuthentication;
+		$OAuthentication->version($this->social_version);
+		$this->auth = $OAuthentication;
+	}
 
 	/**
 	 * @name getEndPoint
@@ -37,8 +41,7 @@ class Callback {
 	 * Manejo de OAuth | Token
 	*/
 	public function getEndPoint(string $type = '') {
-		global $tsCore;
-		$extract = $tsCore->getEndPoints($this->social, $type);
+		$extract = $this->auth->getEndPoints($this->social, $type);
 		return $extract;
 	}
 
@@ -120,7 +123,7 @@ class Callback {
 	# OAuth
 	# Desde acá crearemos, actualizaremos o logueamos
 	# ===================================================
-	public function OAuthComplete(array $UserData = []) {
+	public function OAuthComplete(array $UserData = []): void {	
 		global $tsCore, $tsUser;
 		# Verificamos que sea un correo
 		if(filter_var($UserData['email'], FILTER_VALIDATE_EMAIL)) {

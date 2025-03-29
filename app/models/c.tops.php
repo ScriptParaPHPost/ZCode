@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de los tops
- *
- * @name    c.tops.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsTops {
 	
 	private $filter = ['hoy' => 1, 'ayer' => 2, 'semana' => 3, 'mes' => 4, 'historico' => 5];
@@ -38,9 +45,9 @@ class tsTops {
 	}
 
 	private function appendAvatar(&$array) {
-		global $tsCore;
+		global $tsZCode;
 		foreach($array as $uid => $user) {
-			$array[$uid]['avatar'] = $tsCore->getAvatar($user['user_id'], 'use');
+			$array[$uid]['avatar'] = $tsZCode->getAvatar($user['user_id'], 'use');
 		}
 		return $array;
 	}
@@ -82,7 +89,6 @@ class tsTops {
 		// FAVORITOS
 		$data['favoritos'] = $this->getTopPostsVars($fecha, $cat, 'favoritos');
 		//
-		//
 		return $data;
 	}
 	/*
@@ -101,8 +107,8 @@ class tsTops {
 	/*
 		getTopPostsQuery($data)
 	*/
-	public function getTopPostsQuery($data){
-		global $tsCore;
+	public function getTopPostsQuery($data) {
+		$data['scat'] = isset($data['scat']) ? $data['scat'] : '';
 		$datos = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, p.post_portada, '.$data['type'].', p.post_puntos, p.post_title, c.c_seo, c.c_img FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = \'0\' AND p.post_date BETWEEN '.$data['start'].' AND '.$data['end'].' '.$data['scat'].' ORDER BY '.$data['type'].' DESC LIMIT 10'));
 		foreach($datos as $pid => $post) {
 			$datos[$pid]['post_title'] = stripslashes($post['post_title']);
@@ -114,13 +120,13 @@ class tsTops {
 		getHomeTopPostsQuery($data)
 	*/
 	public function getHomeTopPostsQuery($date){
-		global $tsCore;
+		global $tsZCode;
 		//
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, p.post_portada, p.post_title, p.post_puntos, c.c_seo FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = 0 AND p.post_date BETWEEN \''.$date['start'].'\' AND \''.$date['end'].'\' ORDER BY p.post_puntos DESC LIMIT 15'));
 
 		foreach ($data as $pid => $post) {
 			$data[$pid]['post_title'] = stripslashes($post['post_title']);
-			$data[$pid]['post_url'] = $tsCore->createLink('post', $post['post_id']);
+			$data[$pid]['post_url'] = $tsZCode->createLink('post', $post['post_id']);
 		}
 		
 		//
@@ -175,9 +181,7 @@ class tsTops {
 		}
 		$return['stats_online'] = (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT $sentencia > $is_online"))[0];
 	
-		if($return['stats_online'] > (int)$return['stats_max_online']) {
-			$timen = ", stats_max_online = {$return['stats_online']}, stats_max_time = $time";
-		}
+		$timen = ($return['stats_online'] > (int)$return['stats_max_online']) ? ", stats_max_online = {$return['stats_online']}, stats_max_time = $time" : '';
 
 		db_exec([__FILE__, __LINE__], 'query', "UPDATE @stats SET stats_time = $time $ndat $timen");
 		if((int)$tsCore->settings['c_ver_vistas_global']) $return['stats_global'] = $this->updateActivity();

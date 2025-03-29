@@ -1,10 +1,16 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de los usuarios
- *
- * @name    c.user.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsUser  {
 
@@ -86,6 +92,7 @@ class tsUser  {
 		// PERMISOS SEGUN RANGO
 		$datis = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT r_allows FROM @rangos WHERE rango_id = {$this->info['user_rango']} LIMIT 1"));
 		$this->permisos = unserialize($datis['r_allows']);
+		if(!isset($this->permisos['sumo'])) $this->permisos['sumo'] = null;
 		/* ES MIEMBRO */
 		$this->is_member = 1;
 		if($this->permisos['sumo'] == false && $this->permisos['suad'] == true) {

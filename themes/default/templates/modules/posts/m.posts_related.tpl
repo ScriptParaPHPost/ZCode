@@ -1,12 +1,5 @@
 <section class="up-card positio-sticky mt-0 top-0">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="document_list"}
-		</div>
-		<div class="up-header--title">
-			<span>Posts relacionado</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="document_stack" label="Posts relacionados"}
 	<div class="up-card--body">
 		{foreach from=$tsRelated item=p}
 			<div class="categoriaPost{if $p.post_private} private{/if} d-grid gap-2 shadow rounded my-2 rounded overflow-hidden" style="grid-template-columns:75px 1fr;">

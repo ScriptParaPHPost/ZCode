@@ -1,19 +1,12 @@
 function desactivate(start = 0) {
-	imported('cuenta/desactivate.js', 'desactivate', { start });
+	iModule('DesactivarCuenta.js', 'desactivate', { start });
 }
-const UPPassword = {
-	size: 18,
-	charset: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&_~|}{[]?-=",
-	generate(length = this.size) {
-		return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
-	}
+
+function generarContrasena() {
+	iModule('Contrasena.js', 'generatePassword');
 }
+
 const cuenta = {
-	generarContrasena() {
-		let inputPasswords = ['new_passwd', 'confirm_passwd'];
-		let createNewPass = UPPassword.generate(16)
-		inputPasswords.map( inp => $(`#${inp}`).attr({ type: 'text' }).val(createNewPass));
-	},
 	paisProvicias() {
 		// Campo pais
 		const pais_code = $("select[name=pais]").val();
@@ -23,7 +16,7 @@ const cuenta = {
 			//Obtengo las estados
 			$(estado).html('');
 			loading.start();
-			$.get(ZCodeApp.url + '/registro-geo.php', { pais_code }, req => {
+			$.get(basePath + '/registro-geo.php', { pais_code }, req => {
 				const pMsg = req.substring(3);
 				let pNumb = parseInt(req.charAt(0)) === 1;
 				if (pNumb) estado.append(pMsg).removeAttr('disabled').val('').focus();
@@ -32,7 +25,7 @@ const cuenta = {
 		}
 	},
 	sameToast(page, param, fn) {
-		$.post(`${ZCodeApp.url}/cuenta-${page}.php`, param, req => {
+		$.post(`${basePath}/cuenta-${page}.php`, param, req => {
 			let type_msg = parseInt(req.charAt(0));
 			toast.start({ content: req.substring(3), type: (type_msg === 0 ? 'warning' : 'success') });
 			loading.end();
@@ -52,14 +45,14 @@ const cuenta = {
 	},
 	eliminar_cuenta(obj) {
 		let outtime_type = parseInt($(obj).val());
-		$.post(`${ZCodeApp.url}/cuenta-eliminar-tiempo.php`, { outtime_type }, req => {
+		$.post(`${basePath}/cuenta-eliminar-tiempo.php`, { outtime_type }, req => {
 			toast.start({ content: req.substring(3), type: (req.charAt(0) === '0' ? 'warning' : 'success') });
 		});
 	}
 }
 
 function desvincular(social) {
-	$.post(`${ZCodeApp.url}/cuenta-desvincular.php`, { social }, req => {
+	$.post(`${basePath}/cuenta-desvincular.php`, { social }, req => {
 		if(req) {
 			UPModal.setModal({
 				title: 'Bien',
@@ -76,17 +69,13 @@ function desvincular(social) {
 $(document).ready(() => {
    // Event listener for avatar gif
 	if ($('input[name="pagina"]').val() === 'avatar') {
-      imported('cuenta/avatar.js', 'updateAvatarGif');
-    	imported('cuenta/avatar.js', 'changeAvatar');
+      iModule('Avatar.js', ['updateAvatarGif', 'changeAvatar', 'deleteAvatar']);
    }
 
    if ($('input[name="pagina"]').val() === 'apariencia') {
-   	imported('cuenta/apariencia.js', 'syncThemeSystem');
-   	imported('cuenta/apariencia.js', 'syncThemeColor');
-   	imported('cuenta/apariencia.js', 'syncThemeFont');
-   	imported('cuenta/apariencia.js', 'syncThemePageBox');
+   	iModule('Apariencia.js', ['syncThemeSystem', 'syncThemeColor', 'syncThemeFont', 'syncThemePageBox']);
    	if (!$('.customizar_tema').hasClass('d-none')) {
-   		imported('cuenta/customizar.js', 'handleChangeColor');
+   		iModule('Customizar.js', 'handleChangeColor');
    	}
    }
 
@@ -115,10 +104,10 @@ $(document).ready(() => {
 	//
 
 	if ($('input[name="pagina"]').val() === 'seguridad') {
-    	imported('cuenta/security.js', 'TFactorAuthSecurity');
-    	if($('.remove_2fa').length > 0) imported('cuenta/TFactorAuth.js', 'twoFactorAuthRemove');
+    	iModule('Seguridad.js', 'TFactorAuthSecurity');
+    	if($('.remove_2fa').length > 0) iModule('Authenticator.js', 'twoFactorAuthRemove');
 		if($('.regenerate_token').length > 0) {
-			$('.regenerate_token').on('click', () => imported('cuenta/TFactorAuth.js', 'tokenRegenerate'));
+			$('.regenerate_token').on('click', () => iModule('Authenticator.js', 'tokenRegenerate'));
 		}
 	}
 

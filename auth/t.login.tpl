@@ -3,41 +3,12 @@
 	<h4>Para continuar a {$tsConfig.titulo}</h4>
 </div>
 
-<div class="upform-group">
-	<label class="upform-label" for="nick">Dirección de correo electronico o nombre de usuario</label>
-	<div class="upform-group-input upform-icon">
-		<div class="upform-input-icon">
-			{uicon name="user-male"}
-		</div>
-		<input class="upform-input" type="text" name="username" id="nick" placeholder="JhonDoe" required>
-	</div>
-	<small class="upform-status help"></small>
-</div>
+{include "Input.tpl" id="nick" label="Dirección de correo o nombre de usuario" type="text" name="username" placeholder="JhonDoe" required=true icon="user-male"}
 
-<div class="upform-group">
-	<label class="upform-label" for="password">Contraseña</label>
-	<div class="upform-group-input upform-icon upform-input-icon-2">
-		<div class="upform-input-icon">
-			{uicon name="lock"}
-		</div>
-		<input class="upform-input" type="password" name="password" id="password" placeholder="{$tsPass}" required>
-		<div class="upform-input-icon">
-			<div id="IWantSeePassword" title="Ver contraseña!" class="iconify unlock"></div>
-		</div>
-	</div>
-	<small class="upform-status help"></small>
-	<small class="block text-align-center" data-toggle="forget_password" style="float:right;">¿Olvidaste tu contraseña?</small>	
-</div>
+{include "Input.tpl" id="password" label="Contraseña" type="password" name="password" placeholder=$tsPass required=true icon="lock" showPassword=true}
+<small class="block text-align-center" data-toggle="forget_password" onclick="login.multiOptions('password', false);return false;" style="float:right;">¿Olvidaste tu contraseña?</small>
+{include "Checkbox.tpl" id="remember" name="rem" value="true" checked=true label="Mantener mi sesión iniciada..."}
 
-<div class="upform-check">
-	<input type="checkbox" class="inp-cbx" name="rem" id="remember" value="true" checked />
-	<label for="remember" class="cbx">
-		<span>
-			<svg viewBox="0 0 12 10" height="10px" width="12px"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg>
-		</span>
-		<span>Mantener mi sesión iniciada...</span>
-	</label>
-</div>
 
 <div class="upform-buttons">
 	<input type="submit" class="btn btn-block w-100" value="Iniciar sesion">

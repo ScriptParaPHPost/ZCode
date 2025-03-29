@@ -8,7 +8,7 @@
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version v2.0.0
+ * @version v2.1.15
  * @description Archivo para cargar todos los datos necesarios para instalar
 **/
 
@@ -25,11 +25,11 @@ define('LICENSE',     file_get_contents(TS_ROOT . 'LICENSE'));
 define('FILE_ENV',    TS_ROOT . '.env');
 define('FILE_LOCK',   TS_ROOT . '.lock');
 
-define('TS_STORAGE', 	 TS_ROOT . 'storage' . TS_PATH);
-define('TS_AVATAR', 		 TS_STORAGE . 'avatar' . TS_PATH);
-define('TS_CACHE', 		 TS_STORAGE . 'cache' . TS_PATH);
-define('TS_PORTADAS',	 TS_STORAGE . 'portadas' . TS_PATH);
-define('TS_UPLOADS', 	 TS_STORAGE . 'uploads' . TS_PATH);
+define('TS_STORAGE', 	 TS_ROOT . 'storage' . DIRECTORY_SEPARATOR);
+define('TS_AVATAR', 		 TS_STORAGE . 'avatar' . DIRECTORY_SEPARATOR);
+define('TS_CACHE', 		 TS_STORAGE . 'cache' . DIRECTORY_SEPARATOR);
+define('TS_PORTADAS',	 TS_STORAGE . 'portadas' . DIRECTORY_SEPARATOR);
+define('TS_UPLOADS', 	 TS_STORAGE . 'uploads' . DIRECTORY_SEPARATOR);
 
 /**
  * Obtenemos la url

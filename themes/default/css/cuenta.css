@@ -181,3 +181,16 @@
 	left: calc(100% - var(--circle-diameter) - var(--switch-offset));
 	box-shadow: var(--circle-checked-shadow);
 }
+#mis_avatares {
+	[data-myavatar] {
+		span {
+			display: none;
+			cursor: pointer;
+		}
+		&:hover {
+			span {
+				display: block;
+			}
+		}
+	}
+}

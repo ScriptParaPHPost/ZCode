@@ -1,82 +1,54 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    pages.php
- * @author  ZCode | PHPost
-*/
-/**********************************\
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-*	(VARIABLES POR DEFAULT)		*
+$tsPage = "pages";
 
-\*********************************/
+$tsLevel = 0;
 
-	$tsPage = "pages";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-	$tsLevel = 0;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
-
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsContinue = true;
 	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
-	
-/*++++++++ = ++++++++*/
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan'];
 
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
-
-	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
-		$tsPage = 'aviso';
-		$tsAjax = 0;
-		$smarty->assign("tsAviso",$tsLevelMsg);
-		//
-		$tsContinue = false;
-	}
+// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if(!$tsLevelMsg) {	
+	$tsPage = 'aviso';
+	$tsAjax = 0;
+	$smarty->assign("tsAviso",$tsLevelMsg);
 	//
-	if($tsContinue){
+	$tsContinue = false;
+}
 
-/**********************************\
+if($tsContinue) {
+	
+	$action = $_GET['action'];
+	
+	match($action) {
+		'ayuda', 'chat', 'contacto', 'protocolo', 'terminos-y-condiciones', 'privacidad', 'dmca' => '',
+		default => $tsCore->redirectTo($tsCore->settings['url']),
+	};
+   //
+   $smarty->assign("tsAction",$action);
 
-* (VARIABLES LOCALES ESTE ARCHIVO)	*
+}
 
-\*********************************/
-    $action = $_GET['action'];
-/**********************************\
+if(empty($tsAjax)) {	
 
-*	(INSTRUCCIONES DE CODIGO)		*
-
-\*********************************/
-
-    switch($action){
-        case 'ayuda':
-        case 'chat':
-        case 'contact':
-        case 'protocolo':
-        case 'terminos-y-condiciones':
-        case 'privacidad':
-        case 'dmca':
-        default:
-        $tsCore->redirectTo($tsCore->settings['url']);
-        break;
-    }
-    //
-    $smarty->assign("tsAction",$action);
-/**********************************\
-
-* (AGREGAR DATOS GENERADOS | SMARTY) *
-
-\*********************************/
-	}
-
-if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
-
-	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
-
-	/*++++++++ = ++++++++*/
+	$smarty->assign("tsTitle",$tsTitle);
+	
 	include TS_ROOT . 'footer.php';
-	/*++++++++ = ++++++++*/
+	
 }

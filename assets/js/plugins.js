@@ -15,24 +15,27 @@ function string_random(random_char_size = 10) {
  * Ahora verifica si ya fue importado
 */
 const importedFiles = new Map();
-async function imported(fileroute = '', execFunction = '', objects, from = 'theme') {
+async function iModule(filePath = '', functionName, parameters) {
 	let javascriptFile;
 	try {
-		const { theme, assets } = ZCodeApp;
-		javascriptFile = `${ZCodeApp[from]}/js/${fileroute}?v` + string_random(4);
+		javascriptFile = `${ZCodeApp.assets}/fs/__fs${filePath}?v` + string_random(4);
 		if (importedFiles.has(javascriptFile)) {
 			console.log(`Archivo ${javascriptFile} ya ha sido importado.`);
 			return;
 		}
 		const module = await import(javascriptFile);
 		importedFiles.set(javascriptFile, true);
-		if (module[execFunction]) {
-			module[execFunction](objects);
-		} else {
-			console.error(`Function ${execFunction} no se encontro en ${javascriptFile}`);
-		}
+		const executeFunction = (fn) => {
+         if (module[fn]) {
+            module[fn](parameters);
+         } else {
+            console.error(`Function ${fn} no se encontró en ${javascriptFile}`);
+         }
+      };
+      Array.isArray(functionName) ? functionName.forEach(executeFunction) : executeFunction(functionName);
 	} catch (error) {
-		console.error(`Error al importar ${javascriptFile}:`, error);
+		console.error(`Error al importar ${filePath}:`, error);
+      throw error;
 	}
 }
 /**
@@ -116,7 +119,7 @@ const toast = {
 const loading = {
 	timeout: 350,
 	start() {
-		imported('loadingStart.js', 'loadingStart', {}, 'assets');
+		iModule('Loading.js', 'loadingStart');
 	},
 	end() {
 		setTimeout(() => $('#loading_start').remove(), this.timeout);
@@ -355,7 +358,7 @@ $(document).on('keyup keydown', function(event) {
 $(() => {
 	
 	if($('lite-youtube').length > 0) {
-		imported('lite-youtube.js', 'liteYt', {}, 'assets');
+		iModule('LiteYt.js', 'liteYt', {});
 	}
 	
    // Una nueva forma de guardar... CTRL + S

@@ -1,14 +1,16 @@
 <?php 
 
-if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * Controlador AJAX
- *
- * @name    ajax.fotos.php
- * @author  Miguel92
-*/
-
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 $files = [
    'fotos-votar' => ['n' => 2, 'p' => ''],

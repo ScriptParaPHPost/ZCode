@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de las visitas
- *
- * @name    c.visitas.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsVisitas {
 
 	protected $isCore;
@@ -20,7 +27,7 @@ class tsVisitas {
 	public function __construct() {
 		$this->isCore = new tsCore;
 		$this->isUser = new tsUser;
-		$this->ip = $this->isCore->executeIP($postData['ip']);
+		$this->ip = $this->isCore->executeIP();
 	}
 
 	/**
@@ -33,7 +40,7 @@ class tsVisitas {
 	*/
 	public function wasVisited(int $id = 0, int $type = 0, string $limit = '') {
 		$likeip = "`ip` LIKE '{$this->ip}'";
-		$useriplike = $tsUser->is_member ? "(`user` = {$tsUser->uid} OR $likeip)" : $likeip;
+		$useriplike = $this->isUser->is_member ? "(`user` = {$this->isUser->uid} OR $likeip)" : $likeip;
 		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM @visitas WHERE `for` = $id && `type` = $type && $useriplike LIMIT $limit");
 		return db_exec('num_rows', $query);
 	}
@@ -105,9 +112,9 @@ class tsVisitas {
 
 	private function countSharedIn(int $pid = 0, int $uid = 0) {
 		global $tsCore;
-		$in = $tsCore->setSecure($_GET['in']);
+		$in = isset($_GET['in']) ? $tsCore->setSecure($_GET['in']) : '';
 		$exists = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT stats_user FROM @posts_stats WHERE stats_post_id = $pid AND stats_in = '$in' LIMIT 1"));
-		if($exists[0] === null AND !empty($in)) {
+		if($exists === NULL AND !isset($_GET['in'])) {
 			$time = time();
 			db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @posts_stats(stats_in, stats_user, stats_post_id, stats_date) VALUES('$in', $uid, $pid, $time)");
 		} else {

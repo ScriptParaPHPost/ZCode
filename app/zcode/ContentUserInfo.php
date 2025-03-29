@@ -1,5 +1,15 @@
 <?php 
 
+/**
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 $contentUser = [
    "boposts" => ['title' => 'Posts', 'text' => 'Se eliminar&aacute;n todos sus posts y sus comentarios.'],
    "bofotos" => ['title' => 'Fotos', 'text' => 'Se eliminar&aacute;n todas sus fotos publicadas y sus comentarios.'],

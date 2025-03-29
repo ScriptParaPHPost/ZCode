@@ -1,11 +1,6 @@
 {if ($tsAction == 'agregar' && ($tsUser->permisos.gopf || $tsUser->is_admod)) || ($tsAction == 'editar' && ($tsUser->permisos.moedfo || $tsUser->is_admod))}
 	<section class="up-card">
-		<div class="up-card--header" icon="true">
-			<div class="up-header--icon">{uicon name="button_add"}</div>
-			<div class="up-header--title">
-				<span>{if $tsAction == 'agregar'}Agregar nueva{else}Editar{/if} foto</span>
-			</div>
-		</div>
+		{include "CardHeader.tpl" iconName="button_add" label="{if $tsAction === 'agregar'}Agregar nueva{else}Editar{/if} foto"}
 		<div class="up-card--body">
 			<form name="add_foto" method="post" action="" enctype="multipart/form-data" id="foto_form" class="form-add-post position-relative" autocomplete="off">
 				<div class="loader h-100 w-100 z-99" style="display: none;">

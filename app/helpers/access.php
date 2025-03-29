@@ -1,39 +1,32 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    admin.php
- * @author  ZCode | PHPost
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/**********************************\
+$tsPage = "access";
 
-*	(VARIABLES POR DEFAULT)		*
+$tsLevel = 0;
 
-\*********************************/
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-$tsPage = "access";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
-
-$tsLevel = 0;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
-
-$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
-
-$tsContinue = true;	// CONTINUAR EL SCRIPT
+$tsContinue = true;
 	
-/*++++++++ = ++++++++*/
-
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
-
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan'];
 
 // VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
 $tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-if($tsLevelMsg != 1){	
+if(!$tsLevelMsg) {	
 	$tsPage = 'aviso';
 	$tsAjax = 0;
-	$smarty->assign("tsAviso",$tsLevelMsg);
+	$smarty->assign("tsAviso", $tsLevelMsg);
 	//
 	$tsContinue = false;
 }
@@ -70,11 +63,9 @@ if($tsContinue) {
 	$smarty->assign("tsAction", $action);
 }
 
-if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
+if(empty($tsAjax)) {
 
-	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
+	$smarty->assign("tsTitle", $tsTitle);
 	
-	/*++++++++ = ++++++++*/
 	include TS_ROOT . 'footer.php';
-	/*++++++++ = ++++++++*/
 }

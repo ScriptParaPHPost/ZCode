@@ -14,7 +14,7 @@ const favorito = {
 	agregar(postid) {
 		this.comprobar();
 		loading.start();
-		$.post(`${ZCodeApp.url}/favoritos-agregar.php`, { postid }, req => {
+		$.post(`${basePath}/favoritos-agregar.php`, { postid }, req => {
 			let statusFavPost = (parseInt(req.charAt(0)) === 0);
 			UPModal.alert((statusFavPost ? 'Error' : 'Bien'), req.substring(3));
 			if(req.charAt(0) === '1') this.total();
@@ -44,7 +44,7 @@ const votar = {
 	votar_post(voto_a_dar) {
 		this.comprobar(voto_a_dar);
 		loading.start();
-		$.post(ZCodeApp.url + '/posts-votar.php', 'puntos=' + voto_a_dar + gget('postid'), req => {
+		$.post(basePath + '/posts-votar.php', 'puntos=' + voto_a_dar + gget('postid'), req => {
 			this.verificar(true);
 			let votoAct = (parseInt(req.charAt(0)) === 1);
 			let votoMsg = req.substring(3);
@@ -83,7 +83,7 @@ function borrar_post(aceptar) {
 	if(!aceptar || aceptar === 1) return;
 	UPModal.proccess_start('Eliminando...');
 	loading.start();
-	$.post(ZCodeApp.url + '/posts-borrar.php', gget('postid', true), req => {
+	$.post(basePath + '/posts-borrar.php', gget('postid', true), req => {
 		var title = (req.charAt(0) == '0') ? 'Error' : 'Post Borrado';
 		UPModal.alert(title, req.substring(3), (req.charAt(0) == '1'));
 		loading.end();
@@ -106,31 +106,31 @@ const comentario = {
 	setPagePHP(page, paramGet = '') {
 		const { url } = ZCodeApp;
 		let isParam = empty(paramGet) ? '' : `?${paramGet}`;
-		return `${ZCodeApp.url}/${page}.php` + isParam;
+		return `${basePath}/${page}.php` + isParam;
 	},
 	borrar(comid, autor, postid, status = false) {
-		imported('posts/comentario-borrar.js', 'handleDeleteComment', { comid, autor, postid, status });
+		iModule('ComentarioBorrar.js', 'handleDeleteComment', { comid, autor, postid, status });
 	},
 	ocultar(comid, autor) {
-		imported('posts/comentarios.js', 'handleHideComment', { comid, autor });
+		iModule('Comentarios.js', 'handleHideComment', { comid, autor });
 	},
 	reaccionar(cid) {
 		$('.reaccion#' + cid).toggleClass('d-none d-flex');
 	},
 	reaccion(cid, reaccion) {
-		imported('posts/reaccionar.js', 'handleReactionComment', { cid, reaccion });
+		iModule('Reaccionar.js', 'handleReactionComment', { cid, reaccion });
 	},
 	responser(cid) {
 		$('#boxComentar' + cid).toggle();
 	},
 	nuevo() {
-		imported('posts/comentario-nuevo.js', 'handleCommentAndReply', {});
+		iModule('ComentarioNuevo.js', 'handleCommentAndReply', {});
 	},
 	responser_comentario(cid) {
-		imported('posts/comentario-nuevo.js', 'handleCommentAndReply', { cid });
+		iModule('ComentarioNuevo.js', 'handleCommentAndReply', { cid });
 	},
 	editar(cid, gew = false) {
-		imported('posts/comentario-editar.js', 'handleCommentEdit', { cid, gew });
+		iModule('ComentarioEditar.js', 'handleCommentEdit', { cid, gew });
 	},
 	cargar(postid, page, autor) {
 		// GIF
@@ -243,26 +243,26 @@ $(document).ready(() => {
       }
    }
    const $slider = $(".slider");
-    let isDragging = false;
-    let startX, scrollLeft;
+   let isDragging = false;
+   let startX, scrollLeft;
 
-    $slider.on("mousedown touchstart", function (e) {
-        isDragging = true;
-        startX = e.pageX || e.originalEvent.touches[0].pageX;
-        scrollLeft = $slider.scrollLeft();
-        $slider.addClass("is-dragging");
-    });
+   $slider.on("mousedown touchstart", function (e) {
+      isDragging = true;
+      startX = e.pageX || e.originalEvent.touches[0].pageX;
+      scrollLeft = $slider.scrollLeft();
+      $slider.addClass("is-dragging");
+   });
 
-    $slider.on("mousemove touchmove", function (e) {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.pageX || e.originalEvent.touches[0].pageX;
-        const walk = (x - startX) * 1.5; // Ajusta la velocidad
-        $slider.scrollLeft(scrollLeft - walk);
-    });
+   $slider.on("mousemove touchmove", function (e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX || e.originalEvent.touches[0].pageX;
+      const walk = (x - startX) * 1.5; // Ajusta la velocidad
+      $slider.scrollLeft(scrollLeft - walk);
+   });
 
-    $slider.on("mouseup touchend mouseleave", function () {
-        isDragging = false;
-        $slider.removeClass("is-dragging");
-    });
+   $slider.on("mouseup touchend mouseleave", function () {
+      isDragging = false;
+      $slider.removeClass("is-dragging");
+   });
 });

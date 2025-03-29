@@ -1,7 +1,7 @@
 const perfil = {
 	follows:function(type, page) {
 		loading.start();
-		$.post(`${ZCodeApp.url}/perfil-${type}.php?hide=true&page=${page}`, { pid: $('#info').attr('pid') }, req => {
+		$.post(`${basePath}/perfil-${type}.php?hide=true&page=${page}`, { pid: $('#info').attr('pid') }, req => {
 			$(`#perfil_${type}`).html(req.substring(3));
 			loading.end(); 
 		});
@@ -17,7 +17,7 @@ const actividad = {
 		if(ac_do == 'filtrar') actividad.total = 0;
 		// ENVIAMOS
 		const sendObj = { pid: $('#info').attr('pid'), ac_do, do: ac_do, start: actividad.total };
-		$.post(`${ZCodeApp.url}/perfil-actividad.php`, sendObj, res => {
+		$.post(`${basePath}/perfil-actividad.php`, sendObj, res => {
 			const message = res.substring(3);
 			const action = parseInt(res.charAt(0));
 			if(action === 0) UPModal.alert('Error', message);
@@ -32,7 +32,7 @@ const actividad = {
 		});
 	},
 	borrar(acid, obj) {
-		$.post(`${ZCodeApp.url}/perfil-actividad.php`, { pid: $('#info').attr('pid'), acid, do: 'borrar' }, res => {
+		$.post(`${basePath}/perfil-actividad.php`, { pid: $('#info').attr('pid'), acid, do: 'borrar' }, res => {
 			if(res.charAt(0) === '0') UPModal.alert('Error', res.substring(3));
 			else $(obj).parent().parent().parent().remove();
 		});
@@ -43,8 +43,8 @@ const muro = {
 	maxWidth: 463,
 	caracteres: 420, // 420 caracteres
 	placeholder: {
-		foto: ZCodeApp.url + '/files/images/imagen_' + string_random(3) + '.png',
-		enlace: ZCodeApp.url + '/blog/' + string_random(4) + '/ejemplo.html',
+		foto: basePath + '/files/images/imagen_' + string_random(3) + '.png',
+		enlace: basePath + '/blog/' + string_random(4) + '/ejemplo.html',
 		video: 'https://www.youtube.com/watch?v=' + string_random(11)
 	},
 	inpfile: '',
@@ -74,7 +74,7 @@ const muro = {
 				</div>`);
 				$('input[name="ifoto"]').on('change', function() {
 					muro.stream.type = 'foto';
-					imported('perfil/image-upload.js', 'handleImageUploadFn', this.files[0]);
+					iModule('ImageUpload.js', 'handleImageUploadFn', this.files[0]);
 				});
 			} else {
 				$(".input-append").html('')
@@ -113,7 +113,7 @@ const muro = {
 		},
 		// VERIFICAR ARCHIVO
 		ajaxCheck(url, inpt) {
-			$.post(`${ZCodeApp.url}/muro-stream.php?do=check&type=${muro.stream.type}`, { url }, res => {
+			$.post(`${basePath}/muro-stream.php?do=check&type=${muro.stream.type}`, { url }, res => {
 				const message = res.substring(3);
 				switch (res.charAt(0)) {
 					case '0': //Error
@@ -219,7 +219,7 @@ const muro = {
 				'data=' + encodeURIComponent(data),
 				'pid=' + $('#info').attr('pid')
 			].join('&');
-			$.post(`${ZCodeApp.url}/muro-stream.php?do=post&type=${muro.stream.type}`, params, req => {
+			$.post(`${basePath}/muro-stream.php?do=post&type=${muro.stream.type}`, params, req => {
 				switch(req.charAt(0)){
 					case '0': //Error
 						UPModal.alert('Error al publicar', req.substring(3));
@@ -250,7 +250,7 @@ const muro = {
 			$('.more-pubs .svg').show();
 			// CARGAMOS
 			loading.start();
-			$.post(`${ZCodeApp.url}/muro-stream.php?do=more&type=${type}`, { pid: $('#info').attr('pid'), start: muro.stream.total }, req => {
+			$.post(`${basePath}/muro-stream.php?do=more&type=${type}`, { pid: $('#info').attr('pid'), start: muro.stream.total }, req => {
 				switch(req.charAt(0)){
 					case '0': //Error
 						UPModal.alert('Error al cargar', req.substring(3));
@@ -288,7 +288,7 @@ const muro = {
 		muro.stream.status = 1;
 		// MANDAMOS
 		loading.start();
-		$.post(`${ZCodeApp.url}/muro-likes.php`, `id=${id}&type=${type}`, req => {
+		$.post(`${basePath}/muro-likes.php`, `id=${id}&type=${type}`, req => {
 			let reqText = req.text;
 			let emptyText = !empty(reqText);
 			if(req.status === 'ok') {
@@ -312,7 +312,7 @@ const muro = {
 		muro.stream.status = 1;
 		// MANDAMOS
 		loading.start();
-		$.post(`${ZCodeApp.url}/muro-likes.php?do=show`, { id, type }, req => {
+		$.post(`${basePath}/muro-likes.php?do=show`, { id, type }, req => {
 			let sStatus = parseInt(req.status);
 			if(sStatus === 0) UPModal.alert('Error', req['data']);
 			if(sStatus === 1) {
@@ -321,9 +321,9 @@ const muro = {
 					const { user_name, user_id } = req.data[iterar];
 					let src = `${ZCodeApp.images.assets}/avatar/${user_id}.webp`;
 					sHtml += `<li>
-						<a href="${ZCodeApp.url}/perfil/${user_name}"><img src="${src}" class="avatar avatar-5"></a>
+						<a href="${basePath}/perfil/${user_name}"><img src="${src}" class="avatar avatar-5"></a>
 						<div class="name fw-semibold">
-							<a href="${ZCodeApp.url}/perfil/${user_name}">${user_name}</a>
+							<a href="${basePath}/perfil/${user_name}">${user_name}</a>
 						</div>
 					</li>`
 				}
@@ -360,7 +360,7 @@ const muro = {
 		}
 		loading.start();
 		const param = ['data=' + encodeURIComponent(commentText), 'pid=' + id].join('&');
-		$.post(`${ZCodeApp.url}/muro-stream.php?do=repost`, param, req => {
+		$.post(`${basePath}/muro-stream.php?do=repost`, param, req => {
 			let cmStatus = parseInt(req.charAt(0));
 			let cmMessage = req.substring(3);
 			if(cmStatus === 0) UPModal.alert('Error:', cmMessage);
@@ -384,7 +384,7 @@ const muro = {
 		finder.find('img').show();
 		//
 		loading.start();
-		$.post(`${ZCodeApp.url}/muro-stream.php?do=more_comments`, `pid=${id}`, req => {
+		$.post(`${basePath}/muro-stream.php?do=more_comments`, `pid=${id}`, req => {
 			let mcStatus = parseInt(req.charAt(0));
 			let mcMessage = req.substring(3);
 			if(mcStatus === 0) UPModal.alert('Error:', mcMessage);
@@ -432,7 +432,7 @@ const muro = {
 		let snd_type = (type == 1) ? 'pub' : 'cmt';
 		//
 		loading.start();
-		$.post(`${ZCodeApp.url}/muro-stream.php?do=delete`, `id=${id}&type=${snd_type}`, req => {
+		$.post(`${basePath}/muro-stream.php?do=delete`, `id=${id}&type=${snd_type}`, req => {
 			let eStatus = parseInt(req.charAt(0));
 			let eMessage = parseInt(req.substring(3));
 			if(eStatus === 0) UPModal.alert('Error:', eMessage);
@@ -449,7 +449,7 @@ const muro = {
 	}
 }
 function loadFilter(type) {
-	imported('perfil/tabs.js', 'handleLoadFilter', type);
+	iModule('TabsFilter.js', 'handleLoadFilter', type);
 }
 /** READY **/
 $(() => {
@@ -467,13 +467,13 @@ $(() => {
 		$(this).on('click', function() {
 			const obj = $(this);
 			const classObj = '.userPerfil--item';
-			imported('perfil/tabs.js', 'loadTabs', { obj, classObj });
+			iModule('TabsFilter.js', 'loadTabs', { obj, classObj });
 		});
 	});
 
 	let div = $('#wall');
 	if(div.length > 0) {
-		imported('perfil/content-editable.js', 'handleContentEditable', div);
+		iModule('ContentEditable.js', 'handleContentEditable', div);
 	}
 	$(window).on('paste', function(response) {
 		let items = response.originalEvent.clipboardData.items;
@@ -481,7 +481,7 @@ $(() => {
 			if (items[i].type.indexOf('image') !== -1) {
 				let file = items[i].getAsFile();
 				muro.stream.type = 'foto';
-				imported('perfil/image-upload.js', 'handleImageUploadFn', file);
+				iModule('ImageUpload.js', 'handleImageUploadFn', file);
 				break;
 			}
 		}		

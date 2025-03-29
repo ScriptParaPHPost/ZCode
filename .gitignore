@@ -1,14 +1,7 @@
-# Conexion a base de datos
-config.inc.php
-
-# Archivos de errores
-*.log
-
-# Ignorar todo en la carpeta 'cache'
-cache/
-
-# Ignorar todo en la carpeta 'storage'
+# Ignorar carpetas
+append/*
 storage/*
+logs/*.log
 
 # Ignorar portadas
 assets/images/avatar
@@ -27,3 +20,4 @@ themes/*
 .env
 .lock
 sitemap.xml
+faster.php

@@ -74,9 +74,5 @@
 	</fieldset>
 	<div class="buttons">
 		<input type="button" value="Guardar" onclick="cuenta.guardar_datos()" class="btn">
-		{if !$tsUser->is_admod}
-			<input type="button" value="Desactivar Cuenta" onclick="desactivate(0)" class="btn btn-outline">
-		{/if}
 	</div> 
-	<div class="clearfix"></div>
 </div>

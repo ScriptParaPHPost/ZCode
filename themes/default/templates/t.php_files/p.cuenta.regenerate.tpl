@@ -38,4 +38,4 @@
 	}
 }
 </style>
-<script src="{$tsConfig.js}/cuenta/verifiedOPT.js?{$smarty.now}"></script>
+<script src="{$tsRoutes.theme.js}/verifiedOPT.js?{$smarty.now}"></script>

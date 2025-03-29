@@ -1,6 +1,7 @@
 <?php
 
-$body = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+$tiempo = date('Y');
+$plantilla = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
 <meta name=\"viewport\" content=\"width=device-width\" />
@@ -14,7 +15,8 @@ $body = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http
 			<div style=\"margin-bottom:1rem;border-radius:.325rem;\"><strong style=\"display: block;\">Usuario:</strong> <span style=\"display: block;padding: .75rem .5rem;background-color: #CCC4;margin:.325rem 0;border-radius:.5rem;\">{$user['nickname']}</span></div>
 			<div style=\"margin-bottom:1rem;border-radius:.325rem;\"><strong style=\"display: block;\">Contrase&ntilde;a:</strong> <span style=\"display: block;padding: .75rem .5rem;background-color: #CCC4;margin:.325rem 0;border-radius:.5rem;\">{$user['password']}</span></div>
 		</p>
-		<p style=\"display: block;margin: 0;padding: 2rem 0 0 0;font-size:.75rem;color:#666;text-align:center;\">Gracias por usar {$script['forum']} para compartir enlaces.</p>
+		<p style=\"display: block;margin: 0;padding: 2rem 0 0 0;font-size:.75rem;color:#666;text-align:center;\">Gracias por usar {$script} para compartir enlaces.</p>
+		<p style=\"display: block;margin: 0;padding: .325rem 0 0 0;font-size:.75rem;color:#666;text-align:center;\">Copyright 2024-$tiempo</p>
 	</main>
 </body>
 </html>";

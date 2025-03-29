@@ -8,7 +8,6 @@
 			<img class="avatar avatar-6 dropdown-avatar avatar_loader" src="{$tsUser->use_avatar}" alt="avatar {$tsUser->nick}">
 			<div class="menu-userdata p-1 d-flex justify-content-center align-items-start flex-column">
 				<a title="Mi perfil" class="fw-bold" href="{$tsConfig.url}/perfil/{$tsUser->info.user_name}">{$tsUser->nick|verificado}</a>
-				{$tsUser->email|protected_mail}
 			</div>
 		</div>
 		{if $tsUser->is_member}

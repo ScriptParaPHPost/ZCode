@@ -1,5 +1,5 @@
 <div class="boxy-title">
-	 <h3>Soporte y Cr&eacute;ditos</h3>
+	<h3>Soporte y Cr&eacute;ditos</h3>
 </div>
 <div id="res" class="boxy-content">
 	<div class="row">
@@ -11,6 +11,14 @@
 				<div class="mb-3"><span class="fw-semibold">MySQL</span> <small class="d-block fst-italic">{$tsVersion.mysql.0}</small></div>
 				<div class="mb-3"><span class="fw-semibold">Servidor</span> <small class="d-block fst-italic">{$tsVersion.server}</small></div>
 				<div class="mb-3"><span class="fw-semibold">GD</span> <small class="d-block fst-italic">{$tsVersion.gd}</small></div>
+			</div>
+			<div class="mt-3">
+				<div class="mb-3 fs-4">Servidor en Discord:</div>
+				<span class="btn btn--discord pe-3" style="width:auto;">{uicon folder="prime" name="discord" class="btn--icon"} <a class="btn--text" href="https://discord.gg/mx25MxAwRe" target="_blank">ZCode</a></span>
+				<div class="mb-3 fs-4">Canales en Discord:</div>
+				<span class="d-flex justify-content-start align-items-center column-gap-2 px-1">{uicon folder="prime" name="discord" class="avatar avatar-3 main-color"} <a class="fw-semibold text-decoration-none" href="https://discord.gg/EKSAfjZKrP" target="_blank">#Actualizaciones & Descargas</a></span>
+				<span class="d-flex justify-content-start align-items-center column-gap-2 px-1">{uicon folder="prime" name="discord" class="avatar avatar-3 main-color"} <a class="fw-semibold text-decoration-none" href="https://discord.gg/DMQsGAWhCN" target="_blank">#Problemas & Errores</a></span>
+				<span class="d-flex justify-content-start align-items-center column-gap-2 px-1">{uicon folder="prime" name="discord" class="avatar avatar-3 main-color"} <a class="fw-semibold text-decoration-none" href="https://discord.gg/Zggn6yZaz9" target="_blank">#Soporte</a></span>
 			</div>
 		</div>
 		<div class="col-12 col-lg-8">
@@ -24,19 +32,6 @@
 				<li><strong>Isidro</strong>: Continuador del proyecto con la colaboración de la comunidad.</li>
 				<li><strong>ZCode</strong>: Responsable de las modificaciones, optimizaciones y del tema visual.</li>
 			</ol>
-			<div class="mt-3">
-				<div class="mb-3 fs-4">Canales en Discord:</div>
-				<span class="d-flex justify-content-start align-items-center column-gap-2 py-1 px-3">{uicon folder="prime" name="discord" class="avatar avatar-3 main-color"} <a class="fw-semibold text-decoration-none" href="https://discord.gg/EKSAfjZKrP" target="_blank">#Actualizaciones & Descargas</a></span>
-				<span class="d-flex justify-content-start align-items-center column-gap-2 py-1 px-3">{uicon folder="prime" name="discord" class="avatar avatar-3 main-color"} <a class="fw-semibold text-decoration-none" href="https://discord.gg/DMQsGAWhCN" target="_blank">#Probemas & Errores</a></span>
-				<span class="d-flex justify-content-start align-items-center column-gap-2 py-1 px-3">{uicon folder="prime" name="discord" class="avatar avatar-3 main-color"} <a class="fw-semibold text-decoration-none" href="https://discord.gg/Zggn6yZaz9" target="_blank">#Soporte</a></span>
-			</div>
-			<div class="mt-3 text-center">
-				<h5 class="mb-2 d-block">También pudes sumarte a nuestros grupos:</h5>
-				<p class="d-flex justify-content-center align-items-center gap-3">
-					<span class="btn btn--discord">{uicon folder="prime" name="discord" class="btn--icon"} <a class="btn--text" href="https://discord.gg/mx25MxAwRe" target="_blank">Servidor zCode</a></span>
-					<span class="btn btn--telegram">{uicon folder="prime" name="telegram" class="btn--icon"} <a class="btn--text" href="https://t.me/PHPost23" target="_blank">Canal zCode</a></span>
-				</p>
-			</div>
 		</div>
 	</div>
 </div>

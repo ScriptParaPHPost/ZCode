@@ -1,15 +1,13 @@
-<?php 
+<?php
 
 /**
- * @name Github.php
- * @copyright ZCode 2024
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
  * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
- * @author Miguel92
- * @version v2.0.0
- * @description Para la conexión con github
 **/
 
 require realpath(__DIR__) . DIRECTORY_SEPARATOR . "Callback.php";

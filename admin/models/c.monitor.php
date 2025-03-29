@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control del monitor de usuario
- *
- * @name    c.monitor.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsMonitor {
 
 	/**
@@ -95,7 +102,7 @@ class tsMonitor {
 		# NO PODEMOS ENVIAR A UN USUARIO BANEADO
 		if($data['user_baneado'] === 1) return true;
 		# INSERTAMOS EL AVISO
-		return (insertDataInBase([__FILE__, __LINE__], '@avisos', ['user_id' => $user_id, 'av_subject' => $tsCore->setSecure($subject), 'av_body' => $tsCore->setSecure($body), 'av_date' => time(), 'av_type' => $type])) ? true : false;
+		return (addDataToTable([__FILE__, __LINE__], '@avisos', ['user_id' => $user_id, 'av_subject' => $tsCore->setSecure($subject), 'av_body' => $tsCore->setSecure($body), 'av_date' => time(), 'av_type' => $type])) ? true : false;
 	}
 
 	/**
@@ -195,7 +202,7 @@ class tsMonitor {
 				]);
 				$sql = db_exec([__FILE__, __LINE__], 'query', "UPDATE @monitor SET $sql WHERE not_id = {$not_data['not_id']}");
 			} else {
-				$sql = insertDataInBase([__FILE__, __LINE__], '@monitor', [
+				$sql = addDataToTable([__FILE__, __LINE__], '@monitor', [
 					'user_id' => $user_id,
 					'obj_user' => $obj_user,
 					'obj_uno' => $obj_uno,
@@ -253,9 +260,9 @@ class tsMonitor {
 				$enviados[] = $val['c_user'];
 			}
 		}
-		// ENVIAMOS AL DUEÑO DEL MURO
+		// ENVIAMOS AL DUEï¿½O DEL MURO
 		$this->setNotificacion(13, $p_user, $tsUser->uid, $pub_id, 1);
-		// ENVIAMOS AL QUE PUBLICO SI NO FUE EL DUEÑO DEL MURO
+		// ENVIAMOS AL QUE PUBLICO SI NO FUE EL DUEï¿½O DEL MURO
 		if(($p_user != $p_user_pub) && !in_array($p_user_pub, $enviados)) {
 			$this->setNotificacion(13, $p_user_pub, $tsUser->uid, $pub_id, 2);    
 		}
@@ -284,7 +291,7 @@ class tsMonitor {
 		} elseif($this->show_type == 2) {
          // DATOS
          $addSQL = 'ORDER BY m.not_id DESC';
-         //ESTADÍSTICAS
+         //ESTADï¿½STICAS
          $dataDos['stats']['posts'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], "query", "SELECT follow_id FROM @follows WHERE f_user = {$tsUser->uid} && f_type = 3"));
 		   $dataDos['stats']['seguidores'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], "query", "SELECT follow_id FROM @follows WHERE f_id = {$tsUser->uid} && f_type = 1"));
          $dataDos['stats']['siguiendo'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], "query", "SELECT follow_id FROM @follows WHERE f_user = {$tsUser->uid} && f_type = 1"));
@@ -494,7 +501,7 @@ class tsMonitor {
 					$text = $this->monitor[$no_type]['text'][1].$txt_extra;
 					$oracion['text'] = $this->setReplace($no_total, $text);
 				} else $oracion['text'] = $this->monitor[$no_type]['text'][0].$txt_extra;
-				// ¿ES MI POST?
+				// ï¿½ES MI POST?
 				if((int)$data['post_user'] == $tsUser->uid) {
 					$oracion['text'] = str_replace('te recomienda un', 'ha recomendado tu', $oracion['text']);
 			 	}
@@ -609,7 +616,7 @@ class tsMonitor {
 		// SEGUIR
 		if(empty($data['follow_id'])){
 			if($tsUser->uid == $fw['obj'] && $fw['type'] == 1) return "1-{$fw['obj']}-0-No puedes seguirte a ti mismo.";
-			if(insertDataInBase([__FILE__, __LINE__], '@follows', ['user' => $tsUser->uid, 'id' => $fw['obj'], 'type' => $fw['type'], 'date' => time()], 'f_')){
+			if(addDataToTable([__FILE__, __LINE__], '@follows', ['user' => $tsUser->uid, 'id' => $fw['obj'], 'type' => $fw['type'], 'date' => time()], 'f_')){
 				// MONITOR?
 				if($fw['notUser'] > 0) 
 					$this->setNotificacion($notType, $fw['notUser'], $tsUser->uid);
@@ -702,7 +709,7 @@ class tsMonitor {
 				$query = "SELECT f.f_id, p.post_user, p.post_title, u.user_name, c.c_seo, c.c_nombre, c.c_img FROM @follows AS f LEFT JOIN @posts AS p ON f.f_id = p.post_id LEFT JOIN @miembros AS u ON u.user_id = p.post_user LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category WHERE f.f_user = $user_id AND f.f_type = 2 ORDER BY f.f_date DESC";
 			break;
 		}
-		// Evitamos la repeción de $total, $page, $data['pages'] y $data['data']
+		// Evitamos la repeciï¿½n de $total, $page, $data['pages'] y $data['data']
 		$total = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', $query));
 		$pages = $tsCore->getPagination($total, 12);
 		$data['pages'] = $pages;
@@ -749,7 +756,7 @@ class tsMonitor {
 		//
 		if($tsUser->uid != $data['post_user']) {
 			// GUARDAMOS EN FOLLOWS PUES ES LA RECOMENDACION PARA SU SEGUIDORES! xD
-			insertDataInBase([__FILE__, __LINE__], '@follows', ['id' => $postid, 'user' => $tsUser->uid, 'type' => 3, 'date' => time()], 'f_');
+			addDataToTable([__FILE__, __LINE__], '@follows', ['id' => $postid, 'user' => $tsUser->uid, 'type' => 3, 'date' => time()], 'f_');
 			// NOTIFICAR
 			if($this->setFollowNotificacion(6, 1, $tsUser->uid, $postid)) {
 				$tsActividad->setActividad(4, $postid);

@@ -1,12 +1,5 @@
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="bell-ringing"}
-		</div>
-		<div class="up-header--title">
-			<span>&Uacute;ltimas {$tsData.total} notificaciones</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="bell-ringing" label="&Uacute;ltimas {$tsData.total} notificaciones"}
 	<div class="up-card--body">
 		<div class="nots">
 			{foreach from=$tsData.data item=noti}

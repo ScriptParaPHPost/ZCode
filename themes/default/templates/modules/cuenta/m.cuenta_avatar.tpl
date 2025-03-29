@@ -5,12 +5,7 @@
 		{/if}
 		<div class="only-avatar">
 			<section class="up-card">
-				<div class="up-card--header" icon="true">
-					<div class="up-header--icon">{uicon name="camera-alt"}</div>
-					<div class="up-header--title">
-						<span>Mi Avatar</span>
-					</div>
-				</div>
+				{include "CardHeader.tpl" iconName="camera-alt" label="Mi Avatar"}
 				<div class="d-block d-lg-grid up-card--body webp-gif">
 					<div class="avatar-content avatar-big-cont position-relative mx-auto my-3 overflow-hidden shadow-sm rounded avatar avatar-19">
 						<div style="display:none;" class="avatar-loading position-absolute top-0 start-0 w-100 h-100 z-3">
@@ -40,21 +35,36 @@
 						</div>
 					</div>
 				</div>
+				<div class="text-center w-100" id="mis_avatares">
+					<h3 class="d-block mt-2 mb-4">Mis avatares...</h3>
+					<div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
+						{foreach $tsSetAvatares item=avatar}
+							<div data-myavatar="{$avatar.id}" class="overflow-hidden avatar avatar-8 shadow main-bg position-relative">
+								{include "Avatar.tpl" logo=64 src=$avatar.image alt=$avatar.avatar class="object-fit-cover ratio ratio-1x1"}
+								{if $avatar.id != 'web'}
+								<span class="position-absolute bottom-0 start-0 text-center badge bg-danger main-bg" data-delete="{$avatar.id}" onclick="deleteAvatar()">
+									{uicon name="trash" class="pe-none"}
+								</span>
+								{/if}
+							</div>
+						{/foreach}
+					</div>
+				</div>
 				<div class="text-center w-100" id="more_avatar">
 					<h3 class="d-block mt-2 mb-4">O selecciona un avatar por defecto/social...</h3>
 					<div class="row">
 						<div class="col-12 col-lg-6 mb-3 mb-lg-0">
 							<div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
 								{foreach $tsAvatarSelect item=avatar}
-									<div data-avatar="{$avatar.id}" class="overflow-hidden avatar avatar-8 shadow">
-										<img src="{$avatar.image}" alt="{$avatar.avatar}" class="w-100 h-100 object-fit-cover" loading="lazy">
+									<div data-avatar="{$avatar.id}" class="overflow-hidden avatar avatar-8 shadow main-bg">
+										{include "Avatar.tpl" logo=64 src=$avatar.image alt=$avatar.avatar class="object-fit-cover ratio ratio-1x1"}
 									</div>
 								{/foreach}
 							</div>
 						</div>
 						<div class="col-12 col-lg-6">
 							<div class="border{if $tsPerfil.user_avatar_social === 'web'} border-success{/if} p-2 rounded mb-3 d-flex justify-content-start align-items-center column-gap-3 text-start">
-								<img src="{$tsUser->avatar['img']}" alt="{$tsConfig.titulo}" class="avatar_loader avatar avatar-8 shadow object-fit-cover" loading="lazy">
+								<img src="{$tsUser->avatar['img']}" alt="{$tsConfig.titulo}" class="avatar_loader avatar avatar-8 shadow object-fit-cover ratio ratio-1x1 main-bg" loading="lazy">
 								<div>
 									<h5>Avatar de {$tsConfig.titulo}</h5>
 									{if $tsPerfil.user_avatar_social !== 'web'}
@@ -63,8 +73,8 @@
 								</div>
 							</div>
 							{foreach $tsAvatarSocials key=r item=social}
-								<div class="border{if $tsPerfil.user_avatar_social === $social.social_name} border-success{/if} p-2 rounded mb-3 d-flex justify-content-start align-items-center column-gap-3 text-start">
-									<img src="{$social.social_avatar}" alt="{$social.social_name}" class="avatar avatar-8 shadow object-fit-cover" loading="lazy">
+								<div class="border{if $tsPerfil.user_avatar_social === $social.social_name} border-success{/if} p-2 rounded mb-3 d-flex justify-content-start align-items-center column-gap-3 text-start main-bg">
+									{include "Avatar.tpl" logo=64 src=$social.social_avatar alt=$social.social_name class="object-fit-cover ratio ratio-1x1"}
 									<div>
 										<h5>Avatar de {$social.social_name}</h5>
 										{if $tsPerfil.user_avatar_social !== $social.social_name}

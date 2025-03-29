@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de los borradores
- *
- * @name    c.borradores.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsDrafts {
 
 	/*
@@ -55,6 +62,7 @@ class tsDrafts {
 		//
 		$drafts = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_nombre, c.c_seo, c.c_img, b.bid, b.b_title, b.b_date, b.b_status, b.b_causa FROM @posts_categorias AS c LEFT JOIN @posts_borradores AS b ON c.cid = b.b_category WHERE b.b_user = {$tsUser->info['user_id']} ORDER BY b.b_date"));
 		// SET
+		$dft = [];
 		$tipos = ['eliminados', 'borradores'];
 		foreach($drafts as $draft){
          $causa = empty($draft['b_causa']) ? 'Eliminado por el autor' : htmlspecialchars($draft['b_causa']);

@@ -57,7 +57,7 @@ const fotos = {
 	},
 	comentar(type) {
 		let obj = { type, mostrar_resp: true }
-		imported('posts/comentario-nuevo.js', 'handleCommentAndReply', obj);
+		iModule('posts/comentario-nuevo.js', 'handleCommentAndReply', obj);
 	},
 	// VOTAR FOTO
 	votar(voto, fotoid) {
@@ -66,7 +66,7 @@ const fotos = {
 		let totalVotos = parseInt(element.text());
 		totalVotos = totalVotos ?? 0;
 		loading.start();
-		$.post(`${ZCodeApp.url}/fotos-votar.php`, { voto, fotoid }, req => {
+		$.post(`${basePath}/fotos-votar.php`, { voto, fotoid }, req => {
 			UPModal.alert('Votar foto', req.substring(3), false);
 			if (parseInt(req.charAt(0)) === 1) element.text(++totalVotos);
 			loading.end();
@@ -90,7 +90,7 @@ const fotos = {
 		  loading.start() 
 		$.ajax({
 			type: 'POST',
-			url: ZCodeApp.url + '/comentario-borrar.php?do=fotos',
+			url: basePath + '/comentario-borrar.php?do=fotos',
 			data: 'cid=' + cid,
 			success: function(h){
 				switch(h.charAt(0)){
@@ -117,7 +117,7 @@ const fotos = {
 		  loading.start() 
 		$.ajax({
 			type: 'POST',
-			url: ZCodeApp.url + '/fotos/borrar.php',
+			url: basePath + '/fotos/borrar.php',
 			data: 'fid=' + fid,
 			success: function(h){
 				switch(h.charAt(0)){
@@ -126,7 +126,7 @@ const fotos = {
 						break;
 					case '1': //OK
 								mydialog.close();
-								location.href = ZCodeApp.url + '/fotos/';
+								location.href = basePath + '/fotos/';
 								//
 						break;
 				}

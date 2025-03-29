@@ -1,16 +1,20 @@
 <?php
-if (!defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+
+if (!defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * Modelo para instanciar Smarty
- *
- * @name    c.smarty.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-require_once TS_SMARTY . 'bootstrap.php';
+require_once TS_SMARTY . "autoload.php";
 
-class tsSmarty extends Smarty {
+class tsSmarty extends \Smarty\Smarty {
 
 	public $addTemplate;
 
@@ -31,10 +35,43 @@ class tsSmarty extends Smarty {
 		$this->setCompileDir(TS_CACHE . TS_TEMA);
 
 		// Agrega directorio de plugins Smarty
-		$this->addPluginsDir(TS_PLUGINS);
+		$this->loadPlugins();
+
+		require_once TS_APP . 'extensiones' . DIRECTORY_SEPARATOR . 'zCodeExtensiones.php';
+		$this->addExtension(new zCodeExtensiones());
 
 		// Suprime advertencias de variables indefinidas o nulas
 		$this->muteUndefinedOrNullWarnings();
+	}
+
+	/**
+	 * Carga y registra dinámicamente los plugins de tipo "función" y "modificador".
+	 * Utiliza la función glob para buscar archivos de plugins en los directorios
+	 * correspondientes y registrar automáticamente las funciones de Smarty.
+	 * 
+	 * Este método permite agregar nuevos plugins simplemente añadiendo archivos PHP
+	 * en las carpetas correspondientes sin necesidad de modificar este código.
+	 * 
+	 * @return void
+	 */
+	private function loadPlugins(): void {
+		// Definir los directorios de plugins
+		$pluginDirs = [
+			'function' => TS_PLUGINS . 'function.*.php',
+			'modifier' => TS_PLUGINS . 'modifier.*.php'
+		];
+		// Iterar sobre las categorías de plugins
+		foreach ($pluginDirs as $type => $pattern) {
+			// Buscar todos los archivos correspondientes en el directorio
+			$files = glob($pattern);
+			foreach ($files as $file) {
+				require_once $file;
+				// Extraer el nombre del plugin (sin la extensión .php)
+				$pluginName = explode('.', basename($file, '.php'))[1];
+				// Registrar el plugin de acuerdo al tipo
+				$this->registerPlugin($type, $pluginName, "smarty_{$type}_{$pluginName}");
+			}
+		}
 	}
 
 	/**

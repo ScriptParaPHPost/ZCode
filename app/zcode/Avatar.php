@@ -1,47 +1,28 @@
 <?php
 
 /**
- * @name migrator.php
- * @copyright ZCode 2024
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
  * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
- * @author Miguel92
- * @version v1.8.10
- * @description Para actualizar la base de datos sin intervension
 **/
 
 class Avatar {
 
-	private $tsCore;
+	private $zcode;
 
-	public function __construct($tsCore) {
-		$this->tsCore = $tsCore;
-	}
+	private $AvatarSize = 160;
 
-	public function moveAvatars() {
-		# Seleccionamos a todos los usuarios
-		$users = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM @miembros"));
-		foreach($users as $uid => $user) {
-			$user_id = (int)$user['user_id'];
-			$name_folder = "user$user_id";
-			$avatar = TS_AVATAR . "$user_id.webp";
-			if(file_exists($avatar)) {
-				$avatar_dest = TS_AVATAR_USER . $name_folder . TS_PATH . "web.webp";
-				if(!is_dir(TS_AVATAR_USER . $name_folder)) {
-					mkdir(TS_AVATAR_USER . $name_folder, 0777, true);
-				}
-				if(copy($avatar, $avatar_dest)) {
-					unlink($avatar);
-				}
-			}
-		}
+	public function __construct($ZCode) {
+		$this->zcode = $ZCode;
 	}
 
 	public function createAvatarSocial(int $id = 0, string $social = '', string $sourcePath = '') {
 		$isTempFile = false;
-		$destinationPath = TS_AVATAR . "user$id" . TS_PATH . "$social.webp";
+		$destinationPath = TS_AVATAR . "user$id" . DIRECTORY_SEPARATOR . "$social.webp";
 		if(file_exists($destinationPath)) {
 			return true;
 		}
@@ -58,14 +39,13 @@ class Avatar {
 	  	$imageInfo = getimagesize($sourcePath);
 	  	if ($imageInfo === false) return false;
 
-		$sourceImage = $this->tsCore->getFormatImage($imageInfo[2], $sourcePath, $imageInfo[2]);
+		$sourceImage = $this->zcode->getFormatImage($imageInfo[2], $sourcePath, $imageInfo[2]);
 
 	   // Manejar el error si la creación de la imagen falla
 	   if ($sourceImage === false) return false;
 
 	   // Calcular las nuevas dimensiones manteniendo la proporción
-	   $newWidth = 160;
-	   $newHeight = 160;
+	   $newWidth = $newHeight = $this->AvatarSize;
 	   list($width, $height) = $imageInfo;
 	   if ($width > $height) {
 	      $newHeight = intval($height * $newWidth / $width);

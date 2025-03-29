@@ -1,174 +1,129 @@
 <?php
+
 /**
- * Archivo de Inicialización del Sistema
- *
- * Carga las clases base y ejecuta la solicitud.
- *
- * @name    header.php
- * @author  Miguel92 
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/*
- * -------------------------------------------------------------------
- *  Estableciendo variables importantes
- * -------------------------------------------------------------------
- */
+if( !defined('ZCODE2') ) define('ZCODE2', TRUE);
+if( !defined('ACCESS_ROOT_PATHS') ) define('ACCESS_ROOT_PATHS', TRUE);
 
-	if( !defined('TS_HEADER') ) define('TS_HEADER', TRUE);
-	if( !defined('ACCESS_ROOT_PATHS') ) define('ACCESS_ROOT_PATHS', TRUE);
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'Polyfill.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'AppVarsGlobal.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'AppRoutesGlobal.php';
 
-/*
- * -------------------------------------------------------------------
- *  Definiendo constantes
- * -------------------------------------------------------------------
- */
+// Sesiï¿½n
+session_name($_ENV['SESSION_NAME']);
+if(!isset($_SESSION)) session_start();
 
-	require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'Polyfill.php';
-	require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'AppVarsGlobal.php';
-	require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'AppRoutesGlobal.php';
+ini_set('error_log', ERROR_LOG);
 
-	
-	// Sesión
-	session_name($_ENV['SESSION_NAME']);
-	if(!isset($_SESSION)) session_start();
+header('Content-Type: text/html; charset=utf-8');
+// Establece el encabezado Cache-Control con max-age de un aï¿½o
+header("Cache-Control: max-age=31536000");
 
-	ini_set('error_log', DIR_ERROR_LOG . 'zcode_error.log');
+// Lï¿½mite de ejecuciï¿½n
+set_time_limit(300);
 
-	header('Content-Type: text/html; charset=utf-8');
-	// Establece el encabezado Cache-Control con max-age de un año
-	header("Cache-Control: max-age=31536000");
-
-	// Límite de ejecución
-	set_time_limit(300);
-
-/*
+/**
  * -------------------------------------------------------------------
  *  Agregamos los archivos globales
  * -------------------------------------------------------------------
- */
+*/
 
-	// Funciones
-	include TS_EXTRA . 'functions.php';
+include TS_EXTRA . 'functions.php';
+include TS_MODELS . 'c.core.php';
+include TS_MODELS . 'c.user.php';
+include TS_MODELS . 'c.monitor.php';
+include TS_MODELS . 'c.actividad.php';
+include TS_MODELS . 'c.mensajes.php';
+include TS_MODELS . 'c.smarty.php';
+include TS_EXTRA . 'QueryString.php';
+include TS_ZCODE . 'Images.php';
+include TS_ZCODE . 'ZCode.php';
 
-	include TS_ZCODE . 'ZCode.php';
+include TS_ZCODE . 'Avatar.php';
+$Avatar = new Avatar(new tsZCode);
 
-	// Nucleo
-	include TS_MODELS . 'c.core.php';
-	
-	// Controlador de usuarios
-	include TS_MODELS . 'c.user.php';
+include TS_ZCODE . 'Theme.php';
+$Theme = new Theme;
 
-	// Monitor de usuario
-	include TS_MODELS . 'c.monitor.php';
-	
-	// Actividad de usuario
-	include TS_MODELS . 'c.actividad.php';
+include TS_ZCODE . 'menu_user_account.php';
 
-	// Mensajes de usuario
-	include TS_MODELS.'c.mensajes.php';
-
-	// Smarty
-	include TS_MODELS . 'c.smarty.php';
-	
-	// Crean requests
-	include TS_EXTRA . 'QueryString.php';
-
-	// Usando un gestor de imagenes
-	include TS_ZCODE . 'Images.php';
-	
-	include TS_ZCODE . 'Avatar.php';
-	$Avatar = new Avatar(new tsCore);
-	$Avatar->moveAvatars();
-
-	include TS_ZCODE . 'Theme.php';
-	$Theme = new Theme;
-
-	include TS_ZCODE . 'menu_user_account.php';
-
-/*
+/**
  * -------------------------------------------------------------------
  *  Inicializamos los objetos principales
  * -------------------------------------------------------------------
  */
+$tsCore = new tsCore;
+$tsZCode = new tsZCode;
+$tsUser = new tsUser;
+$tsImages = new Images;
+$tsMonitor = new tsMonitor;
+$tsActividad = new tsActividad;
+$tsMP = new tsMensajes;
 
-	// Cargamos el nucleo
-	$tsCore = new tsCore();
+// Definimos el template a utilizar
+$tsTema = $tsCore->settings['tema'];
+if(empty($tsTema)) $tsTema = 'default';
+define('TS_TEMA', $tsTema);
 
-	// Usuario
-	$tsUser = new tsUser();
+// Smarty
+$smarty = new tsSmarty();
+// Nueva configuraciï¿½n
+$smarty->output(false);
 
-	// Función para generar imagenes
-	$tsImages = new Images;
-
-	// Monitor
-	$tsMonitor = new tsMonitor();
-
-	// Actividad
-	$tsActividad = new tsActividad();
-
-	// Mensajes
-	$tsMP = new tsMensajes();
-
-	// Definimos el template a utilizar
-	$tsTema = $tsCore->settings['tema'];
-	if(empty($tsTema)) $tsTema = 'default';
-	define('TS_TEMA', $tsTema);
-
-	// Smarty
-	$smarty = new tsSmarty();
-	// Nueva configuración
-	$smarty->output(false);
-	
-/*
+/**
  * -------------------------------------------------------------------
- *  Asignación de variables
+ *  Asignaciï¿½n de variables
  * -------------------------------------------------------------------
  */
-	 
-	$smarty->assign('SocialMager', $tsCore->OAuth());
-	
-	// Configuraciones
-	$smarty->assign('tsConfig', $tsCore->settings);
+require_once TS_ZCODE . 'Authentication.php';
+$OAuthentication = new OAuthentication;
+$smarty->assign('SocialMager', $OAuthentication->OAuth());
 
-	// Noticias
-	$smarty->assign('tsNews', $tsCore->getNews());
+// Configuraciones
+$smarty->assign('tsConfig', $tsCore->settings);
+$smarty->assign('tsCategorias', $tsCore->getCategorias());
+$smarty->assign('tsRoutes', $tsCore->setRoutes());
 
-	// Moderación total
-	$smarty->assign('tsNovemods', $tsCore->getNovemods());
+// Noticias
+$smarty->assign('tsNews', $tsCore->getNews());
 
-	// Solo verificación
-	$smarty->assign('tsVerification', $tsCore->verification());
+// Moderaciï¿½n total
+$smarty->assign('tsNovemods', $tsCore->getNovemods());
 
-	// Obtejo usuario
-	$smarty->assign('tsUser', $tsUser);
-	
-	// Avisos
-	$smarty->assign('tsAvisos', $tsMonitor->avisos);
-	
-	// Nofiticaciones
-	$smarty->assign('tsNots', $tsMonitor->notificaciones);
-	
-	// Mensajes
-	$smarty->assign('tsMPs', $tsMP->mensajes);
-	
-	$smarty->assign('tsThemeSettings', $Theme->getSettingsTheme());
-	$smarty->assign('tsThemeBox', $Theme->getSettingPageBox());
+// Solo verificaciï¿½n
+$smarty->assign('tsVerification', $tsZCode->verification());
 
-	$smarty->assign('tsMenuCuenta', $menu_cuenta);
+// Obtejo usuario
+$smarty->assign('tsUser', $tsUser);
 
-	$smarty->assign('tsCookieConsent', isset($_COOKIE['cc_cookie']));
+// Avisos
+$smarty->assign('tsAvisos', $tsMonitor->avisos);
 
-	if (!extension_loaded('gd') && !function_exists('gd_info')) {
-		$smarty->assign('gd_info', 'La extensi&oacute;n GD no est&aacute; habilitada en tu servidor.');
-	}
+// Nofiticaciones
+$smarty->assign('tsNots', $tsMonitor->notificaciones);
 
-/*
- * -------------------------------------------------------------------
- *  Validaciones extra
- * -------------------------------------------------------------------
- */
+// Mensajes
+$smarty->assign('tsMPs', $tsMP->mensajes);
+
+$smarty->assign('tsThemeSettings', $Theme->getSettingsTheme());
+$smarty->assign('tsThemeBox', $Theme->getSettingPageBox());
+
+$smarty->assign('tsMenuCuenta', $menu_cuenta);
+
+if (!extension_loaded('gd') && !function_exists('gd_info')) {
+	$smarty->assign('gd_info', 'La extensi&oacute;n GD no est&aacute; habilitada en tu servidor.');
+}
+
 // Baneo por IP
-$tsCore->verifiedIP($smarty);
+$tsZCode->verifiedIP($smarty);
 
 // Online/Offline
-$tsCore->verifiedMaintenance($smarty);
+$tsZCode->verifiedMaintenance($smarty);

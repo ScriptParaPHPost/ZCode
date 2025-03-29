@@ -1,24 +1,16 @@
 <?php
 
-/**
- * Cacheando la base de datos
- * Copyright 2024 Miguel92, Todos los derechos reservados
- * @author  	Miguel92
- * @version 	v1.0
- */
+if (!defined('ZCODE2')) die('mmm...que estarás haciendo!');
 
 /**
- * @name SqlCached.php
- * @copyright ZCode 2024
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
  * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
- * @author Miguel92
- * @version v2.0.0
 **/
-
-if (!defined('TS_HEADER')) die('mmm...que estarás haciendo!');
 
 class sqlCache {
 
@@ -36,7 +28,7 @@ class sqlCache {
 	}
 
 	private function setStorage() {
-		$storage = TS_STORAGE . $this->storage . TS_PATH;
+		$storage = TS_STORAGE . $this->storage . DIRECTORY_SEPARATOR;
 		if(!is_dir($storage)) {
 			mkdir($storage, 0777, true);
 		}

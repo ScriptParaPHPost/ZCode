@@ -1,12 +1,5 @@
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="funnel"}
-		</div>
-		<div class="up-header--title">
-			<span>Filtrar</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="funnel" label="Filtrar"}
 	<div class="up-card--body">
 		<form action="" method="get" class="box-body">
 			<label class="d-flex justify-content-start align-items-center gap-2 py-2">

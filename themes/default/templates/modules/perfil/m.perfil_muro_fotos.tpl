@@ -1,13 +1,6 @@
 {if $tsGeneral.fotos_total > 0}
 	<section class="up-card">
-		<div class="up-card--header" icon="true">
-			<div class="up-header--icon">
-				{uicon name="picture"}
-			</div>
-			<div class="up-header--title">
-				<span>&Uacute;ltimas fotos</span>
-			</div>
-		</div>
+		{include "CardHeader.tpl" iconName="picture" label="&Uacute;ltimas fotos"}
 		<div class="up-card--body">
 			<div id="perfil-foto-bar" class="gap-3 p-2">
 				{foreach from=$tsGeneral.fotos item=f key=i}

@@ -1,10 +1,16 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Clase para el manejo de los favicon
- *
- * @name    c.favicon.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsFavicon {
 
@@ -16,11 +22,11 @@ class tsFavicon {
 
 	private function getLinkFavicon() {
 		global $tsCore;
-		return $tsCore->settings[$this->folder] . '/';
+		return $tsCore->setRoutes('assets', $this->folder) . '/';
 	}
 
 	private function getRootFavicon() {
-		return TS_IMAGES . $this->folder . TS_PATH;
+		return TS_IMAGES . $this->folder . DIRECTORY_SEPARATOR;
 	}
 
 	public function getAllFavicons() {
@@ -70,24 +76,13 @@ class tsFavicon {
 	   $image_info = getimagesize($filename);
 	   $mime_type = $image_info['mime'];
 
-	  	switch ($mime_type) {
-	      case 'image/jpeg':
-	      case 'image/jpg':
-        	case 'image/jfif':
-	         $image = imagecreatefromjpeg($filename);
-	      break;
-	      case 'image/png':
-	         $image = imagecreatefrompng($filename);
-	      break;
-	      case 'image/gif':
-	         $image = imagecreatefromgif($filename);
-	      break;
-	      case 'image/webp':
-            $image = imagecreatefromwebp($filename);
-         break;
-	      default:
-	         die('Formato de imagen no soportado.');
-	   }
+	  	$image = match ($mime_type) {
+		   'image/jpeg', 'image/jpg', 'image/jfif' => imagecreatefromjpeg($filename),
+		   'image/png' => imagecreatefrompng($filename),
+		   'image/gif' => imagecreatefromgif($filename),
+		   'image/webp' => imagecreatefromwebp($filename),
+		   default => die('Formato de imagen no soportado.'),
+		};
 	   $this->createFavicon($image);
 	   foreach($this->sizes as $f => $size) {
 	   	$this->createFavicon($image, $size);
@@ -109,7 +104,7 @@ class tsFavicon {
         		$msg = "0: El archivo no es una imagen.";
     		}
     		$size = getimagesize($file_favicon_upload)[0];
-    		if($size < 1024) {
+    		if($size <= 1024) {
        		$uploadOk = 0;
         		$msg = "0: El archivo no es una imagen.";
     		}

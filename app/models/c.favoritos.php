@@ -1,10 +1,16 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Clase para el manejo de los favoritos
- *
- * @name    c.favoritos.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsFavoritos {
 
@@ -38,11 +44,11 @@ class tsFavoritos {
 		getPostFavoritos()
 	*/
 	function getPostFavoritos(){
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		//
 		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT f.fav_id, f.fav_date, p.post_id, p.post_title, p.post_date, p.post_puntos, COUNT(p_c.c_post_id) as post_comments,  c.c_nombre, c.c_seo, c.c_img FROM @posts_favoritos AS f LEFT JOIN @posts AS p ON p.post_id = f.fav_post_id LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category LEFT JOIN @posts_comentarios AS p_c ON p.post_id = p_c.c_post_id && p_c.c_status = 0 WHERE f.fav_user = {$tsUser->uid} AND p.post_status = 0 GROUP BY c_post_id");
 		$data = result_array($query);
-		
+		$favoritos = [];
 		//
 		foreach($data as $fav){
 			$favjson = [
@@ -54,7 +60,7 @@ class tsFavoritos {
 					"name" => $fav['c_nombre'],
 					"imagen" => $fav['c_img']
 				],
-				"url" => $tsCore->createLink('post', $fav['post_id']),
+				"url" => $tsZCode->createLink('post', $fav['post_id']),
 				"fecha_creado" => $fav['post_date'],
 				"fecha_guardado" =>  $fav['fav_date'],
 				"puntos" => $fav['post_puntos'],

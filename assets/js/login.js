@@ -28,9 +28,9 @@ const login = (() => {
 			const r_email = $('#r_email').val();
 			UPModal.proccess_start();
 			$.post(ZCodeApp.url + '/recover-'+page+'.php', { r_email }, receive => {
+				console.log(receive)
 				UPModal.proccess_end(2);
 				UPModal.setModal({
-					status: (receive.charAt(0) == '0' ? 'danger' : 'success'),
 					title: (receive.charAt(0) == '0' ? 'Opps!' : 'Hecho'),
 					body: receive.substring(3),
 					buttons: {
@@ -89,6 +89,7 @@ const login = (() => {
 		
 		loading.start()
 		$.post(ZCodeApp.url + '/login-user.php', params, response => {
+			console.log(response)
 			let INPUT_NUMBER = parseInt(response.charAt(0));
 			if(INPUT_NUMBER === 0 || INPUT_NUMBER === 2 || INPUT_NUMBER === 3) {
 				const CONTENT_SHOW = response.substring(3);

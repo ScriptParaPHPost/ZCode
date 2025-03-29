@@ -72,6 +72,22 @@
 						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'usuarios'} active{/if}" title="Usuarios" href="{$tsConfig.url}/top/usuarios/">Usuarios</a>
 					</div>
 				</div>
+				{if $tsConfig.c_allow_ticket == 1}
+				<div class="up-menu--item position-relative mb-3 mb-lg-0">
+					<a title="Ir a Tops" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 d-flex justify-content-start justify-content-lg-center align-items-center column-gap-2{if $tsPage == 'tops'} active{/if}" rel="internal" href="{$tsConfig.url}/top/" data-dropopen="tickets">
+						{uicon name="ticket" size="1.5rem"}
+						<span class="item--text">Tickets</span>
+					</a>
+					<div class="up-dropdown z-99 position-relative position-lg-absolute p-2 rounded body-bg" data-dropname="tickets" data-dropdown="false">
+						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'tickets'} active{/if}" title="Inicio" href="{$tsConfig.url}/tickets/">Inicio</a>
+						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'nuevo'} active{/if}" title="Nuevo ticket" href="{$tsConfig.url}/tickets/nuevo/">Nuevo ticket</a>
+						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'mis-tickets'} active{/if}" title="Mis tickets" href="{$tsConfig.url}/tickets/mis-tickets/">Mis tickets</a>
+						{if $tsUser->is_admod || $tsUser->permisos.moat}
+							<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'administrar'} active{/if}" title="Administrar" href="{$tsConfig.url}/tickets/administrar/">Administrar</a>
+						{/if}
+					</div>
+				</div>
+				{/if}
 				{if !$tsUser->is_member}
 					<div class="up-menu--item mb-3 mb-lg-0">
 						<a title="Registrate!" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 up-menu--register d-flex justify-content-start justify-content-lg-center align-items-center" rel="internal" href="{$tsConfig.url}/registro/">

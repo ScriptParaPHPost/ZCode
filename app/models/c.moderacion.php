@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de las funciones de la moderación
- *
- * @name    c.moderacion.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsMod {
 
 	public function multiAction(string $action = '') {
@@ -32,14 +39,14 @@ class tsMod {
 	 getDenuncias()
 	*/
 	public function getDenuncias($type = 'posts') {
-		global $tsCore;
+		global $tsZCode;
 		// TIPO DE DENUNCIAS
 		switch ($type) {
 			case 'posts':
 				$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT r.*, SUM(d_total) AS total, p.post_id, p.post_title, p.post_status, c.c_nombre, c.c_seo, c.c_img FROM @denuncias AS r LEFT JOIN @posts AS p ON r.obj_id = p.post_id LEFT JOIN @posts_categorias AS c ON p.post_category = c.cid WHERE d_type = 1 AND p.post_status < 2 GROUP BY r.obj_id ORDER BY total DESC, r.d_date DESC'));
 				foreach ($data as $pid => $post) {
 			      $data[$pid]['post_title'] = stripslashes($post['post_title']);
-			      $data[$pid]["post_url"] = $tsCore->createLink('post', $post['post_id']);
+			      $data[$pid]["post_url"] = $tsZCode->createLink('post', $post['post_id']);
 				}
 			break;
 			case 'fotos':

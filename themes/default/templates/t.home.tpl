@@ -21,6 +21,9 @@
 		</div>
 		<div class="col-12 col-lg-4">
 			{include "m.home_search.tpl"}
+			{if $tsUser->is_member && $tsUser->is_admod == 1 && $tsConfig.c_allow_ticket == 1}
+				{include "tickets/m.ticket_open.tpl"}
+			{/if}
 			{include "m.home_stats.tpl"}
 			{include "m.home_last_comments.tpl"}
 			{include "m.home_top_posts.tpl"}
@@ -38,9 +41,11 @@
 		</div>
 		<div class="col-12 col-md-6 col-lg-3">
 			{include "m.home_search.tpl"}
+			{if $tsUser->is_member && $tsUser->is_admod == 1 && $tsConfig.c_allow_ticket == 1}
+				{include "tickets/m.ticket_open.tpl"}
+			{/if}
 			{include "m.home_last_comments.tpl"}
 			{include "m.home_afiliados.tpl"}
-			<br class="spacer"/>
 			{include "m.global_ads_160.tpl"}
 		</div>
 	{/if}

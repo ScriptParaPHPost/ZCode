@@ -40,7 +40,7 @@ body{font-family:"Roboto",sans-serif;}
 		<tr>
 			<td colspan="3" style="text-align:center;padding: 16px 0;border-top:1px solid #CCC;margin-top:16px;background:#CCC5;">
 				<p style="margin:0;padding:0;">El Staff de <strong>{titulo}</strong></p>
-				<p style="margin:0;padding:0;font-size:.75rem;margin-top:8px;">Copyright 2022-$tiempo</p>
+				<p style="margin:0;padding:0;font-size:.75rem;margin-top:8px;">Copyright 2024-$tiempo</p>
 			</td>
 		</tr>
 	</tfoot>

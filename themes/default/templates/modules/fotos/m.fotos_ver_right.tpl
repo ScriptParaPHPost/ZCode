@@ -1,13 +1,6 @@
 {include "m.foto_ver_author.tpl"}
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="users"}
-		</div>
-		<div class="up-header--title">
-			<span>Seguidores</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="users" label="Seguidores"}
 	<div class="up-card--body">
 		{foreach from=$tsAmigosFotos item=f}
 			<a href="{$tsConfig.url}/fotos/{$f.user_name}/{$f.foto_id}/{$f.f_title|seo}.html" class="d-block m-1 overflow-hidden position-relative">
@@ -26,14 +19,7 @@
 </section>
 
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="graph-box"}
-		</div>
-		<div class="up-header--title">
-			<span>Estad&iacute;sticas</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="graph-box" label="Estad&iacute;sticas"}
 	<div class="up-card--body up-card--stats">
 		<div class="d-grid gap-2" style="grid-template-columns: repeat(2, 1fr);">
 			<a href="{$tsConfig.url}/fotos/{$tsFoto.user_name}" class="text-center text-decoration-none text-uppercase small py-3 position-relative">
@@ -64,14 +50,7 @@
 {/if*}
 
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="box"}
-		</div>
-		<div class="up-header--title">
-			<span>Medallas</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="box" label="Medallas"}
 	<div class="up-card--body">
 		{foreach from=$tsMedallasFotos item=m}
 			<span class="d-block m-1 overflow-hidden position-relative">

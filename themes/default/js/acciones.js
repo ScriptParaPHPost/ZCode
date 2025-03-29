@@ -1,3 +1,11 @@
+const { 
+	url: basePath, 
+	titulo: baseTitle, 
+	images: { 
+		assets: pathImages 
+	} 
+} = ZCodeApp;
+
 function gget(data, sin_amp) {
 	var req = data + '=';
 	if(!sin_amp) req = '&' + req;
@@ -9,7 +17,7 @@ function gget(data, sin_amp) {
  * Solo cargará la función completa al ejecutarlo
 */
 function bloquear(user, bloqueado, lugar, aceptar) {
-	imported('acciones/bloquear.js', 'bloquear', { user, bloqueado, lugar, aceptar });
+	iModule('Bloquear.js', 'bloquear', { user, bloqueado, lugar, aceptar });
 }
 
 /* DENUNCIAS */
@@ -17,7 +25,7 @@ var denuncia = {
 	nueva(type, obj_id, obj_title, obj_user) {
 		// PLANTILLA
 		loading.start();
-		$.post(`${ZCodeApp.url}/denuncia-${type}.php`, { obj_id, obj_title, obj_user }, req => {
+		$.post(`${basePath}/denuncia-${type}.php`, { obj_id, obj_title, obj_user }, req => {
 			denuncia.set_dialog({ req, obj_id, type});
 			loading.end();
 		})
@@ -38,7 +46,7 @@ var denuncia = {
 		let extras = $('textarea[name=extras]').val();
 		  //
 		loading.start();
-		$.post(`${ZCodeApp.url}/denuncia-${type}.php`, { obj_id, razon, extras }, req => {
+		$.post(`${basePath}/denuncia-${type}.php`, { obj_id, razon, extras }, req => {
 			let action = parseInt(req.charAt(0));
 			let message = req.substring(3);
 			UPModal.alert((action === 0 ? 'Error' : 'Bien'), `<div class="empty">${message}</div>`, false);
@@ -48,9 +56,9 @@ var denuncia = {
 }
 
 function login_modal() {
-	$.post(`${ZCodeApp.url}/login-form.php`, req => {
+	$.post(`${basePath}/login-form.php`, req => {
 		UPModal.setModal({
-			title: 'Bienvenidos a ' + ZCodeApp.titulo,
+			title: 'Bienvenidos a ' + baseTitle,
 			body: req,
 			buttons: {
 				confirmTxt: 'Iniciar sesión',
@@ -133,7 +141,7 @@ var notifica = {
 		var error = param[0] != 'action=count';
 		$(obj).addClass('spinner iconify');
 		loading.start();
-		$.post(`${ZCodeApp.url}/notificaciones-ajax.php`, [...param, gget('key')].join('&'), response => {
+		$.post(`${basePath}/notificaciones-ajax.php`, [...param, gget('key')].join('&'), response => {
 			$(obj).removeClass('spinner iconify');
 			func(response, obj);
 			loading.end()
@@ -146,7 +154,7 @@ var notifica = {
 	followed(action, type, id, func, obj, where = '') {
 		this.ajax(['action=' + action, 'type='+type, 'obj='+id], func, obj);
 		if(where === 'perfil') {
-			$.post(`${ZCodeApp.url}/perfil-seguidores-sidebar.php`, { pid: id }, req => $('.reload_followed').html(req));
+			$.post(`${basePath}/perfil-seguidores-sidebar.php`, { pid: id }, req => $('.reload_followed').html(req));
 		}		
 	},
 	share(type, id) {
@@ -204,7 +212,7 @@ var notifica = {
 		inputs.map( (pos, input) => {
 			if($(input).prop('checked')) fid.push(input.id)
 		})
-		$.post(ZCodeApp.url + '/notificaciones-filtro.php', { fid });
+		$.post(basePath + '/notificaciones-filtro.php', { fid });
 	},
 	close: () => {
 		$('#mon_list').hide();
@@ -258,7 +266,7 @@ var mensaje = {
 			if(type == 1){
 				$('#mp_' + mensaje.splitString(id, 0)).remove();
 			} else if(type == 2) {
-				location.href = ZCodeApp.url + '/mensajes/';
+				location.href = basePath + '/mensajes/';
 			}
 		});
 	},
@@ -272,7 +280,7 @@ var mensaje = {
 				$(obj).hide();
 				$(obj).parent().find(`.${showRead}`).show();
 			} else {
-				location.href = ZCodeApp.url + '/mensajes/';
+				location.href = basePath + '/mensajes/';
 			}
 		});
 	},
@@ -280,14 +288,14 @@ var mensaje = {
 	ajax: function(action, params, fn){
 		UPModal.proccess_end();
 		loading.start();
-		$.post(`${ZCodeApp.url}/mensajes-${action}.php`, params, req => {
+		$.post(`${basePath}/mensajes-${action}.php`, params, req => {
 			fn(req);
 			loading.end();
 		});
 	},
 	// PREPARAR EL ENVIO
 	nuevo: function (para, asunto = '', body = '', error = '') {
-		if(empty(ZCodeApp.user_key)) location.href = ZCodeApp.url + '/registro/';
+		if(empty(ZCodeApp.user_key)) location.href = basePath + '/registro/';
 		// GUARDAR
 		this.vars['to'] = para;
 		this.vars['sub'] = asunto;
@@ -350,7 +358,7 @@ var mensaje = {
 			$('#respuesta').focus();
 	  	});
 	},
-	last: function () {
+	last() {
 		let total = parseInt($('a[name="Mensajes"]').data('popup'));
 		notifica.close();
 		  //
@@ -366,7 +374,7 @@ var mensaje = {
 			} else mensaje.show();
 		}
 	},
-	popup: function (response) {
+	popup(response) {
 		let total = parseInt($('a[name="Mensajes"]').data('popup'));
 		let withTitle = (response != total && response > 0);
 		let title = withTitle ? total + ' mensaje' + (response != 1 ? 's' : '') : '';
@@ -375,13 +383,15 @@ var mensaje = {
 			'data-title': title
 		});
 	},
-	show: function () {
+	show() {
 		if (typeof mensaje.cache.last != 'undefined') {
 			$('a[name=Mensajes]').removeClass('spinner iconify');
 			$('#mp_list').show().children('ul').html(mensaje.cache.last);
 		}
 	},
-	close: () => $('#mp_list').slideUp()
+	close() {
+		$('#mp_list').slideUp();
+	}
 }
 
 // NEWS
@@ -427,7 +437,7 @@ $(document).ready(() => {
 	StickyMSG.on({
    	mouseover: () => BrandDay.css('opacity', 0.5),
    	mouseout:  () => BrandDay.css('opacity', 1),
-   	click:     () => location.href = `${ZCodeApp.url}/moderacion/`
+   	click:     () => location.href = `${basePath}/moderacion/`
 	});
 
 	$('.drop-select--toggle').on('click', function() {

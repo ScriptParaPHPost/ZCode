@@ -13,7 +13,7 @@ function configureAndShowModal(title, body, action) {
 function postRequestWithModal(page, params, element) {
    loading.start();
    UPModal.proccess_start();
-	$.post(`${ZCodeApp.url}/${page}.php?from=dashboard`, params, response => {
+	$.post(`${ZCodeApp.ajax}/${page}.php`, params, response => {
    	UPModal.proccess_end();
    	let tpy = parseInt(response.charAt(0)) === 1;
    	UPModal.alert((tpy ? 'Hecho' : 'Opps!'), response.substring(3), false);
@@ -42,7 +42,7 @@ var admin = {
    	},
    	accion(aid) {
    		loading.start()
-   		$.post(ZCodeApp.url +'/afiliado-setactive.php?from=dashboard', { aid }, h => {
+   		$.post(ZCodeApp.ajax + '/afiliado-setactive.php', { aid }, h => {
    			let number = parseInt(h.charAt(0));
 				if(number === 0) UPModal.alert('Error', h.substring(3));
 				let color = (number === 1) ? 'green' : 'purple';
@@ -56,7 +56,7 @@ var admin = {
 	news: {
  		accion(nid) {
 		   loading.start();
-		   $.post(ZCodeApp.url +'/admin-noticias-setInActive.php?from=dashboard', { nid }, req => {
+		   $.post(ZCodeApp.ajax + '/admin-noticias-setInActive.php', { nid }, req => {
    			let number = parseInt(req.charAt(0));
 				if(number === 0) UPModal.alert('Error', req.substring(3));
 				let color = (number === 1) ? 'success' : 'danger';
@@ -124,7 +124,7 @@ var admin = {
 	   // Cerramos o Abrimos los comentario en foto
 	   setOpenClosed(fid) {
 	   	loading.start()
-         $.post(ZCodeApp.url +'/admin-foto-setOpenClosed.php?from=dashboard', { fid }, h => {
+         $.post(ZCodeApp.ajax + '/admin-foto-setOpenClosed.php', { fid }, h => {
          	let number = parseInt(h.charAt(0));
          	if(number === 0) UPModal.alert('Error', h.substring(3));
          	let color = number ? 'red' : 'green';
@@ -136,7 +136,7 @@ var admin = {
       // Ocultamos | Mostramos la foto
       setShowHide(fid) {
          loading.start()
-         $.post(ZCodeApp.url +'/admin-foto-setShowHide.php?from=dashboard', { fid }, h => {
+         $.post(ZCodeApp.ajax + '/admin-foto-setShowHide.php', { fid }, h => {
          	let number = parseInt(h.charAt(0));
          	if(number === 0) UPModal.alert('Error', h.substring(3));
          	let color = number ? 'purple' : 'green';
@@ -185,7 +185,7 @@ var admin = {
 					'pid=' + $('#m_post').val(),
 					'fid=' + $('#m_foto').val()
 				].join('&');
-				$.post(ZCodeApp.url + '/admin-medalla-asignar.php?from=dashboard', params, c => {
+				$.post(ZCodeApp.ajax + '/admin-medalla-asignar.php', params, c => {
 					UPModal.alert((c.charAt(0) == '0' ? 'Opps!' : 'Hecho'), c.substring(3), false);
 			   	if(c.charAt(0) != '0') {
 						var nmeds = parseInt($('#total_med_assig_' + medal_id).text());
@@ -200,7 +200,7 @@ var admin = {
    users: {
 		setInActive(uid) {
 			loading.start()
-			$.post(ZCodeApp.url +'/admin-users-InActivo.php?from=dashboard', { uid }, h => {
+			$.post(ZCodeApp.ajax + '/admin-users-InActivo.php', { uid }, h => {
    			let number = parseInt(h.charAt(0));
 				if(number === 0) UPModal.alert('Error', h.substring(3));
 				let color = (number === 1) ? 'green' : 'purple';
@@ -216,7 +216,7 @@ var admin = {
 var ad_afiliado = {
    cache: {},
    detalles: (aid) => {
-   	$.post(ZCodeApp.url + '/afiliado-detalles.php?from=dashboard', 'ref=' + aid, response => {
+   	$.post(ZCodeApp.ajax + '/afiliado-detalles.php', 'ref=' + aid, response => {
 		   UPModal.setModal({
 				title: 'Detalles del Afiliado',
 				body: response,
@@ -239,7 +239,7 @@ var packs = {
       formData.append('file', $('#image')[0].files[0]);
       formData.append('path', $('#path').val());
       $.ajax({
-         url: `${ZCodeApp.url}/admin-subir-icono.php?from=dashboard`,
+         url: `${ZCodeApp.ajax}/admin-subir-icono.php`,
          type: 'post',
          data: formData,
          contentType: false,
@@ -278,7 +278,7 @@ var packs = {
 			return;
       } 
       let params = ['path=' + carpeta, 'hash=' + hash].join('&')
-      $.post(`${ZCodeApp.url}/admin-eliminar-icono.php?from=dashboard`, params, del => {
+      $.post(`${ZCodeApp.ajax}/admin-eliminar-icono.php`, params, del => {
          UPModal.close();
          if(del) {
             if(carpeta === 'medallas') {
@@ -291,28 +291,22 @@ var packs = {
 
 $(document).ready(() => {
 
-	const { url } = ZCodeApp;
 	const selectJquery = $(".up-select--jquery");
 	selectJquery.on('change', () => {
 		if(selectJquery.val().length > 0) $('#ai_met_welcome, #desc_message_welcome').slideDown();
 	});
 	//
-
    if($('input[name="tables[all]"]').length) {
    	$('input[type="checkbox"][value="all"]').change(function() {
-	    	if ($(this).prop('checked')) {
-	      	$('input[type="checkbox"]').prop('checked', true);
-	    	} else {
-	        $('input[type="checkbox"]').prop('checked', false);
-	   	}
+	    	$('input[type="checkbox"]').prop('checked', ($(this).prop('checked')));
 		});
    }
-
+   //
    $('#change_theme').on('change', function(e) {
    	let tema = $(this).val();
-   	$.post(`${ZCodeApp.url}/admin-tema.php?from=dashboard`, { tema }, req => {
+   	$.post(`${ZCodeApp.ajax}/admin-tema.php`, { tema }, req => {
          UPModal.alert((req.charAt(0) === '1' ? 'Bien' : 'Error'), req.substring(3), true);
-         if(req.charAt(0) === '1') {
+         if(parseInt(req.charAt(0)) === 1) {
          	$('#tema_actual').html(tema);
          }
    	});

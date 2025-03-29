@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para subir im�genes
- *
- * @name    c.upload.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsUpload {
 
 	public $type = 1;  // TIPO DE SUBIDA
@@ -46,12 +53,12 @@ class tsUpload {
 	public function newUpload(int $type = 1){
 		$this->type = (int)$type;
 		// ARCHIVOS
-		if($this->type == 1) {
+		if($this->type === 1) {
 			foreach($_FILES as $file) $fReturn[] = $this->uploadFile($file);
 		// DESDE URL
-		} elseif($this->type == 2) $fReturn[] = $this->uploadUrl();
+		} elseif($this->type === 2) $fReturn[] = $this->uploadUrl();
 		// CROP
-		elseif($this->type == 3) {
+		elseif($this->type === 3) {
 			if(empty($this->file_url)) {
 				foreach($_FILES as $file) $fReturn = $this->uploadFile($file);
 				if(empty($fReturn['msg'])) return ['error' => $fReturn[1]];
@@ -116,11 +123,9 @@ class tsUpload {
 		} elseif($type == 'url') {
 			$this->file_size = getimagesize($this->file_url);
 			// TAMA�O MINIMO
-			$min_w = 160;
-			$min_h = 120;
+			$min_w = $min_h = 160;
 			// MAX PARA EVITAR CARGA LENTA
-			$max_w = 2048;
-			$max_h = $max_w;
+			$max_w = $max_h = 2048;
 			$this->found = 1;
 			//
 			if(empty($this->file_size[0])) 
@@ -153,7 +158,7 @@ class tsUpload {
 		// COPIAMOS
 		copy($file['tmp_name'], TS_UPLOADS . $name);
 		// REGRESAMOS LA URL
-		return $tsCore->settings['uploads'].'/'.$name;
+		return $tsCore->setRoutes('storage', 'uploads').'/'.$name;
 	}
 	private function getMimeImage(?string $type = '', ?string $image = '') {
 		return match ($type) {
@@ -197,7 +202,7 @@ class tsUpload {
 			imagedestroy($newimg);
 			imagedestroy($img);
 			// RETORNAMOS
-			return "{$tsCore->settings['uploads']}/$name";
+			return $tsCore->setRoutes('storage', 'uploads') . "/$name";
 		// MANTENEMOS LAS DIMENCIONES Y SOLO COPIAMOS LA IMAGEN
 		} else return $this->copyFile($file, $name);
 	}
@@ -209,7 +214,8 @@ class tsUpload {
 	 * @param int
 	 * @return array
 	*/
-	public function cropAvatar(string $key = ''){
+	public function cropAvatar(string $key = '') {
+		global $tsUser;
 		$source = TS_UPLOADS . "{$_POST['key']}.{$_POST['ext']}";
 		$size = getimagesize($source);
 		// COORDENADAS
@@ -236,7 +242,9 @@ class tsUpload {
 		$crop_h = min($h, $height - $crop_y);
 		imagecopyresampled($imgvar, $img, 0, 0, $crop_x, $crop_y, $width_pin, $width_pin, $crop_w, $crop_h);
 		// La convertimos a webp, para que sea más liviana 
-		$nameimage = $root . "web.webp";
+		$uniq = uniqid();
+		$nameimage = $root . "$uniq.webp";
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE @perfil_avatar SET uavatar_use = '$uniq' WHERE uavatar_id = {$tsUser->uid}");
 		$img = imagecreatefromjpeg($source);
       if(imagewebp($imgvar, $nameimage, 100)) {
          imagedestroy($imgvar);
@@ -278,16 +286,15 @@ class tsUpload {
 		curl_close($ch);
 		return $result;
 	}
-	 /*
+	/*
 		* setParams()
-	 */
-	 public function setParams($url){
-			switch($this->server){
-				 case 'imgur':
-						return ['image' => base64_encode(file_get_contents($url))];
-				 break;
-			}
-	 }
+	*/
+	public function setParams($url){
+		return match($this->server){
+			'imgur' => ['image' => base64_encode(file_get_contents($url))],
+			default => null
+		};
+	}
 	 /**
 		* @name getImagenUrl($html)
 		* @access public

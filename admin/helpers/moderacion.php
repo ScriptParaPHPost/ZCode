@@ -29,7 +29,7 @@
 
 	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
+	if(!$tsLevelMsg) {	
 		$tsPage = 'aviso';
 		$tsAjax = 0;
 		$smarty->assign("tsAviso",$tsLevelMsg);

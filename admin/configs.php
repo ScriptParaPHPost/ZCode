@@ -1,4 +1,4 @@
-<?php if ( ! defined('TS_HEADER')) exit('No direct script access allowed');
+<?php if ( ! defined('ZCODE2')) exit('No direct script access allowed');
 
 /**
  * @name define.php
@@ -8,55 +8,81 @@
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
  * @author Miguel92
- * @version v2.0.0
+ * @version v2.1.15
  * @description Se definen todas las rutas
 **/
 //DEFINICION DE CONSTANTES
-define('TS_ADMIN', TS_ROOT . 'admin' . TS_PATH);
+define('TS_ADMIN', TS_ROOT . 'admin' . DIRECTORY_SEPARATOR);
 
 // Reporte de errores
-error_reporting(($_ENV['DEBUG_MODE'] === 'true' ? E_ALL ^ E_WARNING : 0));
+error_reporting(DEBUG ? E_ALL ^ E_WARNING ^ E_NOTICE ^ E_DEPRECATED : 0);
+ini_set('display_errors', DEBUG);
+ini_set('log_errors', DEBUG);
+ini_set('error_log', ERROR_LOG);
 
-ini_set('display_errors', ($_ENV['DEBUG_MODE'] === 'true'));
+// Custom error handler
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+   $logMessage = "[ERROR:$errno] $errstr in $errfile on line $errline";
+   error_log($logMessage);
+   if (DEBUG) {
+      #echo "<b>Error:</b> $errstr in <b>$errfile</b> on line <b>$errline</b><br>";
+   }
+   return true;
+});
 
-ini_set('display_startup_errors', ($_ENV['DEBUG_MODE'] === 'true'));
+// Custom exception handler
+set_exception_handler(function($exception) {
+   $logMessage = "[EXCEPTION] " . $exception->getMessage() . " in " . $exception->getFile() . " on line " . $exception->getLine();
+   error_log($logMessage);
+   if (DEBUG) {
+      #echo "<b>Exception:</b> " . $exception->getMessage() . " in <b>" . $exception->getFile() . "</b> on line <b>" . $exception->getLine() . "</b><br>";
+   }
+});
 
-ini_set('log_errors', ($_ENV['DEBUG_MODE'] === 'true'));
-
+// Custom shutdown handler
+register_shutdown_function(function() {
+   $error = error_get_last();
+   if ($error !== NULL) {
+      $logMessage = "[SHUTDOWN] {$error['message']} in {$error['file']} on line {$error['line']}";
+      error_log($logMessage);
+      if (DEBUG) {
+         #echo "<b>Shutdown Error:</b> {$error['message']} in <b>{$error['file']}</b> on line <b>{$error['line']}</b><br>";
+      }
+   }
+});
 /**
  * Rutas APP
  */
-define('TS_MODELS',	 TS_ADMIN . 'models' . TS_PATH);
-define('TS_HELPERS',	 TS_ADMIN . 'helpers' . TS_PATH);
+define('TS_MODELS',	 TS_ADMIN . 'models' . DIRECTORY_SEPARATOR);
+define('TS_HELPERS',	 TS_ADMIN . 'helpers' . DIRECTORY_SEPARATOR);
 
+define('TS_APP', 	 	 TS_ROOT . 'app' . DIRECTORY_SEPARATOR);
+define('TS_EXTRA', 	 TS_APP . 'extras' . DIRECTORY_SEPARATOR);
+define('TS_PLUGINS',  TS_APP . 'plugins' . DIRECTORY_SEPARATOR);
+define('TS_SMARTY', 	 TS_APP . 'smarty' . DIRECTORY_SEPARATOR);
+define('TS_ZCODE', 	 TS_APP . 'zcode' . DIRECTORY_SEPARATOR);
 
-define('TS_APP', 	 	 TS_ROOT . 'app' . TS_PATH);
-define('TS_EXTRA', 	 TS_APP . 'extras' . TS_PATH);
-define('TS_PLUGINS',  TS_APP . 'plugins' . TS_PATH);
-define('TS_SMARTY', 	 TS_APP . 'smarty' . TS_PATH);
-define('TS_ZCODE', 	 TS_APP . 'zcode' . TS_PATH);
-
-define('GOOGLE2FA', 	 TS_EXTRA . 'google' . TS_PATH);
+define('GOOGLE2FA', 	 TS_EXTRA . 'google' . DIRECTORY_SEPARATOR);
 define('DATABASE', 	 TS_ZCODE . 'database.php');
 
 /**
  * Rutas ASSETS
  */
-define('TS_ASSETS', 		TS_ROOT . 'assets' . TS_PATH);
-define('TS_IMAGES', 		TS_ASSETS . 'images' . TS_PATH);
-define('TS_AVATARES',	TS_IMAGES . 'avatares' . TS_PATH);
+define('TS_ASSETS', 		TS_ROOT . 'assets' . DIRECTORY_SEPARATOR);
+define('TS_IMAGES', 		TS_ASSETS . 'images' . DIRECTORY_SEPARATOR);
+define('TS_AVATARES',	TS_IMAGES . 'avatares' . DIRECTORY_SEPARATOR);
 
-define('TS_AUTH', 		TS_ROOT . 'auth' . TS_PATH);
+define('TS_AUTH', 		TS_ROOT . 'auth' . DIRECTORY_SEPARATOR);
 
 /**
  * Rutas STORAGE
  */
-define('TS_STORAGE', 	 TS_ROOT . 'storage' . TS_PATH);
-define('TS_AVATAR', 		 TS_STORAGE . 'avatar' . TS_PATH);
-define('TS_CACHE', 		 TS_STORAGE . 'cache' . TS_PATH);
-define('TS_PORTADAS',	 TS_STORAGE . 'portadas' . TS_PATH);
-define('TS_UPLOADS', 	 TS_STORAGE . 'uploads' . TS_PATH);
-define('TS_BACKUP', 		 TS_STORAGE . 'backup' . TS_PATH);
+define('TS_STORAGE', 	 TS_ROOT . 'storage' . DIRECTORY_SEPARATOR);
+define('TS_AVATAR', 		 TS_STORAGE . 'avatar' . DIRECTORY_SEPARATOR);
+define('TS_CACHE', 		 TS_STORAGE . 'cache' . DIRECTORY_SEPARATOR);
+define('TS_PORTADAS',	 TS_STORAGE . 'portadas' . DIRECTORY_SEPARATOR);
+define('TS_UPLOADS', 	 TS_STORAGE . 'uploads' . DIRECTORY_SEPARATOR);
+define('TS_BACKUP', 		 TS_STORAGE . 'backup' . DIRECTORY_SEPARATOR);
 define('LOCK', 		 	 TS_STORAGE . '.lock');
 define('VERSION', 		 TS_STORAGE . '.version');
 define('TS_AVATAR_USER', TS_AVATAR . 'user');
@@ -64,7 +90,7 @@ define('TS_AVATAR_USER', TS_AVATAR . 'user');
 /**
  * Rutas THEMES
  */
-define('TS_THEMES', TS_ROOT . 'themes' . TS_PATH);
+define('TS_THEMES', TS_ROOT . 'themes' . DIRECTORY_SEPARATOR);
 
 define('LICENSE',   TS_ROOT . 'LICENSE');
 

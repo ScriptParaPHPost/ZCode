@@ -1,12 +1,5 @@
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="graph-box"}
-		</div>
-		<div class="up-header--title">
-			<span>Estad&iacute;sticas</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="graph-box" label="Estad&iacute;sticas"}
 	<div class="up-card--body up-card--stats">
 		<div class="d-grid gap-2">
 			<div class="text-center text-uppercase small py-3 position-relative">

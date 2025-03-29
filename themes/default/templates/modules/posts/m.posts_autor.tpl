@@ -62,14 +62,7 @@
 {include "m.posts_stats_in.tpl"}
 {if $tsUser->is_admod || $tsUser->permisos.modu || $tsUser->permisos.mosu}
 	<section class="up-card">
-		<div class="up-card--header" icon="true">
-			<div class="up-header--icon">
-				{uicon name="nut"}
-			</div>
-			<div class="up-header--title">
-				<span>Herramientas</span>
-			</div>
-		</div>
+		{include "CardHeader.tpl" iconName="nut" label="Herramientas"}
 		<div class="up-card--body tools p-3">
 			<a class="geoip d-flex justify-content-start align-items-center gap-3 text-decoration-none fw-semibold mb-3 py-2 px-3 rounded shadow tool--item" href="{$tsConfig.url}/moderacion/buscador/1/1/{$tsPost.post_ip}" target="_blank">{uicon name="location"} IP: {$tsPost.post_ip}</a>
 			{if $tsUser->is_admod == 1}

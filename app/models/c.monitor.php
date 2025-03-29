@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control del monitor de usuario
- *
- * @name    c.monitor.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsMonitor {
 
 	/**
@@ -253,9 +260,9 @@ class tsMonitor {
 				$enviados[] = $val['c_user'];
 			}
 		}
-		// ENVIAMOS AL DUEÑO DEL MURO
+		// ENVIAMOS AL DUEï¿½O DEL MURO
 		$this->setNotificacion(13, $p_user, $tsUser->uid, $pub_id, 1);
-		// ENVIAMOS AL QUE PUBLICO SI NO FUE EL DUEÑO DEL MURO
+		// ENVIAMOS AL QUE PUBLICO SI NO FUE EL DUEï¿½O DEL MURO
 		if(($p_user != $p_user_pub) && !in_array($p_user_pub, $enviados)) {
 			$this->setNotificacion(13, $p_user_pub, $tsUser->uid, $pub_id, 2);    
 		}
@@ -284,7 +291,7 @@ class tsMonitor {
 		} elseif($this->show_type == 2) {
          // DATOS
          $addSQL = 'ORDER BY m.not_id DESC';
-         //ESTADÍSTICAS
+         //ESTADï¿½STICAS
          $dataDos['stats']['posts'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], "query", "SELECT follow_id FROM @follows WHERE f_user = {$tsUser->uid} && f_type = 3"));
 		   $dataDos['stats']['seguidores'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], "query", "SELECT follow_id FROM @follows WHERE f_id = {$tsUser->uid} && f_type = 1"));
          $dataDos['stats']['siguiendo'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], "query", "SELECT follow_id FROM @follows WHERE f_user = {$tsUser->uid} && f_type = 1"));
@@ -426,7 +433,7 @@ class tsMonitor {
 	 * @info RETORNA LAS ORACIONES A MOSTRAR EN EL MONITOR
 	*/
 	private function makeOracion(array $data = []){
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		# LOCALES
 		$site_url = $tsCore->settings['url'];
 		$no_type = $data['not_type'];
@@ -439,7 +446,7 @@ class tsMonitor {
 		$oracion['style'] = $this->monitor[$no_type]['css'];
 		$oracion['date'] = $data['not_date'];
 		$oracion['user'] = $data['usuario'];
-		$oracion['avatar'] = !empty($data['obj_user']) ? $tsCore->getAvatar($data['obj_user'], 'use') : $tsCore->settings['logos'][64];
+		$oracion['avatar'] = !empty($data['obj_user']) ? $tsZCode->getAvatar($data['obj_user'], 'use') : $tsCore->settings['logos'][64];
 		$oracion['total'] = (int)$data['not_total'];
 		# CON UN SWITCH ESCOGEMOS QUE ORACION CONSTRUIR
 		switch($no_type){
@@ -453,7 +460,7 @@ class tsMonitor {
 					$oracion['text'] = $this->setReplace($voto_type, $oracion['text']);
 					$oracion['style'] .= $voto_type;
 				} 
-				$oracion['link'] = $tsCore->createLink('post', $data['post_id']);
+				$oracion['link'] = $tsZCode->createLink('post', $data['post_id']);
 				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : $data['post_title'];
 				$oracion['ltit'] = ($this->show_type == 1) ? $data['post_title'] : '';
 			break;
@@ -478,7 +485,7 @@ class tsMonitor {
 					$text = $this->monitor[$no_type]['text'][1].$txt_extra;
 					$oracion['text'] = $this->setReplace($no_total, $text);
 				} else $oracion['text'] = $this->monitor[$no_type]['text'][0].$txt_extra;
-				// ¿ES MI POST?
+				// ï¿½ES MI POST?
 				if((int)$data['post_user'] == $tsUser->uid) {
 					$oracion['text'] = str_replace('te recomienda un', 'ha recomendado tu', $oracion['text']);
 			 	}
@@ -492,7 +499,7 @@ class tsMonitor {
 						$oracion['style'] = 'reaccion-'.$reaccion;
 					}
 				}
-				$oracion['link'] = $tsCore->createLink('post', $data['post_id'], $id_comment);
+				$oracion['link'] = $tsZCode->createLink('post', $data['post_id'], $id_comment);
 				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : $data['post_title'];
 				$oracion['ltit'] = ($this->show_type == 1) ? $data['post_title'] : '';
 			break;
@@ -506,14 +513,14 @@ class tsMonitor {
 					$oracion['text'] = $this->setReplace($no_total, $text);
 				} else $oracion['text'] = $this->monitor[$no_type]['text'][0].$txt_extra;
 			
-				$oracion['link'] = $tsCore->createLink('post', $data['post_id'], $id_comment);
+				$oracion['link'] = $tsZCode->createLink('post', $data['post_id'], $id_comment);
 				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : $data['post_title'];
 				$oracion['ltit'] = ($this->show_type == 1) ? $data['post_title'] : '';
 			break;
 			// PUBLICACION EN MURO
 			case 12:
 				$oracion['text'] = $this->monitor[$no_type]['text'].$txt_extra;
-				$oracion['link'] = $tsCore->createLink('perfil', $tsUser->nick, '/'.$data['obj_uno']);
+				$oracion['link'] = $tsZCode->createLink('perfil', $tsUser->nick, '/'.$data['obj_uno']);
 				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : $tsUser->nick;
 				$oracion['ltit'] = ($this->show_type == 1) ? $tsUser->nick : '';
 			break;
@@ -526,7 +533,7 @@ class tsMonitor {
 					$oracion['text'] = $this->setReplace($no_total, $text);
 				} else $oracion['text'] = $this->monitor[$no_type]['text'][0].$de.$txt_extra;
 				//
-				$oracion['link'] = $tsCore->createLink('perfil', $data['p_user_name'], '/'.$data['pub_id']);
+				$oracion['link'] = $tsZCode->createLink('perfil', $data['p_user_name'], '/'.$data['pub_id']);
 				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : $tsUser->nick;
 				$oracion['ltit'] = ($this->show_type == 1) ? $tsUser->nick : '';
 			break;
@@ -540,7 +547,7 @@ class tsMonitor {
 				} else $oracion['text'] = $this->monitor[$no_type]['text'][0];
 				//
 				$oracion['text'] = ($this->show_type == 1) ? $oracion['text'] : $oracion['text'].' '.$ln_text;
-				$oracion['link'] = $tsCore->createLink('perfil', $tsUser->nick, '/'.$data['obj_uno']);
+				$oracion['link'] = $tsZCode->createLink('perfil', $tsUser->nick, '/'.$data['obj_uno']);
 				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : substr($data['c_body'],0,20).'...';
 				$oracion['ltit'] = ($this->show_type == 1) ? substr($data['c_body'],0,20).'...' : '';
 			break;
@@ -549,12 +556,12 @@ class tsMonitor {
 			break;
 			case 16:
 				$post_title = $tsCore->setSEO($data['post_title']);
-				$post_link = $tsCore->createLink('post', $data['post_id']);
+				$post_link = $tsZCode->createLink('post', $data['post_id']);
 				$oracion['text'] = "Tu <a href=\"$post_link\" title=\"$post_title\"><strong>post</strong></a> tiene una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url_med/{$data['m_image']}\" class=\"avatar avatar-1\"/></span>";
 			break;
 			case 17:
 				$f_title = $tsCore->setSEO($data['f_title']);
-				$foto_link = $tsCore->createLink('foto', $data['foto_id']);
+				$foto_link = $tsZCode->createLink('foto', $data['foto_id']);
 				$oracion['text'] = "Tu <a href=\"$site_url/fotos/{$data['user_name']}/{$data['foto_id']}/$f_title.html\" title=\"$f_title\"><strong>foto</strong></a> tiene una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url_med/{$data['m_image']}\" class=\"avatar avatar-1\"/></span>";
 			break;
 			case 18:
@@ -671,7 +678,7 @@ class tsMonitor {
 	 * @info CARGA EN UN ARRAY LA INFORMACION DE LOS "FOLLOWs" DE UN USUARIO
 	*/
 	public function getFollows(string $type = '', int $user_id = 0){
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		// VARS
 		$user_id = empty($user_id) ? $tsUser->uid : $user_id;
 		//
@@ -686,7 +693,7 @@ class tsMonitor {
 				$query = "SELECT f.f_id, p.post_user, p.post_title, u.user_name, c.c_seo, c.c_nombre, c.c_img FROM @follows AS f LEFT JOIN @posts AS p ON f.f_id = p.post_id LEFT JOIN @miembros AS u ON u.user_id = p.post_user LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category WHERE f.f_user = $user_id AND f.f_type = 2 ORDER BY f.f_date DESC";
 			break;
 		}
-		// Evitamos la repeción de $total, $page, $data['pages'] y $data['data']
+		// Evitamos la repeciï¿½n de $total, $page, $data['pages'] y $data['data']
 		$total = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', $query));
 		$pages = $tsCore->getPagination($total, 12);
 		$data['pages'] = $pages;
@@ -694,7 +701,7 @@ class tsMonitor {
 		//
 		if($type === 'seguidores' OR $type === 'siguiendo') {
 			foreach($data['data'] as $uid => $user) {
-				$data['data'][$uid]['avatar'] = $tsCore->getAvatar($user['user_id'], 'use');
+				$data['data'][$uid]['avatar'] = $tsZCode->getAvatar($user['user_id'], 'use');
 				$data['data'][$uid]['pais'] = strtolower($user['user_pais'] ?? 'xx');
 				$data['data'][$uid]['pais_image'] = $tsCore->settings['assets'] . "/icons/flags/{$data['data'][$uid]['pais']}.svg";
 			}

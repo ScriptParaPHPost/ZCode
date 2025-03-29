@@ -3,43 +3,10 @@
 	<h4>Para continuar a {$tsConfig.titulo}</h4>
 </div>
 
-<div class="upform-group">
-	<label class="upform-label" for="nick">Nick</label>
-	<div class="upform-group-input upform-icon">
-		<div class="upform-input-icon">
-			{uicon name="user-male"}
-		</div>
-		<input class="upform-input" type="text" name="nick" id="nick" placeholder="JhonDoe" required>
-	</div>
-	<small class="upform-status help"></small>
-</div>
+{include "Input.tpl" id="nick" label="Nick" type="text" name="nick" placeholder="JhonDoe" required=true icon="user-male"}
+{include "Input.tpl" id="password" label="Contraseña" type="text" name="password" placeholder=$tsPass required=true icon="lock" showPassword=true html='<div id="password-strength"><span></span> <em></em></div><small id="generar">Generar contraseña</small>'}
 
-<div class="upform-group">
-	<label class="upform-label" for="password">Contraseña</label>
-	<div class="upform-group-input upform-icon">
-		<div class="upform-input-icon">
-			{uicon name="lock"}
-		</div>
-		<input class="upform-input" type="password" name="password" id="password" placeholder="{$tsPass}" required>
-		<div class="upform-input-icon">
-			<div id="IWantSeePassword" title="Ver contraseña!" class="iconify unlock"></div>
-		</div>
-	</div>
-	<small class="upform-status help"></small>
-	<div id="password-strength"><span></span> <em></em></div>
-	<small id="generar">Generar contraseña</small>
-</div>
-
-<div class="upform-group">
-	<label class="upform-label" for="email">Tu correo</label>
-	<div class="upform-group-input upform-icon">
-		<div class="upform-input-icon">
-			{uicon name="mail"}
-		</div>
-		<input class="upform-input" type="email" name="email" id="email" placeholder="jhondoe@example.com" required>
-	</div>
-	<small class="upform-status help"></small>
-</div>
+{include "Input.tpl" id="email" label="Tu correo" type="email" name="email" placeholder="jhondoe@example.com" required=true icon="mail"}
 
 <div class="sex">
 	<label for="none" class="selected-sex">

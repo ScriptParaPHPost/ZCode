@@ -1,5 +1,4 @@
 var avatar = {
-	size: 160,
 	uid: false,
 	key: false,
    ext: false,
@@ -31,7 +30,7 @@ var avatar = {
          avatar.key = rsp.key;
          avatar.ext = rsp.ext;
          avatar.cortar(rsp.msg);
-		} else cuenta.alerta(rsp.error, 0);
+		} else UPModal.alert('Avatar Error', rsp.error, false);
 		$(".avatar-loading").hide();
 	},
 	cortar: img => {
@@ -45,8 +44,8 @@ var avatar = {
 				cancelShow: true
 			}
 		});
-		$("#avatar-img, #avatar-menu").attr("src", newImageUpload).on('load', () => {
-			let sizes = [avatar.size, avatar.size, 'px'];
+		$(".avatar-big, #avatar-menu").attr("src", newImageUpload).on('load', () => {
+			let sizes = [160, 160, 'px'];
 			var croppr = new Croppr('.avatar-cortar', {
 			   aspectRatio: 1, // Mantemos el tamanio cuadrado 1:1
 			   // Minimo de 120px x  120px
@@ -60,13 +59,20 @@ var avatar = {
 		});
 	},
 	vistaPrevia: function (coords) {
-      let rx = avatar.size / coords.width;
-      let ry = avatar.size / coords.height;
-      $('#avatar-img').css({
-         width: Math.round(rx * $('.avatar-cortar').width()) + 'px',
-         height: Math.round(ry * $('.avatar-cortar').height()) + 'px',
-         marginLeft: '-' + Math.ceil(rx * coords.x) + 'px',
-         marginTop: '-' + Math.round(ry * coords.y) + 'px'
+      let rx = 160 / coords.width;
+      let ry = 160 / coords.height;
+      
+      let $img = $('#avatar-img');
+   	let $cropBox = $('.avatar-cortar');
+   	let { naturalWidth, naturalHeight } = $img[0];
+   	let scaleX = coords.width / 160;
+   	let scaleY = coords.height / 160;
+
+   	$img.css({
+      	width: naturalWidth + 'px', // Mantener tamaño real
+      	height: naturalHeight + 'px',
+         transform: `translate(-${coords.x * scaleX}px, -${coords.y * scaleY}px)`,
+         position: 'absolute'
       });
    },
    recargar: function () {
@@ -92,7 +98,7 @@ var avatar = {
 			const resultado = await avatar.fetching('crop', coordenadas)
 			if(resultado.error === "success") {
 				UPModal.proccess_end();
-			   UPModal.alert('Avatar creador', "Tu avatar se ha creado correctamente...", false);
+			   UPModal.alert('Avatar creador', "Tu avatar se ha creado correctamente...", true);
 			   avatar.recargar();
 			   $("#input_add").hide();
 			   $(`input[name="url"]`).attr({

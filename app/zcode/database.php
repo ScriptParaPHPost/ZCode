@@ -1,15 +1,13 @@
 <?php
 
 /**
- * @name database.php
- * @copyright ZCode 2024
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
  * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
- * @author Miguel92
- * @version v2.0.0
- * @description Actualizada y optimizada!
 **/
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}fotos_comentarios` (
@@ -100,7 +98,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_supercategorias
   `super_color` varchar(40) NOT NULL DEFAULT '',
   `super_img` varchar(40) NOT NULL DEFAULT '',
   PRIMARY KEY (`fid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "INSERT INTO `{$db['prefix']}posts_supercategorias` (`fid`, `super_nombre`, `super_descripcion`, `super_img`) VALUES
 (1, 'Oficial', 'Sección reservada para anuncios, novedades y reglas del foro. Aquí se publican actualizaciones importantes, normas de conducta y cualquier comunicación oficial de los administradores y moderadores. Un espacio clave para mantenerse al tanto de la vida del foro.', '1f4e2.svg'),
@@ -120,7 +118,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_categorias` (
   `c_color` varchar(40) NOT NULL DEFAULT '',
   `c_descripcion` text NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "INSERT INTO `{$db['prefix']}posts_categorias` (`cid`, `c_orden`, `c_foro`, `c_nombre`, `c_seo`, `c_img`, `c_descripcion`) VALUES
 (1, 1, 3, 'Animaciones', 'animaciones', '1f4fd.svg', 'Discusión y contenido relacionado con películas animadas, series animadas y técnicas de animación.'),
@@ -152,10 +150,10 @@ $zcode_sql[] = "INSERT INTO `{$db['prefix']}posts_categorias` (`cid`, `c_orden`,
 (27, 27, 5, 'Recetas y Cocina', 'recetasycocina', '1f36a.svg', 'Compartir recetas, técnicas de cocina, consejos gastronómicos y discusiones sobre alimentos.'),
 (28, 28, 5, 'Salud y Bienestar', 'saludybienestar', '2624.svg', 'Consejos de salud, bienestar emocional, fitness y estilo de vida saludable.'),
 (29, 29, 6, 'Solidaridad', 'solidaridad', '1f397.svg', 'Iniciativas, proyectos y discusiones sobre solidaridad, ayuda social y caridad.'),
-(30, 30, 1, 'xxxxxxxxxx', 'xxxxxxxxxx', '1f4e2.svg', 'Noticias: Actualizaciones y novedades sobre nuestro sitio.'),
-(31, 31, 5, 'Turismo', 'turismo', '1f3c2.svg', 'Destinos de viaje, consejos para viajeros, experiencias y recomendaciones sobre turismo.'),
-(32, 32, 2, 'Streaming', 'streaming', '1f3ac.svg', 'Plataformas de streaming, series, películas y contenido digital en línea.'),
-(33, 33, 2, 'Videos On-line', 'videosonline', '1f3a5.svg', 'Compartir y discutir videos en línea, desde cortometrajes hasta contenido viral y tutoriales.');";
+(30, 30, 5, 'Turismo', 'turismo', '1f3c2.svg', 'Destinos de viaje, consejos para viajeros, experiencias y recomendaciones sobre turismo.'),
+(31, 31, 2, 'Streaming', 'streaming', '1f3ac.svg', 'Plataformas de streaming, series, películas y contenido digital en línea.'),
+(32, 32, 2, 'Videos On-line', 'videosonline', '1f3a5.svg', 'Compartir y discutir videos en línea, desde cortometrajes hasta contenido viral y tutoriales.'),
+(33, 33, 1, 'xxxxxxxxxx', 'xxxxxxxxxx', '1f4e2.svg', 'Noticias: Actualizaciones y novedades sobre nuestro sitio.');";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_comentarios` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
@@ -338,7 +336,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros` (
   `user_seguidores` bigint NOT NULL DEFAULT 0,
   `user_seguidos` bigint NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros_social` (
   `social_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -348,7 +346,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}miembros_social` (
   `social_email` varchar(80) NOT NULL DEFAULT '',
   `social_avatar` tinytext,
   PRIMARY KEY (`social_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}nicks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -361,7 +359,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}nicks` (
   `user_email` varchar(80) NOT NULL DEFAULT '',
   `user_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}monitor` (
   `not_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -453,6 +451,16 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}perfil` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 
+$zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}perfil_avatar` (
+  `uavatar_id` int(11) NOT NULL DEFAULT 0,
+  `uavatar_gif` tinytext NULL,
+  `uavatar_gif_active` int(1) NOT NULL DEFAULT 0,
+  `uavatar_type` int(1) NOT NULL DEFAULT 0, /* Tipo gif, normal, social */
+  `uavatar_social` varchar(20) NOT NULL DEFAULT 'web', /* Nombre de red social */
+  `uavatar_use` varchar(32) NOT NULL DEFAULT '', /* Nombre del avatar actual */
+  PRIMARY KEY (`uavatar_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}portal` (
   `user_id` int(11) NOT NULL DEFAULT 0,
   `last_posts_visited` text NULL,
@@ -471,16 +479,16 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}rangos` (
   `r_name` varchar(32) NOT NULL DEFAULT '',
   `r_type` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`rango_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "INSERT INTO `{$db['prefix']}rangos` (`rango_id`, `r_name`, `r_color`, `r_image`, `r_cant`, `r_allows`, `r_type`) VALUES
-(1, 'Sigma', '405877', 'sigma.png', 0, 'a:4:{s:4:\"suad\";s:2:\"on\";s:4:\"goaf\";s:1:\"5\";s:5:\"gopfp\";s:2:\"20\";s:5:\"gopfd\";s:2:\"50\";}', 0),
-(2, 'Alpha', '6A8F3F', 'alpha.png', 0, 'a:4:{s:4:\"sumo\";s:2:\"on\";s:4:\"goaf\";s:2:\"15\";s:5:\"gopfp\";s:2:\"18\";s:5:\"gopfd\";s:2:\"30\";}', 0),
-(3, 'Delta', 'D18F00', 'delta.png', 0, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:1:\"5\";s:5:\"gopfd\";s:1:\"5\";}', 0),
-(4, 'Beta', 'E2925A', 'beta.png', 50, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:2:\"10\";s:5:\"gopfd\";s:2:\"10\";}', 1),
-(5, 'Gamma', '8F6B95', 'gamma.png', 70, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:2:\"12\";s:5:\"gopfd\";s:2:\"20\";}', 1),
-(6, 'Omega', 'A54545', 'omega.png', 0, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:2:\"11\";s:5:\"gopfd\";s:2:\"15\";}', 0),
-(7, 'Zeta', 'E1C29D', 'zeta.png', 120, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:2:\"12\";s:5:\"gopfd\";s:2:\"25\";}', 1);";
+(1, 'Sigma', '#405877', 'sigma.png', 0, 'a:4:{s:4:\"suad\";s:2:\"on\";s:4:\"goaf\";s:1:\"5\";s:5:\"gopfp\";s:2:\"20\";s:5:\"gopfd\";s:2:\"50\";}', 0),
+(2, 'Alpha', '#6A8F3F', 'alpha.png', 0, 'a:4:{s:4:\"sumo\";s:2:\"on\";s:4:\"goaf\";s:2:\"15\";s:5:\"gopfp\";s:2:\"18\";s:5:\"gopfd\";s:2:\"30\";}', 0),
+(3, 'Delta', '#D18F00', 'delta.png', 0, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:1:\"5\";s:5:\"gopfd\";s:1:\"5\";}', 0),
+(4, 'Beta', '#E2925A', 'beta.png', 50, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:2:\"10\";s:5:\"gopfd\";s:2:\"10\";}', 1),
+(5, 'Gamma', '#8F6B95', 'gamma.png', 70, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:2:\"12\";s:5:\"gopfd\";s:2:\"20\";}', 1),
+(6, 'Omega', '#A54545', 'omega.png', 0, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:2:\"11\";s:5:\"gopfd\";s:2:\"15\";}', 0),
+(7, 'Zeta', '#E1C29D', 'zeta.png', 120, 'a:12:{s:4:\"godp\";s:2:\"on\";s:4:\"gopp\";s:2:\"on\";s:5:\"gopcp\";s:2:\"on\";s:5:\"govpp\";s:2:\"on\";s:5:\"govpn\";s:2:\"on\";s:5:\"goepc\";s:2:\"on\";s:5:\"godpc\";s:2:\"on\";s:4:\"gopf\";s:2:\"on\";s:5:\"gopcf\";s:2:\"on\";s:4:\"goaf\";s:2:\"20\";s:5:\"gopfp\";s:2:\"12\";s:5:\"gopfd\";s:2:\"25\";}', 1);";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}respuestas` (
   `mr_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -513,7 +521,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}suspension` (
   `susp_mod` int(11) NOT NULL DEFAULT 0,
   `susp_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`susp_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}afiliados` (
   `aid` int(11) NOT NULL AUTO_INCREMENT,
@@ -538,6 +546,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}configuracion` (
   `banner` varchar(100) NOT NULL DEFAULT '',
   `tema` varchar(30) NOT NULL DEFAULT 'default',
   `update_id` varchar(20) NOT NULL DEFAULT '',
+  `c_allow_ticket` int(1) NOT NULL DEFAULT 0,
   `c_allow_foro` int(1) NOT NULL DEFAULT 0,
   `c_allow_fuentes` int(1) NOT NULL DEFAULT 0,
   `c_ver_vistas_global` int(1) NOT NULL DEFAULT 0,
@@ -607,7 +616,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}contacts` (
   `type` int(1) NOT NULL DEFAULT 0,
   `hash` varchar(66) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}medallas` (
   `medal_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -624,7 +633,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}medallas` (
   `m_total` int(11) NOT NULL DEFAULT 0,
   `m_type` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`medal_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}medallas_assign` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -633,7 +642,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}medallas_assign` (
   `medal_date` int(11) NOT NULL DEFAULT 0,
   `medal_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}historial` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -665,7 +674,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}blacklist` (
   `author` int(11) NOT NULL DEFAULT 0,
   `date` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci AUTO_INCREMENT=1;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}badwords` (
   `wid` int(11) NOT NULL AUTO_INCREMENT,
@@ -677,7 +686,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}badwords` (
   `reason` varchar(255) NOT NULL DEFAULT '',
   `date` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`wid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci AUTO_INCREMENT=1;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}stats` (
   `stats_no` int(1) NOT NULL DEFAULT 0,
@@ -709,7 +718,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}visitas` (
   `ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   INDEX (`for`, `type`, `user`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}conexion_actual` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -734,11 +743,9 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}seo` (
   `seo_titulo` varchar(60) NOT NULL DEFAULT '',
   `seo_descripcion` varchar(160) NOT NULL DEFAULT '',
   `seo_portada` tinytext NULL,
-  `seo_favicon` tinytext NULL,
   `seo_keywords` text NULL,
-  `seo_images` text NULL,
-  `seo_robots_data` text NULL,
   `seo_robots` int(1) NULL DEFAULT 0,
+  `seo_robots_data` varchar(200) NOT NULL DEFAULT '',
   `seo_sitemap` int(1) NULL DEFAULT 0,
   `seo_google_verification` varchar(60) NULL DEFAULT '',
   `seo_google_verification_active` int(1) NULL DEFAULT 0,
@@ -771,31 +778,49 @@ $zcode_sql[] = "INSERT INTO `{$db['prefix']}sitemap_control` (`sid`) VALUES (1);
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}tickets` (
   `ticket_id` int(11) NOT NULL AUTO_INCREMENT,
   `ticket_user` int(11) NOT NULL DEFAULT 0,
-  `ticket_title` varchar(50) NOT NULL DEFAULT '',
-  `ticket_body` text NULL,
+  `ticket_title` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `ticket_body` text COLLATE utf8mb4_general_ci NULL,
   `ticket_type` int(11) NOT NULL DEFAULT 0,
   `ticket_status` int(1) NOT NULL DEFAULT 0,
   `ticket_date` int(15) NOT NULL DEFAULT 0,
   `ticket_updated` int(15) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`ticket_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+  PRIMARY KEY (`ticket_id`),
+  FULLTEXT (`ticket_title`, `ticket_body`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1;";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}tickets_type` (
   `type_id` int(11) NOT NULL AUTO_INCREMENT,
   `type_title` varchar(30) NOT NULL DEFAULT '',
   `type_icon` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`type_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
-$zcode_sql[] = "INSERT INTO `{$db['prefix']}tickets_type` (`type_id`, `type_title`) VALUES (null, 'Avatar'), (null, 'Buscador'), (null, 'Comentarios'), (null, 'Cuenta'), (null, 'Fotos'), (null, 'Otro'), (null, 'Perfil'), (null, 'Portal'), (null, 'Posts');";
+$zcode_sql[] = "INSERT INTO `{$db['prefix']}tickets_type` (`type_id`, `type_title`, `type_icon`) VALUES 
+(null, 'Avatar', 'face_happy'), 
+(null, 'Buscador', 'search'), 
+(null, 'Comentarios', 'thread'), 
+(null, 'Cuenta', 'window_content'), 
+(null, 'Fotos', 'camera_alt'), 
+(null, 'Otro', 'frame'), 
+(null, 'Perfil', 'fingerprint'), 
+(null, 'Portal', 'directions'), 
+(null, 'Posts', 'browser');";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}tickets_status` (
   `status_id` int(11) NOT NULL AUTO_INCREMENT,
   `status_title` varchar(30) NOT NULL DEFAULT '',
+  `status_slug` varchar(30) NOT NULL DEFAULT '',
+  `status_icon` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`status_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
-$zcode_sql[] = "INSERT INTO `{$db['prefix']}tickets_status` (`status_id`, `status_title`) VALUES (null, 'En espera'), (null, 'En curso'), (null, 'Realizado'), (null, 'Abandonado'), (null, 'Pausado'), (null, 'Cancelado');";
+$zcode_sql[] = "INSERT INTO `{$db['prefix']}tickets_status` (`status_id`, `status_title`, `status_slug`, `status_icon`) VALUES 
+(null, 'En espera', 'en-espera', 'clock'), 
+(null, 'En proceso', 'en-proceso', 'loader'), 
+(null, 'Finalizado', 'finalizado', 'check'), 
+(null, 'Abandonado', 'abandonado', 'no_sign'), 
+(null, 'Pausado', 'pausado', 'refresh'), 
+(null, 'Cancelado', 'cancelado', 'close')";
 
 $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}chat` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,

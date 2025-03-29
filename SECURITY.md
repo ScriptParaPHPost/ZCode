@@ -2,11 +2,11 @@
 
 ## Versiones compatibles
 
-Actualmente es compatible con la última versión Smarty 4.
+Actualmente es compatible con la última versión Smarty 5.
 
 | Version | Soportado          |
 | ------- | ------------------ |
-| 4.5.5   | :white_check_mark: |
+| 5.4.x   | :white_check_mark: |
 
 Actualmente es compatible con la última versión PHP.
 

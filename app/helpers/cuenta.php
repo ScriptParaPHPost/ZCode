@@ -1,32 +1,30 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    cuenta.php
- * @author  ZCode | PHPost
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/**********************************\
+$tsPage = "cuenta";
 
-*	(VARIABLES POR DEFAULT)		*
+$tsLevel = 2;
 
-\*********************************/
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-$tsPage = "cuenta";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsContinue = true;
 
-$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 
-$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
-
-$tsContinue = true;	// CONTINUAR EL SCRIPT
-
-include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
-
-$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan'];
 
 // VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
 $tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-if($tsLevelMsg != 1){	
+if(!$tsLevelMsg) {	
 	$tsPage = 'aviso';
 	$tsAjax = 0;
 	$smarty->assign("tsAviso", $tsLevelMsg);
@@ -48,24 +46,24 @@ if($tsContinue){
 		$smarty->assign('tsColoresTxt', $tsColoresTxt);
 		$smarty->assign('tsFontFamily', $tsFontFamily);
 		$smarty->assign('tsFontSize', $tsFontSize);
-		$smarty->assign('tsAvatarSelect', $tsCuenta->getAvatarImages());
 		$smarty->assign('tsAvatarSocials', $tsCuenta->getAvatarSocials());
+		$smarty->assign('tsAvatarSelect', $tsCuenta->getAvatarImages('avatares'));
+		$smarty->assign('tsSetAvatares', $tsCuenta->getAvatarImages());
 	}
 
 	# Comprobamos que tenga el 2FA activado
 	$user_secret_2fa = empty($tsUser->info['user_secret_2fa']) ? false : true;
 
 	$smarty->assign("tsG2FA", $user_secret_2fa);
-	
 
 	if(empty($action)){
 		include TS_ZCODE . 'RedesDataIcon.php';
 		include TS_ZCODE . 'Paises.php';
 		include TS_EXTRA . 'geodata.php';
 
-		// SOLO MENORES DE 84 AÑOS xD Y MAYORES DE...
+		// SOLO MENORES DE 84 Aï¿½OS xD Y MAYORES DE...
 		$now_year = date("Y", time());
-		// 100años - 16años = 84años
+		// 100aï¿½os - 16aï¿½os = 84aï¿½os
 		$edad = (int)$tsCore->settings['c_allow_edad'];
 		$max_year = 100 - $edad;
 		$start_year = (int)$now_year - (int)$max_year;
@@ -74,15 +72,15 @@ if($tsContinue){
 		$smarty->assign("tsMax", (int)$max_year);
 		$smarty->assign("tsMaxY", (int)$start_year);
 		$smarty->assign("tsEndY", (int)$end_year);
+
 		// PERFIL INFO
    	$tsPerfil = $tsCuenta->loadPerfil();
 		$smarty->assign("tsPerfil", $tsPerfil);
-
 		$smarty->assign("tsRedes", $redes);
 		
 		// PERFIL DATA
-		$smarty->assign("tsPData", $tsPerfilData);
    	$smarty->assign("tsPrivacidad", $tsPrivacidad);
+		
 		// DATOS
 		$smarty->assign("tsPaises", $tsPaises);
 		$smarty->assign("tsEstados", $estados[$tsPerfil['user_pais']]);
@@ -106,8 +104,8 @@ if($tsContinue){
 	} elseif($action == 'desactivate'){
 		if(!empty($_POST['validar'])) echo $tsCuenta->desCuenta();
 	}
-	$smarty->assign("tsAccion", $_GET["accion"]); 
-	$smarty->assign("tsTab", $_GET["tab"]); 
+	if(isset($_GET['accion'])) $smarty->assign("tsAccion", $_GET["accion"]); 
+	if(isset($_GET['tab'])) $smarty->assign("tsTab", $_GET["tab"]); 
 	
 }
 

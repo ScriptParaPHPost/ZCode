@@ -12,7 +12,7 @@
 			
 			{foreach from=$tsMedals.medallas item=m}
 				<div id="medal_id_{$m.medal_id}" class="position-relative rounded border mb-3 d-grid column-gap-2 p-2" style="grid-template-columns: 6rem 1fr;" data-mid="{$m.medal_id}">
-					<div><img class="avatar avatar-8" src="{$tsConfig.assets}/images/medallas/{$m.m_image}" title="{$m.m_title}" /></div>
+					<div><img class="avatar avatar-8" src="{$tsRoutes.assets.images}/medallas/{$m.m_image}" title="{$m.m_title}" /></div>
 					<div>
 						<div class="h6 m-0 py-2">{$m.m_title} (<strong title="Asignaciones" id="total_med_assig_{$m.medal_id}">{$m.m_total}</strong>)</div>
 						<small class="d-block">{$m.m_description}</small>
@@ -39,7 +39,7 @@
 
 		{foreach from=$tsAsignaciones.asignaciones item=m}
 			<div id="assign_id_{$m.id}" class="position-relative rounded border mb-3 d-grid column-gap-2 p-2" style="grid-template-columns: 4rem 1fr;" data-mid="{$m.id}">
-				<div><img class="avatar avatar-5" src="{$tsConfig.assets}/images/medallas/{$m.m_image}" title="{$m.m_title}" /></div>
+				<div><img class="avatar avatar-5" src="{$tsRoutes.assets.images}/medallas/{$m.m_image}" title="{$m.m_title}" /></div>
 				<div>
 					<div class="h6 m-0 py-2">{$m.m_title}</div>
 					<span class="d-block small fst-italic">
@@ -63,7 +63,7 @@
 				$('#med_img').on('change', () => {
 					var cssi = $("#med_img option:selected").val();
 					$('#c_icon').css({ 
-	         		"background": 'url(\'{$tsConfig.assets}/images/medallas/'+cssi+'\') no-repeat center',
+	         		"background": 'url(\'{$tsRoutes.assets.images}/medallas/'+cssi+'\') no-repeat center',
 	         		"background-size": '2rem'
 	         	});
 				});
@@ -84,7 +84,7 @@
 					<dt><label for="cat_img">Icono de la categor&iacute;a:</label></dt>
 					<dd>
 						<div class="d-flex justify-content-start align-items-center">
-							<div style="background:url({$tsConfig.assets}/images/medallas/{if $tsMed.m_image}{$tsMed.m_image}{else}{$tsIcons.0}{/if}) no-repeat left center;" width="2rem" height="2rem" class="avatar avatar-3" id="c_icon"></div>
+							<div style="background:url({$tsRoutes.assets.images}/medallas/{if $tsMed.m_image}{$tsMed.m_image}{else}{$tsIcons.0}{/if}) no-repeat left center;" width="2rem" height="2rem" class="avatar avatar-3" id="c_icon"></div>
 						
 							<select name="med_img" id="med_img" style="width:220px">
 							{foreach from=$tsIcons key=i item=img}

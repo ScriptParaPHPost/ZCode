@@ -5,7 +5,10 @@
  * para el funcionamiento del 2FA
 */
 
-include realpath(__DIR__) . "/FixedBitNotation.php";
-include realpath(__DIR__) . "/GoogleAuthenticatorInterface.php";
-include realpath(__DIR__) . "/GoogleAuthenticator.php";
-include realpath(__DIR__) . "/GoogleQrUrl.php";
+include __DIR__ . DIRECTORY_SEPARATOR . "FixedBitNotation.php";
+
+include __DIR__ . DIRECTORY_SEPARATOR . "GoogleAuthenticatorInterface.php";
+
+include __DIR__ . DIRECTORY_SEPARATOR . "GoogleAuthenticator.php";
+
+include __DIR__ . DIRECTORY_SEPARATOR . "GoogleQrUrl.php";

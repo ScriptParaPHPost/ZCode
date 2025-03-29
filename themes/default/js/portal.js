@@ -9,14 +9,14 @@ var portal = {
 		if(cat_ids == '') return false;
 		//
 		loading.start();
-		$.post(`${ZCodeApp.url}/portal-posts_config.php`, 'cids=' + cat_ids, h => {
+		$.post(`${basePath}/portal-posts_config.php`, 'cids=' + cat_ids, h => {
 			switch(h.charAt(0)){
 				case '0': //Error
 					mydialog.alert('Error', h.substring(3));
 				break;
 				case '1': //OK
 					$('#config_posts').slideUp();
-					imported('portal/portal-page.js', 'handlePostPage', { type: 'posts', page: 1, scroll: false });
+					iModule('PortalPage.js', 'handlePostPage', { type: 'posts', page: 1, scroll: false });
 				break;
 			}
 			loading.end();
@@ -29,7 +29,7 @@ $(function(){
 	const portalTabs = $('.userPortal--item');
 	portalTabs.map( function(element, index) {
 		$(this).on('click', function() {
-			imported('portal/portal-tabs.js', 'handleLoadTabs', { obj: $(this), classObj: '.userPortal--item' });
+			iModule('PortalTabs.js', 'handleLoadTabs', { obj: $(this), classObj: '.userPortal--item' });
 		});
 	});
 

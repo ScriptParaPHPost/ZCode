@@ -1,10 +1,16 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Clase para el manejo de los comentarios
- *
- * @name    c.comentarios.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsComentarios {
 
@@ -15,7 +21,7 @@ class tsComentarios {
 		: PARA EL PORTAL
 	*/
 	public function getLastComentarios() {
-		global $tsUser, $tsCore;
+		global $tsUser, $tsCore, $tsZCode;
 		//
 		$isAdmod = ($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1) ? '' : 'WHERE p.post_status = 0 AND cm.c_status = 0 AND u.user_activo = 1 && u.user_baneado = 0';
 		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT cm.cid, cm.c_status, u.user_id, u.user_name, u.user_activo, u.user_baneado, p.post_id, p.post_title, p.post_status, c.c_seo FROM @posts_comentarios AS cm LEFT JOIN @miembros AS u ON cm.c_user = u.user_id LEFT JOIN @posts AS p ON p.post_id = cm.c_post_id LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category $isAdmod ORDER BY cid DESC LIMIT 10");
@@ -23,7 +29,7 @@ class tsComentarios {
 		$data = result_array($query);
 		foreach($data as $cid => $comentario) {
 			$data[$cid]['post_title_a'] = stripslashes($comentario['post_title']);
-			$data[$cid]['cm_url'] = $tsCore->createLink('post', $comentario['post_id'], '#comment' . $comentario['cid']);
+			$data[$cid]['cm_url'] = $tsZCode->createLink('post', $comentario['post_id'], '#comment' . $comentario['cid']);
 		}
 		//
 		return $data;
@@ -70,7 +76,7 @@ class tsComentarios {
 	 * @return array Arreglo de comentarios procesados con información adicional.
 	*/
 	private function getCommentsAndAnswerForeach(array $foreach = [], bool $isAswer = false) {
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 	   $response = [];
 		foreach($foreach as $id => $comment) {
 	      // Verificar si el usuario está bloqueado
@@ -79,7 +85,7 @@ class tsComentarios {
 			$response[$id] = $comment;
 			$response[$id]['votado'] = $this->isVoted($comment['cid']);
 			$response[$id]['c_html'] = $tsCore->parseBadWords($tsCore->parseBBCode($comment['c_body']), true);
-			$response[$id]['c_avatar'] = $tsCore->getAvatar($comment['user_id'], 'use');
+			$response[$id]['c_avatar'] = $tsZCode->getAvatar($comment['user_id'], 'use');
 			$response[$id]['respuesta'] = !empty($comment['c_answer']);
 			// Obtener respuestas si es necesario
 			if($isAswer) {
@@ -155,7 +161,7 @@ class tsComentarios {
 		$tsText = $this->verifyComment($comentario);
 		/*        ------       */
 		$most_resp = $_POST['mostrar_resp'];
-		$respuesta = (int)$_POST['respuesta'] ?? 0;
+		$respuesta = isset($_POST['respuesta']) ? (int)$_POST['respuesta'] : 0;
 		$fecha = time();
 		//
 		if(!$data['post_user']) return '0: El post no existe.';

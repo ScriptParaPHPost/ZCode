@@ -1,17 +1,19 @@
 <?php 
 
-if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * Controlador AJAX
- *
- * @name    ajax.github.php
- * @author  Miguel92
-*/
-
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 $files = [
-   'github-api' => ['n' => 2, 'p' => ''],
+   'github-api' => ['n' => 4, 'p' => ''],
 ];
 
 // REDEFINIR VARIABLES
@@ -26,18 +28,22 @@ if($tsLevelMsg != 1):
 	die();
 endif;
 
-include TS_MODELS . 'c.actualizacion.php';
-$tsActualizacion = new tsActualizacion;
-
 // CODIGO
 switch($action){
 	case 'github-api':
 
-		$tsActualizacion->BRANCH = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'main';
+		$user_repo = "ScriptParaPHPost/ZCode";
+		$ch = curl_init("https://api.github.com/repos/$user_repo/branches/main");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0'); // GitHub requiere un User-Agent válido
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    		"User-Agent: 'Updates for files'"
+		]);
 
-		$last = $tsActualizacion->getLastCommit();
-		$response = $tsActualizacion->api_response('info');
-	
+		$rqsCurl = curl_exec($ch);
+		curl_close($ch);
+		$response = json_decode($rqsCurl);
+		
 		echo json_encode($response->commit);
 
 	break;

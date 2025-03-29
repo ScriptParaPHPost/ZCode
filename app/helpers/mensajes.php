@@ -1,107 +1,65 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    mensajes.php
- * @author  ZCode | PHPost
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/**********************************\
+$tsPage = "mensajes";
 
-*	(VARIABLES POR DEFAULT)		*
+$tsLevel = 2;
 
-\*********************************/
-
-	$tsPage = "mensajes";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
-
-	$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
-
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
+$tsContinue = true;
 	
-/*++++++++ = ++++++++*/
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 
 
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
-
-	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
-		$tsPage = 'aviso';
-		$tsAjax = 0;
-		$smarty->assign("tsAviso",$tsLevelMsg);
-		//
-		$tsContinue = false;
-	}
+// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if(!$tsLevelMsg) {	
+	$tsPage = 'aviso';
+	$tsAjax = 0;
+	$smarty->assign("tsAviso",$tsLevelMsg);
 	//
-	if($tsContinue){
+	$tsContinue = false;
+}
 
-/**********************************\
-
-* (VARIABLES LOCALES ESTE ARCHIVO)	*
-
-\*********************************/
+if($tsContinue) {
 
 	$action = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : '';
 	$unread = empty($_GET['qt']) ? false : true;
 
-/**********************************\
-
-*	(INSTRUCCIONES DE CODIGO)		*
-
-\*********************************/
-
-	switch($action) {
-		case '':
-			$smarty->assign("tsMensajes", $tsMP->getMensajes(2, $unread));
-		break;
-		case 'enviados':
-			$smarty->assign("tsMensajes", $tsMP->getMensajes(3));
-		break;
-		case 'respondidos':
-			$smarty->assign("tsMensajes", $tsMP->getMensajes(4));
-		break;
-		case 'search':
-			$smarty->assign("tsMensajes", $tsMP->getMensajes(5));
-		break;
-		case 'leer':
-			$smarty->assign("tsMensajes", $tsMP->readMensaje());
-		break;
-		case 'avisos':
-			// ESTO ES COSA DEL MONITOR PERO LO PUSE EN MENSAJES PORQUE LOS AVISOS SON ESO, MENSAJES :)
-			if(empty($_GET['aid']) && empty($_GET['did'])){
-				 $smarty->assign("tsMensajes", $tsMonitor->getAvisos());
-			} elseif($_GET['aid']) {
-				 $smarty->assign("tsMensaje", $tsMonitor->readAviso($_GET['aid']));
-			} elseif($_GET['did']){
-				 $borrado = $tsMonitor->delAviso($_GET['did']);
-				 if($borrado == true) $tsCore->redirectTo($tsCore->settings['url'].'/mensajes/avisos/');
-			}
-		break;
-	}
-	 # VARIABLE
-	 $smarty->assign("tsQT", $_GET['qt']);
-	 
-
-/**********************************\
-
-* (AGREGAR DATOS GENERADOS | SMARTY) *
-
-\*********************************/
-	//
+	match($action) {
+		'' => $smarty->assign("tsMensajes", $tsMP->getMensajes(2, $unread)),
+		'enviados' => $smarty->assign("tsMensajes", $tsMP->getMensajes(3)),
+		'respondidos' => $smarty->assign("tsMensajes", $tsMP->getMensajes(4)),
+		'search' => $smarty->assign("tsMensajes", $tsMP->getMensajes(5)),
+		'leer' => $smarty->assign("tsMensajes", $tsMP->readMensaje()),
+		'avisos' => match(true) {
+			empty($_GET['aid']) && empty($_GET['did']) => $smarty->assign("tsMensajes", $tsMonitor->getAvisos()),
+			isset($_GET['aid']) => $smarty->assign("tsMensaje", $tsMonitor->readAviso($_GET['aid'])),
+			isset($_GET['did']) => $tsMonitor->delAviso($_GET['did']) ? $tsCore->redirectTo($tsCore->settings['url'].'/mensajes/avisos/') : null,
+		},
+		default => null,
+	};
+	# VARIABLE
+	$smarty->assign("tsQT", $_GET['qt']);
 	$smarty->assign("tsAction",$action);
+
+}
+
+if(empty($tsAjax)) {
+
+	$smarty->assign("tsTitle",$tsTitle);
 	
-	}
-
-if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
-
-	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
-
-	/*++++++++ = ++++++++*/
 	include TS_ROOT . 'footer.php';
-	/*++++++++ = ++++++++*/
+	
 }

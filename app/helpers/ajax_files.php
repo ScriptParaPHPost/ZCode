@@ -1,68 +1,42 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    ajax_files.php
- * @author  ZCode | PHPost
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/**********************************\
+$tsPage = "";
 
-*	(VARIABLES POR DEFAULT)		*
+$tsLevel = 0;
 
-\*********************************/
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-	$tsPage = "";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+include '../../header.php'; 
 
-	$tsLevel = 0;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 
 
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$action = htmlspecialchars($_GET['action'] ?? '');
+$action_type = explode('-', $action)[0];
+
+// Determinar el archivo necesario
+$file = 'ajax/ajax.' . $action_type . '.php';
+
+// Verificar si el archivo existe y luego incluirlo
+if ($file && file_exists($file)) {
+	include $file;
+} else {
+	die("0: No se encontró el archivo solicitado: " . htmlspecialchars($file));
+}
+
+if(empty($tsAjax)) {
+
+	$smarty->assign("tsTitle",$tsTitle);
 	
-/*++++++++ = ++++++++*/
-
-	$realpath = (isset($_GET['from']) AND $_GET['from'] === 'dashboard') ? '../../admin/' : '../../';
-	include realpath($realpath) . DIRECTORY_SEPARATOR . "header.php"; // INCLUIR EL HEADER
-
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
-
-/**********************************\
-
-* (VARIABLES LOCALES ESTE ARCHIVO)	*
-
-\*********************************/
-
-	$action = htmlspecialchars($_GET['action'] ?? '');
-	$action_type = explode('-', $action);
-	$action_type = $action_type[0];
-
-/**********************************\
-
-*	(INSTRUCCIONES DE CODIGO)		*
-
-\*********************************/
-
-	// QUE ARCHIVO NECESITAMOS?
-	$file = './ajax/ajax.'.$action_type.'.php';
-	if($_GET['from'] === 'dashboard') {
-		$file = TS_ADMIN .  ltrim($file, './');
-	}
-	//
-	if(file_exists($file)) include $file;
-	else die("0: No se encontro el archivo que se ha solicitado." . $file);
-	
-/**********************************\
-
-* (AGREGAR DATOS GENERADOS | SMARTY) *
-
-\*********************************/
-
-if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
-
-	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
-
-	/*++++++++ = ++++++++*/
 	include TS_ROOT . 'footer.php';
-	/*++++++++ = ++++++++*/
+	
 }

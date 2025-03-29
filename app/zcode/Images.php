@@ -1,17 +1,15 @@
 <?php 
 
-if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * @name Images.php
- * @copyright ZCode 2024
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
  * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
- * @author Miguel92
- * @version v2.0.0
- * @description Controlador para manipular imagenes
 **/
 
 class Images {
@@ -66,14 +64,18 @@ class Images {
 	 */
 	protected $pattern = '/\[img(?:=|])([^]]+)\[\/img]|(?:\[img=)([^]]+)\]/i';
 
+	private $core;
+	private $zcode;
+
 	/**
 	  * Constructor de la clase. Inicializa la ruta de la imagen predeterminada.
 	  */
 	public function __construct() {
-		global $tsCore;
-		$this->url = $tsCore->settings['url'];
-		$this->assets = $tsCore->settings['assets'];
-		$this->storage = $this->url . '/storage';
+		$this->core = new tsCore;
+		$this->zcode = new tsZCode;
+		$this->url = $this->core->settings['url'];
+		$this->assets = $this->core->setRoutes('assets', 'images');
+		$this->storage = $this->core->setRoutes('storage', 'base');
 		$this->image_in_mb = $this->megabytes * 1024 * 1024;
 		$this->setFolderDestiny();
 	}
@@ -208,7 +210,6 @@ class Images {
     * @return void
    */
    private function resizeAndConvertToWebP(string $destDir = '', string $fileName = '') {
-   	global $tsCore;
 		$sourceDir = TS_UPLOADS;
 	   $quality = $this->quality;
 	   // Define the sizes and their prefixes
@@ -224,12 +225,12 @@ class Images {
 	      $this->logError("No se puede determinar el tipo de imagen de {$sourcePath}");
 	   }
 	   // Create an image resource from the source image
-		$sourceImage = $tsCore->getFormatImage($imageInfo[2], $sourcePath, $imageInfo[2]);
+		$sourceImage = $this->zcode->getFormatImage($imageInfo[2], $sourcePath, $imageInfo[2]);
 
       // Resize and save the images
 		if(!is_dir($destDir)) mkdir($destDir, 0777, true);
 	   foreach ($sizes as $prefix => $size) {
-	   	$destinationPath = $destDir . TS_PATH . "image_$prefix.webp";
+	   	$destinationPath = $destDir . DIRECTORY_SEPARATOR . "image_$prefix.webp";
 	   	if(file_exists($destinationPath)) return false;
       	$srcWidth = $imageInfo[0];
       	$srcHeight = $imageInfo[1];
@@ -288,7 +289,7 @@ class Images {
 	*/
 	private function getPortadaLink(string $encode = '') {
 		$sizeOfCovers = ['sm', 'md', 'lg'];
-		foreach($sizeOfCovers as $img) $images[$img] = $this->getRoute("portadas/$encode", 'link') . "image_$img.webp" . uniqid('?v1.2');
+		foreach($sizeOfCovers as $img) $images[$img] = $this->getRoute("portadas/$encode", 'link') . "image_$img.webp";
 		return $images;
 	}
 
@@ -299,9 +300,9 @@ class Images {
    */
 	private function defaultImages() {
 		return [
-			'sm' => $this->assets . '/images/favicon/logo-64.webp',
-			'md' => $this->assets . '/images/favicon/logo-128.webp',
-			'lg' => $this->assets . '/images/favicon/logo-512.webp'
+			'sm' => $this->assets . '/favicon/logo-64.webp',
+			'md' => $this->assets . '/favicon/logo-128.webp',
+			'lg' => $this->assets . '/favicon/logo-512.webp'
 		];
 	}
 	/**

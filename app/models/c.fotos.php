@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control de las fotos
- *
- * @name    c.fotos.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsFotos {
 
 	private $limitar = 500;
@@ -126,8 +133,8 @@ class tsFotos {
 		getFotoEdit()
 	*/
 	public function getFotoEdit() {
-   	// Validar parámetro ID
-   	if (empty($_GET['id']) || !is_numeric($_GET['id'])) return 'Parámetro inválido.';
+   	// Validar parï¿½metro ID
+   	if (empty($_GET['id']) || !is_numeric($_GET['id'])) return 'Parï¿½metro invï¿½lido.';
   		// Sanitizar ID de la foto
   		$fotoId = (int)$_GET['id'];
     	// Consultar datos de la foto
@@ -138,10 +145,10 @@ class tsFotos {
 	}
 
 	private function photoMsgUser(array $data = [], string $razon = '') {
-		global $tsCore, $tsUser, $tsMonitor;
+		global $tsCore, $tsUser, $tsMonitor, $tsZCode;
 		$username = $tsUser->getUserName($data['f_user']);
-		$crearLink = $tsCore->createLink('foto', $data['foto_id']);
-		$quien = $tsCore->createLink('perfil', $tsUser->nick);
+		$crearLink = $tsZCode->createLink('foto', $data['foto_id']);
+		$quien = $tsZCode->createLink('perfil', $tsUser->nick);
 		//
 		$aviso = "Hola <strong>$username</strong>\n\n Te informo que tu foto <a href=\"$crearLink\">{$data['f_title']}</a> ha sido editada por <a href=\"$quien\">{$tsUser->nick}</a>\n\n Causa: <strong>$razon</strong> \n\n Te recomendamos leer el <a href=\"{$tsCore->settings['url']}/pages/protocolo/\">protocolo</a> para evitar futuras sanciones.\n\n Muchas gracias por entender!";
 		//
@@ -154,7 +161,7 @@ class tsFotos {
 		editFoto()
 	*/
 	public function editFoto(){
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		//
 		$fid = (int)$_GET['id'];
 		// DATOS
@@ -171,7 +178,7 @@ class tsFotos {
 		// UPDATES
 		db_exec([__FILE__, __LINE__], 'query', "UPDATE @fotos SET $fotoUpdate WHERE foto_id = $fid");
 		// REDIRIGIMOS
-		$tsCore->redirectTo($tsCore->createLink('foto', $fid));
+		$tsCore->redirectTo($tsZCode->createLink('foto', $fid));
 	}
 	 /*
 		  delFoto()
@@ -186,12 +193,12 @@ class tsFotos {
 		  
 		  //
 		  if(!empty($data['f_user'])){
-				// ES EL DUEÑO DE LA FOTO?
+				// ES EL DUEï¿½O DE LA FOTO?
 				if($data['f_user'] == $tsUser->uid || $tsUser->is_admod || $tsUser->permisos['moef']){
 				 if(db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM @fotos WHERE foto_id = \''.(int)$fid.'\'')){
 						  // BORRAMOS LOS COMENTARIOS
 					db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM @fotos_comentarios WHERE c_foto_id = \''.(int)$fid.'\'');
-						  // RESTAMOS ESTADÍSTICAS
+						  // RESTAMOS ESTADï¿½STICAS
 						  db_exec([__FILE__, __LINE__], 'query', 'UPDATE @stats SET `stats_fotos` = stats_fotos - \'1\' WHERE `stats_no` = \'1\'');
 						  return '1: OK';
 					 } else return '0: Ocurri&oacute; un error al intentar borrar';
@@ -203,7 +210,7 @@ class tsFotos {
 		  getLastFotos()
 	 */
 	public function getLastFotos() {
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		//
 		$max = 15; // MAXIMO A MOSTRAR
 		$limit = $tsCore->setPageLimit($max, true);		
@@ -217,8 +224,8 @@ class tsFotos {
 		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', $query));
 		  
 		foreach($data['data'] as $fid => $foto) {
-			$data['data'][$fid]['avatar'] = $tsCore->getAvatar($foto['user_id'], 'use');
-			$data['data'][$fid]['foto_url'] = $tsCore->createLink('foto', $foto['foto_id']);
+			$data['data'][$fid]['avatar'] = $tsZCode->getAvatar($foto['user_id'], 'use');
+			$data['data'][$fid]['foto_url'] = $tsZCode->createLink('foto', $foto['foto_id']);
 		}
 		
 		  //
@@ -228,13 +235,13 @@ class tsFotos {
 		  getLastComments()
 	 */
 	public function getLastComments() {
-		global $tsUser, $tsCore;
+		global $tsUser, $tsCore, $tsZCode;
 		//
 		$isAdmod = ($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1) ? '' : "WHERE f.f_status = 0 && u.user_activo = 1 && u.user_baneado = 0";
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT c.cid, c.c_user, f.foto_id, f.f_title, f.f_status, u.user_id, u.user_name, u.user_activo FROM @fotos_comentarios AS c LEFT JOIN @fotos AS f ON c.c_foto_id = f.foto_id LEFT JOIN @miembros AS u ON f.f_user = u.user_id $isAdmod ORDER BY c.c_date DESC LIMIT 10"));
 		foreach($data as $fid => $foto) {
-			$data[$fid]['avatar'] = $tsCore->getAvatar($foto['user_id'], 'use');
-			$data[$fid]['foto_url'] = $tsCore->createLink('foto', $foto['f_title'], '#comment-' . $foto['cid']);
+			$data[$fid]['avatar'] = $tsZCode->getAvatar($foto['user_id'], 'use');
+			$data[$fid]['foto_url'] = $tsZCode->createLink('foto', $foto['f_title'], '#comment-' . $foto['cid']);
 			
 		}
 		return $data;
@@ -243,7 +250,7 @@ class tsFotos {
 		  getFotos($user_id)
 	 */
 	public function getFotos($user_id) {
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		//
 		$query = 'SELECT f.foto_id, f.f_title, f.f_date, f.f_description, f.f_url, f.f_status, u.user_id, u.user_name, u.user_activo FROM @fotos AS f LEFT JOIN @miembros AS u ON u.user_id = f.f_user WHERE f.f_user = \''.(int)$user_id.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : ' && f.f_status = \'0\' && u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY f.foto_id DESC';
 		// PAGINAR
@@ -253,8 +260,8 @@ class tsFotos {
 		//
 		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', $query.' LIMIT '.$pages['limit']));
 		foreach($data['data'] as $fid => $foto) {
-			$data['data'][$fid]['avatar'] = $tsCore->getAvatar($foto['user_id'], 'use');
-			$data['data'][$fid]['foto_url'] = $tsCore->createLink('foto', $foto['foto_id']);
+			$data['data'][$fid]['avatar'] = $tsZCode->getAvatar($foto['user_id'], 'use');
+			$data['data'][$fid]['foto_url'] = $tsZCode->createLink('foto', $foto['foto_id']);
 		}
 		//
 		return $data;
@@ -264,7 +271,7 @@ class tsFotos {
 		  getFoto()
 	 */
 	public function getFoto() {
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $tsZCode;
 		//
 		$fid = (int)$_GET['fid'];
 		$isAdmodPerm = ($tsUser->is_admod || $tsUser->permisos['moacp']) ? '' : "AND f.f_status = 0 AND u.user_activo = 1";
@@ -273,34 +280,34 @@ class tsFotos {
 		$data['foto'] = db_exec('fetch_assoc', $query);
 		$f_user = (int)$data['foto']['f_user'];
 		// Avatar del usuario
-		$data['foto']['avatar'] = $tsCore->getAvatar($f_user, 'use');
+		$data['foto']['avatar'] = $tsZCode->getAvatar($f_user, 'use');
 		// User foto comments
 		$data['foto']['user_foto_comments'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(cid) FROM @fotos_comentarios WHERE c_user = $f_user"))[0];
 		// User fotos
 		$data['foto']['user_fotos'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(foto_id) AS f FROM @fotos WHERE f_user = $f_user && f_status = 0"))[0];
 		$data['foto']['exist'] = db_exec('num_rows', $query);
-		$data['foto']['f_description'] = $tsCore->parseBBCode($tsCore->parseSmiles($data['foto']['f_description']));
-		// País
-		$data['foto']['user_pais'] = $tsCore->countryUser($data['foto']['user_pais']);
+		$data['foto']['f_description'] = $tsCore->parseBBCode($data['foto']['f_description'], 'smiles');
+		// Paï¿½s
+		$data['foto']['user_pais'] = $tsZCode->countryUser($data['foto']['user_pais']);
 		// FOLLOW
 		$data['foto']['follow'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT `follow_id` FROM @follows WHERE f_user = {$tsUser->uid} AND f_id = $f_user AND f_type = 1 LIMIT 1"));
 		// SEGUIDORES
 		$data['amigos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT f.f_id, p.foto_id, p.f_title, p.f_url, u.user_name FROM @follows AS f LEFT JOIN @fotos AS p ON f.f_id = p.f_user LEFT JOIN @miembros AS u ON p.f_user = u.user_id WHERE f.f_user = $f_user AND f.f_type = 1 AND p.f_last = 1 LIMIT 5"));
 		foreach($data['amigos'] as $afid => $foto) {
-			$data['amigos'][$afid]['foto_url'] = $tsCore->createLink('foto', $foto['foto_id']);
+			$data['amigos'][$afid]['foto_url'] = $tsZCode->createLink('foto', $foto['foto_id']);
 		}
 		// ULTIMAS FOTOS
 		$isAdmod = $this->isAdmod("AND f.f_status = 0");
 		$data['ultimas_fotos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT f.foto_id, f.f_title, f.f_date, f.f_status, f.f_url, u.user_name, u.user_activo FROM @fotos AS f LEFT JOIN @miembros AS u ON u.user_id = f.f_user WHERE f.f_user = $f_user AND f.foto_id != $fid $isAdmod ORDER BY f.foto_id DESC LIMIT 5"));
 		foreach($data['ultimas_fotos'] as $ufid => $foto) {
-			$data['ultimas_fotos'][$ufid]['foto_url'] = $tsCore->createLink('foto', $foto['foto_id']);
+			$data['ultimas_fotos'][$ufid]['foto_url'] = $tsZCode->createLink('foto', $foto['foto_id']);
 		}
 		// COMENTARIOS
 		$isAdmod = $this->isAdmod();
 		$comments = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT c.*, u.user_id, u.user_name, u.user_activo FROM @fotos_comentarios AS c LEFT JOIN @miembros AS u ON c.c_user = u.user_id WHERE c.c_foto_id = $fid $isAdmod"));
 		foreach($comments as $key => $val) {
-			$val['c_avatar'] = $tsCore->getAvatar($val['user_id'], 'use');
-			$val['c_body'] = $tsCore->parseBBCode($tsCore->parseBadWords($tsCore->parseSmiles($val['c_body']), true));
+			$val['c_avatar'] = $tsZCode->getAvatar($val['user_id'], 'use');
+			$val['c_body'] = $tsCore->parseBBCode($tsCore->parseBadWords($val['c_body'], true), 'smiles');
 			$data['comentarios'][] = $val;
 		}
 		$data['foto']['f_comments'] = safe_count($comments);
@@ -409,7 +416,7 @@ class tsFotos {
 		  newComentario()
 	 */
 	public function newComentario() {
-		global $tsCore, $tsUser, $tsMonitor;
+		global $tsCore, $tsUser, $tsMonitor, $tsZCode;
 
 		// NO MAS DE 1500 CARACTERES PUES NADIE COMENTA TANTO xD
 		$comentario = $this->limitComment();
@@ -431,25 +438,25 @@ class tsFotos {
 			//
 			if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @fotos_comentarios (c_foto_id, c_user, c_date, c_body, c_ip) VALUES ($foto_id, {$tsUser->uid}, $fecha, '$comentario', '$IP')")) {
 				$cid = db_exec('insert_id');
-				// ESTADÍSTICAS
+				// ESTADï¿½STICAS
 				db_exec([__FILE__, __LINE__], 'query', "UPDATE @stats SET `stats_foto_comments` = stats_foto_comments + 1 WHERE `stats_no` = 1");
 				// NOTIFICAR AL USUARIO
 				$tsMonitor->setNotificacion(11, $data['f_user'], $tsUser->uid, $foto_id);
 				// array(comid, com, fecha, autor_del_post)
 				return [
 					'comment_id' => $cid, 
-					'comment' => $tsCore->parseBadWords($tsCore->parseSmiles($comentario), true), 
+					'comment' => $tsCore->parseBadWords($tsCore->parseBBCode($comentario, 'smiles'), true), 
 					'comment_date' => $fecha, 
 					'comment_autor' => $_POST['auser'],
-					'comment_user' => $tsCore->getAvatar($tsUser->uid, 'use')
+					'comment_user' => $tsZCode->getAvatar($tsUser->uid, 'use')
 				];
 			} else return '0: Ocurri&oacute; un error int&eacute;ntalo m&aacute;s tarde.';
 		} else return '0: Necesitas permisos para continuar.';
 	}
-	 /*
-		  delComentario()
-	 */
-	 function delComentario(){
+	/*
+	  delComentario()
+	*/
+	function delComentario(){
 		  global $tsCore, $tsUser;
 		  //
 		  $cid = $tsCore->setSecure($_POST['cid']);
@@ -459,7 +466,7 @@ class tsFotos {
 		  
 		  //
 		  if(!empty($data['cid'])){
-				// ES EL DUEÑO DE LA FOTO?
+				// ES EL DUEï¿½O DE LA FOTO?
 				if($data['f_user'] == $tsUser->uid || $tsUser->is_admod || $tsUser->permisos['moecf']){
 			if(db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM @fotos_comentarios WHERE cid = \''.(int)$cid.'\'')){
 				  db_exec([__FILE__, __LINE__], 'query', 'UPDATE @stats SET `stats_foto_comments` = stats_foto_comments - \'1\' WHERE `stats_no` = \'1\'');
@@ -467,5 +474,10 @@ class tsFotos {
 					 }
 				} else return '0: Hmmm... &iquest;Haciendo pruebas?';
 		  } else return '0: El comentario no existe.'; 
-	 }
+	}
+
+	public function getStats() {
+		$stats = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT stats_miembros, stats_fotos, stats_foto_comments FROM @stats WHERE stats_no = 1'));
+		return $stats;
+	}
 }

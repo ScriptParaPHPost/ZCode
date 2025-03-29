@@ -1,40 +1,51 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Clase para el manejo de los resultados
- *
- * @name    c.buscador.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsBuscador {
 
+	private $core;
+	private $user;
+	private $zcode;
+
+	public function __construct() {
+		$this->core = new tsCore;
+		$this->user = new tsUser;
+		$this->zcode = new tsZCode;
+	}
+
 	private function setPagination(string $where = '') {
-		global $tsCore;
-		// PAGINAS
-		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(p.post_id) AS total FROM @posts AS p $where");
-		$total = db_exec('fetch_assoc', $query);
-		  
-		return $tsCore->getPagination($total['total'], 12);
+		$total = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(p.post_id) AS total FROM @posts AS p $where"));
+		return $this->core->getPagination($total['total'], 12);
 	}
 
 	public function isLinkPost(array $isArray = [], bool $post = true) {
-		global $tsCore;
 		$category = $isArray['c_seo'];
 		$post_id = $isArray['post_id'];
-		$title = $tsCore->setSEO($isArray['post_title'], true);
-		return "{$tsCore->settings['url']}/posts/$category/$post_id/$title.html";
+		$title = $this->core->setSEO($isArray['post_title'], true);
+		return "{$this->core->settings['url']}/posts/$category/$post_id/$title.html";
 	}
 
 	/*
-		  getQuery()
+		getQuery()
 	 */
 	public function getQuery() {
-		global $tsCore, $tsUser, $tsImages;
+		global $tsImages;
 		//
-		$query = $tsCore->setSecure($_GET['query'] ?? '');
+		$query = $this->core->setSecure($_GET['query'] ?? '');
 		$category = (int)$_GET['category'] ?? 0;
-		$author = $tsCore->setSecure($_GET['autor'] ?? '');
-		$engine = $tsCore->setSecure($_GET['engine'] ?? 'web');
+		$author = $this->core->setSecure($_GET['autor'] ?? '');
+		$engine = $this->core->setSecure($_GET['engine'] ?? 'web');
 		$w_autor = '';
 		// ESTABLECER FILTROS
 		$where_cat = ($category > 0) ? "AND p.post_category = $category" : '';
@@ -46,7 +57,7 @@ class tsBuscador {
 		// SELECCIONAR USUARIO
 		if(!empty($author)){
 			// OBTENEMOS ID
-			$aid = (int)$tsUser->getUserID($author);
+			$aid = (int)$this->user->getUserID($author);
 			// BUSCAR LOS POST DEL USUARIO SIN CRITERIO DE BUSQUEDA
 			if(empty($query) && $aid > 0) $w_search = "AND p.post_user = $aid";
 			// BUSCAMOS CON CRITERIO PERO SOLO LOS DE UN USUARIO
@@ -62,8 +73,8 @@ class tsBuscador {
 		$max_display = 2;
 
 		foreach($data['data'] as $pid => $post) {
-			$data['data'][$pid]['post_url'] = $tsCore->createLink('post', $post['post_id']);
-			$data['data'][$pid]['use_avatar'] = $tsCore->getAvatar($post['user_id'], 'use');
+			$data['data'][$pid]['post_url'] = $this->zcode->createLink('post', $post['post_id']);
+			$data['data'][$pid]['use_avatar'] = $this->zcode->getAvatar($post['user_id'], 'use');
 			$data['data'][$pid]['portada'] = $tsImages->setImageCover($post['post_id']);
 			# Solo mostraremos 3
 			$post_tags = explode(',', $post['post_tags']);

@@ -1,45 +1,41 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    password.php
- * @author  ZCode | PHPost
-*/
-/**********************************\
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-*	(VARIABLES POR DEFAULT)		*
+$tsPage = "aviso";
 
-\*********************************/
+$tsLevel = 1;
 
-	$tsPage = "aviso";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-	$tsLevel = 1;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
-
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsContinue = true;
 	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
-	
-/*++++++++ = ++++++++*/
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
 
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
+$tsTitle = $_GET['type'] == 1 ? 'Recuperar contrase&ntilde;a ' : 'Validar cuenta '.' - '.$tsCore->settings['titulo'];
 
-	$tsTitle = $_GET['type'] == 1 ? 'Recuperar contrase&ntilde;a ' : 'Validar cuenta '.' - '.$tsCore->settings['titulo'];
+// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if(!$tsLevelMsg) {
+	$tsAjax = 0;
+	$smarty->assign("tsAviso",$tsLevelMsg);
+	//
+	$tsContinue = false;
+}
 
-/*++++++++ = ++++++++*/
-	
-	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){
-		$tsAjax = 0;
-		$smarty->assign("tsAviso",$tsLevelMsg);
-		//
-		$tsContinue = false;
-	}
-	$email = $tsCore->setSecure($_GET['email']);
-	//$email = str_replace('/', '@', $tsCore->setSecure($email));
-	$type = intval($_GET['type']);
-	$key = isset($_GET['hash']) ? htmlspecialchars($_GET['hash']) : '';
-	$tsData = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id, user_name, user_email FROM @miembros WHERE user_email = \''.$email.'\'') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
+$email = $tsCore->setSecure($_GET['email']);
+//$email = str_replace('/', '@', $tsCore->setSecure($email));
+$type = intval($_GET['type']);
+$key = htmlspecialchars($_GET['hash'] ?? '');
+$tsData = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id, user_name, user_email FROM @miembros WHERE user_email = \''.$email.'\'') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
 	// borrar viejos
 	db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM @contacts WHERE `time` < \''.(time() - 86400).'\'') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
 	// EXISTE?

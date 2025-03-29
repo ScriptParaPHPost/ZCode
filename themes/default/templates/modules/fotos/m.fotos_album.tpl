@@ -1,10 +1,5 @@
 <section class="album up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">{uicon name="picture"}</div>
-		<div class="up-header--title">
-			<span>{if $tsFUser.0 == $tsUser->uid}Mis fotos{else}Fotos de {$tsFUser.1}{/if}</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="picture" label="{if $tsFUser.0 == $tsUser->uid}Mis fotos{else}Fotos de {$tsFUser.1}{/if}"}
 	<div class="up-card--body">
 		<div class="fotos-content">
 			{foreach from=$tsFotos.data item=f}

@@ -619,3 +619,31 @@ header .brand .title-site a small {
 	color: var(--main-bg);
 	font-weight: 700;
 }
+
+.ticket {
+	font-size: 0.75rem;
+	display: inline-block;
+	padding: 0 .325rem;
+	line-height: 1.125rem;
+	height: 1.125rem;
+	border-radius: .325rem;
+	background: var(--background);
+	&.en_espera {
+		--background: #FED9AA;
+	}
+	&.en_curso {
+		--background: #C2D8FD;
+	}
+	&.realizado {
+		--background: #A9FCBA;
+	}
+	&.abandonado {
+		--background: #E2E2E2;
+	}
+	&.pausado {
+		--background: #FBB5F5;
+	}
+	&.cancelado {
+		--background: #FDBEBE;
+	}
+}

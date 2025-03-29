@@ -25,7 +25,7 @@
 								<span class="close"><a href="#" onclick="muro.del_pub({$c.cid}, 2); return false" class="uiClose" title="Eliminar"></a></span>
 							{/if}
 							<a href="{$tsConfig.url}/perfil/{$c.user_name}" class="fw-semibold text-decoration-none">{$c.user_name|verificado}</a>
-							<span>&raquo; {$c.c_body|quot}</span>
+							<span>&raquo; {$c.c_body}</span>
 							<div class="cmInfo small">
 								{$c.c_date|fecha} &middot; 
 								<span role="button" onclick="muro.like_this({$c.cid}, 'com', this); return false;" class="fw-semibold">{$c.like}</span> 

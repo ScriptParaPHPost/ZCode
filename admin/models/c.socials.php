@@ -1,13 +1,17 @@
-<?php
+<?php 
 
-if (!defined('TS_HEADER'))
-	 exit('No se permite el acceso directo al script');
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para la adminitración
- *
- * @name    c.socials.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsSocials {
 
 	public function getSocials() {
@@ -24,7 +28,7 @@ class tsSocials {
 		foreach($_POST = (isset($_POST['save']) ? array_slice($_POST, 0, -1) : $_POST) as $key => $val) $_POST[$key] = is_numeric($val) ? (int)$val : $tsCore->setSecure($val);
 		// Guardamos
 		$name = $tsCore->setSecure($_POST["social_name"]);
-		if(insertDataInBase([__FILE__, __LINE__], '@social', [
+		if(addDataToTable([__FILE__, __LINE__], '@social', [
 			'name' => $name,
 			'client_id' => $tsCore->setSecure($_POST["social_client_id"]),
 			'client_secret' => $tsCore->setSecure($_POST["social_client_secret"]),

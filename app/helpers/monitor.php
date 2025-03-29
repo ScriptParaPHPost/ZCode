@@ -1,42 +1,37 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    monitor.php
- * @author  ZCode | PHPost
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/**********************************\
+$tsPage = "monitor";
 
-*	(VARIABLES POR DEFAULT)		*
+$tsLevel = 2;
 
-\*********************************/
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-$tsPage = "monitor";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsContinue = true;
 
-$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
+include_once realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 
-$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
-
-$tsContinue = true;	// CONTINUAR EL SCRIPT
-	
-// INCLUIR EL HEADER
-include_once realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  
-
-// TITULO DE LA PAGINA ACTUAL
-$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	
-
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 
 
 // VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
 $tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-if($tsLevelMsg != 1){	
+if(!$tsLevelMsg) {	
 	$tsPage = 'aviso';
 	$tsAjax = 0;
 	$smarty->assign("tsAviso", $tsLevelMsg);
 	//
 	$tsContinue = false;
 }
-//
+
 if($tsContinue) {
 
 	$action = htmlspecialchars($_GET['action'] ?? '');
@@ -60,4 +55,5 @@ if(empty($tsAjax)) {
 	$smarty->assign("tsTitle",$tsTitle);
 
 	include_once TS_ROOT . "footer.php";
+	
 }

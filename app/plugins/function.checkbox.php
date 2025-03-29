@@ -1,6 +1,6 @@
 <?php 
 
-function smarty_function_checkbox($params, Smarty_Internal_Template $template) {
+function smarty_function_checkbox($params) {
     // Genera un ID único en caso de no proveerse
     $uniq = uniqid();
 

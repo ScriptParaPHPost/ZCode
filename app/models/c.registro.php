@@ -1,11 +1,16 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 /**
- * Modelo para el control del registro de usuarios
- *
- * @name    c.registro.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 include_once TS_ZCODE . "reCaptcha.php";
 $reCaptcha = new reCaptcha;
@@ -97,7 +102,7 @@ class tsRegistro {
 
 	private function sendEmail(array $tsData = []) {
 		global $tsCore;
-		# Enviamos código de 6 dígitos
+		# Enviamos cï¿½digo de 6 dï¿½gitos
 		$key = substr(number_format(time() * rand(), 0, '',''), 0, 6);
 		$time = time();
 		$to = $tsData['user_email'];
@@ -121,18 +126,18 @@ class tsRegistro {
 		}
 	}
 
-	private function createAvatar(array $tsData = []) {
+	private function createAvatar(array $tsData = [], string $uniq = '') {
 		// CREAMOS EL AVATAR CON LAS INICIALES DEL USUARIO
 		$folder = TS_AVATAR . "user{$tsData['user_id']}";
 		if(!is_dir($folder)) mkdir($folder, 0777, true);
-      $return_avatar = $folder . TS_PATH . "web.webp";
+      $return_avatar = $folder . DIRECTORY_SEPARATOR . "$uniq.webp";
  
 	   # AVATAR ALEATORIO Y CONVIRTIENDO A WEBP
-	   $origen = TS_AVATARES . $tsData['user_sexo'] . TS_PATH;
+	   $origen = TS_AVATARES . $tsData['user_sexo'] . DIRECTORY_SEPARATOR;
 		$archivos = scandir($origen);
 		$total_imagenes = 0;
 		foreach ($archivos as $archivo) {
-		   // Incrementar el contador de imágenes
+		   // Incrementar el contador de imï¿½genes
 		   if (pathinfo($archivo, PATHINFO_EXTENSION) === 'webp') $total_imagenes++;
 		}
 	   $avatar = $origen . rand(1, $total_imagenes) . ".webp";
@@ -175,7 +180,7 @@ class tsRegistro {
 		// Verificando el captcha
 		$reCaptcha->RECAPTCHA_TOKEN = $tsData['user_captcha'];
       $reCaptcha->recaptcha_verify_human();
-      // COMPROBAR QUE EL NOMBRE DE USUARIO SEA VÁLIDO
+      // COMPROBAR QUE EL NOMBRE DE USUARIO SEA Vï¿½LIDO
       if(!preg_match("/^[a-zA-Z0-9_-]{4,16}$/", $tsData['user_nick'])) die('nick: Nombre de usuario inv&aacute;lido');
 
 		// COMPROBAR NUEVAMENTE QUE EL USUARIO O EMAIL NO SE ENCUENTREN REGISTRADOS
@@ -191,12 +196,14 @@ class tsRegistro {
 
          $tsData['user_id'] = db_exec('insert_id');
          $id = (int)$tsData['user_id'];
+         $uniq = uniqid();
          $withAvatar = ($tsData['user_sexo'] === 'none') ? 0 : 1;
          // INSERTAMOS EL PERFIL
 			db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @perfil (`user_id`, `user_sexo`, `p_avatar`) VALUES ($id, '{$tsData['user_sexo']}', $withAvatar)");
+			db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @perfil_avatar (`uavatar_id`, `uavatar_use`) VALUES ($id, '$uniq')");
          db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @portal (`user_id`) VALUES ($id)");
          // CREAR AVATAR
-         $this->createAvatar($tsData);
+         $this->createAvatar($tsData, $uniq);
 			
 			// MENSAJE PARA DAR LA BIENVENIDA BIENVENIDA
 			$this->sendMessageWelcome($tsData);

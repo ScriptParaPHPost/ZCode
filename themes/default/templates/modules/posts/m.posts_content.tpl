@@ -31,7 +31,7 @@
    {/if}
 
    <div class="tags pt-3 my-3 d-flex gap-2 justify-content-start align-items-center flex-wrap">
-      {foreach $tsPost.post_tags item=$tag}
+      {foreach $tsPost.post_tags item=tag}
          <a class="tag-item rounded d-block px-2 main-bg main-color text-decoration-none" href="{$tsConfig.url}/buscador/?e=tags&q={$tag}&autor=&cat=-1">#{$tag}</a>
       {/foreach}
    </div>

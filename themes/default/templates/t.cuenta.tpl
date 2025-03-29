@@ -32,6 +32,9 @@
 			{foreachelse}
 				<div class="empty">Conexiones a tus redes sociales, pero aun {$tsConfig.titulo} no las ha configurado!</div>
 			{/foreach}
+			{if !$tsUser->is_admod}
+				<input type="button" value="Desactivar Cuenta" onclick="desactivate(0)" class="btn btn-outline d-block text-center w-100 mt-3">
+			{/if}
 		</div>
 	</div>
 	

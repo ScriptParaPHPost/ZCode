@@ -1,25 +1,16 @@
 <?php
 
-/**
- * Instalacion Automatica de theme v4
- * Copyright 2024 Miguel92, Todos los derechos reservados
- * @author  	Miguel92
- * @version 	v4.0
- */
+if (!defined('ZCODE2')) die('mmm...que estarás haciendo!');
 
 /**
- * @name ThemeInstall.php
- * @copyright ZCode 2024
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
  * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
- * @author Miguel92
- * @version v2.0.0
- * @description Definiremos las constantes de forma global
 **/
-
-if (!defined('TS_HEADER')) die('mmm...que estarás haciendo!');
 
 class ThemeInstaller {
 
@@ -66,7 +57,7 @@ class ThemeInstaller {
    }
 
    private function getFileCss(string $theme = '') {
-   	$theme_dir = $this->themesDir . $theme . TS_PATH;
+   	$theme_dir = $this->themesDir . $theme . DIRECTORY_SEPARATOR;
    	$theme_css = $theme_dir . $this->style . '.css';
    	return $theme_css;
    }

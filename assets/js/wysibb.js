@@ -1,6 +1,5 @@
-const emojis_small = ZCodeApp.assets + "/icons/emojis/small";
-
-CURLANG = {
+const emojis_small = ZCodeApp.url + "/assets/icons/emojis/small";
+const CURLANG = {
 	bold: "Negrita",
 	italic: "Cursiva",
 	underline: "Subrayado",
@@ -67,7 +66,7 @@ CURLANG = {
 	fileupload_text1: "Suelta el archivo aquí",
 	fileupload_text2: "o también puedes",
 
-	loading_image: "/images/loader.gif",
+	loading_image: "loader.gif",
 	loading: "Cargando",
 	auto: "Auto",
 	views: "Visitas",
@@ -126,7 +125,7 @@ wbbdebug = false;
 			toolbar: true,
 			//img upload config 
 			imgupload: true,
-			img_uploadurl: ZCodeApp.url + "/inc/ext/wysibbupload.php",
+			img_uploadurl: ZCodeApp.url + "/app/extras/wysibbupload.php",
 			img_maxwidth: 800,
 			img_maxheight: 640,
 			hotkeys: true,
@@ -2820,26 +2819,8 @@ wbbdebug = false;
 					.replace(" ", "\\s");
 				bbdata = bbdata.replace(new RegExp(bb, "g"), html);
 			});
-
-
 			var $wrap = $(this.elFromString("<div>" + bbdata + "</div>"));
-			//transform smiles
-			/* $wrap.contents().filter(function() {return this.nodeType==3}).each($.proxy(smilerpl,this)).end().find("*").contents().filter(function() {return this.nodeType==3}).each($.proxy(smilerpl,this));
-			
-			function smilerpl(i,el) {
-				var ndata = el.data;
-				$.each(this.options.smileList,$.proxy(function(i,row) {
-					var fidx = ndata.indexOf(row.bbcode);
-					if (fidx!=-1) {
-						var afternode_txt = ndata.substring(fidx+row.bbcode.length,ndata.length);
-						var afternode = document.createTextNode(afternode_txt);
-						el.data = ndata = el.data.substr(0,fidx);
-						$(el).after(afternode).after(this.strf(row.img,this.options));
-					}
-				},this));	
-			} */
 			this.getHTMLSmiles($wrap);
-			//$wrap.contents().filter(function() {return this.nodeType==3}).each($.proxy(this,smileRPL,this));
 
 			return $wrap.html();
 		},
@@ -3545,10 +3526,7 @@ wbbdebug = false;
 			}
 		},
 
-		//Browser fixes
-		isChrome: function() {
-			return (window.chrome) ? true : false;
-		},
+
 		fixTableTransform: function(html) {
 			if (!html) {
 				return "";
@@ -3727,7 +3705,7 @@ wbbdebug = false;
 			success: false,
 			extraParams: false,
 			fileParam: 'img',
-			validation: '\.(jpg|png|gif|jpeg)$',
+			validation: '\.(jpg|png|gif|jpeg|webp|svg)$',
 
 			t1: CURLANG.fileupload_text1,
 			t2: CURLANG.fileupload_text2

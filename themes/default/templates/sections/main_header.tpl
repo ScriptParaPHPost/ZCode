@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" {$tsThemeSettings}>
+<html lang="es" {$tsThemeSettings}>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
-{meta facebook=true twitter=true}
-{zCode css=["base.css","theme.css"] js=["acciones.js","dropdown.js"] scriptGlobal=true more=true notifica=true}
+{meta 
+	facebook=true 
+	twitter=true 
+	analytics=false 
+	robots=[
+		'active' => true, 
+		'data' => [
+			'name' => 'robots', 
+			'content' => 'index, follow'
+		]
+	]
+}
+{zCode 
+	css=["base.css","theme.css"] 
+	js=["acciones.js","dropdown.js"] 
+	global=true 
+	aditional=true 
+	notifica=true
+}
 </head>
 <body>
 	

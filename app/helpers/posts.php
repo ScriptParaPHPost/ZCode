@@ -1,76 +1,60 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    posts.php
- * @author  ZCode | PHPost
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/*
- * -------------------------------------------------------------------
- *  Definiendo variables por defecto
- * -------------------------------------------------------------------
-*/
+$tsPage = "posts";
 
-$tsPage = "posts";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsLevel = 0;
 
-$tsLevel = 0;		// NIVEL DE ACCESO A ESTA PAGINA
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsContinue = true;
 
-$tsContinue = true;	// CONTINUAR EL SCRIPT
-
-$tsTitle = $tsCore->settings['titulo']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*
- * -------------------------------------------------------------------
- *  Validando nivel de acceso
- * -------------------------------------------------------------------
-*/
+$tsTitle = $tsCore->settings['titulo'];
 
 // Nivel y permisos de acceso
 $tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-if($tsLevelMsg != 1) {
+if(!$tsLevelMsg) {
 	$tsPage = 'aviso';
 	$tsAjax = 0;
 	$smarty->assign("tsAviso", $tsLevelMsg);
 	//
 	$tsContinue = false;
 }
-//
-if($tsContinue) {
 
-/*
- * -------------------------------------------------------------------
- *  Estableciendo variables y archivos 
- * -------------------------------------------------------------------
- */
+if($tsContinue) {
+	
 	// Afiliados
 	include TS_MODELS . "c.afiliado.php";
 	$tsAfiliado = new tsAfiliado();
 		 
 	// Referido?
 	if(!empty($_GET['ref'])) $tsAfiliado->urlIn();
-	 
+
 	// Posts Class
 	include TS_MODELS . "c.posts.php";
 	$tsPosts = new tsPosts();
-
+	
 	// Comentarios Class
 	include TS_MODELS . "c.comentarios.php";
 	$tsComentarios = new tsComentarios();
-	 
+	 	
 	// Category
-	$category = htmlentities($_GET['cat'] ?? '');
+	$category = htmlentities($_GET['cat'] ?? ($_GET["category"] ?? ''));
 	 
 	// Post anterior/siguiente
-	if(in_array($_GET['action'], ['next', 'prev', 'fortuitae'])) $tsPosts->setNP();
+	if(isset($_GET['action'])) {
+		if(in_array($_GET['action'], ['next', 'prev', 'fortuitae'])) $tsPosts->setNP();
+	}
 
-/*
- * -------------------------------------------------------------------
- *  Tareas principales
- * -------------------------------------------------------------------
- */
 	if(!empty($_GET['post_id'])) {
 		  
 		// DATOS DEL POST
@@ -125,6 +109,7 @@ if($tsContinue) {
 		// CLASE TOPS
 		include TS_MODELS."c.tops.php" ;
 		$tsTops = new tsTops();
+		
 		// CAT
 		$smarty->assign("tsCat", $category);
 		// TITULO
@@ -157,18 +142,16 @@ if($tsContinue) {
 		// TOP USERS
 		$smarty->assign("tsTopUsers", $tsTops->getHomeTopUsers()['historico']);
 
+		require_once TS_MODELS . "c.ticket.php";
+		$tsTicket = new tsTicket();
+		$smarty->assign("tsTicketOpen", $tsTicket->getTicketsOpenHome());
 	}
-
 }
-/*
- * -------------------------------------------------------------------
- *  Incluir plantilla
- * -------------------------------------------------------------------
- */
 
 if(empty($tsAjax)) {
-	 // Asignamos título
+	
 	$smarty->assign("tsTitle", $tsTitle);
-	 // Incluir footer
+	
 	include TS_ROOT . "footer.php";
+
 }

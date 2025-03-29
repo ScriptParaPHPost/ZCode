@@ -1,16 +1,22 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Clase para el manejo de los posts
- *
- * @name    c.cache.php
- * @author  Miguel92
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
 class tsCache {
 
    private $cacheDir = 'sql';
 
-   private $cacheTTL = 300;
+   private $cacheTTL = 150;
 
    public function __construct($cacheDir = null, $cacheTTL = null) {
       $dir = TS_CACHE . $this->cacheDir . DIRECTORY_SEPARATOR;

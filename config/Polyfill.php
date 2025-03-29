@@ -1,17 +1,14 @@
 <?php
 
 /**
- * @name Polyfill.php
- * @copyright ZCode 2024
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
  * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://zcodev.alwaysdata.net/feed/ (Informacion y actualizaciones)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
- * @author Miguel92
- * @version v2.0.0
 **/
-
-if( !defined('TS_HEADER') ) define('TS_HEADER', TRUE);
 
 if (!function_exists('safe_count')) {
 	/**
@@ -33,21 +30,26 @@ if (!function_exists('safe_unserialize')) {
     * @return mixed The unserialized data or an empty array if unserialization fails.
     */
    function safe_unserialize($data) {
-      return (!is_null($data) && ($data !== false || $data === 'b:0;')) ? unserialize($data) : [];
+      if (!is_string($data) || empty($data)) {
+         return [];
+      }
+      $result = @unserialize($data);
+      return $result === false && $data !== 'b:0;' ? [] : $result;
    }
 }
 
 $fileenv = dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env';
-if (file_exists($fileenv)) {
+if (file_exists($fileenv) && is_readable($fileenv)) {
    $dotenv = fopen($fileenv, 'r');
    if ($dotenv) {
       while (($line = fgets($dotenv)) !== false) {
          // Ignorar comentarios y líneas vacías
-         if (trim($line) === '' || strpos(trim($line), '#') === 0) {
+         $trimmedLine = trim($line);
+         if ($trimmedLine === '' || strpos($trimmedLine, '#') === 0) {
             continue;
          }
-         if (preg_match('/\A([a-zA-Z0-9_]+)=(.*)\z/', trim($line), $matches)) {
-         	$_ENV[$matches[1]] = $matches[2];
+         if (preg_match('/\A([a-zA-Z0-9_]+)=(.*)\z/', $trimmedLine, $matches)) {
+            $_ENV[$matches[1]] = $matches[2];
          }
       }
       fclose($dotenv);

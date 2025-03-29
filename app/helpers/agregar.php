@@ -1,57 +1,40 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    agregar.php
- * @author  ZCode | PHPost
-*/
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-/**********************************\
+$tsPage = "agregar";
 
-*	(VARIABLES POR DEFAULT)		*
+$tsLevel = 2;
 
-\*********************************/
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 
-	$tsPage = "agregar";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsContinue = true;
 
-	$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan'];
 	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
-	
-/*++++++++ = ++++++++*/
-
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
-
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
-	
-	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
-		$tsPage = 'aviso';
-		$tsAjax = 0;
-		$smarty->assign("tsAviso",$tsLevelMsg);
-		//
-		$tsContinue = false;
-	}
+// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if(!$tsLevelMsg) {	
+	$tsPage = 'aviso';
+	$tsAjax = 0;
+	$smarty->assign("tsAviso",$tsLevelMsg);
 	//
-	if($tsContinue){
-/**********************************\
-
-* (VARIABLES LOCALES ESTE ARCHIVO)	*
-
-\*********************************/
-
-	$action = $_GET['action'];
-
-/**********************************\
-
-*	(INSTRUCCIONES DE CODIGO)		*
-
-\*********************************/
+	$tsContinue = false;
+}
+//
+if($tsContinue) {
+	$action = htmlspecialchars($_GET['action'] ?? '');
+	
 	include TS_MODELS . "c.agregar.php";
 	$tsAgregar = new tsAgregar();
 	$smarty->assign("tsCategorias", $tsAgregar->getCategorias());
@@ -71,7 +54,7 @@
 				$cid = (int)$_POST['categoria'];
 				$tsCat = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_seo FROM @posts_categorias AS c WHERE c.cid = $cid LIMIT 1"));
 				//
-				$post_url = $tsCore->createLink('post', (int)$_GET['pid']);
+				$post_url = $tsZCode->createLink('post', (int)$_GET['pid']);
 				// NOS VAMOS AL POST
 				$tsCore->redirectTo($post_url);
 			} else {
@@ -111,7 +94,7 @@
 			$query = db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_seo FROM @posts_categorias AS c WHERE c.cid = $tsCat LIMIT 1");
 			$tsCat = db_exec('fetch_assoc', $query);
 			
-			$post_url = $tsCore->createLink('post', (int)$tsPost);
+			$post_url = $tsZCode->createLink('post', (int)$tsPost);
 			// NOS VAMOS AL POST
 			$tsCore->redirectTo($post_url);
 		} elseif($tsPost == -1){
@@ -120,20 +103,10 @@
 			$smarty->assign("tsAviso",array('titulo' => 'Oops!', 'mensaje' => "Ha ocurrido un error intentalo m&aacute;s tarde.<br><b>Error</b>: ".$tsPost, 'but' => 'Volver', 'link' => 'javascript:history.go(-1)'));
 		}
 	}
-	
-/**********************************\
+}
 
-* (AGREGAR DATOS GENERADOS | SMARTY) *
-
-\*********************************/
-	}
-
-if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
-
-	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
-	$smarty->assign("tsSubmenu","agregar");
-
-	/*++++++++ = ++++++++*/
+if(empty($tsAjax)) {
+	$smarty->assign("tsTitle",$tsTitle);
+	$smarty->assign("tsSubmenu", "agregar");
 	include TS_ROOT . 'footer.php';
-	/*++++++++ = ++++++++*/
 }

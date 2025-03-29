@@ -1,43 +1,38 @@
 <?php 
+
 /**
- * Controlador
- *
- * @name    top.php
- * @author  ZCode | PHPost
-*/
-/**********************************\
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
 
-*	(VARIABLES POR DEFAULT)		*
+$tsPage = "tops";
 
-\*********************************/
+$tsLevel = 0;
 
-	$tsPage = "tops";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
-
-	$tsLevel = 0;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
-
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsAjax = empty($_GET['ajax']) ? 0 : 1;
 	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
+$tsContinue = true;
 	
-/*++++++++ = ++++++++*/
+include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan'];
 
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
-
-	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
-		$tsPage = 'aviso';
-		$tsAjax = 0;
-		$smarty->assign("tsAviso",$tsLevelMsg);
-		//
-		$tsContinue = false;
-	}
+// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if($tsLevelMsg != 1){	
+	$tsPage = 'aviso';
+	$tsAjax = 0;
+	$smarty->assign("tsAviso",$tsLevelMsg);
 	//
-	if($tsContinue){
+	$tsContinue = false;
+}
+
+if($tsContinue) {
 
 /**********************************\
 
@@ -49,39 +44,33 @@
 	include TS_MODELS . "c.tops.php";
 	$tsTops = new tsTops();
 	//
-	$fecha = empty($_GET['fecha']) || $_GET['fecha'] > 5 || !ctype_digit($_GET['fecha']) ? 5 : (int)$_GET['fecha'];
-	$smarty->assign("tsFecha",$fecha);
-	$cat = empty($_GET['cat']) ? 0 : (int)$_GET['cat'];
-	$smarty->assign("tsCat",$cat);
-	//
 	$action = empty($_GET['action']) ? 'posts' : (string)$_GET['action'];
+	$fecha = empty($_GET['fecha']) || $_GET['fecha'] > 5 || !ctype_digit($_GET['fecha']) ? 5 : (int)$_GET['fecha'];
+	$categoria = isset($_GET['cat']) ? (int)$_GET['cat'] : 0;
+	//
+	$smarty->assign("tsFecha", $fecha);
+	$smarty->assign("tsCat", $categoria);
 	$smarty->assign("tsAction",$action);
 	
 
-/**********************************\
-
-*	(INSTRUCCIONES DE CODIGO)		*
-
-\*********************************/
-
-		match($action){
-			'posts' => $smarty->assign("tsTops", $tsTops->getTopPosts($fecha, $cat)),
-			'usuarios' => $smarty->assign("tsTops", $tsTops->getTopUsers($fecha, $cat)),
-			default => null
-		};
+	switch ($action) {
+		case 'posts':
+			$smarty->assign("tsTops", $tsTops->getTopPosts($fecha, $categoria));
+		break;
+		case 'usuarios':
+			$smarty->assign("tsTops", $tsTops->getTopUsers($fecha, $categoria));
+		break;
 		
-/**********************************\
-
-* (AGREGAR DATOS GENERADOS | SMARTY) *
-
-\*********************************/
+		default:
+			echo 'Acción no válida'.
+		break;
 	}
+}
 
-if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
-
-	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
-
-	/*++++++++ = ++++++++*/
+if(empty($tsAjax)) {
+	
+	$smarty->assign("tsTitle",$tsTitle);
+	
 	include TS_ROOT . 'footer.php';
-	/*++++++++ = ++++++++*/
+	
 }

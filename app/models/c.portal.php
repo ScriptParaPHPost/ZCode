@@ -1,10 +1,17 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php 
+
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
 /**
- * Modelo para el control del portal/mi
- *
- * @name    c.portal.php
- * @author  ZCode | PHPost
- */
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 class tsPortal {
 
    /** getNews()
@@ -86,7 +93,7 @@ class tsPortal {
     * @return array
    */
 	public function getLastPosts($type = 'visited'){
-		global $tsCore, $tsUser, $tsImages;
+		global $tsCore, $tsUser, $tsImages, $tsZCode;
       //
       $dato = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT last_posts_$type FROM @portal WHERE user_id = {$tsUser->uid} LIMIT 1"));
      
@@ -103,7 +110,7 @@ class tsPortal {
          }
          $req['post_portada'] = $tsImages->setImageCover($req['post_id']);
          $req['post_title'] = stripslashes($req['post_title']);
-         $req["post_url"] = $tsCore->createLink('post', $req['post_id']);
+         $req["post_url"] = $tsZCode->createLink('post', $req['post_id']);
          $req['c_img'] = $tsCore->imageCat($req['c_img']);
          $data[] = $req;
           

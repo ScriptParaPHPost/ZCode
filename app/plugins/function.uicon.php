@@ -5,10 +5,11 @@
  * Ejemplo: {uicon ...} 
  * Enlace: #
  * Fecha: Jul 1, 2023 
+ * Actualizado: Feb 18, 2025
  * Nombre: uicon
  * Proposito: Genera el código HTML para un ícono SVG a partir de un archivo JSON de iconos.
  * Tipo: function 
- * Version: 1.1 
+ * Version: 1.2 
  *
  * @param array $params Parámetros para configurar el ícono:
  *   - 'folder': Nombre de la carpeta del ícono dentro de la carpeta de iconos. Default es 'system-uicons'.
@@ -24,15 +25,15 @@
  * @param object $smarty Instancia del objeto Smarty.
  * @return string Código HTML del ícono SVG con los atributos y clases configurados.
  */
-function smarty_function_uicon(array $params, &$smarty): string {
 
+function smarty_function_uicon(array $params, &$smarty): string {
    $icons_folder = TS_ASSETS . 'icons';
    $folder = $params['folder'] ?? 'system-uicons';
    $name = (in_array($folder, ['spinner', 'remix'])) ? $params['name'] : str_replace('-', '_', $params['name']);
 
    // Leer y decodificar los archivos JSON de íconos
-   $extraer = json_decode(file_get_contents("$icons_folder/$folder.json"), true);
-   $icon_path = $extraer[$name] ?? '';
+   $icon_data = json_decode(file_get_contents("$icons_folder/$folder.json"), true);
+   $icon_path = $icon_data[$name] ?? '';
 
    if (empty($icon_path)) {
       $others = json_decode(file_get_contents("$icons_folder/others.json"), true);
@@ -52,8 +53,8 @@ function smarty_function_uicon(array $params, &$smarty): string {
    ];
 
    // Insertar las clases y atributos en el código SVG
-   if (str_contains((string) $icon_path, '<svg')) {
-      $insert_pos = strpos((string) $icon_path, '<svg') + 4;
+   if (str_contains($icon_path, '<svg')) {
+      $insert_pos = strpos($icon_path, '<svg') + 4;
       $icon_path = substr_replace($icon_path, ' class="' . $classes . '"', $insert_pos, 0);
       
       foreach ($attributes as $attr => $value) {

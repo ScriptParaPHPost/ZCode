@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @package ZCode
+ * @author Miguel92
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+**/
+
 $tsColores = ['customizer','default','orange','green','red','slate','sky','monokai'];
 $tsColoresTxt = ['Customizar','Default','Naranja','Verde','Rojo','Pizarra','Cielo','Monokai'];
 
@@ -17,6 +27,7 @@ $tsFontFamily = [
    'tema' => 'Fuente del tema',
    'ubuntu' => 'Ubuntu Mono',
 ];
+
 $tsFontSize = [
    'xs' => 'Muy pequeña',
    'sm' => 'Pequeña',

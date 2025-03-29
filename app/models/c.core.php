@@ -1,18 +1,25 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
-/**
- * Funciones globales
- *
- * @name    c.core.php
- * @author  Miguel92
- */
+<?php 
 
-class tsCore extends tsZCode {
+if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
+
+/**
+ * @package ZCode
+ * @copyright 2024 - 2025
+ * @version 2.1.15
+ * @link https://zcodev.alwaysdata.net/ (DEMO)
+ * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+ * @author Miguel92
+ * @version v2.1.15
+**/
+
+class tsCore {
 
 
 	public $settings;	// CONFIGURACIONES DEL SITIO
 
 	/**
-	 * Determina si la conexión es segura (HTTPS) y devuelve el esquema de URL correspondiente.
+	 * Determina si la conexiï¿½n es segura (HTTPS) y devuelve el esquema de URL correspondiente.
 	 *
 	 * @return string El esquema de URL (http:// o https://).
 	 */
@@ -31,28 +38,6 @@ class tsCore extends tsZCode {
 		// CARGANDO CONFIGURACIONES
 		$this->settings = $this->getSettings();
 		$this->settings['domain'] = $this->withoutSSL();
-		// Theme
-		$this->settings['t_url'] = $this->settings['url'] . '/themes/' . $this->settings['tema'];
-		$this->settings['images'] = $this->settings['t_url'].'/images';
-		$this->settings['css'] = $this->settings['t_url'].'/css';
-		$this->settings['js'] = $this->settings['t_url'].'/js';
-		// Assets
-		$this->settings['assets'] = $this->settings['url'].'/assets';
-		$this->settings['favicon'] = $this->settings['assets'].'/images/favicon';
-		$this->settings['categories'] = $this->settings['assets'].'/images/categorias';
-		// Storage
-		$this->settings['avatar'] = $this->settings['url'].'/storage/avatar';
-		$this->settings['uploads'] = $this->settings['url'].'/storage/uploads';
-		//
-		$this->settings['logos'] = [
-			'big' => $this->settings['favicon'] . '/'.$this->setSEO($this->settings['titulo']).'.webp',
-			'32' => $this->settings['favicon'] . '/logo-32.webp',
-			'64' => $this->settings['favicon'] . '/logo-64.webp',
-			'128' => $this->settings['favicon'] . '/logo-128.webp',
-			'256' => $this->settings['favicon'] . '/logo-256.webp'
-		];
-		$this->settings['categorias'] = $this->getCategorias();
-		$this->settings['canonical'] = urlencode($this->getSSLProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 	}
 
 	/*
@@ -62,6 +47,47 @@ class tsCore extends tsZCode {
 		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @configuracion WHERE tscript_id = 1"));
 		$query['url'] = $this->getSSLProtocol() . '://' . $query['url'];
 		return $query;
+	}
+
+	public function setRoutes(string $get = 'all', string $only = '') {
+		$mytheme = $this->settings['url'] . '/themes/' . $this->settings['tema'];
+		$myassets = $this->settings['url'] . '/assets';
+		$mystorage = $this->settings['url'] . '/storage';
+		$allRoutes = [
+			'url' => $this->settings['url'],
+			'canonical' => urlencode($this->getSSLProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']),
+			// Theme
+			'theme' => [
+				'base' => $mytheme,
+				'images' => "$mytheme/images",
+				'css' => "$mytheme/css",
+				'js' => "$mytheme/js"
+			],
+			// Assets
+			'assets' => [
+				'base' => $myassets,
+				'images' => "$myassets/images",
+				'favicon' => "$myassets/images/favicon",
+				'categories' => "$myassets/images/categorias",
+				'css' => "$myassets/css",
+				'js' => "$myassets/js"
+			],
+			// Storage
+			'storage' => [
+				'base' => $mystorage,
+				'avatar' => "$mystorage/avatar",
+				'uploads' => "$mystorage/uploads"
+			],
+			// Logos
+			'logos' => [
+				'big' => "$myassets/images/favicon/{$this->setSEO($this->settings['titulo'])}.webp",
+				'32' => "$myassets/images/favicon/logo-32.webp",
+				'64' => "$myassets/images/favicon/logo-64.webp",
+				'128' => "$myassets/images/favicon/logo-128.webp",
+				'256' => "$myassets/images/favicon/logo-256.webp"
+			]
+		];
+		return ($get === 'all') ? $allRoutes : (empty($only) ? $allRoutes[$get] : $allRoutes[$get][$only]);
 	}
 	
 	public function getNovemods() {
@@ -86,13 +112,13 @@ class tsCore extends tsZCode {
 		// CONSULTA
 		$categorias = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_color, c_descripcion, c_img FROM @posts_categorias ORDER BY c_orden'));
 		foreach($categorias as $cid => $cat) {
-			$categorias[$cid]['c_img'] = $this->settings['categories'] . "/{$cat['c_img']}";
+			$categorias[$cid]['c_img'] = $this->setRoutes('assets', 'categories') . "/{$cat['c_img']}";
 		}
 		return $categorias;
 	}
 
 	public function imageCat(string $cat = '') {
-		return $this->settings['categories'] . "/$cat";
+		return $this->setRoutes('assets', 'categories') . "/$cat";
 	}
 
 	/*
@@ -132,7 +158,7 @@ class tsCore extends tsZCode {
 	*/
 	public function parseBadWords(string $censurar = '', bool $type = FALSE)  {
 		if (empty($censurar)) {
-			return $censurar; // Retornar inmediatamente si la cadena está vacía.
+			return $censurar; // Retornar inmediatamente si la cadena estï¿½ vacï¿½a.
 		}
 		// Construir la consulta
 		$query = 'SELECT word, swop, method, type FROM @badwords';
@@ -164,12 +190,13 @@ class tsCore extends tsZCode {
 		// Definimos los accesos!
 		$conditions = [
 			0 => true, // CUALQUIERA
-			1 => $tsUser->is_member == 0, // SOLO VISITANTES
-			2 => $tsUser->is_member == 1, // SOLO MIEMBROS
+			1 => $tsUser->is_member === 0, // SOLO VISITANTES
+			2 => $tsUser->is_member === 1, // SOLO MIEMBROS
 			3 => $tsUser->is_admod || $tsUser->permisos['moacp'], // SOLO MODERADORES
-			4 => $tsUser->is_admod == 1 // SOLO ADMIN
+			4 => $tsUser->is_admod === 1 // SOLO ADMIN
 		];
 		$tsLevel = $tsLevel ?? 0;
+		
 		if (isset($conditions[$tsLevel]) && $conditions[$tsLevel]) return true;
 		// Manejo de mensajes de error
 		if ($message) return ['titulo' => 'Error', 'mensaje' => $setMessages[$tsLevel] ?? 'Error desconocido.'];
@@ -179,11 +206,11 @@ class tsCore extends tsZCode {
 	}
 
 	/**
-	 * Redirige a una página específica dentro del sitio.
+	 * Redirige a una pï¿½gina especï¿½fica dentro del sitio.
 	 *
-	 * @param string $page La página a la que redirigir.
-	 * @param string $subpage La subpágina opcional a la que redirigir.
-	 * @param string $param Los parámetros opcionales de la URL.
+	 * @param string $page La pï¿½gina a la que redirigir.
+	 * @param string $subpage La subpï¿½gina opcional a la que redirigir.
+	 * @param string $param Los parï¿½metros opcionales de la URL.
 	 * @return void
 	*/
 	public function redireccionar(string $page = '', string $subpage = '', string $param = '') {
@@ -226,44 +253,168 @@ class tsCore extends tsZCode {
 		return urlencode($current_url);
 	}
 
+	/**
+	 * Realiza una sanitizaciï¿½n de cadenas para evitar inyecciones SQL y XSS.
+	 * 
+	 * @param string $string La cadena a sanitizar.
+	 * @param bool $xss Si se debe aplicar filtrado XSS.
+	 * @return string La cadena sanitizada.
+	 */
+	public function setSecure($string = null, bool $xss = false) {
+		if (empty($string)) {
+			return $string;
+		}
+		// Escapar el valor para evitar inyecciones SQL
+		$string = db_exec('real_escape_string', $string);
+		// Aplicar filtrado XSS si es necesario
+		if ($xss) {
+			$string = htmlspecialchars($string, ENT_COMPAT | ENT_QUOTES, 'UTF-8');
+		}
+		// Retornamos la informaciï¿½n sanitizada
+		return $string;
+	}
+	
+	/*
+		antiFlood()
+	*/
+	public function antiFlood($print = true, $type = 'post', $msg = '') {
+		global $tsUser;
+		//
+		$now = time();
+		$msg = empty($msg) ? 'No puedes realizar tantas acciones en tan poco tiempo.' : $msg;
+		//
+		if(!isset($_SESSION['flood'][$type])) $_SESSION['flood'][$type] = '';
+		$limit = $tsUser->permisos['goaf'];
+		$resta = $now - $_SESSION['flood'][$type];
+		if($resta < $limit) {
+			$msg = '0: '.$msg.' Int&eacute;ntalo en '.($limit - $resta).' segundos.';
+			// TERMINAR O RETORNAR VALOR
+			if($print) die($msg);
+			else return $msg;
+		} else {
+			// ANTIFLOOD
+			$_SESSION['flood'][$type] = (empty($_SESSION['flood'][$type])) ? time() : $now;
+			// TODO BIEN
+			return true;
+		}
+	}
+	
+	/**
+	 * Convierte una cadena en un formato amigable para SEO.
+	 * 
+	 * @param string $string La cadena a convertir.
+	 * @param bool $lower Si se debe convertir a minï¿½sculas.
+	 * @return string La cadena convertida.
+	 */
+	public function setSEO($string, $lower = false) {
+	   // Convertir la cadena a UTF-8 y entidades HTML
+	   $string = mb_convert_encoding($string ?? '', 'UTF-8', 'auto');
+	   $string = htmlentities($string, ENT_QUOTES, 'UTF-8');
+	   // Reemplazar entidades HTML comunes en espaï¿½ol por sus equivalentes
+	   $string = preg_replace('~&([a-zA-Z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', $string);
+	   // Decodificar entidades HTML
+	   $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
+	   // Reemplazar cualquier carï¿½cter no alfanumï¿½rico por guiones
+	   $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
+	   // Convertir a minï¿½sculas si es necesario
+		if ($lower) {
+			$string = strtolower($string);
+		}
+	   // Eliminar guiones al inicio y al final, y convertir a minï¿½sculas
+	   return trim($string, '-');
+	}
+
+	/*
+		parseBBCode($bbcode)
+	*/
+	public function parseBBCode($bbcode, $type = 'normal') {
+		// Class BBCode
+		include_once TS_EXTRA . 'bbcode.inc.php';
+		$parser = new BBCode();
+		// Seleccionar texto
+		$parser->setText($bbcode);
+		//
+		$buttons = [
+			'normal' => ['url', 'code', 'quote', 'font', 'size', 'color', 'img', 'b', 'i', 'u', 's', 'align', 'spoiler', 'video', 'hr', 'sub', 'sup', 'table', 'td', 'tr', 'ul', 'li', 'ol', 'notice', 'info', 'warning', 'error', 'success'],
+		  'firma' => ['url', 'font', 'size', 'color', 'img', 'b', 'i', 'u', 's', 'align', 'spoiler'],
+		  'news' => ['url', 'b', 'i', 'u', 's']
+		];
+		// Determinar si el tipo es 'normal' o 'smiles', en cuyo caso usarï¿½ los botones de 'normal'
+		$allowed_buttons = ($type === 'normal' || $type === 'smiles') ? $buttons['normal'] : $buttons[$type];
+		$parser->setRestriction($allowed_buttons);
+		// Parsear menciones si el tipo es 'normal' o 'smiles'
+		if ($type === 'normal' || $type === 'smiles') {
+			$parser->parseMentions();
+		}
+		// Parsear smiles si el tipo es 'normal', 'smiles' o 'news'
+		$parser->parseSmiles();
+		// Retornar resultado en HTML
+		return $parser->getAsHtml();
+	}
 
 	/**
-	 * Establece el límite de páginas y el inicio para la paginación.
+	 * @name setMenciones
+	 * @access public
+	 * @param string $html
+	 * @return string
+	 * @info Pone los links a los mencionados
+	 * @note Esta funciï¿½n se ha reemplazado por $parser->parseMentions(). Se recomienda exclusivamente para compatibilidad en 	versiones anteriores.
+	*/
+	public function setMenciones($html) {
+		global $tsUser;
+		// Buscar usuarios mencionados con el patrï¿½n @username
+		if (preg_match_all('/\B@([a-zA-Z0-9_-]{4,16})\b/', $html, $users)) {
+			$menciones = $users[1];
+			// Verificar y reemplazar menciones con enlaces
+			foreach ($menciones as $user) {
+				$uid = $tsUser->getUserID($user);
+				 if (!empty($uid)) {
+					$html = str_replace("@$user", "@<a href=\"{$this->settings['url']}/perfil/$user\">$user</a>", $html);
+				}
+			}
+		}
+		// Retornar el HTML modificado
+		return $html;
+	}
+
+	/**
+	 * Establece el lï¿½mite de pï¿½ginas y el inicio para la paginaciï¿½n.
 	 *
-	 * @param int $tsLimit El límite de resultados por página.
-	 * @param bool $start Indica si se debe establecer el inicio de la paginación.
-	 * @param int $tsMax El número máximo de resultados permitidos.
-	 * @return string El inicio y el límite de resultados como una cadena.
+	 * @param int $tsLimit El lï¿½mite de resultados por pï¿½gina.
+	 * @param bool $start Indica si se debe establecer el inicio de la paginaciï¿½n.
+	 * @param int $tsMax El nï¿½mero mï¿½ximo de resultados permitidos.
+	 * @return string El inicio y el lï¿½mite de resultados como una cadena.
 	*/
 	public function setPageLimit($tsLimit, $start = false, $tsMax = 0) {
-		// Inicializar el inicio de la paginación
+		// Inicializar el inicio de la paginaciï¿½n
 		$tsStart = 0;
-		// Establecer el inicio de la paginación si es necesario
+		// Establecer el inicio de la paginaciï¿½n si es necesario
 		if ($start !== false) {
 			$tsStart = isset($_GET['s']) ? (int) $_GET['s'] : 0;
-			// Establecer el inicio en 0 si se excede el límite máximo
+			// Establecer el inicio en 0 si se excede el lï¿½mite mï¿½ximo
 			if ($this->setMaximos($tsLimit, $tsMax)) {
 				$tsStart = 0;
 			}
 		} else {
-			// Calcular el inicio basado en el número de página
+			// Calcular el inicio basado en el nï¿½mero de pï¿½gina
 			$pageNumber = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
 			$tsStart = ($pageNumber - 1) * $tsLimit;
 		}
-		// Retornar el inicio y el límite de resultados
+		// Retornar el inicio y el lï¿½mite de resultados
 		return "$tsStart,$tsLimit";
 	}
 
 	/**
-	 * Verifica si se excede el límite máximo de páginas.
+	 * Verifica si se excede el lï¿½mite mï¿½ximo de pï¿½ginas.
 	 *
-	 * @param int $tsLimit El límite de resultados por página.
-	 * @param int $tsMax El número máximo de resultados permitidos.
-	 * @return bool True si se excede el límite máximo, false en caso contrario.
+	 * @param int $tsLimit El lï¿½mite de resultados por pï¿½gina.
+	 * @param int $tsMax El nï¿½mero mï¿½ximo de resultados permitidos.
+	 * @return bool True si se excede el lï¿½mite mï¿½ximo, false en caso contrario.
 	*/
 	public function setMaximos(int $tsLimit = 0, int $tsMax = 0) {
 		// MAXIMOS || PARA NO EXEDER EL NUMERO DE PAGINAS
-		$ban1 = ($_GET['page'] * $tsLimit);
+		$page = isset($_GET['page']) ? (int)$_GET['page'] : 0;
+		$ban1 = ($page * $tsLimit);
 		if($tsMax < $ban1){
 			$ban2 = $ban1 - $tsLimit;
 			if($tsMax < $ban2) return true;
@@ -273,26 +424,26 @@ class tsCore extends tsZCode {
 	}
 
 	/**
-	 * Genera información sobre la paginación de un conjunto de resultados.
+	 * Genera informaciï¿½n sobre la paginaciï¿½n de un conjunto de resultados.
 	 *
-	 * @param int $tsTotal El número total de resultados.
-	 * @param int $tsLimit El límite de resultados por página.
-	 * @return array La información de paginación.
+	 * @param int $tsTotal El nï¿½mero total de resultados.
+	 * @param int $tsLimit El lï¿½mite de resultados por pï¿½gina.
+	 * @return array La informaciï¿½n de paginaciï¿½n.
 	 */
 	public function getPages(int $tsTotal = 0, int $tsLimit = 0) {
-		// Verificar si el límite es válido
+		// Verificar si el lï¿½mite es vï¿½lido
 		if ($tsLimit <= 0) {
-			return []; // Devolver un array vacío si el límite es cero o negativo
+			return []; // Devolver un array vacï¿½o si el lï¿½mite es cero o negativo
 		}
-		// Calcular el número total de páginas
+		// Calcular el nï¿½mero total de pï¿½ginas
 		$tsPages = ceil($tsTotal / $tsLimit);
-		// Obtener el número de página actual
+		// Obtener el nï¿½mero de pï¿½gina actual
 		$tsPage = isset($_GET['page']) ? max(1, min($_GET['page'], $tsPages)) : 1;
-		// Verificar si el número de página actual excede el total de páginas
+		// Verificar si el nï¿½mero de pï¿½gina actual excede el total de pï¿½ginas
 		if ($tsPage > $tsPages) {
 			$tsPage = $tsPages;
 		}
-		// Construir el array de información de paginación
+		// Construir el array de informaciï¿½n de paginaciï¿½n
 		$pages = [
 			'current' => $tsPage,
 			'pages' => $tsPages,
@@ -301,7 +452,7 @@ class tsCore extends tsZCode {
 			'next' => min($tsPages, $tsPage + 1),
 			'max' => $this->setMaximos($tsLimit, $tsTotal)
 		];
-		// Retornar la información de paginación
+		// Retornar la informaciï¿½n de paginaciï¿½n
 		return $pages;
 	}
 
@@ -333,7 +484,7 @@ class tsCore extends tsZCode {
 		$base_url = $this->settings['url'] . $base_url;
 		$base_url = preg_replace('/[?&]s=\d*/', '', $base_url);
 		// Ensure $start is a non-negative integer and a multiple of $num_per_page
-		$start = max(0, (int) $_GET['s']);
+		$start = max(0, (isset($_GET['s']) ? (int)$_GET['s'] : 0));
 		$start -= $start % $num_per_page;
 		$morepages = '<div class="page-item off"><span class="page-numbers">...</span></div>';
 
@@ -387,201 +538,7 @@ class tsCore extends tsZCode {
 		$pageindex .= '</nav>';
 		return $pageindex;
 	}
-
-	/**
-	 * Sistema de paginación automática [2023]
-	 * @author Miguel92
-	 * basados completamente en estos mods de ellos
-	 * @author mdulises
-	 * @author KMario
-	 * @author ReModWrite
-	*/
-	public function system_pagination(int $totalItems = 0, int $itemsPerPage = 0, string $inPage = '') {
-		// Obtenemos la pagina actual
-		$currentPage = !isset($_GET['page']) ? 1 : (int)$_GET['page'];
-		// Si no existe devolvemos algo vacío
-		if ($totalItems <= 0) return 0;
-		$page = (empty($inPage) ? '' : $inPage) . "?page=";
-		$pagination['current'] = $currentPage;
-		// Empezamos con la estructura de la paginación
-		$pagination['item'] = '<nav class="pagination">';
-		// Calculamos el total de páginas necesarias.
-		$totalPages = ceil($totalItems / $itemsPerPage);
-		// Limitamos el valor de $currentPage para asegurarnos de que no se exceda el rango.
-		$currentPage = max(1, min($currentPage, $totalPages));
-		// Enlace a página anterior.
-		if ($currentPage > 1) {
-			$pagination['item'] .= "<div class=\"page-item\"><a class=\"prev page-numbers\" href=\"{$this->settings['url']}/$page" . ($currentPage - 1) . "\" title=\"P&aacute;gina anterior\">&laquo;</a></div>";
-		}
-		// Enlaces de primera y última página.
-		if ($currentPage > 3) {
-			$pagination['item'] .= "<div class=\"page-item\"><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page1\">1</a></div>";
-			if ($currentPage > 6) {
-				$pagination['item'] .= "<div class=\"page-item off\"><span class=\"page-numbers\">...</span></div>";
-			}
-		}
-		// Mostramos los enlaces de la paginación.
-		$startPage = max(1, $currentPage - 2);
-		$endPage = min($totalPages, $currentPage + 2);
-		//
-		for ($i = $startPage; $i <= $endPage; $i++) {
-			if($currentPage === $i) {
-				$pagination['item'] .= "<div class=\"page-item\"><span aria-current=\"page\" class=\"page-numbers current\">{$i}</span></div>";
-			} else {
-				$pagination['item'] .= "<div class=\"page-item\"><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page{$i}\">{$i}</a></div>";
-			}
-		}
-		// Enlaces después del número 6.
-		if ($currentPage < $totalPages - 4) {
-			$pagination['item'] .= "<div class=\"page-item off\"><span class=\"page-numbers\">...</span></div>";
-			$pagination['item'] .= "<div class=\"page-item\"><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page{$totalPages}\">{$totalPages}</a></div>";
-		}
-		// Enlace a página siguiente.
-		if ($currentPage < $totalPages) {
-			$pagination['item'] .= "<div class=\"page-item\"><a class=\"next page-numbers\" href=\"{$this->settings['url']}/$page" . ($currentPage + 1) . "\" title=\"P&aacute;gina siguiente\">&raquo;</a></div>";
-		}
-		// Finalizamos la paginación
-		$pagination['item'] .= '</nav>';
-		return $pagination;
-	}
-
-	/**
-	 * Realiza una sanitización de cadenas para evitar inyecciones SQL y XSS.
-	 * 
-	 * @param string $string La cadena a sanitizar.
-	 * @param bool $xss Si se debe aplicar filtrado XSS.
-	 * @return string La cadena sanitizada.
-	 */
-	public function setSecure($string = null, bool $xss = false) {
-		if (empty($string)) {
-			return $string;
-		}
-		// Escapar el valor para evitar inyecciones SQL
-		$string = db_exec('real_escape_string', $string);
-		// Aplicar filtrado XSS si es necesario
-		if ($xss) {
-			$string = htmlspecialchars($string, ENT_COMPAT | ENT_QUOTES, 'UTF-8');
-		}
-		// Retornamos la información sanitizada
-		return $string;
-	}
 	
-	/*
-		antiFlood()
-	*/
-	public function antiFlood($print = true, $type = 'post', $msg = '') {
-		global $tsUser;
-		//
-		$now = time();
-		$msg = empty($msg) ? 'No puedes realizar tantas acciones en tan poco tiempo.' : $msg;
-		//
-		$limit = $tsUser->permisos['goaf'];
-		$resta = $now - $_SESSION['flood'][$type];
-		if($resta < $limit) {
-			$msg = '0: '.$msg.' Int&eacute;ntalo en '.($limit - $resta).' segundos.';
-			// TERMINAR O RETORNAR VALOR
-			if($print) die($msg);
-			else return $msg;
-		} else {
-			// ANTIFLOOD
-			$_SESSION['flood'][$type] = (empty($_SESSION['flood'][$type])) ? time() : $now;
-			// TODO BIEN
-			return true;
-		}
-	}
-	
-	/**
-	 * Convierte una cadena en un formato amigable para SEO.
-	 * 
-	 * @param string $string La cadena a convertir.
-	 * @param bool $lower Si se debe convertir a minúsculas.
-	 * @return string La cadena convertida.
-	 */
-	public function setSEO($string, $lower = false) {
-	   // Convertir la cadena a UTF-8 y entidades HTML
-	   $string = mb_convert_encoding($string ?? '', 'UTF-8', 'auto');
-	   $string = htmlentities($string, ENT_QUOTES, 'UTF-8');
-	   // Reemplazar entidades HTML comunes en español por sus equivalentes
-	   $string = preg_replace('~&([a-zA-Z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', $string);
-	   // Decodificar entidades HTML
-	   $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
-	   // Reemplazar cualquier carácter no alfanumérico por guiones
-	   $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
-	   // Convertir a minúsculas si es necesario
-		if ($lower) {
-			$string = strtolower($string);
-		}
-	   // Eliminar guiones al inicio y al final, y convertir a minúsculas
-	   return trim($string, '-');
-	}
-
-	/*
-		parseBBCode($bbcode)
-	*/
-	public function parseBBCode($bbcode, $type = 'normal') {
-		// Class BBCode
-		include_once TS_EXTRA . 'bbcode.inc.php';
-		$parser = new BBCode();
-		// Seleccionar texto
-		$parser->setText($bbcode);
-		//
-		$buttons = [
-			'normal' => ['url', 'code', 'quote', 'font', 'size', 'color', 'img', 'b', 'i', 'u', 's', 'align', 'spoiler', 'video', 'hr', 'sub', 'sup', 'table', 'td', 'tr', 'ul', 'li', 'ol', 'notice', 'info', 'warning', 'error', 'success'],
-		  'firma' => ['url', 'font', 'size', 'color', 'img', 'b', 'i', 'u', 's', 'align', 'spoiler'],
-		  'news' => ['url', 'b', 'i', 'u', 's']
-		];
-		// Determinar si el tipo es 'normal' o 'smiles', en cuyo caso usará los botones de 'normal'
-		$allowed_buttons = ($type === 'normal' || $type === 'smiles') ? $buttons['normal'] : $buttons[$type];
-		$parser->setRestriction($allowed_buttons);
-		// Parsear menciones si el tipo es 'normal' o 'smiles'
-		if ($type === 'normal' || $type === 'smiles') {
-			$parser->parseMentions();
-		}
-		// Parsear smiles si el tipo es 'normal', 'smiles' o 'news'
-		$parser->parseSmiles();
-		// Retornar resultado en HTML
-		return $parser->getAsHtml();
-	}
-
-	/**
-	 * @name setMenciones
-	 * @access public
-	 * @param string $html
-	 * @return string
-	 * @info Pone los links a los mencionados
-	 * @note Esta función se ha reemplazado por $parser->parseMentions(). Se recomienda exclusivamente para compatibilidad en 	versiones anteriores.
-	*/
-	public function setMenciones($html) {
-		global $tsUser;
-		// Buscar usuarios mencionados con el patrón @username
-		if (preg_match_all('/\B@([a-zA-Z0-9_-]{4,16})\b/', $html, $users)) {
-			$menciones = $users[1];
-			// Verificar y reemplazar menciones con enlaces
-			foreach ($menciones as $user) {
-				$uid = $tsUser->getUserID($user);
-				 if (!empty($uid)) {
-					$html = str_replace("@$user", "@<a href=\"{$this->settings['url']}/perfil/$user\">$user</a>", $html);
-				}
-			}
-		}
-		// Retornar el HTML modificado
-		return $html;
-	}
-
-	/*
-		parseSmiles($st)
-	*/
-	public function parseSmiles($bbcode){
-		return $this->parseBBCode($bbcode, 'smiles');
-	}
-
-	/*
-		parseBBCodeFirma($bbcode)
-	*/
-	public function parseBBCodeFirma($bbcode){
-		return $this->parseBBCode($bbcode, 'firma');
-	}
-
 	/*
 		setHace()
 	*/
@@ -589,8 +546,8 @@ class tsCore extends tsZCode {
 		# Creamos
 		$tiempo = time() - $fecha;
 		if($fecha <= 0) return "Nunca";
-		// Declaración de unidades de tiempo, aunque es un aproximado
-		// Ya que existe años bisiestos 366 días
+		// Declaraciï¿½n de unidades de tiempo, aunque es un aproximado
+		// Ya que existe aï¿½os bisiestos 366 dï¿½as
 		$unidades = [
 		  31536000 => ["a&ntilde;o", "a&ntilde;os"],
 		  2678400 => ["mes", "meses"],
@@ -610,7 +567,7 @@ class tsCore extends tsZCode {
 				}
 			}
 		}
-		// Si se ha establecido la opción $show, se agrega 'Hace' al resultado
+		// Si se ha establecido la opciï¿½n $show, se agrega 'Hace' al resultado
 		return ($show ? "Hace " : "") . $hace;
 	}
 
@@ -622,7 +579,7 @@ class tsCore extends tsZCode {
 		if (function_exists('curl_init')) {
 			// Obtener el user agent del cliente
 			$useragent = $_SERVER['HTTP_USER_AGENT'] ?? 'Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.9) Gecko/2008052906 Firefox/3.0';
-			// Abrir conexión  
+			// Abrir conexiï¿½n  
 			$ch = curl_init();
 			curl_setopt_array($ch, [
 				CURLOPT_URL => $tsUrl,
@@ -637,14 +594,14 @@ class tsCore extends tsZCode {
 	}
 
 	/**
-	 * Función privada para validar la IP del usuario
+	 * Funciï¿½n privada para validar la IP del usuario
 	*/
 	private function isValidIP(string $ip): bool {
 		return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false;
 	}
 
 	/**
-	 * Función para obtener la IP del usuario
+	 * Funciï¿½n para obtener la IP del usuario
 	*/
 	public function getIP(): string {
 		$ip = 'unknown';
@@ -660,9 +617,9 @@ class tsCore extends tsZCode {
 	}
 
 	/**
-	 * Función para validar y obtener la dirección IP del cliente que realiza la petición.
+	 * Funciï¿½n para validar y obtener la direcciï¿½n IP del cliente que realiza la peticiï¿½n.
 	 *
-	 * @return string|null La dirección IP válida del cliente o NULL si no se puede validar.
+	 * @return string|null La direcciï¿½n IP vï¿½lida del cliente o NULL si no se puede validar.
 	*/
 	public function validarIP() {
 		$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
@@ -670,9 +627,9 @@ class tsCore extends tsZCode {
 	}
 
 	/**
-	 * Función para validar y obtener la dirección IP del cliente que realiza la petición.
+	 * Funciï¿½n para validar y obtener la direcciï¿½n IP del cliente que realiza la peticiï¿½n.
 	 *
-	 * @return string|null La dirección IP válida del cliente o NULL si no se puede validar.
+	 * @return string|null La direcciï¿½n IP vï¿½lida del cliente o NULL si no se puede validar.
 	*/
 	public function executeIP() {
 		$myIP = $this->validarIP();
@@ -694,86 +651,5 @@ class tsCore extends tsZCode {
 		}
 		return implode(', ', $sets);
 	}
-
-	/**
-	 * Obtiene los tiempos de actividad del usuario
-	 *
-	 * @return array Array con el tiempo de última actividad online e inactiva
-	*/
-	public function lastActive(): array {
-		$c_last_active = (int)$this->settings['c_last_active'] * 60;
-		return [
-			'online' => time() - $c_last_active,
-			'inactive' => time() - ($c_last_active * 2)
-		];
-	}
-
-	/**
-	 * Obtiene el estado de un usuario
-	 *
-	 * @param int $uid ID del usuario
-	 * @return array Array con el estado del usuario y la clase CSS correspondiente
-	 */
-	public function statusUser(int $uid = 0): array {
-		$lastActive = $this->lastActive();
-		// Obtiene la información del usuario desde la base de datos
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_lastactive, user_baneado FROM @miembros WHERE user_id = $uid"));
-		
-		// Determina el estado del usuario basado en la última actividad y si está baneado
-		if ((int)$data['user_lastactive'] > $lastActive['online']) {
-			$status = 'online';
-		} elseif ((int)$data['user_lastactive'] > $lastActive['inactive']) {
-			$status = 'inactive';
-		} elseif ((int)$data['user_baneado'] > 0) {
-			$status = 'banned';
-		} else {
-			$status = 'offline';
-		}
-		
-		return [
-			't' => ucfirst($status),
-			'css' => $status
-		];
-	}
-
-	/**
-	 * Obtiene el icono y nombre del país del usuario
-	 *
-	 * @param string $country Código del país
-	 * @return array Array con el icono y nombre del país
-	*/
-	public function countryUser(string $country = ''): array {
-		include TS_ZCODE . "datos.php";
-		return [
-			'icon' => strtolower($country ?? 'xx'),
-			'name' => !empty($country) ? $tsPaises[$country] : 'unknown'
-		];
-	}
-
-	public function tagsNew(int $date = 0, int $days = 2) {
-		// Obtener la fecha actual como timestamp UNIX
-		$currentTimestamp = time();
-
-		// Calcular la diferencia en segundos (2 días = 2 * 24 * 60 * 60)
-		$twoDaysInSeconds = $days * 24 * 60 * 60;
-		$differenceInSeconds = $currentTimestamp - $date;
-
-		return ($differenceInSeconds < $twoDaysInSeconds) ? '&iexcl;Nuevo!' : '';
-	}
-
-   /**
-    * Convierte bytes a un formato legible (KB, MB, GB, etc.).
-    *
-    * @param int $bytes       El tamaño en bytes que se desea formatear.
-    * @param int $decimales   El número de decimales para mostrar.
-    * @return string          El tamaño formateado en la unidad más apropiada.
-   */
-	public function formatBytes($bytes, $decimales = 2) {
-      $unidad = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-      $factor = floor((strlen($bytes) - 1) / 3);
-      $formatted = sprintf("%.{$decimales}f", $bytes / pow(1024, $factor));
-      
-      return $formatted . ' ' . $unidad[$factor];
-   }
 
 }

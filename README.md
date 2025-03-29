@@ -1,14 +1,14 @@
 ![Repo peso](https://img.shields.io/github/repo-size/ScriptParaPHPost/ZCode?style=plastic&label=Repo%20peso)
 ![PHP 8](https://img.shields.io/badge/PHP-8.2.16-red?style=plastic)
-![Smarty 4.5.5](https://img.shields.io/badge/Smarty-4.5.5-red?style=plastic)
+![Smarty 5.4.3](https://img.shields.io/badge/Smarty-5.4.3-red?style=plastic)
 ![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic&label=Branch%20main)
 
-# ZCode v2.0.14
-> Próxima actualización se reescribirá varias líneas de código | próxima versión 2.1.x :: sin fecha
+# ZCode v2.1.15
+Actualización de Smarty y mucho más...
 
 ### Actualizaciones
  * PHP 8.2+ (requerido)
- * Smarty 4.5.5
+ * Smarty 5.4.3
  * jQuery 3.7.1
  * Plugins de jQuery
 

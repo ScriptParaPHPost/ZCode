@@ -1,5 +1,6 @@
 <?php
 
+$tiempo = date('Y');
 $plantilla = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
@@ -11,6 +12,7 @@ $plantilla = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \
 		<h2 style=\"margin:0;text-align:center;border-bottom:1px solid #CCC;font-weight:bolder;padding-bottom: 2rem;display: block;\">{asunto}</h2>
 		<p style=\"color:#F00;\">{contenido}</p>
 		<p style=\"display: block;margin: 0;padding: 2rem 0 0 0;font-size:.75rem;color:#666;text-align:center;\">Staff de {titulo}.</p>
+		<p style=\"display: block;margin: 0;padding: .325rem 0 0 0;font-size:.75rem;color:#666;text-align:center;\">Copyright 2024-$tiempo</p>
 	</main>
 </body>
 </html>";

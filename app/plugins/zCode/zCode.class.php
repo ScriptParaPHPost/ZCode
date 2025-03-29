@@ -8,7 +8,7 @@
  * Version: 1.10
 */
 
-class SmartyZCode {
+class SmartyZCode extends \Smarty\Smarty {
 
 	public $version;
 
@@ -18,30 +18,13 @@ class SmartyZCode {
    */
 	public $nucleo;
 
+	public $withoutCached = false;
+
 	 /**
     * Para almacenar las rutas de acceso a carpeta
     * @var array
    */
 	private $allRoutes = [];
-
-	/**
-    * Variables de permisos
-    * @var array
-   */
-	private $allow_extension = ['ico', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'avif'];
-
-	/**
-    * Variables para determinar el tipo
-    * @var array
-   */
-	private $images_types = [
-  	   'ico' => 'x-icon',
-  	   'png' => 'png',
-  	   'jpg' => 'jpeg',
-  	   'jpeg' => 'jpeg',
-  	   'webp' => 'webp',
-  	   'svg' => 'svg+xml'
-  	];
 
    /**
     * Acceso a carpeta de los recursos a usar
@@ -61,13 +44,21 @@ class SmartyZCode {
   	 * @access public
   	 * 
   	*/
-  	public function __construct($smarty) {
-  		global $tsCore, $tsUser;
+  	public function __construct() {
+  		global $tsCore;
   		
   		foreach($this->access as $class) $this->nucleo[$class] = $GLOBALS[$class] ?? null;
-
-  		$this->allRoutes = $this->getRoutesOfDirectories($tsCore->settings, $smarty->template_dir);
+	
+  		$this->allRoutes = $this->getRoutesOfDirectories($tsCore->setRoutes(), $this->listDirectories());
   	}
+
+  	private function listDirectories() {
+		return [
+			'root' => TS_ROOT,
+			'assets' => TS_ASSETS,
+			'theme' => TS_THEMES . TS_TEMA . DIRECTORY_SEPARATOR
+		];
+	}
 
   	/**
     * Obtiene las rutas de los directorios
@@ -78,12 +69,12 @@ class SmartyZCode {
    */
   	private function getRoutesOfDirectories(array $themeRoute = [], array $dirs = []):array {
   		$setRoutes = ['links' => [], 'directories' => []];
-  		foreach (['tema', 'assets'] as $link) {
-         $theme = ($link === 'tema') ? $themeRoute['t_url'] : $themeRoute[$link];
+  		$themeRoute = array_slice($themeRoute, 2, 2);
+  		foreach (['theme', 'assets'] as $link) {
          foreach ($this->resources as $source) {
-            $isSource = ($source === 'root');
-            $setRoutes['links'][$link][$source] = $theme . ($isSource ? '' : "/$source");
-            $setRoutes['directories'][$link][$source] = $dirs[$link] . ($isSource ? '' : $source);
+            $isSource = ($source === 'root') ? 'base' : $source;
+            $setRoutes['links'][$link][$source] = $themeRoute[$link][$isSource];
+            $setRoutes['directories'][$link][$source] = $dirs[$link] . ($source === 'root' ? '' : $source);
          }
       }
   		return $setRoutes;
@@ -98,7 +89,7 @@ class SmartyZCode {
   	private function setFileExistsInRoute(string $filename = '') {
   		foreach($this->allRoutes['directories'] as $routeType => $folders) {
   			foreach($folders as $folderType => $folderPath) {
-  				$filePath = $folderPath . ($folderType === 'root' ? '' : TS_PATH) . $filename;
+  				$filePath = $folderPath . ($folderType === 'root' ? '' : DIRECTORY_SEPARATOR) . $filename;
   				if( file_exists($filePath) ) {
   					return $this->allRoutes['links'][$routeType][$folderType] . '/' . $filename;
   				}
@@ -106,12 +97,6 @@ class SmartyZCode {
   		}
   		return false;
   	}
-
-	private function getVersionFile(string $file = '', string $extension = ''): string {
-   	$hash = md5_file($file);
-   	$version = 'ZC' . substr($hash, 0, 6);
-   	return "$file?$version";
-	}
 
   	/**
 	 * @access private
@@ -122,10 +107,10 @@ class SmartyZCode {
    */
 	private function generateHtmlTag(string $htmltag = '') {
 		$extension = pathinfo($htmltag, PATHINFO_EXTENSION);
-		$htmltag = $this->getVersionFile($htmltag, $extension);
+		$fileCache = $htmltag . ($this->withoutCached ? uniqid("?v{$this->version}") : '');
 		return match ($extension) {
-			'css' => "<link rel=\"stylesheet\" href=\"$htmltag\" type=\"text/css\"/>\n",
-			'js' => "<script src=\"$htmltag\" defer></script>\n",
+			'css' => "<link rel=\"stylesheet\" href=\"$fileCache\" type=\"text/css\"/>\n",
+			'js' => "<script src=\"$fileCache\" defer></script>\n",
 			default => null
 		};
 	}
@@ -230,7 +215,7 @@ class SmartyZCode {
 	 * @return string La cadena JavaScript del objeto global.
 	*/
 	private function createObject(array $claves = [], $data = null): string {
-  		global $tsUser, $tsCore, $smarty;
+  		global $tsUser, $tsZCode;
 	   include TS_ZCODE . 'datos.php';
 
 	   $quitar = explode(';', $data);
@@ -258,7 +243,7 @@ class SmartyZCode {
 	   if($tsUser->uid !== 0) {
 		   if($this->nucleo['tsPage'] === 'cuenta') {
 				// Avatar por defecto en caso de no exister el avatar del usuario
-				$avatar = $tsCore->getAvatar($tsUser->uid, 'use');
+				$avatar = $tsZCode->getAvatar($tsUser->uid, 'use');
 				$portada = '';//$this->nucleo['tsPerfil']['user_portada'];
 				$portada = isset($portada) ? "\n\tavatar.cover = '$portada';" : '';
 				$jsObjectString .= <<< LINEA
@@ -330,9 +315,9 @@ class SmartyZCode {
   	}
 
   	public function setStyleCustomized() {
-  		global $tsCore, $tsUser, $Theme;
+  		global $tsUser, $Theme;
   		if($tsUser->is_member > 0) {
-	  		include TS_PLUGINS . 'zCode' . TS_PATH . 'zCode.customizer.php';
+	  		include TS_PLUGINS . 'zCode' . DIRECTORY_SEPARATOR . 'zCode.customizer.php';
 	  		$colores = $Theme->setColorCustomize();
 	  		return (safe_count($colores) <= 1) ? '' : generateThemeColors('customizer', $colores[0], $colores[1]);
   		} return '';
@@ -360,8 +345,11 @@ class SmartyZCode {
 	  	# Añadimos complementos a cuenta, comunidades...
 	  	if($this->nucleo['tsPage'] === 'admin') {
 	  		if(empty($this->nucleo['action'])) {
-		  		$jsMain = [...$jsMain, "emoji-toolkit.js", "timeago.min.js", "timeago.es.js"];
+		  		$jsMain = [...$jsMain, "emoji-toolkit.js", "timeago.min.js", "timeago.es.js", "versiones.js"];
 			}
+	  		if(in_array($this->nucleo['action'], ['favicon', 'database'])) {
+	  			$jsMain = [...$jsMain, "{$this->nucleo['action']}.js"];
+	  		}
 		}
 		# Post privado!
 		if($this->nucleo['tsPost'][0] === 'privado') {
@@ -399,23 +387,28 @@ class SmartyZCode {
   		}
 		$this->getVariables($claves);
 		// Siempre
-		$claves['images'] = [
-			'assets' => $tsCore->settings['assets'] . '/images',
-			'tema' => $tsCore->settings['images']
-		];
-		$claves['theme'] = $tsCore->settings['t_url'];
-		$others = ['url', 'assets', 'domain', 'titulo', 'slogan', 'version'];
-		foreach ($others as $key => $other) {
+		$others = ['url', 'domain', 'titulo', 'slogan', 'version'];
+		foreach ($others as $other) {
 			$claves[$other] = $tsCore->settings[$other];
 		}
+		if($this->nucleo["tsPage"] === 'admin' OR $this->nucleo["tsPage"] === 'moderacion') {
+			$claves['ajax'] = $claves['url'] . '/dashboard';
+		}
+		$claves['images'] = [
+			'assets' => $tsCore->setRoutes('assets', 'images'),
+			'tema' => $tsCore->setRoutes('theme', 'images')
+		];
+		$claves['theme'] = $tsCore->setRoutes('theme', 'base');
+		$claves['assets'] = $tsCore->setRoutes('assets', 'base');
 		ksort($claves);
 		return "<script>\n{$this->createObject($claves, $data)}\n</script>";
   	}
 
   	public function setScriptNotifica() {
-  		global $tsUser;
-  		$isNots = (int)$smarty->tpl_vars['tsNots']->value;
-  		$isMps = (int)$smarty->tpl_vars['tsMPs']->value;
+  		global $smarty;
+		
+  		$isNots = (int)$GLOBALS['smarty']->tpl_vars['tsNots']->value;
+  		$isMps = (int)$GLOBALS['smarty']->tpl_vars['tsMPs']->value;
 
 		$nots = 'notifica.popup('.(int)$isNots.');';
 		$mps = 'mensaje.popup('.(int)$isMps.');';

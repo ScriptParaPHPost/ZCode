@@ -4,13 +4,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
-<link href="{$tsConfig.assets}/images/favicon/logo-16.webp?t={$smart.now}" rel="shortcut icon" type="image/webp" sizes="16x16" />
-<link href="{$tsConfig.assets}/images/favicon/logo-32.webp?t={$smart.now}" rel="shortcut icon" type="image/webp" sizes="32x32" />
-<link href="{$tsConfig.assets}/images/favicon/logo-64.webp?t={$smart.now}" rel="shortcut icon" type="image/webp" sizes="64x64" />
-{zCode css=["base.css","dashboard.css"]}
-{zCode js=["acciones.js","dropdown.js"] scriptGlobal=true remove="colores;themes"}
-{if $tsPage == 'admin' && $tsAction == ''}{zCode js="versiones.js"}{/if}
-{if in_array($tsAction, ['database', 'favicon', 'seo', 'socials'])}{zCode js="components/admin.$tsAction.js"}{/if}
+{meta 
+	facebook=false 
+	twitter=false 
+	analytics=false 
+	robots=[
+		'active' => false, 
+		'data' => [
+			'name' => 'robots', 
+			'content' => 'index, follow'
+		]
+	]
+}
+{zCode css=["base.css","dashboard.css"] js=["acciones.js","dropdown.js"] global=true}
 </head>
 <body>
 
@@ -28,17 +34,26 @@
 		</section>
 		<footer class="py-3">
 			<div class="links p-2">
-				<div class="links-left d-flex justify-content-center align-items-center gap-2">
-					<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/ayuda/" title="Ayuda">Ayuda</a>
-					<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/chat/" title="Chat">Chat</a>
-					<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/contacto/" title="Contacto">Contacto</a>  
-					<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/protocolo/" title="Protocolo">Protocolo</a>
-				</div>
-				<div class="links-right d-flex justify-content-center align-items-center gap-2">
-					<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/terminos-y-condiciones/" title="T&eacute;rminos y condiciones">T&eacute;rminos y condiciones</a>
-					<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/privacidad/" title="Privacidad de datos">Privacidad de datos</a>
-					<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/pages/dmca/" title="Report Abuse - DMCA">Report Abuse - DMCA</a>
-				</div>
+				{assign "listsFooter" [
+					'left' => [
+						'ayuda' => 'Ayuda',
+						'chat' => 'Chat',
+						'contacto' => 'Contacto',
+						'protocolo' => 'Protocolo'
+					],
+					'right' => [
+						'terminos-y-condiciones' => 'T&eacute;rminos y condiciones',
+						'privacidad' => 'Privacidad de datos',
+						'dmca' => 'Report Abuse - DMCA'
+					]
+				]}
+				{foreach $listsFooter key=cl item=list}
+					<div class="links-{$cl} d-flex justify-content-center align-items-center gap-2">
+						{foreach $list key=page item=title}
+							{include "LinkFooter.tpl" url="pages/$page/" title=$title}
+						{/foreach}
+					</div>
+				{/foreach}
 			</div>
 			<div class="footer-copyright text-center">
 				<a href="{$tsConfig.url}" rel="internal" title="{$tsConfig.titulo} - {$tsConfig.slogan}">{$tsConfig.titulo}</a> &copy; {$smarty.now|date_format:"Y"}

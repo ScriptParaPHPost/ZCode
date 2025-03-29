@@ -1,10 +1,5 @@
 <section class="up-card" id="post-izquierda">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">{uicon name="funnel"}</div>
-		<div class="up-header--title">
-			<span>Filtrar Actividad</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="funnel" label="Filtrar Actividad"}
 	<div class="up-card--body">
 		<div class="empty">Elige que notificaciones recibir y cuales no.</div>
 		<div class="mb-3">
@@ -98,14 +93,7 @@
 </section>
 
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="graph-increase"}
-		</div>
-		<div class="up-header--title">
-			<span>Estad&iacute;sticas</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="graph-increase" label="Estad&iacute;sticas"}
 	<div class="up-card--body d-grid gap-2" style="grid-template-columns: repeat(3, 1fr);">
 		<a href="{$tsConfig.url}/monitor/seguidores" class="text-decoration-none py-2 text-center h2 m-0">
 			<span class="fw-bold">{$tsData.stats.seguidores}</span>
@@ -124,14 +112,7 @@
 
 {if $tsConfig.c_allow_live == 1}
 <section class="up-card">
-	<div class="up-card--header" icon="true">
-		<div class="up-header--icon">
-			{uicon name="notification"}
-		</div>
-		<div class="up-header--title">
-			<span>Notificaciones Live</span>
-		</div>
-	</div>
+	{include "CardHeader.tpl" iconName="notification" label="Notificaciones Live"}
 	<div class="up-card--body">
 		<label class="d-flex justify-content-start align-items-center gap-2 py-2">
 			<input type="checkbox" class="up-checkbox" onclick="live.sounds('notifications');"{if $tsStatus.live_notifications == 'ON'} checked{/if}/> 
