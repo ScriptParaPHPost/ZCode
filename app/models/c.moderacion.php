@@ -215,7 +215,7 @@ class tsMod {
 	 * @return string
 	*/
 	public function deletePost(int $pid = 0) {
-		global $tsCore, $tsMonitor, $tsUser;
+		global $tsCore, $tsMonitor, $tsUser, $tsZCode;
 		if ($tsUser->is_admod || $tsUser->permisos['moep']) {
 			// RAZON
 			$razon = $tsCore->setSecure($_POST['razon']);
@@ -246,6 +246,7 @@ class tsMod {
 					$status = $tsMonitor->setAviso($data['post_user'], 'Post eliminado', $aviso, 1);
 					//mail($data['user_email'], 'Post eliminado', $aviso);
 					$status = $this->setHistory('borrar', 'post', $pid);
+					$tsZCode->cleanerCacheSQL();
 					if ($status == true) return '1: El post ha sido eliminado.';
 			}
 			return '0: El post NO pudo ser eliminado.';

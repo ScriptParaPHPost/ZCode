@@ -83,6 +83,7 @@ function borrar_post(aceptar) {
 	if(!aceptar || aceptar === 1) return;
 	UPModal.proccess_start('Eliminando...');
 	loading.start();
+
 	$.post(basePath + '/posts-borrar.php', gget('postid', true), req => {
 		var title = (req.charAt(0) == '0') ? 'Error' : 'Post Borrado';
 		UPModal.alert(title, req.substring(3), (req.charAt(0) == '1'));

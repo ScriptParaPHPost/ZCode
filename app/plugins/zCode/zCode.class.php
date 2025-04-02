@@ -408,11 +408,13 @@ class SmartyZCode extends \Smarty\Smarty {
 		
   		$isNots = (int)$GLOBALS['smarty']->tpl_vars['tsNots']->value;
   		$isMps = (int)$GLOBALS['smarty']->tpl_vars['tsMPs']->value;
-  		$muroTotal = (int)$GLOBALS['smarty']->tpl_vars['tsMuro']->value['total'] ?? 0;
 
 		$line[] = "\tnotifica.popup($isNots);";
 		$line[] = "\tmensaje.popup($isMps);";
-		$line[] = "\tmuro.stream.total = $muroTotal;";
+
+  		if(isset($GLOBALS['smarty']->tpl_vars['tsMuro']->value['total'])) {
+			$line[] = "\tmuro.stream.total = {$GLOBALS['smarty']->tpl_vars['tsMuro']->value['total']};";
+  		}
 
 		$html = "<script>document.addEventListener(\"DOMContentLoaded\",function(){\n".implode("\n", $line)."\n});</script>\n";
 	

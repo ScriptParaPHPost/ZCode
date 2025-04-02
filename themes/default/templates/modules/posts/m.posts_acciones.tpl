@@ -1,6 +1,6 @@
 <div class="post-action d-flex justify-content-end align-items-center column-gap-3 position-relative">
    <div class="admin-posts">
-      <span role="button" class="main-bg body-color hover:main-bg" id="box_post">{uicon name="menu-vertical" class="pe-none"}</span>
+      <span role="button" id="box_post">{uicon name="menu-vertical" class="pe-none"}</span>
       <div class="position-absolute body-bg border pt-2 px-2 shadow rounded z-3 box_post" style="right: 1.5rem;top: -.5rem;width: 200px;display: none;">
          {if $tsPost.post_user == $tsUser->uid && $tsUser->is_admod == 0 && $tsUser->permisos.most == false && $tsUser->permisos.moayca == false && $tsUser->permisos.moo == false && $tsUser->permisos.moep == false && $tsUser->permisos.moedpo == false}
             <a href="{$tsConfig.url}/posts/editar/{$tsPost.post_id}" class="text-decoration-none py-1 px-2 mb-2 border rounded d-flex justify-content-start align-items-center column-gap-3">

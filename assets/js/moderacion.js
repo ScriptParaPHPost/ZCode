@@ -34,7 +34,7 @@ var mod = {
 		borrar(pid, redirect, aceptar) {
 			if(!aceptar){
 				loading.start();
-				$.post(`${ZCodeApp.url}/moderacion-posts.php?do=borrar`, req => {
+				$.post(`${ZCodeApp.url}/moderacion-posts.php?do=borrar`, { postid: pid }, req => {
 					UPModal.setModal({
 						title: 'Borrar Post',
 						body: req,

@@ -60,11 +60,11 @@ switch($action){
 				echo $tsMod->multiAction($do);
 			break;
 			case 'borrar':
-				if($_POST['razon']) {
+				if(isset($_POST['razon'])) {
 					$tsAjax = 1;
 					echo $tsMod->deletePost($pid);
 				} else {
-					include TS_ZCODE . "datos.php";
+					include TS_ZCODE . "Denuncias.php";
 					$tsPage = 'php_files/p.posts.mod';
 					$smarty->assign("tsDenuncias", $tsDenuncias['posts']);   
 				}
@@ -87,7 +87,7 @@ switch($action){
 				} else $smarty->assign("tsUsername", $username);
 			break;
 			case 'ban':
-				if($_POST['b_causa']){
+				if(isset($_POST['b_causa'])) {
 					$tsAjax = 1;
 					echo $tsMod->banUser($user_id);
 				}  else $smarty->assign("tsUsername", $username);
@@ -107,7 +107,7 @@ switch($action){
 	break;
 	case 'moderacion-mps':
 		// MP ID
-		$mid = $_POST['mpid'];
+		$mid = (int)$_POST['mpid'];
 		// ACCIONES SECUNDARIAS
 		switch($do){
 			case 'reboot':
@@ -129,13 +129,13 @@ switch($action){
 				echo $tsMod->rebootFoto($_POST['id']);
 			break;
 			case 'borrar':
-				if($_POST['razon']) {
+				if(isset($_POST['razon'])) {
 					$tsAjax = 1;
 					echo $tsMod->deleteFoto($fid);
 				} else {
-					include('../ext/datos.php');
+					include TS_ZCODE . "Denuncias.php";
 					$tsPage = 'php_files/p.fotos.mod';
-					$smarty->assign("tsDenuncias",$tsDenuncias['fotos']);   
+					$smarty->assign("tsDenuncias", $tsDenuncias['fotos']);   
 				}
 			break;
 		}
