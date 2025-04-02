@@ -49,46 +49,40 @@ class tsCore {
 		return $query;
 	}
 
-	public function setRoutes(string $get = 'all', string $only = '') {
-		$mytheme = $this->settings['url'] . '/themes/' . $this->settings['tema'];
-		$myassets = $this->settings['url'] . '/assets';
-		$mystorage = $this->settings['url'] . '/storage';
-		$allRoutes = [
-			'url' => $this->settings['url'],
-			'canonical' => urlencode($this->getSSLProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']),
-			// Theme
-			'theme' => [
-				'base' => $mytheme,
-				'images' => "$mytheme/images",
-				'css' => "$mytheme/css",
-				'js' => "$mytheme/js"
-			],
-			// Assets
-			'assets' => [
-				'base' => $myassets,
-				'images' => "$myassets/images",
-				'favicon' => "$myassets/images/favicon",
-				'categories' => "$myassets/images/categorias",
-				'css' => "$myassets/css",
-				'js' => "$myassets/js"
-			],
-			// Storage
-			'storage' => [
-				'base' => $mystorage,
-				'avatar' => "$mystorage/avatar",
-				'uploads' => "$mystorage/uploads"
-			],
-			// Logos
-			'logos' => [
-				'big' => "$myassets/images/favicon/{$this->setSEO($this->settings['titulo'])}.webp",
-				'32' => "$myassets/images/favicon/logo-32.webp",
-				'64' => "$myassets/images/favicon/logo-64.webp",
-				'128' => "$myassets/images/favicon/logo-128.webp",
-				'256' => "$myassets/images/favicon/logo-256.webp"
-			]
-		];
-		return ($get === 'all') ? $allRoutes : (empty($only) ? $allRoutes[$get] : $allRoutes[$get][$only]);
+	public function setRoutes(?string $param = null, ?string $extra = null): string|array {
+   	// Definir rutas base
+   	$basePaths = [
+   	   'tema' => "{$this->settings['url']}/themes/{$this->settings['tema']}",
+   	   'assets' => "{$this->settings['url']}/assets"
+   	];
+   	$mystorage = "{$this->settings['url']}/storage";
+   	$myimages = "{$basePaths['assets']}/images";
+   	
+   	// Generar rutas para CSS, JS e imágenes dentro de cada ruta base
+   	$routes = array_map(fn($path) => ['base' => $path,'css' => "$path/css",'js' => "$path/js",'images' => "$path/images"], $basePaths);
+   	
+   	// URLs generales
+   	$routes['url'] = $this->settings['url'];
+   	$routes['domain'] = $this->withoutSSL();
+   	$routes['canonical'] = urlencode("{$this->getSSLProtocol()}:/{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
+   	// Rutas de recursos específicos
+   	$routes['assets'] = array_merge($routes['assets'], [
+   	   'favicon' => "$myimages/favicon",
+   	   'categorias' => "$myimages/categorias",
+   	   'fonts' => "{$basePaths['assets']}/fonts"
+   	]);
+   	// Rutas de almacenamiento
+   	foreach(['base', 'avatar', 'portadas', 'uploads'] as $store) {
+   		$routes['storage'][$store] = ($store === 'base' ? $mystorage : "$mystorage/$store");
+   	}
+
+   	// Rutas de logotipos
+   	foreach([32, 64, 128, 256] as $size) $routes['logos'][$size] = "{$routes['assets']['favicon']}/logo-$size.webp";
+   	$routes['logos']['big'] = "$myimages/favicon/{$this->setSEO($this->settings['titulo'])}.webp";
+   	// Retornar la estructura de rutas según los parámetros
+   	return $param === null ? $routes : ($extra === null ? ($routes[$param] ?? []) : ($routes[$param][$extra] ?? ''));
 	}
+
 	
 	public function getNovemods() {
 		$datos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT 
@@ -112,13 +106,13 @@ class tsCore {
 		// CONSULTA
 		$categorias = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_color, c_descripcion, c_img FROM @posts_categorias ORDER BY c_orden'));
 		foreach($categorias as $cid => $cat) {
-			$categorias[$cid]['c_img'] = $this->setRoutes('assets', 'categories') . "/{$cat['c_img']}";
+			$categorias[$cid]['c_img'] = $this->setRoutes('assets', 'categorias') . "/{$cat['c_img']}";
 		}
 		return $categorias;
 	}
 
 	public function imageCat(string $cat = '') {
-		return $this->setRoutes('assets', 'categories') . "/$cat";
+		return $this->setRoutes('assets', 'categorias') . "/$cat";
 	}
 
 	/*
@@ -192,7 +186,7 @@ class tsCore {
 			0 => true, // CUALQUIERA
 			1 => $tsUser->is_member === 0, // SOLO VISITANTES
 			2 => $tsUser->is_member === 1, // SOLO MIEMBROS
-			3 => $tsUser->is_admod || $tsUser->permisos['moacp'], // SOLO MODERADORES
+			3 => $tsUser->is_admod || (!empty($tsUser->permisos) && isset($tsUser->permisos['moacp']) && $tsUser->permisos['moacp']), // SOLO MODERADORES
 			4 => $tsUser->is_admod === 1 // SOLO ADMIN
 		];
 		$tsLevel = $tsLevel ?? 0;
@@ -283,7 +277,7 @@ class tsCore {
 		$now = time();
 		$msg = empty($msg) ? 'No puedes realizar tantas acciones en tan poco tiempo.' : $msg;
 		//
-		if(!isset($_SESSION['flood'][$type])) $_SESSION['flood'][$type] = '';
+		$_SESSION['flood'][$type] = (!isset($_SESSION['flood'][$type])) ? '' : 3;
 		$limit = $tsUser->permisos['goaf'];
 		$resta = $now - $_SESSION['flood'][$type];
 		if($resta < $limit) {

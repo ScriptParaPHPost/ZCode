@@ -143,8 +143,12 @@ class tsUpload {
 	*/
 	public function sendFile($file, string $name = '') {
 		$url = $this->createImage($file, $name);
+		error_log("URL: $url");
+   	$response = $this->uploadImagen($this->setParams($url));
+		// Imprimir la respuesta para depuración
+    	error_log("Respuesta de la API: " . $response);
 		// SUBIMOS...
-		$new_img = $this->getImagenUrl($this->uploadImagen($this->setParams($url)));
+		$new_img = $this->getImagenUrl($response);
 		// BORRAR
 		$this->deleteFile($name);
 		// REGRESAMOS
@@ -302,10 +306,21 @@ class tsUpload {
 		* @return string
 		* @version 1.1
 	 */
-	 public function getImagenUrl($code){
-		global $tsCore;
-		$image_data = json_decode($code);
-		$src = $image_data->data->link;
-		return $src;
+	public function getImagenUrl($code) {
+	   global $tsCore;
+	   $image_data = json_decode($code);
+
+	   // Verificar si $image_data y sus propiedades existen
+	   if (isset($image_data->data)) {
+	      if (isset($image_data->data->link)) {
+	         return $image_data->data->link;
+	      } else {
+	         error_log("La propiedad 'link' no está definida en la respuesta de la API.");
+	         return null; // O lanzar una excepción
+	      }
+	   } else {
+	      error_log("La propiedad 'data' no está definida en la respuesta de la API.");
+	      return null; // O lanzar una excepción
+	   }
 	}
 }

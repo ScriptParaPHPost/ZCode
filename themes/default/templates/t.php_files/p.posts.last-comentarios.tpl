@@ -1,6 +1,6 @@
 <div id="filterByTodos" class="filterBy cleanlist">
    {foreach from=$tsComments key=i item=c}
-      <div class="entry-animation d-flex justify-content-start align-items-center gap-2 height height-6" style="line-height: 1.325rem;">
+      <div class="entry-animation d-flex justify-content-start align-items-center gap-2 height height-7 lh-base">
          <div class="number h3 m-0 text-center fw-bolder align-content-center">
             {if $i+1 < 10}0{/if}{$i+1}
          </div>

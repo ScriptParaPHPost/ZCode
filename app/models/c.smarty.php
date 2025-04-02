@@ -115,6 +115,14 @@ class tsSmarty extends \Smarty\Smarty {
 		$templates = TS_THEMES . $tema . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR;
 		$sections = $templates . 'sections' . DIRECTORY_SEPARATOR;
 		$modules = $templates . 'modules' . DIRECTORY_SEPARATOR;
+		$blocks = $templates . 'blocks' . DIRECTORY_SEPARATOR;
+
+		$addFolder = [];
+		foreach(scandir($blocks) as $k => $component) {
+			if(in_array($component, ['.', '..'])) continue;
+			$addFolder[$component] = $blocks . $component . DIRECTORY_SEPARATOR;
+		}
+
 		$directorios = array_merge([
 			'tema' => TS_THEMES . $tema,
 			'templates' => $templates,
@@ -123,7 +131,7 @@ class tsSmarty extends \Smarty\Smarty {
 			'pagina' => $modules . $tsPage . DIRECTORY_SEPARATOR,
 			'global' => $modules . 'global' . DIRECTORY_SEPARATOR,
 			'php_files' => $templates . 't.php_files' . DIRECTORY_SEPARATOR
-		], $this->listDirectories());
+		], $this->listDirectories(), $addFolder);
 		$this->addTemplateDir($directorios);
 	}
 

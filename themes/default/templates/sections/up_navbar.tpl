@@ -16,84 +16,92 @@
 			<div class="up-menu p-2 p-lg-0 d-block d-lg-flex justify-content-start align-items-center column-gap-2">
 				{if $tsConfig.c_allow_portal && $tsUser->is_member == true}
 					<div class="up-menu--item mb-3 mb-lg-0">
-						<a title="Ir a Inicio" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 d-flex justify-content-start justify-content-lg-center align-items-center column-gap-2{if $tsPage == 'portal'} active{/if}" rel="internal" href="{$tsConfig.url}/mi/">
-							{uicon name="card-view" size="1.5rem"}
-							<span class="item--text">Portal</span>
-						</a>
+						{include "MenuItemLink.tpl" title="Ir a Portal" inPage=($tsPage == "portal") link="/mi/" icon="card-view" label="Portal"}
 					</div>
 				{/if}
 
 				<div class="up-menu--item position-relative mb-3 mb-lg-0">
-					<a title="Ir a Inicio" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 d-flex justify-content-start justify-content-lg-center align-items-center column-gap-2{if $tsPage == 'home' || $tsPage == 'posts'} active{/if}" rel="internal" href="{$tsConfig.url}/{if $tsPage != 'home' || $tsPage != 'posts'}posts/{/if}" data-dropopen="posts">
-						{uicon name="document-stack" size="1.5rem"}
-						<span class="item--text">Posts</span>
-					</a>
-					<div class="up-dropdown z-99 position-relative position-lg-absolute p-2 rounded body-bg" data-dropname="posts" data-dropdown="false">
-						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'home' || $tsPage == 'posts'} active{/if}" href="{$tsConfig.url}/{if $tsPage == 'home' || $tsPage == 'posts'}posts/{/if}">Inicio</a>
-						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'buscador'} active{/if}" title="Buscador" href="{$tsConfig.url}/buscador/">Buscador</a>
-						{if $tsUser->is_member}
-							{if $tsUser->is_admod || $tsUser->permisos.gopp}
-				  				<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsSubmenu == 'agregar'} active{/if}" title="Agregar Post" href="{$tsConfig.url}/agregar/">Agregar Post</a>
-				  			{/if}
-				  			<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'mod-history'} active{/if}" title="Historial de Moderaci&oacute;n" href="{$tsConfig.url}/mod-history/">Historial</a>
-				  			{if $tsUser->is_admod || $tsUser->permisos.moacp}
-					  			<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'moderacion'} active{/if}" title="Panel de Moderador" href="{$tsConfig.url}/moderacion/" data-total="{$tsNovemods.total}">Moderaci&oacute;n</a>
-							{/if}
-						{/if}
-					</div>
+					{if $tsPage != 'home' && $tsPage != 'posts'}
+					   {assign var="link" value="/posts/"}
+					{else}
+					   {assign var="link" value="/"}
+					{/if}
+					{include "MenuItemLink.tpl" title="Ir a Inicio" inPage=($tsPage == 'home' || $tsPage == 'posts') link=$link icon="document-stack" label="Posts" dropopen="posts"}
+					{include file="MenuItemDropdown.tpl" dropdownName="posts" items=[
+					   [
+					      "title" => "Inicio", 
+					      "href" => ($tsPage == 'home' || $tsPage == 'posts' ? "/posts/" : "/"), 
+					      "active" => ($tsPage == 'home' || $tsPage == 'posts')
+					   ], [
+					      "title" => "Buscador", 
+					      "href" => "/buscador/", 
+					      "active" => ($tsPage == 'buscador')
+					   ], [
+					      "title" => "Agregar Post", 
+					      "href" => "/agregar/", 
+					      "active" => ($tsSubmenu == 'agregar'), 
+					      "condition" => ($tsUser->is_member && ($tsUser->is_admod || $tsUser->permisos.gopp))
+					   ], [
+					      "title" => "Historial de Moderación", 
+					      "href" => "/mod-history/", 
+					      "active" => ($tsPage == 'mod-history'), 
+					      "condition" => $tsUser->is_member
+					   ], [
+					      "title" => "Moderación", 
+					      "href" => "/moderacion/", 
+					      "active" => ($tsPage == 'moderacion'), 
+					      "condition" => ($tsUser->is_admod || $tsUser->permisos.moacp), 
+					      "dataTotal" => "{$tsNovemods.total}"
+					   ]
+					]}
 				</div>
 
 				{if $tsConfig.c_fotos_private == 1 || $tsUser->is_member}
 					<div class="up-menu--item position-relative mb-3 mb-lg-0">
-						<a title="Ir a Fotos" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 d-flex justify-content-start justify-content-lg-center align-items-center column-gap-2{if $tsPage == 'fotos'} active{/if}" rel="internal" href="{$tsConfig.url}/fotos/" data-dropopen="fotos">
-							{uicon name="camera-alt" size="1.5rem"}
-							<span class="item--text">Fotos</span>
-						</a>
-						<div class="up-dropdown z-99 position-relative position-lg-absolute p-2 rounded body-bg" data-dropname="fotos" data-dropdown="false">
-							<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'fotos' && $tsAction == ''} active{/if}" title="Inicio" href="{$tsConfig.url}/fotos/">Inicio</a>
-							{if $tsAction == 'album' && $tsFUser.0 != $tsUser->uid}
-								<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color active" title="&Aacute;lbum de {$tsFUser.1}" href="{$tsConfig.url}/buscador/{$tsFUser.1}">&Aacute;lbum de {$tsFUser.1}</a>
-							{/if}
-							{if $tsUser->is_admod || $tsUser->permisos.gopf}
-								<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'agregar'} active{/if}" title="Agregar foto" href="{$tsConfig.url}/fotos/agregar.php">Agregar Foto</a></li>
-							{/if}
-							<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'album'} active{/if}" title="Mis fotos" href="{$tsConfig.url}/fotos/{$tsUser->nick}">Mis fotos</a>
-						</div>
+						{include "MenuItemLink.tpl" title="Ir a Fotos" inPage=($tsPage == 'fotos') link="/fotos/" icon="camera-alt" label="Fotos" dropopen="fotos"}
+						{include file="MenuItemDropdown.tpl" dropdownName="fotos" items=[
+							[
+						   	"title" => "Inicio", 
+						   	"href" => "/fotos/", 
+						   	"active" => ($tsPage == 'fotos' && $tsAction == '')
+						   ], [
+						      "title" => "&Aacute;lbum de {$tsFUser.1}", 
+						      "href" => "/buscador/{$tsFUser.1}", 
+						      "condition" => ($tsAction == 'album' && $tsFUser.0 != $tsUser->uid)
+						   ], [
+						      "title" => "Agregar foto", 
+						      "href" => "/fotos/agregar.php", 
+						      "active" => ($tsAction == 'agregar'), 
+						      "condition" => ($tsUser->is_admod || $tsUser->permisos.gopf)
+						   ], [
+						      "title" => "Mis fotos", 
+						      "href" => "/fotos/{$tsUser->nick}", 
+						      "active" => ($tsAction == 'album')
+						   ]
+						]}
 					</div>
 				{/if}
 				<div class="up-menu--item position-relative mb-3 mb-lg-0">
-					<a title="Ir a Tops" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 d-flex justify-content-start justify-content-lg-center align-items-center column-gap-2{if $tsPage == 'tops'} active{/if}" rel="internal" href="{$tsConfig.url}/top/" data-dropopen="tops">
-						{uicon name="trophy" size="1.5rem"}
-						<span class="item--text">Tops</span>
-					</a>
-					<div class="up-dropdown z-99 position-relative position-lg-absolute p-2 rounded body-bg" data-dropname="tops" data-dropdown="false">
-						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'tops' && $tsAction != 'posts' && $tsAction != 'usuarios'} active{/if}" title="Inicio" href="{$tsConfig.url}/top/">Inicio</a>
-						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'posts'} active{/if}" title="Posts" href="{$tsConfig.url}/top/posts/">Posts</a>
-						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'usuarios'} active{/if}" title="Usuarios" href="{$tsConfig.url}/top/usuarios/">Usuarios</a>
-					</div>
+					{include "MenuItemLink.tpl" title="Ir a Tops" inPage=($tsPage == 'tops') link="/top/" icon="trophy" label="Tops" dropopen="tops"}
+					{include file="MenuItemDropdown.tpl" dropdownName="tops" items=[
+						[
+					   	"title" => "Inicio", 
+					   	"href" => "/top/", 
+					   	"active" => ($tsPage == 'tops' && $tsAction != 'posts' && $tsAction != 'usuarios')
+					   ], [
+					      "title" => "Posts", 
+					      "href" => "/top/posts/", 
+					      "active" => ($tsAction == 'posts')
+					   ], [
+					      "title" => "Usuarios", 
+					      "href" => "/top/usuarios/", 
+					      "active" => ($tsAction == 'usuarios')
+					   ]
+					]}
 				</div>
-				{if $tsConfig.c_allow_ticket == 1}
-				<div class="up-menu--item position-relative mb-3 mb-lg-0">
-					<a title="Ir a Tops" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 d-flex justify-content-start justify-content-lg-center align-items-center column-gap-2{if $tsPage == 'tops'} active{/if}" rel="internal" href="{$tsConfig.url}/top/" data-dropopen="tickets">
-						{uicon name="ticket" size="1.5rem"}
-						<span class="item--text">Tickets</span>
-					</a>
-					<div class="up-dropdown z-99 position-relative position-lg-absolute p-2 rounded body-bg" data-dropname="tickets" data-dropdown="false">
-						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsPage == 'tickets'} active{/if}" title="Inicio" href="{$tsConfig.url}/tickets/">Inicio</a>
-						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'nuevo'} active{/if}" title="Nuevo ticket" href="{$tsConfig.url}/tickets/nuevo/">Nuevo ticket</a>
-						<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'mis-tickets'} active{/if}" title="Mis tickets" href="{$tsConfig.url}/tickets/mis-tickets/">Mis tickets</a>
-						{if $tsUser->is_admod || $tsUser->permisos.moat}
-							<a class="up-dropdown--item d-block mb-2 py-2 px-3 text-decoration-none fw-semibold position-relative rounded hover:main-bg active:main-bg hover:main-color{if $tsAction == 'administrar'} active{/if}" title="Administrar" href="{$tsConfig.url}/tickets/administrar/">Administrar</a>
-						{/if}
-					</div>
-				</div>
-				{/if}
 				{if !$tsUser->is_member}
 					<div class="up-menu--item mb-3 mb-lg-0">
-						<a title="Registrate!" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 up-menu--register d-flex justify-content-start justify-content-lg-center align-items-center" rel="internal" href="{$tsConfig.url}/registro/">
-							{uicon name="door" size="1.5rem"}
-							<span class="item--text">Crear cuenta</span>
-						</a>
+						{include "MenuItemLink.tpl" title="Registrate" link="/registro/" icon="door" label="Crear cuenta"}
 					</div>
 				{/if}
 			</div>
@@ -139,10 +147,7 @@
 			{include "head_menu_user.tpl"}
 		{else}
 			<div class="up-menu--item">
-				<a title="Identificarme!" class="up-menu--link text-decoration-none rounded position-relative py-2 py-lg-0 px-3 px-lg-2 up-menu--login d-flex justify-content-center align-items-center" rel="internal" href="{$tsConfig.url}/login/">
-					{uicon name="door-alt" size="1.5rem"}
-					<span class="item--text">Iniciar sesión</span>
-				</a>
+				{include "MenuItemLink.tpl" title="Identificarme" link="/login/" icon="door-alt" label="Iniciar sesión"}
 			</div>
 		{/if}
 	</div>

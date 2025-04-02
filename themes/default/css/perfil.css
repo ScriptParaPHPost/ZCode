@@ -51,6 +51,9 @@
 	background: var(--body-bg);
 	border: 1px solid var(--border-color);
 }
+.shout__content #wall {
+	padding-right: 4rem!important;
+}
 .shout__content .buttons {
 	top: 0;
 	right: 0;
@@ -141,11 +144,13 @@
 	gap: .5rem;
 }
 .muro-video lite-youtube {
-	width: 260px;
+	width: 270px;
+	height: 160px;
 }
 .muro-video.only-video {
 	display: block;
-	width: 720px;
+	max-width: 720px;
+	min-width: 100%;
 }
 .muro-video.only-video lite-youtube {
 	width: auto;
@@ -166,7 +171,7 @@
 	margin: 0.325rem 0;
 	border-radius: var(--border-radius);
 	overflow: hidden;
-	border: 1px solid var(--border-color);
+	background: var(--html-bg);
 }
 .sitio.icon_social {
 	--size: 2rem;

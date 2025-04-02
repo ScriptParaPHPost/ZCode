@@ -255,8 +255,8 @@ class tsMuro {
 		$date = time();
 		$pid = (int)$_POST['pid'];
 		$data = $tsCore->setSecure($_POST['data'], true);
-		$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-		return "INSERT INTO @muro (`p_user`, `p_user_pub`, `p_body`, `p_date`, `p_type`, `p_ip`) VALUES ($pid, {$tsUser->uid}, '$data', $date, $type_pub, '{$_SERVER['REMOTE_ADDR']}')";
+		$myIP = $tsCore->executeIP();
+		return "INSERT INTO @muro (`p_user`, `p_user_pub`, `p_body`, `p_date`, `p_type`, `p_ip`) VALUES ($pid, {$tsUser->uid}, '$data', $date, $type_pub, '$myIP')";
 	}
 	/* 
 		streamPost()
@@ -390,130 +390,113 @@ class tsMuro {
 		$tsMonitor->setFollowNotificacion(18, ($pid == $tsUser->uid), $tsUser->uid, $pub_id); 
 		// RETORNAR VALOR
 		return $return;
-	 }
-	 /*
-		  streamRepost()
-	 */
-	 function streamRepost(){
-		  global $tsCore, $tsUser, $tsMonitor, $tsActividad;
-		  //
-		  $data = $tsCore->setSecure($tsCore->parseBadWords($_POST['data']));
-		  $pid = intval($_POST['pid']);
-		  //
-		 $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `p_user`, `p_user_pub` FROM @muro WHERE `pub_id` = \''.(int)$pid.'\' LIMIT 1');
-		 $pub = db_exec('fetch_assoc', $query);
-		  
-		  //
-		  if($pub['p_user'] > 0){
-				// VACIO?
-				$text = str_replace(array("\n","\t",' '),"",$data);
-				if(strlen($text) <= 0) return '0: Tu comentario debe tener al menos una letra.';
-				// ANTI FLOOD
-				$tsCore->antiFlood();
-				// CONTINUAMOS
-				$date = time();
-			$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-				if(db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO @muro_comentarios (`pub_id`, `c_user`, `c_date`, `c_body`, `c_ip`) VALUES (\''.(int)$pid.'\', \''.$tsUser->uid.'\', \''.$date.'\', \''.$tsCore->setSecure($data, true).'\', \''.$_SERVER['REMOTE_ADDR'].'\')')){
-					 $cid = db_exec('insert_id');
-					 // MONITOR
-					 $tsMonitor->setMuroRepost($pid, $pub['p_user'], $pub['p_user_pub']);
-					 // ACTIVIDAD
-					 $is_my = ($pub['p_user'] == $tsUser->uid) ? 1 : 3;
-					 $tsActividad->setActividad(10, $cid, $is_my);
-					 // UPDATES
-					 db_exec([__FILE__, __LINE__], 'query', 'UPDATE @muro SET `p_comments` = p_comments + 1 WHERE `pub_id` = \''.(int)$pid.'\'');
-					 // PARA LA PANTILLA
-					 return array('cid' => $cid, 'c_body' => $tsCore->parseBadWords($data, true), 'c_date' => $date, 'c_user' => $tsUser->uid, 'c_likes' => 0, 'like' => 'Me gusta','user_name' => $tsUser->nick);
-				} else return '0: '.show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db');
-		  } else return '0: La publicaci&oacute;n no existe.';
-	 }
-	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-	 /*
-		  getNews()
-	 */
-	public function getNews($start = 0, $limit = 10){
-		  global $tsUser, $tsCore, $tsZCode;
-		  // SOLO MOSTRAREMOS LAS ULTIMAS 100 PUBLICACIONES
-		  if($start > 90) return array('total' => '-1');
-		  // SEGUIDORES
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT f_id FROM @follows WHERE f_user = \''.$tsUser->uid.'\' AND f_type = \'1\'');
-		  $follows = result_array($query);
-		  
-		  // ORDENAMOS 
-		  foreach($follows as $key => $val){
-				// PERMISO PARA VER SUS PUBLICACIONES??
-				$priv = $this->getPrivacity($val['f_id'], null, true);
-				if($priv['m']['v'] == true)
-					 $amigos[] = "'".$val['f_id']."'";
-		  }
-		  $amigos[] = "'$tsUser->uid'";
-		  $amigos = implode(', ',$amigos);
-		  // OBTENEMOS LAS ULTIMAS PUBLICACIONES
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_id, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user_pub = u.user_id WHERE p.p_user IN('.$amigos.') AND p.p_user = p.p_user_pub ORDER BY p.p_date DESC LIMIT '.$start.','.$limit);
-		  while($row = db_exec('fetch_array', $query)){
-				// CARGAR LIKES
-				if($row['p_likes'] > 0){
-					 $row['likes'] = $this->getPubExtras($row['pub_id'], 'likes', $row['p_likes']);
-				} else $row['likes'] = array('link' => 'Me gusta');
-				// CARGAR COMENTARIOS
-				if($row['p_comments'] > 0){
-					 $row['comments'] = $this->getPubExtras($row['pub_id'], 'comments', 2);
-				}
-				$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
-				// MENCIONES
-				$row['p_body'] = $tsCore->parseBadWords($tsCore->setMenciones($row['p_body']), true);
-				// CARGAR ADJUNTOS
-				if($row['p_type'] != 1){
-					 $queryDos = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM @muro_adjuntos WHERE pub_id = \''.$row['pub_id'].'\' LIMIT 1');
-					 $adj = db_exec('fetch_assoc', $queryDos);
-					 
-					 //
-					 $data[] = array_merge($row,$adj); 
-				} else $data[] = $row;
-				//
-		  }
-		  
-		  //die(count($data));
-		  // RETORNAMOS
-		  return array('total' => safe_count($data), 'data' => $data);
-	 }
-	 /*
-		  getWall($count)
-	 */
-	function getWall($user_id, $start = 0){
+	}
+
+	/*
+	 streamRepost()
+	*/
+	function streamRepost(){
+		global $tsCore, $tsUser, $tsMonitor, $tsActividad;
+		//
+		$data = $tsCore->setSecure($tsCore->parseBadWords($_POST['data']));
+		$pid = (int)$_POST['pid'];
+		//
+		$pub = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT `p_user`, `p_user_pub` FROM @muro WHERE `pub_id` = $pid LIMIT 1"));
+		//
+		if($pub['p_user'] <= 0) return '0: La publicaci&oacute;n no existe.';
+		// VACIO?
+		$text = str_replace(array("\n","\t",' '),"",$data);
+		if(strlen($text) <= 0) return '0: Tu comentario debe tener al menos una letra.';
+		// ANTI FLOOD
+		$tsCore->antiFlood();
+		// CONTINUAMOS
+		$date = time();
+		$myIP = $tsCore->executeIP();
+		if(!db_exec([__FILE__, __LINE__], 'query', "INSERT INTO @muro_comentarios (`pub_id`, `c_user`, `c_date`, `c_body`, `c_ip`) VALUES ($pid, {$tsUser->uid}, '$date', '$data', '$myIP')")) return '0: '.show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db');
+		$cid = db_exec('insert_id');
+		// MONITOR
+		$tsMonitor->setMuroRepost($pid, $pub['p_user'], $pub['p_user_pub']);
+		// ACTIVIDAD
+		$is_my = ($pub['p_user'] == $tsUser->uid) ? 1 : 3;
+		$tsActividad->setActividad(10, $cid, $is_my);
+		// UPDATES
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE @muro SET `p_comments` = p_comments + 1 WHERE `pub_id` = $pid");
+		// PARA LA PANTILLA
+		return [
+			'cid' => $cid, 
+			'c_body' => $data, 
+			'c_date' => $date, 
+			'c_user' => $tsUser->uid, 
+			'c_likes' => 0, 
+			'like' => 'Me gusta',
+			'user_name' => $tsUser->nick
+		];
+	}
+
+	// CARGAR ROW
+	private function loadsRow($query) {
 		global $tsCore, $tsZCode;
+		$data = [];
+		while($row = db_exec('fetch_array', $query)) {
+			$row['likes'] = ($row['p_likes'] > 0) ? $this->getPubExtras($row['pub_id'], 'likes', $row['p_likes']) : ['link' => 'Me gusta'];
+			if($row['p_comments'] > 0) {
+				$row['comments'] = $this->getPubExtras($row['pub_id'], 'comments', 2);
+			}
+			$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
+			$parseBody = $tsCore->parseBBCode($row['p_body'], 'smiles');
+			$row['p_body'] = $tsCore->parseBadWords($tsCore->setMenciones($parseBody), true);
+			$row['p_body'] = rawurldecode($row['p_body']);
+			// CARGAR ADJUNTOS
+			if($row['p_type'] != 1){
+				$adjs = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @muro_adjuntos WHERE pub_id = {$row['pub_id']} LIMIT 1"));
+				$data[] = array_merge($row, $adjs); 
+			} else $data[] = $row;
+		}
+		return ['total' => safe_count($data), 'data' => $data];
+	}
+
+	/*
+	  getNews()
+	*/
+	public function getNews($start = 0, $limit = 10){
+		global $tsUser;
+		// SOLO MOSTRAREMOS LAS ULTIMAS 100 PUBLICACIONES
+		if($start > 90) return array('total' => '-1');
+		// SEGUIDORES
+		$follows = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT f_id FROM @follows WHERE f_user = {$tsUser->uid} AND f_type = 1"));
+		 
+		// ORDENAMOS 
+		foreach($follows as $key => $val){
+			// PERMISO PARA VER SUS PUBLICACIONES??
+			$priv = $this->getPrivacity($val['f_id'], null, true);
+			if($priv['m']['v'] == true) $amigos[] = "'{$val['f_id']}'";
+		}
+		$amigos[] = "'{$tsUser->uid}'";
+		$amigos = implode(', ',$amigos);
+		// OBTENEMOS LAS ULTIMAS PUBLICACIONES
+		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT p.*, u.user_id, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user_pub = u.user_id WHERE p.p_user IN($amigos) AND p.p_user = p.p_user_pub ORDER BY p.p_date DESC LIMIT $start,$limit");
+		return $this->loadsRow($query);
+	}
+
+	/*
+	 getWall($count)
+	*/
+	public function getWall($user_id, $start = 0){
 		$type = '';
 		if(isset($_POST['type'])) {
 			$number = (int)$_POST['type'];
 		  	$type = " AND p.p_type ".($number === 1 ? '>= 0' : "= $number");
 		}
-		$data = [];
-		  // PUBLICACION
-		  $query = db_exec([__FILE__, __LINE__], 'query', "SELECT p.*, u.user_id, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user_pub = u.user_id WHERE p.p_user = $user_id $type ORDER BY p.pub_id DESC LIMIT $start,10");
-		  while($row = db_exec('fetch_array', $query)){
-				// CARGAR LIKES
-				$row['likes'] = ($row['p_likes'] > 0) ? $this->getPubExtras($row['pub_id'], 'likes', $row['p_likes']) : ['link' => 'Me gusta'];
-				// CARGAR COMENTARIOS
-				if($row['p_comments'] > 0) $row['comments'] = $this->getPubExtras($row['pub_id'], 'comments', 2);
-				$row['avatar'] = $tsZCode->getAvatar($row['user_id'], 'use');
-				// MENCIONES
-				$row['p_body'] = $tsCore->parseBadWords($tsCore->parseBBCode($tsCore->setMenciones($row['p_body']), 'smiles'), true);
-				$row['p_body'] = rawurldecode($row['p_body']);
-				// CARGAR ADJUNTOS
-				if($row['p_type'] != 1){
-					$adj = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM @muro_adjuntos WHERE pub_id = {$row['pub_id']} LIMIT 1"));
-					//
-					$data[] = array_merge($row,$adj); 
-				} else $data[] = $row;
-		  }
-		  //
-		  return array('total' => safe_count($data), 'data' => $data);
-	 }
-	 /*
+		// PUBLICACION
+		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT p.*, u.user_id, u.user_name FROM @muro AS p LEFT JOIN @miembros AS u ON p.p_user_pub = u.user_id WHERE p.p_user = $user_id $type ORDER BY p.pub_id DESC LIMIT $start,10");
+		return $this->loadsRow($query);
+	}
+
+	/*
 		  getPubExtras($pud_id, $type)
-	 */
-	 function getPubExtras($pub_id, $type = 'likes', $likes = 0){
-		  global $tsUser, $tsCore, $tsZCode;
+	*/
+	public function getPubExtras($pub_id, $type = 'likes', $likes = 0){
+		global $tsUser, $tsCore, $tsZCode;
 		  //
 		  switch($type){
 				case 'likes':

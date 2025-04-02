@@ -20,7 +20,7 @@
 	global=true 
 }
 </head>
-<body class="flex justify-center items-center">
+<body class="flex justify-center items-center flex-wrap">
 
 	<main class="mt-3">
 		<header class="fixed w-100">

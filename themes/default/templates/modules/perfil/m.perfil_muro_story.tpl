@@ -17,7 +17,7 @@
 					</div>
 					<span class="d-block my-2">{$p.p_body}</span>
 					{if $p.p_type != 1}
-						<div class="mvm px-3 clearfix">
+						<div class="mvm clearfix">
 							{if $p.p_type == 2}
 								<div class="muro-image" role="button" onclick="muro.load_atta('foto', '{$p.adj_url}', this)">
 									<img loading="lazy" src="{$p.adj_image}" class="w-100 h-100 object-fit-cover pe-none" />
@@ -31,7 +31,7 @@
 								<div class="muro-video" onclick="muro.load_atta('video', '{$p.adj_url}', this)">
 									<lite-youtube loading="lazy" videoid="{$p.adj_url}" style="background-image: url('https://i.ytimg.com/vi/{$p.adj_url}/maxresdefault.jpg');"></lite-youtube>
 									<div class="muro-video--description">
-										<span class="muro-link--title">{$p.adj_title}</span>
+										<span class="muro-link--title text-truncate">{$p.adj_title}</span>
 										<span class="muro-link--description">{$p.adj_description}</span>
 									</div>
 								</div>

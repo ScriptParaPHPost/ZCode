@@ -41,6 +41,9 @@ html {
 .flex {
 	display: flex;
 }
+.flex-wrap {
+	flex-wrap: wrap;
+}
 .grid {
 	display: grid;
 }

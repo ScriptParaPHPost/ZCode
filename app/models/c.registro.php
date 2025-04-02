@@ -153,7 +153,7 @@ class tsRegistro {
     * @return string
    */
 	public function registerUser() {
-		global $tsCore, $tsUser, $reCaptcha;
+		global $tsCore, $tsZCode, $tsUser, $reCaptcha;
 		// DATOS NECESARIOS
 		$tsData = [
 			'user_nick' => $tsCore->parseBadWords($_POST['nick']),
@@ -188,7 +188,7 @@ class tsRegistro {
 		if(db_exec('num_rows', $query) > 0 || !filter_var($tsData['user_email'], FILTER_VALIDATE_EMAIL) || $tsCore->settings['c_reg_active'] === 0) die('0: Hubo problemas al intentar registrarle, hay campos vac&iacute;os, inv&aacute;lidos o no se le permite el registro.');
 
 		// PASAMOS BIEN... AHORA INSERTAR DATOS
-		$key = $tsCore->createPassword($tsData['user_nick'], $tsData['user_password']);
+		$key = $tsZCode->createPassword($tsData['user_nick'], $tsData['user_password']);
 		$rango = empty($tsCore->settings['c_reg_rango']) ? 3 : (int)$tsCore->settings['c_reg_rango'];
 		$active = (int)$tsCore->settings['c_reg_active'];
 		//

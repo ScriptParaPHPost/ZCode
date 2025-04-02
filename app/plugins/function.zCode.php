@@ -43,14 +43,8 @@ function smarty_function_zCode($params, &$smarty) {
 		$template .= $pluginZCode->setScripts($params["js"]);
 	}
 
-	if(isset($params["aditional"]) && $params['aditional'] === true) {
-		if(isset($GLOBALS['smarty']->tpl_vars['tsMuro']->value['total'])) {
-			$template .= "\n<script>\n\tmuro.stream.total = " . (int)$GLOBALS['smarty']->tpl_vars['tsMuro']->value['total'] . ";\n</script>";
-		}
-	}
-
-	if(isset($params['notifica']) && $params['notifica'] === true) {
-		$template .= "\n".$pluginZCode->setScriptNotifica();
+	if(isset($params['notifica']) && $params['notifica'] === true || isset($params["aditional"]) && $params['aditional'] === true) {
+		$template .= "\n".$pluginZCode->setScriptInLine();
 	}
 	$template .= "\n<!-- End Plugin ZCode -->";
 

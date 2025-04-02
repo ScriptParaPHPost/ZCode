@@ -12,27 +12,30 @@ export function handleImageUploadFn(file) {
 			contentType: false,
 			xhr() {
 				let xhr = $.ajaxSettings.xhr();
-				progressBar(xhr);
+				xhr.upload.onprogress = function(e) {
+					if (e.lengthComputable) {
+						let percent = Math.round((e.loaded / e.total) * 100);
+						$('#progress').addClass('uploading');
+						if (percent === 100) {
+							$('#progress').remove()
+							$('.input-append').append(`<div class="loading"></div>`);
+						}
+					}
+				};
+				return xhr;
 			},
 			success(response) {
 				$('.input-append').html(`<input type="hidden" value="${response[0][1]}" name="ifoto" />`);
 				muro.stream.adjuntar();
-				$('.input-append').html('Adjuntando imagen, espere...')
-			}
+				$('.input-append').html('Adjuntando imagen, espere...');
+			},
+  			error(xhr, status, error) {
+  			   console.error("❌ Error en AJAX:", status, error);
+  			   console.log("📄 Respuesta del servidor:", xhr.responseText);
+  			},
+  			complete() {
+  			   loading.end();
+  			}
 		});
 	}
-}
-
-function progressBar(xhr) {
-	xhr.upload.onprogress = function(e) {
-		if (e.lengthComputable) {
-			let percent = Math.round((e.loaded / e.total) * 100);
-			$('#progress').addClass('uploading');
-			if (percent === 100) {
-				$('#progress').remove()
-				$('.input-append').append(`<div class="loading"></div>`);
-			}
-		}
-	};
-	return xhr;
 }

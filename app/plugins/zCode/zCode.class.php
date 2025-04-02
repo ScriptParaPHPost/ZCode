@@ -48,7 +48,7 @@ class SmartyZCode extends \Smarty\Smarty {
   		global $tsCore;
   		
   		foreach($this->access as $class) $this->nucleo[$class] = $GLOBALS[$class] ?? null;
-	
+
   		$this->allRoutes = $this->getRoutesOfDirectories($tsCore->setRoutes(), $this->listDirectories());
   	}
 
@@ -56,7 +56,7 @@ class SmartyZCode extends \Smarty\Smarty {
 		return [
 			'root' => TS_ROOT,
 			'assets' => TS_ASSETS,
-			'theme' => TS_THEMES . TS_TEMA . DIRECTORY_SEPARATOR
+			'tema' => TS_THEMES . TS_TEMA . DIRECTORY_SEPARATOR
 		];
 	}
 
@@ -69,8 +69,8 @@ class SmartyZCode extends \Smarty\Smarty {
    */
   	private function getRoutesOfDirectories(array $themeRoute = [], array $dirs = []):array {
   		$setRoutes = ['links' => [], 'directories' => []];
-  		$themeRoute = array_slice($themeRoute, 2, 2);
-  		foreach (['theme', 'assets'] as $link) {
+  		$themeRoute = array_slice($themeRoute, 0, 2);
+  		foreach (['tema', 'assets'] as $link) {
          foreach ($this->resources as $source) {
             $isSource = ($source === 'root') ? 'base' : $source;
             $setRoutes['links'][$link][$source] = $themeRoute[$link][$isSource];
@@ -382,13 +382,12 @@ class SmartyZCode extends \Smarty\Smarty {
   	public function setScriptLineGlobal($data = null) {
   		global $tsCore, $tsUser;
   		$claves = [];
-  		if($tsUser->uid != 0) {
+  		if($tsUser->uid !== 0) {
   			$claves['user_key'] = $tsUser->uid;
   		}
 		$this->getVariables($claves);
 		// Siempre
-		$others = ['url', 'domain', 'titulo', 'slogan', 'version'];
-		foreach ($others as $other) {
+		foreach (['url', 'domain', 'titulo', 'slogan', 'version'] as $other) {
 			$claves[$other] = $tsCore->settings[$other];
 		}
 		if($this->nucleo["tsPage"] === 'admin' OR $this->nucleo["tsPage"] === 'moderacion') {
@@ -396,23 +395,26 @@ class SmartyZCode extends \Smarty\Smarty {
 		}
 		$claves['images'] = [
 			'assets' => $tsCore->setRoutes('assets', 'images'),
-			'tema' => $tsCore->setRoutes('theme', 'images')
+			'tema' => $tsCore->setRoutes('tema', 'images')
 		];
-		$claves['theme'] = $tsCore->setRoutes('theme', 'base');
+		$claves['tema'] = $tsCore->setRoutes('tema', 'base');
 		$claves['assets'] = $tsCore->setRoutes('assets', 'base');
 		ksort($claves);
 		return "<script>\n{$this->createObject($claves, $data)}\n</script>";
   	}
 
-  	public function setScriptNotifica() {
-  		global $smarty;
+
+  	public function setScriptInLine() {
 		
   		$isNots = (int)$GLOBALS['smarty']->tpl_vars['tsNots']->value;
   		$isMps = (int)$GLOBALS['smarty']->tpl_vars['tsMPs']->value;
+  		$muroTotal = (int)$GLOBALS['smarty']->tpl_vars['tsMuro']->value['total'] ?? 0;
 
-		$nots = 'notifica.popup('.(int)$isNots.');';
-		$mps = 'mensaje.popup('.(int)$isMps.');';
-		$html = "<script>document.addEventListener(\"DOMContentLoaded\",function(){{$nots}{$mps}});</script>\n";
+		$line[] = "\tnotifica.popup($isNots);";
+		$line[] = "\tmensaje.popup($isMps);";
+		$line[] = "\tmuro.stream.total = $muroTotal;";
+
+		$html = "<script>document.addEventListener(\"DOMContentLoaded\",function(){\n".implode("\n", $line)."\n});</script>\n";
 	
 		return trim($html);
   	}

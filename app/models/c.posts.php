@@ -465,7 +465,7 @@ class tsPosts {
 	private function getRelatedPostAutor($postData) {
 		foreach($postData as $pid => $post) {
 			$this->general($postData[$pid], $post['post_id'], $post['post_title']);
-			$postData[$pid]['c_img'] = $this->core->setRoutes('assets', 'categories') . '/' . $post['c_img'];
+			$postData[$pid]['c_img'] = $this->core->setRoutes('assets', 'categorias') . '/' . $post['c_img'];
 			// Portada
 			$postData[$pid]['post_new'] = $this->zcode->tagsNew($post['post_date']);
 		}

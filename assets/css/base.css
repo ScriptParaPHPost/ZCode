@@ -304,6 +304,7 @@
 }*/
 html {
 	-webkit-text-size-adjust: 100%;
+	font-family: Inter, sans-serif;
 }
 body {
 	font: normal normal 400 var(--setting-font-size) var(--setting-font-family);
@@ -5814,19 +5815,6 @@ lite-youtube {
 	aspect-ratio: 16 / 9;
 }
 /* gradient */
-lite-youtube::before {
-	content: '';
-	display: block;
-	position: absolute;
-	top: 0;
-	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==');
-	background-position: top;
-	background-repeat: repeat-x;
-	height: 60px;
-	padding-bottom: 50px;
-	width: 100%;
-	transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
-}
 lite-youtube::after {
 	content: "";
 	display: block;
@@ -5842,8 +5830,8 @@ lite-youtube > iframe {
 }
 lite-youtube > .lty-playbtn {
 	display: block;
-	width: 68px;
-	height: 48px;
+	width: 58px;
+	height: 41px;
 	position: absolute;
 	cursor: pointer;
 	transform: translate3d(-50%, -50%, 0);
@@ -6999,3 +6987,27 @@ select[size] {
 .font-roboto { font-family: 'Roboto'; }
 .font-system { font-family: system-ui, sans-serif; }
 .font-tema { font-family: var(--sans-serif); }
+.pulse {
+	--pulseColor: 7, 40, 83;
+   background: rgb(var(--pulseColor));
+   border-radius: 50%;
+   height: 10px;
+   width: 10px;
+   box-shadow: 0 0 0 0 rgba(var(--pulseColor), 1);
+   transform: scale(1);
+   animation: pulse 2s infinite;
+}
+@keyframes pulse {
+   0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(var(--pulseColor), .7);
+   }
+   60% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(var(--pulseColor), 0);
+   }
+   100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(var(--pulseColor), 0);
+   }
+}

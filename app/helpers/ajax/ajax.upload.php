@@ -62,7 +62,7 @@ switch($action) {
 	break;
 	case 'upload-images':
 	case 'upload-imagen':
-			echo json_encode($tsUpload->newUpload(1));
+		echo json_encode($tsUpload->newUpload(1));
 	break;
 	case 'upload-portada':
 		$portada = $tsCore->setSecure($_POST['portada']);

@@ -181,7 +181,7 @@ class tsAgregar {
 		$categoria_privada = ($tsUser->is_admod) ? "" : "WHERE c_nombre != '{$tsCore->settings['titulo']}'";
 		$categorias = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_orden, c_nombre, c_seo, c_color, c_descripcion, c_img FROM @posts_categorias $categoria_privada ORDER BY c_orden"));
 		foreach($categorias as $cid => $cat) {
-			$categorias[$cid]['c_img'] = $tsCore->setRoutes('assets', 'categories') . "/{$cat['c_img']}";
+			$categorias[$cid]['c_img'] = $tsCore->setRoutes('assets', 'categorias') . "/{$cat['c_img']}";
 		}
       //
       return $categorias;

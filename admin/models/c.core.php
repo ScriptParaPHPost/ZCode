@@ -84,7 +84,7 @@ class tsCore {
 	}
 
 	public function imageCat(string $cat = '') {
-		return $this->setRoutes('assets', 'categories') . "/$cat";
+		return $this->setRoutes('assets', 'categorias') . "/$cat";
 	}
 
 	/*

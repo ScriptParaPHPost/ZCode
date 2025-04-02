@@ -28,7 +28,7 @@ var denuncia = {
 		$.post(`${basePath}/denuncia-${type}.php`, { obj_id, obj_title, obj_user }, req => {
 			denuncia.set_dialog({ req, obj_id, type});
 			loading.end();
-		})
+		});
 	},
 	set_dialog({ req, obj_id, type}) {
 		UPModal.setModal({

@@ -184,6 +184,9 @@ class tsZCode {
 	   ));
 	   $setAvatar = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT uavatar_type as aType, uavatar_social as aName, uavatar_use FROM @perfil_avatar WHERE uavatar_id = '$uid'"));
 
+	   $setAvatar['uavatar_use'] = $setAvatar['uavatar_use'] ?? 'web';
+	   $avatarConfig['uavatar_gif_active'] = $avatarConfig['uavatar_gif_active'] ?? 0;
+
 	   // Configuración del avatar
 	   $avatar_root = "{$this->core->setRoutes('storage', 'avatar')}/user$uid";
 	   $image_name = empty($setAvatar['aType']) ? 'web' : $setAvatar['aName'];

@@ -1,16 +1,15 @@
 article[itemscope] {
-	--cover-width: 90px;
-	--cover-height: 90px;
-	--bgcolor: var(--border-color-translucent);
-	border: 1px solid var(--border-color-translucent);
+	--cover-width: 100px;
+	--cover-height: 100px;
 	grid-template-columns: var(--cover-width) 1fr;
 	background: var(--translucent-bg);
+	.picture {
+		border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+		height: var(--cover-height);
+		width: var(--cover-width);
+	}
 }
-article[itemscope] .picture {
-	border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
-	height: var(--cover-height);
-	width: var(--cover-width);
-}
+
 article:where(.private,.patrocinado,.status_1,.status_2,.status_3,.active_0,.baneado_1)::before {
 	--background: var(--bgcolor);
 	--border: 0;
@@ -106,13 +105,12 @@ article[itemscope].baneado_1::before {
 	left: -.325rem;
 }
 .filterShow {
-	--items: 2.325rem;
+	--items: 2.5rem;
 	max-height: calc(var(--items) * 15);
 }
 .filterShow-item {
 	height: var(--items);
 	line-height: var(--items);
-	border-bottom: 1px solid var(--border-color);
 }
 .filterShow-item:first-child {
 	font-weight: 600;

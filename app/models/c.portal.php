@@ -104,7 +104,7 @@ class tsPortal {
       foreach($visited as $key => $id) {
          $req = db_exec('fetch_assoc',db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_portada, p.post_body, p.post_date, p.post_puntos, p.post_private, u.user_id, u.user_name, c.c_nombre, c.c_seo, c.c_img FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category WHERE p.post_status = 0 AND p.post_id = $id LIMIT 1"));
          // Por si no existe el posts!
-         if($req['post_id'] === null) {
+         if($req['post_id'] ?? 0 === null) {
             $data[] = [];
             return;
          }

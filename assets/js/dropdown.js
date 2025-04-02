@@ -18,7 +18,7 @@ $(document).ready(() => {
 		*/
 		let totalItems = $('.up-subdropdown .subitem-drop').length;
 		let firstHeight = $('.up-subdropdown .subitem-drop').first().height();
-    	let Height = (Math.ceil(firstHeight) * totalItems) + ((0.5 * 16) * totalItems) + 'px'; /* 16px root */
+    	let Height = (Math.ceil(firstHeight) * totalItems) + ((.875 * 16) * totalItems) + 'px'; /* 16px root */
   		const style = {
   			height: dropAction ? Height : 'auto',
 			transition: 'height .4s ease-in-out'

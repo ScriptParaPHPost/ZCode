@@ -2,14 +2,22 @@
 			<footer>
 				<div class="links p-2 d-flex d-lg-block justify-content-around align-items-center">
 					<div class="links-left text-center text-lg-start py-1 d-block d-lg-flex justify-content-around justify-content-lg-center align-items-center column-gap-2">
-						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/ayuda/" title="Ayuda">Ayuda</a>
-						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/contacto/" title="Contacto">Contacto</a>  
-						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/protocolo/" title="Protocolo">Protocolo</a>
+						{foreach [
+							["isPage" => "ayuda", "title" => "Ayuda"],
+							["isPage" => "contacto", "title" => "Contacto"],
+							["isPage" => "protocolo", "title" => "Protocolo"]
+						] item=i}
+							{include "LinkFoot.tpl" isPage=$i.isPage title=$i.title}
+						{/foreach}
 					</div>
 					<div class="links-right text-center text-lg-start py-1 d-block d-lg-flex justify-content-around justify-content-lg-center align-items-center column-gap-2">
-						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/terminos-y-condiciones/" title="T&eacute;rminos y condiciones">T&eacute;rminos y condiciones</a>
-						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/privacidad/" title="Privacidad de datos">Privacidad de datos</a>
-						<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/dmca/" title="Report Abuse - DMCA">Report Abuse - DMCA</a>
+						{foreach [
+							["isPage" => "terminos-y-condiciones", "title" => "T&eacute;rminos y condiciones"],
+							["isPage" => "privacidad", "title" => "Privacidad de datos"],
+							["isPage" => "dmca", "title" => "Report Abuse - DMCA"]
+						] item=i}
+							{include "LinkFoot.tpl" isPage=$i.isPage title=$i.title}
+						{/foreach}
 					</div>
 				</div>
 				<div class="footer-copyright text-center translucent-bg text-uppercase border-top small py-3">

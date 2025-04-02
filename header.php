@@ -113,7 +113,7 @@ $smarty->assign('tsNots', $tsMonitor->notificaciones);
 // Mensajes
 $smarty->assign('tsMPs', $tsMP->mensajes);
 
-$smarty->assign('tsThemeSettings', $Theme->getSettingsTheme());
+$smarty->assign('Theme', $Theme);
 $smarty->assign('tsThemeBox', $Theme->getSettingPageBox());
 
 $smarty->assign('tsMenuCuenta', $menu_cuenta);

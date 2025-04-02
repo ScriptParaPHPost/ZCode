@@ -14,12 +14,12 @@ if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
 
 class tsCache {
 
-   private $cacheDir = 'sql';
+   private $cacheDir = 'sentencias';
 
    private $cacheTTL = 150;
 
    public function __construct($cacheDir = null, $cacheTTL = null) {
-      $dir = TS_CACHE . $this->cacheDir . DIRECTORY_SEPARATOR;
+      $dir = TS_STORAGE . $this->cacheDir . DIRECTORY_SEPARATOR;
       if (!is_dir($dir)) {
          mkdir($dir, 0777, true);
       }

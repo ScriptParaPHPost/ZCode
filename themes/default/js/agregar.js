@@ -2,7 +2,7 @@
 const loadWYSIBB = $('textarea[name="cuerpo"]');
 // borrador
 let draftSetTime;
-let draftLastMessage = '';
+let draftLastMessage;
 let draftIsEnabled = true;
 // Post
 let confirm = true;

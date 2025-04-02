@@ -15,7 +15,7 @@
 		{/if}
 	</div>
 	<div class="widget clearfix" id="perfil-wall">
-		<div id="wall-content">
+		<div id="wall-content" data-new-shout>
 			{include "m.perfil_muro_story.tpl"}
 		</div>
 		{if $tsMuro.total >= 10}

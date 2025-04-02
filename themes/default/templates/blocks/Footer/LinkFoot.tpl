@@ -1,0 +1,1 @@
+<a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/pages/{$isPage}/" title="{$title}">{$title}</a>

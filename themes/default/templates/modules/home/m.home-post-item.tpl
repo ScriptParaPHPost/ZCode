@@ -1,17 +1,17 @@
-<article itemscope itemtype="https://schema.org/Article" class="position-relative small d-grid align-items-center rounded mb-2 categoriaPost entry-animation{if $p.post_status > 0} status_{$p.post_status}{/if}{if $p.user_activo == 0} active_{$p.user_activo}{/if}{if $p.user_baneado == 1} baneado_{$p.user_baneado}{/if}" title="{if $p.post_status == 3}El post est&aacute; en revisi&oacute;n{elseif $p.post_status == 1}El post se encuentra en revisi&oacute;n por acumulaci&oacute;n de denuncias{elseif $p.post_status == 2}El post est&aacute; eliminado{elseif $p.user_activo == 0}La cuenta del usuario est&aacute; desactivada{elseif $p.user_baneado == 1}La cuenta del usuario est&aacute; baneada{/if}">
+<article itemscope itemtype="https://schema.org/Article" class="position-relative small d-grid align-items-center rounded mb-2 categoriaPost entry-animation{if $p.post_status > 0} status_{$p.post_status}{/if}{if $p.user_activo == 0} active_{$p.user_activo}{/if}{if $p.user_baneado == 1} baneado_{$p.user_baneado}{/if}" title="{if $p.post_status == 3}El post est&aacute; en revisi&oacute;n{elseif $p.post_status == 1}El post se encuentra en revisi&oacute;n por acumulaci&oacute;n de denuncias{elseif $p.post_status == 2}El post est&aacute; eliminado{elseif $p.user_activo == 0}La cuenta del usuario est&aacute; desactivada{elseif $p.user_baneado == 1}La cuenta del usuario est&aacute; baneada{/if}"{if $p.post_sticky} style="--cover-width:80px;--cover-height:80px;"{/if}>
 
 	{include "Picture.tpl" src=$p.post_portada alt=$p.post_title class="object-fit-cover w-100 h-100"}
 
-	<div class="article-item px-2">
-		{if $p.post_sticky != 1}<a style="font-size: 0.875rem;" class="category fw-semibold d-block text-decoration-none" href="{$tsConfig.url}/posts/{$p.c_seo}/">{$p.c_nombre}</a>{/if}
-		{include "LinkTitle.tpl" href=$p.post_url semibold=true truncate=true label=$p.post_title class="text-decoration-none h5 m-0 title"}
+	<div class="article-item p-2{if !$p.post_sticky} h-100{/if} d-flex justify-content-between align-items-start flex-column">
+		{if $p.post_sticky != 1}<a style="font-size: 0.95rem;" class="category fw-semibold d-block text-decoration-none" href="{$tsConfig.url}/posts/{$p.c_seo}/">{$p.c_nombre}</a>{/if}
+		{include "LinkTitle.tpl" href=$p.post_url semibold=$p.visto truncate=true label=$p.post_title class="postTitle w-100 lh-base text-decoration-none h5 m-0 title"}
 		<span class="d-block pt-1" itemprop="dateCreated" datetime="{$p.post_date|date_format:'Y-m-d'}">{$p.post_date|hace:true} &raquo; {include "LinkAuthor.tpl" user=$p.user_name itemprop="creator" itemtype="Person"}</span>
 	</div>
+
 	{if $p.post_new || $p.post_sticky}
 		<span class="isNew position-absolute px-2 d-inline-block main-bg main-color-active fw-bold rounded-1">{if $p.post_sticky}Staff{else}{$p.post_new}{/if}</span>
 	{/if}
-	<div class="position-absolute d-flex justify-content-end align-items-center column-gap-2" style="right: .5rem;top: .5rem;">
-		{if $p.post_private}<span class="d-flex justify-content-center align-items-center column-gap-1">{uicon name="lock"} <span>Privado</span></span>{/if}
-		{if $p.post_sponsored}<span class="d-flex justify-content-center align-items-center column-gap-1">{uicon name="lightbulb_on"} <span>Recomentado</span></span>{/if}
-	</div>
+	
+	{if $p.post_private}<span class="position-absolute d-flex justify-content-center align-items-center column-gap-1" style="right: .875rem;bottom: .675rem;">{uicon name="lock"} <strong>Privado</strong></span>{/if}
+	{if $p.post_sponsored}<span class="position-absolute pulse" title="Recomentado" style="right: .875rem;top: .875rem;"></span>{/if}
 </article>

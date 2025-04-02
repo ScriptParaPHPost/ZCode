@@ -126,7 +126,6 @@ const registro = (() => {
    };
 
 	function verificarCampo(element) {
-		console.log(element)
 		const inputNameElement = $(element)[0].name;
 		const inputIDElement = `#${$(element)[0].id}`;
 		let inputValue = $(inputIDElement).val();

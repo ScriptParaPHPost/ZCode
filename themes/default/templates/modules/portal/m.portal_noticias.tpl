@@ -4,7 +4,7 @@
 		{include "perfil/m.perfil_muro_form.tpl"}
 	</div>
 	<div class="widget clearfix" id="perfil-news">
-		<div id="news-content">
+		<div id="news-content" data-new-shout>
 			{include "perfil/m.perfil_muro_story.tpl"}                         
 		</div>
 		<!-- more -->

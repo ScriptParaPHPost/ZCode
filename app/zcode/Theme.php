@@ -91,4 +91,20 @@ class Theme {
 		return join(' ', $attrs);
 	}
 
+	public function preloadFont() {
+		global $tsCore;
+		$fontFile = match($this->setThemeFont('family')) {
+			"dinpro" => "DINPro-CondensedRegular.woff2",
+			"inter" => "Inter.woff2",
+			"neomatrix" => "NeomatrixCode.ttf",
+			"pixellari" => "Pixellari.ttf",
+			"roboto" => "RobotoMono.ttf",
+			"ubuntu" => "UbuntuMono.ttf",
+			default => "Inter.woff2"
+		};
+		$type = explode('.', $fontFile)[1];
+		$file = $tsCore->setRoutes('assets', 'fonts') . '/' . $fontFile;
+		return "<link rel=\"preload\" href=\"{$file}\" as=\"font\" type=\"font/{$type}\" crossorigin=\"anonymous\">";
+	}
+
 }

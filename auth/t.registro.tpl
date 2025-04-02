@@ -4,7 +4,7 @@
 </div>
 
 {include "Input.tpl" id="nick" label="Nick" type="text" name="nick" placeholder="JhonDoe" required=true icon="user-male"}
-{include "Input.tpl" id="password" label="Contraseña" type="text" name="password" placeholder=$tsPass required=true icon="lock" showPassword=true html='<div id="password-strength"><span></span> <em></em></div><small id="generar">Generar contraseña</small>'}
+{include "Input.tpl" id="password" label="Contraseña" type="password" name="password" placeholder=$tsPass required=true icon="lock" showPassword=true html='<div id="password-strength"><span></span> <em></em></div><small id="generar">Generar contraseña</small>'}
 
 {include "Input.tpl" id="email" label="Tu correo" type="email" name="email" placeholder="jhondoe@example.com" required=true icon="mail"}
 

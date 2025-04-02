@@ -74,6 +74,7 @@ const muro = {
 				</div>`);
 				$('input[name="ifoto"]').on('change', function() {
 					muro.stream.type = 'foto';
+					loading.start();
 					iModule('ImageUpload.js', 'handleImageUploadFn', this.files[0]);
 				});
 			} else {
@@ -225,8 +226,9 @@ const muro = {
 						UPModal.alert('Error al publicar', req.substring(3));
 					break;
 					case '1': //OK
-						if ($('#wall-content .empty')) $('#wall-content .empty').hide();
-						$('#wall-content, #news-content').prepend($(req.substring(3)).fadeIn('slow'));
+						if ($('[data-new-shout] .empty')) $('#wall-content .empty').remove();
+						$('[data-new-shout]').prepend($(req.substring(3)).fadeIn('slow'));
+						//
 						let plax = $('#wall').attr('placeholder');
 						$('#wall').val('').attr({ placeholder: plax }).focus();
 						muro.stream.load('status', $('#stMain'));
@@ -365,7 +367,6 @@ const muro = {
 			let cmMessage = req.substring(3);
 			if(cmStatus === 0) UPModal.alert('Error:', cmMessage);
 			if(cmStatus === 1) {
-				console.log(cmMessage);
 				$(`#list_comments--${id}`).append(cmMessage).fadeIn('slow');
 				$(idComment).val('');
 			}

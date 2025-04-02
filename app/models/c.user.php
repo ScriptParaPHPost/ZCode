@@ -161,6 +161,7 @@ class tsUser  {
 		$this->permisos = unserialize($datis['r_allows']);
 		if(!isset($this->permisos['moat'])) $this->permisos['moat'] = false;
 		if(!isset($this->permisos['sumo'])) $this->permisos['sumo'] = false;
+		if(!isset($this->permisos['suad'])) $this->permisos['suad'] = false;
 		/* ES MIEMBRO */
 		$this->is_member = 1;
 		if($this->permisos['sumo'] === false && $this->permisos['suad'] === true) {
