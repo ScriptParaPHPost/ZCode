@@ -34,7 +34,7 @@ var mod = {
 		borrar(pid, redirect, aceptar) {
 			if(!aceptar){
 				loading.start();
-				$.post(`${ZCodeApp.url}/moderacion-posts.php?do=borrar`, req => {
+				$.post(`${ZCodeApp.url}/moderacion-posts.php?do=borrar`, {postid: pid}, req => {
 					UPModal.setModal({
 						title: 'Borrar Post',
 						body: req,
@@ -102,7 +102,7 @@ var mod = {
 	fotos: {
 		borrar(fid, redirect, aceptar) {
 			if(!aceptar){
-				$.post(`${ZCodeApp.url}/moderacion-fotos.php?do=borrar`, req => {
+				$.post(`${ZCodeApp.url}/moderacion-fotos.php?do=borrar`, { fid }, req => {
 					UPModal.setModal({
 						title: 'Borrar Foto',
 						body: req,

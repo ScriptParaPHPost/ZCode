@@ -68,7 +68,7 @@
 					echo $tsMod->multiAction($do);
 				break;
 				case 'borrar':
-					if($_POST['razon']) {
+					if(isset($_POST['razon'])) {
 						$tsAjax = 1;
 						echo $tsMod->deletePost($pid);
 					} else {
@@ -97,7 +97,7 @@
 					} else $smarty->assign("tsUsername", $username);
 				break;
 				case 'ban':
-					if($_POST['b_causa']){
+					if(isset($_POST['b_causa'])) {
 						$tsAjax = 1;
 						echo $tsMod->banUser($user_id);
 					}  else $smarty->assign("tsUsername", $username);
@@ -143,7 +143,7 @@
 					echo $tsMod->rebootFoto($_POST['id']);
 				break;
 				case 'borrar':
-					if($_POST['razon']) {
+					if(isset($_POST['razon'])) {
 						$tsAjax = 1;
 						echo $tsMod->deleteFoto($fid);
 					} else {

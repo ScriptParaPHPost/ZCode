@@ -304,7 +304,7 @@ class tsAgregar {
 	 * @return ID
 	*/
 	public function savePost() {
-		global $tsCore, $tsUser, $tsImages, $tsSitemap;
+		global $tsCore, $tsUser, $tsImages, $tsSitemap, $tsZCode;
 		// Buscamos el post por ID tsUser
 		$post_id = (int)$_GET['pid'];
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_user, post_sponsored, post_sticky, post_status FROM @posts WHERE post_id = $post_id LIMIT 1"));
@@ -324,14 +324,17 @@ class tsAgregar {
 				// Añadimos al sitemap (No le veo el sentido a este)
 				$tsSitemap->addSitemapInfo('update', $post_id);
 				// Guardamos en el historial de moderación
-				if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $_POST['razon']) {
+				$razon = $_POST['razon'] ?? '';
+				$tsZCode->cleanerCacheSQL();
+				// Guardamos en el historial de moderación
+				if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $razon) {
 					include_once TS_MODELS . "c.moderacion.php";
 					$tsMod = new tsMod();
 					return $tsMod->setHistory('editar', 'post', [
 						'post_id' => $post_id, 
 						'title' => $postData['title'], 
 						'autor' => $data['post_user'], 
-						'razon' => $tsCore->setSecure($_POST['razon'])
+						'razon' => $tsCore->setSecure($razon)
 					]);
 				} else return 1;
 			} else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
