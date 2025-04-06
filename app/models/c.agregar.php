@@ -124,7 +124,7 @@ class tsAgregar {
 		global $tsCore;
 		$data = [
 			'title' => $tsCore->parseBadWords($tsCore->setSecure($_POST['titulo'])),
-			'body' => $tsCore->setSecure($_POST['cuerpo']),
+			'body' => ($type === 'new' ? $tsCore->setSecure($_POST['cuerpo']) : $_POST['cuerpo']),
 			'tags' => $tsCore->parseBadWords($tsCore->setSecure($_POST['tags'], true)),
 			'category' => (int)$_POST['categoria']
 		];
@@ -304,7 +304,7 @@ class tsAgregar {
 	 * @return ID
 	*/
 	public function savePost() {
-		global $tsCore, $tsUser, $tsImages, $tsSitemap, $tsZCode;
+		global $tsCore, $tsUser, $tsImages, $tsSitemap;
 		// Buscamos el post por ID tsUser
 		$post_id = (int)$_GET['pid'];
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_user, post_sponsored, post_sticky, post_status FROM @posts WHERE post_id = $post_id LIMIT 1"));
@@ -314,7 +314,7 @@ class tsAgregar {
 		$postData = $this->newEditPost('edit');
 		// Pueden ir vacios
 		$this->iCanEmpty($postData);
-		if(!empty($_POST['portada']) OR !empty($_FILES['portada'])) {
+		if(isset($_POST['portada']) || isset($_FILES['portada'])) {
 			$postData["portada"] = $tsImages->updateImagePost();
 		}
 		$postData["update"] = time();
@@ -325,7 +325,15 @@ class tsAgregar {
 				$tsSitemap->addSitemapInfo('update', $post_id);
 				// Guardamos en el historial de moderación
 				$razon = $_POST['razon'] ?? '';
-				$tsZCode->cleanerCacheSQL();
+				// Por alguna razón no funcionaba con $tsZCode->cleanerCacheSQL(); y es lo mismo
+				$folder = TS_CACHE . 'sql' . DIRECTORY_SEPARATOR;
+				$files = glob($folder . '*.json'); // Obtiene todos los archivos .json
+				foreach ($files as $file) {
+				   if (is_file($file)) {
+				      unlink($file); // Elimina el archivo
+				   }
+				}
+				// -----------------------------------------
 				// Guardamos en el historial de moderación
 				if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $razon) {
 					include_once TS_MODELS . "c.moderacion.php";

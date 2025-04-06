@@ -45,13 +45,14 @@
 
 \*********************************/
 
-	$action = $_GET['action'];
+	$action = $_GET['action'] ?? '';
 
 /**********************************\
 
 *	(INSTRUCCIONES DE CODIGO)		*
 
 \*********************************/
+
 	include TS_MODELS . "c.agregar.php";
 	$tsAgregar = new tsAgregar();
 	$smarty->assign("tsCategorias", $tsAgregar->getCategorias());
@@ -66,7 +67,8 @@
 	} elseif($action == 'editar') {
 		// GUARDAR
 		if(!empty($_POST['titulo'])){
-		  $post_save = $tsAgregar->savePost();
+		  	$post_save = $tsAgregar->savePost();
+		  	
 			if($post_save == 1) {
 				$cid = (int)$_POST['categoria'];
 				$tsCat = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_seo FROM @posts_categorias AS c WHERE c.cid = $cid LIMIT 1"));

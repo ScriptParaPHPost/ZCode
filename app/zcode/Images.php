@@ -512,6 +512,7 @@ class Images {
 			$this->transformImage($pid, $image);
 		}
 	   if($update) $this->updateTable($pid, $encoded);
+	   return $encoded;
 	}
 
 }

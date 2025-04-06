@@ -690,7 +690,7 @@ class tsCore extends tsZCode {
 	public function getIUP(array $array = [], string $prefix = ''): string {
 		$sets = [];
 		foreach ($array as $field => $value) {
-			$sets[] = "$prefix$field = " . (is_numeric($value) ? (int)$value : "'{$this->setSecure($value)}'");
+			$sets[] = "$prefix$field = " . (is_numeric($value) ? (int)$value : "'{$this->setSecure($value, false)}'");
 		}
 		return implode(', ', $sets);
 	}

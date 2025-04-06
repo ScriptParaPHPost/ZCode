@@ -174,13 +174,8 @@ const portada = {
 		}
 	},
 	load() {
-		const { images: { assets: pathImages } } = ZCodeApp;
-		let showPortada = pathImages;
-		if(empty(portadaIMG)) {
-			showPortada += '/favicon/logo-128.webp';
-		} else {
-			showPortada += '/portadas/' + portadaIMG + '/image_lg.webp';
-		}
+		const { url, images: { assets } } = ZCodeApp;
+		let showPortada = (empty(portadaIMG) ? `${assets}/favicon/logo-128` : `${url}/storage/portadas/${portadaIMG}/image_lg`) + '.webp';
 		this.image(showPortada);
 	}
 }
