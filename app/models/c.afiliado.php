@@ -84,11 +84,10 @@ class tsAfiliado {
 		$afs = $tsCore->getIUP($newData , 'a_');
 		return (db_exec([__FILE__, __LINE__], 'query', "UPDATE @afiliados SET $afs WHERE aid = $afiliado")) ? '1: Guardado' : '0: Ocurri&oacute; un error';
 	}
-	public function DeleteAfiliado(int $aid = 0){
+	public function DeleteAfiliado() {
 		global $tsUser;
-		if($tsUser->is_admod == 1) {
-			if(removeDataById([__FILE__, __LINE__], '@afiliados', "aid = $aid")) return '1: Afiliado eliminado';
-		} else return '0: T&uacute;o, no puedes hacer eso';
+		$aid = (int)$_POST['afid'];
+		return ($tsUser->is_admod && removeDataById([__FILE__, __LINE__], '@afiliados', "aid = $aid")) ? '1: Afiliado eliminado' : '0: T&uacute;o, no puedes hacer eso';
 	}
 	public function SetActionAfiliado(){
 		global $tsUser;

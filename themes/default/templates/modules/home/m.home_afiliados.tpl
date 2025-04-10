@@ -9,7 +9,7 @@
 	</div>
 	<div class="up-card--body up-card--afiliados overflow-hidden" style="max-height: 258px;">
 		{foreach from=$tsAfiliados item=afiliado}
-			<div role="button" class="item d-block my-2 rounded shadow" onclick="afiliado.detalles({$afiliado.aid}); return false;" title="{$afiliado.a_titulo}">
+			<div role="button" class="item d-block my-2 rounded shadow" onclick="afiliado.detalles({$afiliado.aid}, 'home'); loading.end(); return false;" title="{$afiliado.a_titulo}">
 				<img loading="lazy" src="{$afiliado.a_banner}" alt="{$afiliado.a_titulo}"/>
 			</div>
 		{foreachelse}
@@ -17,6 +17,6 @@
 		{/foreach}
 	</div>
 	<div class="up-card--footer">
-		<span class="btn" ole="button" onclick="afiliado.nuevo(); return false">Afiliarme ahora...</span>
+		<span class="btn" ole="button" onclick="afiliado.nuevo('home'); return false">Afiliarme ahora...</span>
 	</div>
 </section>

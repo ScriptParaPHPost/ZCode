@@ -3,7 +3,7 @@
 ![Smarty 4.5.5](https://img.shields.io/badge/Smarty-4.5.5-red?style=plastic)
 ![GitHub Release](https://img.shields.io/github/v/release/ScriptParaPHPost/ZCode?style=plastic&label=Branch%20main)
 
-# ZCode v2.0.14
+# ZCode v2.0.17
 > Próxima actualización se reescribirá varias líneas de código | próxima versión 2.1.x :: sin fecha
 
 ### Actualizaciones
@@ -13,3 +13,5 @@
  * Plugins de jQuery
 
 > Ver carpeta de 'versions', ya que allí se mostrará lo que se hizo en cada versión y en el caso que ya lo tengas instalado ejecutar la consulta si la versión lo requiere.
+
+**LEER VERSIONS/2.0.17.MD**

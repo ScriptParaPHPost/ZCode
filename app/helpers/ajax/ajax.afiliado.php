@@ -55,8 +55,7 @@
 		break;
 		case 'afiliado-borrar':
 			//<---
-			$aid = (int)$_POST['afid'];
-         echo $tsAfiliado->DeleteAfiliado($aid);
+         echo $tsAfiliado->DeleteAfiliado();
 			//--->
 		break;
 		case 'afiliado-setactive':

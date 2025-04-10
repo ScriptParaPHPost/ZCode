@@ -289,7 +289,7 @@
       // QUE HACER
 	   if(empty($act)) $smarty->assign("tsAfiliados", $tsAfiliado->getAfiliados('admin'));
 	   elseif($act === 'editar'){
-         if($_POST['edit']) {
+         if(isset($_POST['edit'])) {
          	$aid = (int)$_GET['aid'];
             if($tsAfiliado->EditarAfiliado()) $tsCore->redireccionar('admin', $action, "act=editar&aid=$aid&save=true");
          }
@@ -298,35 +298,40 @@
 
    // Categorías
 	} elseif($action === 'cats') {
+      // CLASS
+      require_once TS_MODELS . "c.categorias.php";
+      $tsCategorias = new tsCategorias;
+      //
 		$tsTitle = 'Todas las categor&iacute;as';
-		$smarty->assign('tsCats', $tsAdmin->getCats());
-		if(!empty($_GET['ordenar'])) $tsAdmin->saveOrden();
+		$smarty->assign('tsCats', $tsCategorias->getCats());
+	
+		if(!empty($_GET['ordenar'])) $tsCategorias->saveOrden();
 		elseif(in_array($act, ['editar', 'nueva'])){
 			$tsTitle = ucfirst($act) . ' categor&iacute;a';
-			if($_POST['save']){
-				$both = ($act === 'editar') ? $tsAdmin->saveCat() : $tsAdmin->newCat();
+			if(isset($_POST['save'])) {
+				$both = ($act === 'editar') ? $tsCategorias->saveCat() : $tsCategorias->newCat();
 				if($both) $tsCore->redireccionar('admin', $action, 'save=true');
 			} else {
 				$smarty->assign("tsType", $_GET['t']);
-				if($act === 'editar') $smarty->assign("tsCat", $tsAdmin->getCat());
+				if($act === 'editar') $smarty->assign("tsCat", $tsCategorias->getCat());
 				if($act === 'nueva') $smarty->assign("tsCID", $_GET['cid']);
 				// SOLO LAS CATEGORIAS TIENEN ICONOS
-				$smarty->assign("tsIcons", $tsAdmin->getExtraIcons());
+				$smarty->assign("tsIcons", $tsCategorias->getExtraIcons());
 				require_once TS_MODELS . "c.foro.php";
 				$tsForo = new tsForo;
 				$smarty->assign('tsForos', $tsForo->getForos());
 			}
 		} elseif($act === 'change'){
 			$tsTitle = 'Cambiar categor&iacute;a';
-			if($_POST['save']){
-				if($tsAdmin->MoveCat()) $tsCore->redireccionar('admin', $action, 'save=true');
+			if(isset($_POST['save'])) {
+				if($tsCategorias->MoveCat()) $tsCore->redireccionar('admin', $action, 'save=true');
 			}
 		} elseif($act === 'borrar'){
 			$tsTitle = 'Borrar categor&iacute;a';
-			if($_POST['save']){
+			if(isset($_POST['save'])) {
 				// BORRAR CATEGORIA
 				if($_GET['t'] === 'cat'){
-					$save = $tsAdmin->delCat();
+					$save = $tsCategorias->delCat();
 					if($save == 1) $tsCore->redireccionar('admin', $action, 'save=true');
 					else $smarty->assign("tsError",$save); 
 				} 

@@ -158,7 +158,7 @@ function removeDataById(array $fileline = [], string $isTable = '', string $wher
    if (empty($where_id)) {
       throw new InvalidArgumentException('No hay dato para eliminar');
    }
-   db_exec($fileline, 'query', "DELETE FROM $isTable WHERE $where_id");   
+   return db_exec($fileline, 'query', "DELETE FROM $isTable WHERE $where_id");   
 }
 
 function statsUpdate(array $fileline = [], array $isData = [], bool $sum = false) {

@@ -10,11 +10,13 @@ function configureAndShowModal(title, body, action) {
 	};
    UPModal.setModal({ title, body, buttons });
 }
-function postRequestWithModal(page, params, element) {
+function postRequestWithModal(page, params, element, without = '') {
    loading.start();
    UPModal.proccess_start();
-	$.post(`${ZCodeApp.url}/${page}.php?from=dashboard`, params, response => {
+   let param = !empty(without) ? '' : `?from=dashboard`;
+	$.post(`${ZCodeApp.url}/${page}.php${param}`, params, response => {
    	UPModal.proccess_end();
+   	console.log(response)
    	let tpy = parseInt(response.charAt(0)) === 1;
    	UPModal.alert((tpy ? 'Hecho' : 'Opps!'), response.substring(3), false);
    	if(tpy) $(element).fadeOut().remove(); 
@@ -38,11 +40,11 @@ var admin = {
 	   borrar(afid, gew) {
          if(!gew){
          	configureAndShowModal('Borrar Afiliado', '&#191;Quiere borrar este afiliado?', `admin.afs.borrar(${afid}, 1)`)
-	      } else postRequestWithModal('afiliado-borrar', { afid }, `#few_${afid}`);
+	      } else postRequestWithModal('afiliado-borrar', { afid }, `#few_${afid}`, 'afs');
    	},
    	accion(aid) {
    		loading.start()
-   		$.post(ZCodeApp.url +'/afiliado-setactive.php?from=dashboard', { aid }, h => {
+   		$.post(ZCodeApp.url +'/afiliado-setactive.php', { aid }, h => {
    			let number = parseInt(h.charAt(0));
 				if(number === 0) UPModal.alert('Error', h.substring(3));
 				let color = (number === 1) ? 'green' : 'purple';
@@ -211,24 +213,6 @@ var admin = {
 		}
    }
 }
-
-/* AFILIADOS */
-var ad_afiliado = {
-   cache: {},
-   detalles: (aid) => {
-   	$.post(ZCodeApp.url + '/afiliado-detalles.php?from=dashboard', 'ref=' + aid, response => {
-		   UPModal.setModal({
-				title: 'Detalles del Afiliado',
-				body: response,
-				buttons: {
-					confirmTxt: 'Aceptar',
-					cancelShow: false
-				}
-			});
-   	}); 
-   }
-}
-
 
 var packs = {
   	reload(path) {

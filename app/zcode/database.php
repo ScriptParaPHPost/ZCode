@@ -118,6 +118,7 @@ $zcode_sql[] = "CREATE TABLE IF NOT EXISTS `{$db['prefix']}posts_categorias` (
   `c_seo` varchar(40) NOT NULL DEFAULT '',
   `c_img` varchar(40) NOT NULL DEFAULT '',
   `c_color` varchar(40) NOT NULL DEFAULT '',
+  `c_private` int(1) NOT NULL DEFAULT 0,
   `c_descripcion` text NULL,
   PRIMARY KEY (`cid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
