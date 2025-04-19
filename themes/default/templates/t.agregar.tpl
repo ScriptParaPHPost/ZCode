@@ -4,6 +4,7 @@
       {if $tsUser->is_admod || $tsUser->permisos.gopp}
          <div class="form-add-post">
             <form action="{$tsConfig.url}/agregar/{if $tsAction == 'editar'}?action=editar&pid={$tsPid}{/if}" method="POST" name="newpost" autocomplete="off" enctype="multipart/form-data">
+               {if $csrf_token}<input type="hidden" name="csrf_token" value="{$csrf_token}">{/if}
                {if $tsAction == 'editar'}
                   <input type="hidden" value="editar" name="action"/>
                   <input type="hidden" value="{$tsDraft.bid}" name="borrador_id"/>

@@ -10,7 +10,7 @@ function configureAndShowModal(title, body, action) {
 	};
    UPModal.setModal({ title, body, buttons });
 }
-function postRequestWithModal(page, params, element) {
+function postRequestWithModal(page, params, element, without = '') {
    loading.start();
    UPModal.proccess_start();
 	$.post(`${ZCodeApp.ajax}/${page}.php`, params, response => {

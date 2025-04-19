@@ -1,53 +1,51 @@
 /* AFILIACION */
 const afiliado = {
-	nuevo() {
-		$.get(ZCodeApp.url + '/afiliado-nuevo-form.php', form => {
-			UPModal.setModal({
-				title: 'Nueva Afiliaci&oacute;n',
-				body: form,
-				buttons: {
-					confirmTxt: `Enviar datos`,
-					confirmAction: `afiliado.enviar(0)`,
-					cancelShow: true
-				}
-			});
+	endpoint(page, where) {
+		const { url: endpoint } = ZCodeApp;
+		return `${endpoint}/afiliado-${page}.php`;
+	},
+	modal(title, body, confirmTxt, confirmAction) {
+		let buttons = {
+			confirmTxt,
+			confirmAction,
+			cancelShow: true
+		}
+		if (confirmTxt === true && !confirmAction) {
+			buttons = { confirmAction: true };
+		}
+		UPModal.setModal({ title, body, buttons });
+	},
+	nuevo(where) {
+		$.get(this.endpoint('nuevo-form', where), function(form) {
+			afiliado.modal('Nueva Afiliaci&oacute;n', form, `Enviar datos`, `afiliado.enviar(0, '${where}')`);
 		})
 	},
-	enviar() {
+	enviar(b, where) {
 		let data1 = verifyInput('#aurl', 'La url no puede estar vacío.');
 		let data2 = verifyInput('#atitle', 'El titulo no puede estar vacío.');
 		let data3 = verifyInput('#atxt', 'La descripcion no puede estar vacío.');
 		if(data1 === false || data2 === false || data3 === false ) return;
 		UPModal.proccess_start('Enviando los datos...');
-		afiliado.enviando($('form[name="AFormInputs"]').serialize());
+		afiliado.enviando($('form[name="AFormInputs"]').serialize(), where);
 	},
-	enviando(params) {
+	enviando(params, where) {
 		loading.start();
-		$.post(ZCodeApp.url + '/afiliado-enviando.php?', params, h => {
+		$.post(this.endpoint('enviando', where), params, res => {
 			UPModal.proccess_end();
-			switch(h.charAt(0)){
-				case '0':
-				case '2':
-					let text = (h.charAt(0) == 2) ? 'Faltan datos' : 'La URL es incorrecta';
-					$('#AFStatus > span').fadeOut().text(text).fadeIn();
-				break;
-				case '1':
-					UPModal.alert('Bien', h.substring(3), false);
-				break;
-			}
-			loading.end() 
+			let numb = parseInt(res.charAt(0));
+			if(numb !== 1) {
+				$('#AFStatus > span').fadeOut().text((numb === 2 ? 'Faltan datos' : 'La URL es incorrecta')).fadeIn();
+				return;
+			} 
+			UPModal.alert('Bien', res.substring(3), false);
+			loading.end();
 		})
 	},
-	detalles(ref) {
+	detalles(ref, where) {
 		loading.start() 
-		$.post(`${ZCodeApp.url}/afiliado-detalles.php`, { ref }, response => {
-			UPModal.setModal({
-				title: 'Detalles',
-				body: response,
-				buttons: {
-					confirmShow: true
-				}
-			});
+		$.post(afiliado.endpoint('detalles', where), { ref }, function(response) {
+			afiliado.modal('Detalles', response, true);
+			loading.end();
 		}) 
 	}
 };

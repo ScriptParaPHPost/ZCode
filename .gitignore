@@ -1,13 +1,11 @@
 # Ignorar carpetas
-append/*
+append/
 storage/*
 logs/*.log
+vendor/
 
 # Ignorar portadas
-assets/images/avatar
-assets/images/portadas
-assets/images/uploads
-assets/images/favicon
+assets/*
 
 # Ignorar todo en la carpeta 'themes'
 themes/*
@@ -16,8 +14,10 @@ themes/*
 !themes/default/
 
 # Ignorar archivos
-*.txt
 .env
-.lock
+*.txt
+*.py
+*.key
+*.lock
 sitemap.xml
 faster.php

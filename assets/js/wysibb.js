@@ -125,7 +125,7 @@ wbbdebug = false;
 			toolbar: true,
 			//img upload config 
 			imgupload: true,
-			img_uploadurl: ZCodeApp.url + "/app/extras/wysibbupload.php",
+			img_uploadurl: ZCodeApp.url + "/app/utils/upload.php",
 			img_maxwidth: 800,
 			img_maxheight: 640,
 			hotkeys: true,

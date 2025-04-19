@@ -8,6 +8,8 @@
  * Version: 1.10
 */
 
+//namespace app\Plugins\zCode;
+
 class SmartyZCode extends \Smarty\Smarty {
 
 	public $version;
@@ -54,7 +56,7 @@ class SmartyZCode extends \Smarty\Smarty {
 
   	private function listDirectories() {
 		return [
-			'root' => TS_ROOT,
+			'root' => BASEPATH,
 			'assets' => TS_ASSETS,
 			'tema' => TS_THEMES . TS_TEMA . DIRECTORY_SEPARATOR
 		];
@@ -216,7 +218,7 @@ class SmartyZCode extends \Smarty\Smarty {
 	*/
 	private function createObject(array $claves = [], $data = null): string {
   		global $tsUser, $tsZCode;
-	   include TS_ZCODE . 'datos.php';
+	   include TS_JUNK . 'datos.php';
 
 	   $quitar = explode(';', $data);
 

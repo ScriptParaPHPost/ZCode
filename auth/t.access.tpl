@@ -30,6 +30,7 @@
 			</div>
 		</header>
 		<form method="POST" class="py-5 px-4{if $tsAction == 'registro'} mt-3{/if}"{if $tsAction == 'registro'} disabled{/if}>
+			<input type="hidden" name="csrf_token" value="{$csrf_token}">
 			{include "t.$tsAction.tpl"}
 		</form>
 		<footer class="text-align-center">

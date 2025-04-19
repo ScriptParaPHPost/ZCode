@@ -12,6 +12,7 @@
  * Version: 2.0 
 */
 
+use app\models\Seo;
 
 function smarty_function_meta($params) {
 	// Opciones por defecto
@@ -27,8 +28,7 @@ function smarty_function_meta($params) {
 			]
 		]
 	];
-	include_once TS_MODELS . 'c.seo.php';
-	$infoSeo = new tsSeo();
+	$infoSeo = new Seo();
 	$tsCore = $GLOBALS['smarty']->tpl_vars["tsConfig"]->value;
 	$tsRoutes = $GLOBALS['smarty']->tpl_vars["tsRoutes"]->value;
    $tsPost = $GLOBALS['smarty']->tpl_vars["tsPost"]->value ?? [];
@@ -92,7 +92,7 @@ function smarty_function_meta($params) {
 	}
 
 	# AÑADIMOS SITEMAP, SOLO SI ESTA ACTIVO O EXISTE
-	if((int)$seoclass['seo_sitemap'] OR file_exists(TS_ROOT . 'sitemap.xml')) {
+	if((int)$seoclass['seo_sitemap'] OR file_exists(BASEPATH . 'sitemap.xml')) {
 		$meta .= "<link rel=\"sitemap\" type=\"application/xml\" title=\"Mapa del sitio\" href=\"{$tsCore['url']}/sitemap.xml\">\n";
 	}
 

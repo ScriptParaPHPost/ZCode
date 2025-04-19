@@ -1,0 +1,7 @@
+<?php
+
+# Seed de datos para la tabla `posts`
+
+return [
+	"INSERT INTO `" . $prefix . "posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES (1, 1, 33, 'Bienvenido a ZCode', '[size=18]¡Hola a todos![/size]\r\n\r\nNos llena de emoción darles la bienvenida a [b]ZCode[/b], el cual marca el primer paso en lo que esperamos sea un emocionante viaje para todos nosotros. Este es nuestro primer post y estamos encantados de que estés aquí, acompañándonos en este inicio.\r\n\r\nEste espacio ha sido creado con la intención de compartir, informar y ofrecer contenido valioso para nuestra comunidad. A lo largo de nuestras publicaciones, exploraremos una variedad de temas que van desde las últimas novedades y tendencias, hasta recursos útiles como descargas e imágenes que pueden ser de gran ayuda en tu día a día.\r\n\r\nQueremos que esta página sea un punto de encuentro, un lugar donde puedas encontrar información relevante, interactuar con otros lectores y, por supuesto, disfrutar de contenido que inspire y motive.\r\n\r\nEste es solo el comienzo, y tenemos muchas ideas y proyectos que estamos ansiosos por compartir con ustedes. Así que, te invitamos a quedarte con nosotros, explorar lo que tenemos para ofrecer y ser parte activa de esta comunidad que estamos construyendo juntos.\r\n\r\n[b][align=center]¡Gracias por ser parte de esta aventura desde el primer día![/align][/b]', 0, 'zcode, actualizado, optimizacion, mejoras, proyecto, compartir, ideas, construir');"
+];

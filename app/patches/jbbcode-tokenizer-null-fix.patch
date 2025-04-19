@@ -1,0 +1,11 @@
+--- a/JBBCode/Tokenizer.php 2025-04-11 12:41:49.798753100 -0300
++++ b/JBBCode/Tokenizer.php     2025-04-11 12:42:29.820915800 -0300
+@@ -26,7 +26,7 @@
+      */
+     public function __construct($str)
+     {
+-        $strLen = strlen($str);
++        $strLen = strlen($str ?? '');
+         $position = 0;
+ 
+         while ($position < $strLen) {

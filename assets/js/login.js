@@ -2,16 +2,18 @@ const login = (() => {
 	'use strict';
 
 	const TYPE_OF_DATA = {
-		password: 'Recuperar Contrase&ntilde;a',
-		validation: 'Reenviar validaci&oacute;n'
-	}
+		password: 'Recuperar Contraseña',
+		validation: 'Reenviar validación'
+	};
 
-	function multiOptions(type_from_action = '', type_status = false) {
-		if(!type_status) {
-			UPModal.setModal({
-				title: TYPE_OF_DATA[type_from_action],
+	const apiUrl = ZCodeApp.url;
+
+	function multiOptions(actionType = '', confirmed = false) {
+		if (!confirmed) {
+			return UPModal.setModal({
+				title: TYPE_OF_DATA[actionType],
 				input: {
-					label: 'Correo electr&oacute;nico',
+					label: 'Correo electrónico',
 					type: 'email',
 					name: 'r_email',
 					maxlength: 35,
@@ -19,46 +21,53 @@ const login = (() => {
 					required: true
 				},
 				buttons: {
-					confirmAction: `javascript:login.multiOptions('${type_from_action}', true)`,
+					confirmAction: `javascript:login.multiOptions('${actionType}', true)`,
 					cancelShow: true
 				}
 			});
-		} else {
-			const page = (type_from_action === 'password') ? 'pass' : 'validation';
-			const r_email = $('#r_email').val();
-			UPModal.proccess_start();
-			$.post(ZCodeApp.url + '/recover-'+page+'.php', { r_email }, receive => {
-				console.log(receive)
-				UPModal.proccess_end(2);
-				UPModal.setModal({
-					title: (receive.charAt(0) == '0' ? 'Opps!' : 'Hecho'),
-					body: receive.substring(3),
-					buttons: {
-						confirmAction: `close`,
-						cancelShow: false
-					}
-				});
-			})
 		}
+
+		const page = actionType === 'password' ? 'pass' : 'validation';
+		const email = $('#r_email').val();
+
+		if (!email) return;
+
+		UPModal.proccess_start();
+
+		$.post(`${apiUrl}/recover-${page}.php`, { r_email: email }, response => {
+			const success = response.charAt(0) !== '0';
+			const message = response.substring(3);
+			UPModal.proccess_end(2);
+			UPModal.setModal({
+				title: success ? 'Hecho' : 'Oops!',
+				body: message,
+				buttons: {
+					confirmAction: 'close',
+					cancelShow: false
+				}
+			});
+		});
 	}
 
-	const comprobar = (VERIFY_ID, VERIFY_ENCODE = false) => {
-		const GET_VERIFY_INPUT = $('input#' + VERIFY_ID);
-    	if (GET_VERIFY_INPUT.val() === '') {
-        	GET_VERIFY_INPUT.focus();
-       	return true;
-    	}
-		GET_VERIFY_INPUT.on('keyup', () => GET_VERIFY_INPUT.parent().parent().find('small.help').html(''));
-		return VERIFY_ENCODE ? encodeURIComponent(GET_VERIFY_INPUT.val()) : GET_VERIFY_INPUT;
+	function comprobar(id, encode = false) {
+		const input = $(`#${id}`);
+		const value = input.val();
+
+		if (!value) {
+			input.focus();
+			return '';
+		}
+
+		input.on('keyup', () => input.closest('div').find('small.help').html(''));
+		return encode ? encodeURIComponent(value) : value;
 	}
 
-	function mostrarError(SHOW_ERROR_ID, SHOW_ERROR_MSG) {
-		$(`#${SHOW_ERROR_ID}`).parent().parent().find('small.help').addClass('error').html(SHOW_ERROR_MSG);
+	function mostrarError(inputId, msg) {
+		$(`#${inputId}`).closest('div').find('small.help').addClass('error').html(msg);
 	}
 
-	function btnLoad(action = false) {
-		const TXT_ACTION = action ? 'Iniciando sesión...' : 'Iniciar sesión';
-		$('.upform-buttons input[type="submit"]').attr({ value: TXT_ACTION });
+	function btnLoad(loading = false) {
+		$('.upform-buttons input[type="submit"]').val(loading ? 'Iniciando sesión...' : 'Iniciar sesión');
 	}
 
 	function iniciarSesionFail() {
@@ -66,105 +75,113 @@ const login = (() => {
 	}
 
 	function comprobarOPT(params) {
-		params += '&code=' + $('input[name="one_password_time"]').val();
-		$.post(`${ZCodeApp.url}/login-validar.php`, params, req => {
-			let INPUT_NUMBER = parseInt(req.charAt(0));
-			const CONTENT_SHOW = req.substring(3);
-			if(INPUT_NUMBER === 0) {
-				UPModal.alert('Oops', CONTENT_SHOW, false);
-			}
-			if(INPUT_NUMBER === 1) location.reload();
+		const code = $('input[name="one_password_time"]').val();
+		const csrf = $('input[name=csrf_token]').val();
+
+		if (!code) {
+			UPModal.alert('Oops', 'No has ingresado el código', false);
+			return;
+		}
+
+		params += `&code=${code}&csrf_token=${csrf}`;
+
+		$.post(`${apiUrl}/login-validar.php`, params, response => {
+			const code = parseInt(response.charAt(0));
+			const message = response.substring(3);
+			code === 1 ? location.reload() : UPModal.alert('Oops', message, false);
 		});
 	}
 
-	const iniciarSesion = () => {
-	
-		let params = [
-			'nick=' + comprobar('nick', true),
-			'pass=' + comprobar('password', true),
-			'rem=' + $('#remember').is(':checked'),
-			
+	function iniciarSesion() {
+		const params = [
+			`nick=${comprobar('nick', true)}`,
+			`pass=${comprobar('password', true)}`,
+			`rem=${$('#remember').is(':checked')}`,
+			`csrf_token=${$('input[name=csrf_token]').val()}`
 		].join('&');
+
 		btnLoad(true);
-		
-		loading.start()
-		$.post(ZCodeApp.url + '/login-user.php', params, response => {
-			console.log(response)
-			let INPUT_NUMBER = parseInt(response.charAt(0));
-			if(INPUT_NUMBER === 0 || INPUT_NUMBER === 2 || INPUT_NUMBER === 3) {
-				const CONTENT_SHOW = response.substring(3);
-				if(INPUT_NUMBER === 3) {
-					UPModal.alert('Ups!', CONTENT_SHOW, false);
-				} else {
-					let TYPE_INPUT_EXECUTE = (INPUT_NUMBER === 0) ? 'nick' : 'password';
-					mostrarError(TYPE_INPUT_EXECUTE, CONTENT_SHOW);
-					$(`#${TYPE_INPUT_EXECUTE}`).focus();
-				}
-				btnLoad();
-			} else if (INPUT_NUMBER === 4) {
-				UPModal.proccess_end(2);
-				UPModal.setModal({
-					input: {
-						label: 'Código 2FA (OPT)',
-						type: 'text',
-						name: 'one_password_time',
-						maxlength: 11,
-						placeholder: '000000',
-						required: true,
-						inputmode: 'numeric'
-					},
-					buttons: {
-						confirmAction: `login.comprobarOPT('${params}')`,
-						cancelShow: false
-					}
-				});
+		loading.start();
+
+		$.post(`${apiUrl}/login-user.php`, params, response => {
+			const status = parseInt(response.charAt(0));
+			const message = response.substring(3);
+
+			switch (status) {
+				case 0:
+				case 2:
+					mostrarError('nick', message);
+					$('#nick').focus();
+					break;
+				case 3:
+					UPModal.alert('Ups!', message, false);
+					break;
+				case 4:
+					UPModal.proccess_end(2);
+					UPModal.setModal({
+						input: {
+							label: 'Código 2FA (OTP)',
+							type: 'text',
+							name: 'one_password_time',
+							maxlength: 11,
+							placeholder: '000000',
+							required: true,
+							inputmode: 'numeric'
+						},
+						buttons: {
+							confirmAction: `login.comprobarOPT('${params}')`,
+							cancelShow: false
+						}
+					});
+					break;
+				case 1:
+					location.reload();
+					break;
 			}
-			if(INPUT_NUMBER === 1) location.reload();
+			btnLoad(false);
 			loading.end();
 		})
-		.fail(() => iniciarSesionFail())
-		.done(() => $('#loading').fadeOut(350))
+		.fail(iniciarSesionFail)
+		.done(() => $('#loading').fadeOut(350));
 	}
 
-	function showhidePassword() {
-		const divID = $("#IWantSeePassword");
-		const inputPassword = $('input[type="password"]');
-		divID.on('click', () => {
-			let set = divID.attr('class');
-			const compare = 'iconify unlock';
-			if(set === compare) {
-				divID.removeClass(set).addClass('iconify lock').attr({ 'data-title': 'Ocultar contraseña' });
-				inputPassword.attr({ type: 'text' })
-			} else {
-				divID.removeClass(set).addClass(compare).attr({ 'data-title': 'Ver contraseña' });
-				inputPassword.attr({ type: 'password' })
-			}
-		})
+	function togglePasswordVisibility() {
+		const toggleBtn = $('#IWantSeePassword');
+		const passwordInput = $('input[type="password"], input[type="text"]').first();
+
+		toggleBtn.on('click', () => {
+			const isVisible = passwordInput.attr('type') === 'text';
+			passwordInput.attr('type', isVisible ? 'password' : 'text');
+			toggleBtn
+				.toggleClass('unlock lock')
+				.attr('data-title', isVisible ? 'Ver contraseña' : 'Ocultar contraseña');
+		});
 	}
 
+	// Exponer funciones públicas
 	return {
-		comprobarOPT: comprobarOPT,
-		multiOptions: multiOptions,
-		constrasena: showhidePassword,
-		iniciarSesion: iniciarSesion
-	}
+		multiOptions,
+		comprobarOPT,
+		constrasena: togglePasswordVisibility,
+		iniciarSesion
+	};
 
 })();
 
-// Asignar evento submit al formulario de login
-$('form input[type="submit"]').on('click', function(e) {
-   e.preventDefault();
-   login.iniciarSesion();
-});
-
-$(document).on('keydown', function(event) {
-	if(event.keyCode === 13 && event.code === 'Enter' && TYPE_LOAD === 'modal') {
+// Eventos
+$(function () {
+	$('form input[type="submit"]').on('click', e => {
+		e.preventDefault();
 		login.iniciarSesion();
-	}
-});
+	});
 
-$('span[data-toggle="forget_password"]').on('click', function() {
-	login.multiOptions('password', false);
-});
+	$(document).on('keydown', e => {
+		if (e.key === 'Enter' && typeof TYPE_LOAD !== 'undefined' && TYPE_LOAD === 'modal') {
+			login.iniciarSesion();
+		}
+	});
 
-login.constrasena();
+	$('span[data-toggle="forget_password"]').on('click', () => login.multiOptions('password', false));
+
+	login.constrasena();
+});

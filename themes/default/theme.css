@@ -647,3 +647,20 @@ header .brand .title-site a small {
 		--background: #FDBEBE;
 	}
 }
+.message-version-new {
+	position: fixed;
+	bottom: 1rem;
+	left: 1rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	z-index: 9999;
+	background: var(--body-bg);
+	backdrop-filter: blur(5px);
+	padding: 0.5rem 1rem;
+	box-shadow: 0 0 .5rem rgb(0,0,0,.2);
+	border-radius: .325rem;
+	width: 300px;
+	strong {
+		color: var(--main-bg);
+	}
+}

@@ -1,0 +1,342 @@
+[
+    {
+        "file": "2025_04_10-create-table-actividad.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-afiliados.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-avisos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-badwords.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-blacklist.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-bloqueos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-chat.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-chat_blacklist.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-chat_lobby.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-comentarios_reaccion.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-conexion_actual.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-configuracion.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-contacts.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-denuncias.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-follows.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-fotos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-fotos_album.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-fotos_comentarios.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-fotos_favoritos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-fotos_votos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-historial.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-medallas.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-medallas_assign.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-mensajes.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-miembros.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-miembros_social.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-monitor.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-muro.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-muro_adjuntos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-muro_comentarios.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-muro_likes.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-nicks.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-noticias.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-perfil.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-perfil_avatar.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-portal.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts_borradores.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts_categorias.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts_collections.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts_comentarios.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts_favoritos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts_stats.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts_supercategorias.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-posts_votos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-rangos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-respuestas.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-seo.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-sessions.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-sitemap.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-sitemap_control.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-social.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-stats.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-suspension.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-tickets.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-tickets_status.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-tickets_type.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-create-table-visitas.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-configuracion.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-posts.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-posts_categorias.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-posts_supercategorias.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-rangos.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-seo.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-sitemap_control.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-stats.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-tickets_status.php",
+        "status": "success",
+        "date": "2025-04-17"
+    },
+    {
+        "file": "2025_04_10-insert-seed-tickets_type.php",
+        "status": "success",
+        "date": "2025-04-17"
+    }
+]

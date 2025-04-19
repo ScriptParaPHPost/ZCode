@@ -1,0 +1,50 @@
+{
+   "name": "miguel92/zcode",
+   "description": "ZCode - Plataforma reformada",
+   "type": "project",
+   "license": "MIT",
+   "authors": [
+      {
+         "name": "Miguel92",
+         "email": "portfoliomiguel92@gmail.com"
+      }
+   ],
+   "autoload": {
+      "psr-4": {
+         "admin\\": "admin/",
+         "app\\": "app/",
+      	"BBCode\\": "app/utils/JBBCode"
+      },
+      "exclude-from-classmap": [
+         "app/extensions/*",
+         "app/patches/*",
+         "app/plugins/*"
+      ]
+   },
+   "extra": {
+      "patches": {
+         "jbbcode/jbbcode": {
+            "Fix null input in Tokenizer": "app/patches/jbbcode-tokenizer-null-fix.patch"
+         }
+      }
+   },
+   "config": {
+      "optimize-autoloader": true,
+      "preferred-install": "dist",
+      "sort-packages": true,
+      "allow-plugins": {
+         "cweagans/composer-patches": true
+      }
+   },
+   "minimum-stability": "dev",
+   "prefer-stable": true,
+   "require": {
+      "cweagans/composer-patches": "^1.7",
+      "jbbcode/jbbcode": "^1.4",
+      "smarty/smarty": "^5.4",
+      "spomky-labs/otphp": "^11.3",
+      "symfony/cache": "^7.2",
+      "symfony/clock": "^7.2",
+      "vlucas/phpdotenv": "^5.6"
+   }
+}

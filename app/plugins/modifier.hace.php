@@ -21,7 +21,7 @@
  * @param string
  * @return string
  */
-function smarty_modifier_hace(?int $fecha = null, bool $show = false) {
+function smarty_modifier_hace($fecha, bool $show = false) {
    if (!$fecha) return "Nunca";
 
    $tiempo = time() - $fecha; // Tiempo transcurrido desde la fecha proporcionada

@@ -1,16 +1,18 @@
 <?php 
 
-if ( ! defined('ZCODE2')) exit('No se permite el acceso directo al script');
-
 /**
- * @package ZCode
- * @author Miguel92
- * @copyright 2024 - 2025
- * @version 2.1.15
- * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
- * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+ * #==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#
+ * @package     ZCode
+ * @author      Miguel92
+ * @copyright   2024 - 2025
+ * @version     3.1.18
+ * @link        https://zcodev.alwaysdata.net/ (DEMO)
+ * @link        https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link        https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+ * #==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#
 **/
+
+if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 // Página solicitada
 $smarty->assign("tsPage", $tsPage);
@@ -50,7 +52,7 @@ $smarty->addExtension(new zCodeExtensiones());
 // Suprime advertencias de variables indefinidas o nulas
 $smarty->muteUndefinedOrNullWarnings();
 
-$dirs['root'] = TS_ROOT;
+$dirs['root'] = BASEPATH;
 $dirs['assets'] = TS_ASSETS;
 $dirs['elements'] = TS_ASSETS . 'elements' . DIRECTORY_SEPARATOR;
 $dirs['templates'] = TS_ADMIN . 'templates' . DIRECTORY_SEPARATOR;
@@ -73,5 +75,5 @@ try {
 	Lo sentimos, se produjo un error al cargar la plantilla <strong>$template</strong>.
 	<br>Debido al error:<br> <code style="font-size:1rem;line-height: 1.3rem;color: #d971ad;word-wrap: break-word;background: rgba(217, 113, 173, .12);display:block;padding:.5em;">$message_2</code>
 COMENTARIO;
-	echo $show;
+	echo htmlspecialchars($show);
 }

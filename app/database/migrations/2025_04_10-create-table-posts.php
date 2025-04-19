@@ -1,0 +1,35 @@
+<?php
+
+# Migración para la tabla `posts`
+
+return [
+	"CREATE TABLE IF NOT EXISTS `" . $prefix . "posts` (\n"
+		."  `post_id` int(11) NOT NULL AUTO_INCREMENT,\n"
+		."  `post_category` int(4) NOT NULL DEFAULT 0,\n"
+		."  `post_title` varchar(120) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',\n"
+		."  `post_body` text COLLATE utf8mb4_general_ci NULL,\n"
+		."  `post_user` int(11) NOT NULL DEFAULT 0,\n"
+		."  `post_cache` int(10) NOT NULL DEFAULT 0,\n"
+		."  `post_comments` bigint NOT NULL DEFAULT 0,\n"
+		."  `post_collection` bigint NOT NULL DEFAULT 0,\n"
+		."  `post_favoritos` int(11) NOT NULL DEFAULT 0,\n"
+		."  `post_hits` int(11) NOT NULL DEFAULT 0,\n"
+		."  `post_portada` tinytext NULL,\n"
+		."  `post_private` int(1) NOT NULL DEFAULT 0,\n"
+		."  `post_puntos` bigint unsigned NOT NULL DEFAULT 0,\n"
+		."  `post_seguidores` bigint NOT NULL DEFAULT 0,\n"
+		."  `post_shared` bigint NOT NULL DEFAULT 0,\n"
+		."  `post_smileys` int(1) NOT NULL DEFAULT 0,\n"
+		."  `post_sponsored` int(1) NOT NULL DEFAULT 0,\n"
+		."  `post_status` int(1) NOT NULL DEFAULT 0,\n"
+		."  `post_sticky` int(1) NOT NULL DEFAULT 0,\n"
+		."  `post_tags` varchar(128) NOT NULL DEFAULT '',\n"
+		."  `post_fuentes` text COLLATE utf8mb4_general_ci NULL,\n"
+		."  `post_date` int(10) NOT NULL DEFAULT 0,\n"
+		."  `post_update` int(10) NOT NULL DEFAULT 0,\n"
+		."  `post_block_comments` int(1) NOT NULL DEFAULT 0,\n"
+		."  `post_visitantes` int(1) NOT NULL DEFAULT 0,\n"
+		."  `post_ip` varchar(50) NOT NULL DEFAULT '',\n"
+		."  PRIMARY KEY (`post_id`)\n"
+		.") ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci AUTO_INCREMENT=1 ;"
+];

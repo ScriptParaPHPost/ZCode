@@ -13,7 +13,6 @@ Actualmente es compatible con la última versión PHP.
 | Version | Soportado          |
 | ------- | ------------------ |
 |   8.2+  | :white_check_mark: |
-|   7.x   | :x: 					 |
 
 ## Informar de una vulnerabilidad
 

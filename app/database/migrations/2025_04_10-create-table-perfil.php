@@ -1,0 +1,35 @@
+<?php
+
+# Migración para la tabla `perfil`
+
+return [
+	"CREATE TABLE IF NOT EXISTS `" . $prefix . "perfil` (\n"
+		."  `user_id` int(11) NOT NULL DEFAULT 0,\n"
+		."  `user_dia` int(2) NOT NULL DEFAULT 0,\n"
+		."  `user_mes` int(2) NOT NULL DEFAULT 0,\n"
+		."  `user_ano` int(4) NOT NULL DEFAULT 0,\n"
+		."  `user_pais` varchar(2) NOT NULL DEFAULT '',\n"
+		."  `user_estado` int(2) NOT NULL DEFAULT 1,\n"
+		."  `user_sexo` varchar(9) NOT NULL DEFAULT 'none',\n"
+		."  `user_firma` text NULL,\n"
+		."  `user_gif` tinytext NULL,\n"
+		."  `user_gif_active` int(1) NOT NULL DEFAULT 0,\n"
+		."  `user_avatar_type` int(1) NOT NULL DEFAULT 0, /* Tipo gif, normal, social */\n"
+		."  `user_avatar_social` varchar(20) NOT NULL DEFAULT 'web', /* Nombre de red social */\n"
+		."  `user_portada` tinytext NULL,\n"
+		."  `user_scheme` int(1) NOT NULL DEFAULT 0,\n"
+		."  `user_color` int(2) NOT NULL DEFAULT 1,\n"
+		."  `user_customize` varchar(20) NOT NULL DEFAULT '#212121;#F4F4F4',\n"
+		."  `user_font_family` varchar(20) NOT NULL DEFAULT 'tema',\n"
+		."  `user_font_size` varchar(3) NOT NULL DEFAULT 'md',\n"
+		."  `user_pagebox` varchar(1) NOT NULL DEFAULT 0,\n"
+		."  `p_nombre` varchar(50) NOT NULL DEFAULT '',\n"
+		."  `p_avatar` int(1) NOT NULL DEFAULT 0,\n"
+		."  `p_mensaje` varchar(60) NOT NULL DEFAULT '',\n"
+		."  `p_sitio` varchar(60) NOT NULL DEFAULT '',\n"
+		."  `p_socials` text NULL,\n"
+		."  `p_configs` varchar(100) NOT NULL DEFAULT 'a:3:{s:1:\"m\";s:1:\"5\";s:2:\"mf\";i:5;s:3:\"rmp\";s:1:\"5\";}',\n"
+		."  `p_total` varchar(54) NOT NULL DEFAULT 'a:6:{i:0;i:5;i:1;i:0;i:2;i:0;i:3;i:0;i:4;i:0;i:5;i:0;}',\n"
+		."  PRIMARY KEY (`user_id`)\n"
+		.") ENGINE=MyISAM DEFAULT CHARSET=utf8;"
+];

@@ -14,6 +14,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteCond %{HTTP_HOST} ^http://TU_SITIO_WEB.com[NC,OR]
 #RewriteRule ^(.*)$ https://TU_SITIO_WEB.com/$1 [L,R=301,NC]
 
+
 Options +FollowSymLinks
 
 # Protege contra escaneos y manipulaciones malintencionadas
@@ -36,27 +37,22 @@ IndexIgnore *
 LimitRequestBody 10240000
 
 # Denegando acceso a estas carpetas
-RewriteRule ^(config|storage|app|logs) - [F,L]
+RewriteRule ^(admin|vendor|config|storage|app|logs) - [F,L]
 
 # INDEX
 RewriteRule ^$ index.php?do=home [QSA,L]
+RewriteRule ^mi/$ index.php?do=portal [QSA,L]
 RewriteRule ^pagina([0-9]+)$ index.php?page=$1 [QSA,L]
 RewriteRule ^index.php$ index.php?do=home [QSA,L]
-RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ app/helpers/cuenta.php?accion=$1 [QSA,L]
-#RewriteRule ^agregar/?$ app/helpers/agregar.php [QSA,L]
-#RewriteRule ^agregar/([A-Za-z_-]+)/([0-9]+)$ app/helpers/agregar.php?action=$1&pid=$2 [QSA,L]
+RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ app/controller/cuenta.php?accion=$1 [QSA,L]
+RewriteRule ^status.html$ app/controller/status.php [QSA,L]
 
 # CALLBACK PARA REDES SOCIALES
 RewriteRule ^(github|discord|google|facebook|reddit)\.php$ app/callback/$1.php [QSA,L]
+RewriteRule ^(migrator|seed)/$ app/database/$1.php [QSA,L]
 
 #PERFIL
-RewriteRule ^perfil/([A-Za-z0-9_-]+)(/([0-9]+))?$ app/helpers/perfil.php?user=$1&pid=$3 [QSA,L]
-
-#TICKET
-RewriteRule ^tickets/([A-Za-z_-]+)?/(([0-9]+))?$ app/helpers/tickets.php?action=$1&tid=$2 [QSA,L]
-
-# PORTAL
-RewriteRule ^mi/$ index.php?do=portal [QSA,L]
+RewriteRule ^perfil/([A-Za-z0-9_-]+)(/([0-9]+))?$ app/controller/perfil.php?user=$1&pid=$3 [QSA,L]
 
 # POSTS
 RewriteRule ^posts/$ index.php?do=posts [QSA,L]
@@ -64,52 +60,61 @@ RewriteRule ^posts/pagina([0-9]+)$ index.php?do=posts&page=$1 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/$ index.php?do=posts&cat=$1 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/pagina([0-9]+)$ index.php?do=posts&cat=$1&page=$2 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/([0-9]+)/(.*)\.html$ index.php?do=posts&cat=$1&post_id=$2&title=$3 [QSA,L]
-RewriteRule ^posts/editar/([0-9]+)$ app/helpers/agregar.php?action=editar&pid=$1 [QSA,L]
+RewriteRule ^posts/editar/([0-9]+)$ app/controller/agregar.php?action=editar&pid=$1 [QSA,L]
 
 # POSTS SHORTEN
 RewriteRule ^p/([0-9]+)$ index.php?do=posts&p=$1 [QSA,L]
 
 # RECUPERAR PASS Y VALIDAR CUENTA
-RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ app/helpers/password.php?hash=$1&type=$2&email=$3
-RewriteRule ^validar/(.+)$ app/helpers/validar.php?encode=$1 [QSA,L]
+RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ app/controller/password.php?hash=$1&type=$2&email=$3
+RewriteRule ^validar/(.+)$ app/controller/validar.php?encode=$1 [QSA,L]
 
 # FOTOS
-RewriteRule ^fotos/([A-Za-z0-9_-]+).php$ app/helpers/fotos.php?action=$1 [QSA,L]
-RewriteRule ^fotos/([A-Za-z0-9_-]+)$ app/helpers/fotos.php?action=album&user=$1 [QSA,L]
-RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)$ app/helpers/fotos.php?action=album&user=$1&page=$2 [QSA,L]
-RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ app/helpers/fotos.php?action=ver&user=$1&fid=$2 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+).php$ app/controller/fotos.php?action=$1 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)$ app/controller/fotos.php?action=album&user=$1 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)$ app/controller/fotos.php?action=album&user=$1&page=$2 [QSA,L]
+RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ app/controller/fotos.php?action=ver&user=$1&fid=$2 [QSA,L]
 
 # MODERACION
-RewriteRule ^moderacion/buscador/([0-2]+)/([0-2]+)/(.+)$ app/helpers/moderacion.php?action=buscador&act=search&m=$1&t=$2&texto=$3 [QSA,L]
+RewriteRule ^moderacion/buscador/([0-2]+)/([0-2]+)/(.+)$ app/controller/moderacion.php?action=buscador&act=search&m=$1&t=$2&texto=$3 [QSA,L]
 
 #HISTORIAL DE MODERACION
-RewriteRule ^mod-history/([A-Za-z0-9_-]+)/?$ app/helpers/mod-history.php?ver=$1 [QSA,L]
+RewriteRule ^mod-history/([A-Za-z0-9_-]+)/?$ app/controller/mod-history.php?ver=$1 [QSA,L]
 
 # SITEMAP & RSS
-RewriteRule ^rss/([A-Za-z0-9_-]+)(/([A-Za-z0-9_-]+))?$ app/helpers/rss.php?type=$1&user=$3 [QSA,L]
+RewriteRule ^rss/([A-Za-z0-9_-]+)(/([A-Za-z0-9_-]+))?$ app/controller/rss.php?type=$1&user=$3 [QSA,L]
 
 # COMUNIDADES
-RewriteRule ^comunidades(/([A-Za-z0-9_-]+))?(/([0-9]+))?(/([A-Za-z0-9_-]+))?(/([A-Za-z0-9_-]+))?(/([0-9]+))?$ app/helpers/comunidades.php?action=$2&act=$3&bid=$4&page=$5&c_seo=$6&s_seo=$7 [QSA,L]
+RewriteRule ^comunidades(/([A-Za-z0-9_-]+))?(/([0-9]+))?(/([A-Za-z0-9_-]+))?(/([A-Za-z0-9_-]+))?(/([0-9]+))?$ app/controller/comunidades.php?action=$2&act=$3&bid=$4&page=$5&c_seo=$6&s_seo=$7 [QSA,L]
 
 # LOGIN & REGISTRO
-RewriteRule ^(login|registro)/?$ app/helpers/access.php?action=$1 [QSA,L]
+RewriteRule ^(login|registro)/?$ app/controller/access.php?action=$1 [QSA,L]
 
-# INSTALL
-RewriteRule ^(install|upgrade)/([A-Za-z0-9_-]+)?$ app/extras/$1.php?step=$2 [QSA,L]
-
-RewriteRule ^(admin|moderacion)/?([A-Za-z0-9_-]+)?/?([A-Za-z0-9_-]+)?/?([0-9]+)?$ admin/helpers/$1.php?template=$1&action=$2&act=$3&id=$4 [QSA,L]
+RewriteRule ^(admin|moderacion)/?([A-Za-z0-9_-]+)?/?([A-Za-z0-9_-]+)?/?([0-9]+)?$ admin/controller/$1.php?template=$1&action=$2&act=$3&id=$4 [QSA,L]
 
 # EXTRAS
-RewriteRule ^dashboard/([A-Za-z0-9_-]+).php$ admin/helpers/ajax.php?action=$1 [QSA,L]
-RewriteRule ^([A-Za-z0-9_-]+).php$ app/helpers/ajax_files.php?action=$1 [QSA,L]
-RewriteRule ^([A-Za-z0-9_-]+)/$ app/helpers/$1.php [QSA,L]
-RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ app/helpers/$1.php?action=$2 [QSA,L]
-RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([0-9]+)$ app/helpers/$1.php?action=$2&id=$3 [QSA,L]
+#RewriteRule ^dashboard/([A-Za-z0-9_-]+).php$ admin/controller/ajax.php?action=$1 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+).php$ app/ajax/index.php?action=$1 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/$ app/controller/$1.php [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ app/controller/$1.php?action=$2 [QSA,L]
+RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([0-9]+)$ app/controller/$1.php?action=$2&id=$3 [QSA,L]
 
-# NO PERMITIR LA DESCARGA DE ARCHIVOS .TPL
-<FilesMatch "\.(htaccess|ini|log|cfg|tpl|env|version|md|cache)$">
+# NO PERMITIR
+<FilesMatch "^\.">
+	Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(ini|log|cfg|tpl|version|md|cache)$">
 	Order Allow,Deny
 	Deny from all
+</FilesMatch>
+
+<FilesMatch "(composer|package|yarn)\.(json|lock)$">
+	Require all denied
+</FilesMatch>
+
+<FilesMatch "(\.env|\.gitignore|\.htaccess|\.htpasswd)$">
+	Require all denied
 </FilesMatch>
 
 # Seguridad contra patrones de consulta maliciosos
@@ -118,42 +123,46 @@ RewriteRule .* - [F]
 
 # Control de cach? para archivos estaticos
 <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|js|css|pdf)$">
-Header set Cache-Control "max-age=31536000, public"
+	Header set Cache-Control "max-age=31536000, public"
 </FilesMatch>
 
 # Compresi?n
 <IfModule mod_deflate.c>
-AddOutputFilterByType DEFLATE application/javascript
-AddOutputFilterByType DEFLATE application/rss+xml
-AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
-AddOutputFilterByType DEFLATE application/x-font
-AddOutputFilterByType DEFLATE application/x-font-opentype
-AddOutputFilterByType DEFLATE application/x-font-otf
-AddOutputFilterByType DEFLATE application/x-font-truetype
-AddOutputFilterByType DEFLATE application/x-font-ttf
-AddOutputFilterByType DEFLATE application/x-javascript
-AddOutputFilterByType DEFLATE application/xhtml+xml
-AddOutputFilterByType DEFLATE application/xml
-AddOutputFilterByType DEFLATE font/opentype
-AddOutputFilterByType DEFLATE font/otf
-AddOutputFilterByType DEFLATE font/ttf
-AddOutputFilterByType DEFLATE image/svg+xml
-AddOutputFilterByType DEFLATE image/x-icon
-AddOutputFilterByType DEFLATE text/css
-AddOutputFilterByType DEFLATE text/html
-AddOutputFilterByType DEFLATE text/javascript
-AddOutputFilterByType DEFLATE text/plain
-AddOutputFilterByType DEFLATE text/xml
-Header append Vary User-Agent
+	AddOutputFilterByType DEFLATE application/javascript
+	AddOutputFilterByType DEFLATE application/rss+xml
+	AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+	AddOutputFilterByType DEFLATE application/x-font
+	AddOutputFilterByType DEFLATE application/x-font-opentype
+	AddOutputFilterByType DEFLATE application/x-font-otf
+	AddOutputFilterByType DEFLATE application/x-font-truetype
+	AddOutputFilterByType DEFLATE application/x-font-ttf
+	AddOutputFilterByType DEFLATE application/x-javascript
+	AddOutputFilterByType DEFLATE application/xhtml+xml
+	AddOutputFilterByType DEFLATE application/xml
+	AddOutputFilterByType DEFLATE font/opentype
+	AddOutputFilterByType DEFLATE font/otf
+	AddOutputFilterByType DEFLATE font/ttf
+	AddOutputFilterByType DEFLATE image/svg+xml
+	AddOutputFilterByType DEFLATE image/x-icon
+	AddOutputFilterByType DEFLATE text/css
+	AddOutputFilterByType DEFLATE text/html
+	AddOutputFilterByType DEFLATE text/javascript
+	AddOutputFilterByType DEFLATE text/plain
+	AddOutputFilterByType DEFLATE text/xml
+	Header append Vary User-Agent
 </IfModule>
 
 <IfModule mod_gzip.c>
-mod_gzip_on Yes
-mod_gzip_dechunk Yes
-mod_gzip_item_include file .(html?|txt|css|js|php|pl)$
-mod_gzip_item_include handler ^cgi-script$
-mod_gzip_item_include mime ^text/.*
-mod_gzip_item_include mime ^application/x-javascript.*
-mod_gzip_item_exclude mime ^image/.*
-mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+	mod_gzip_on Yes
+	mod_gzip_dechunk Yes
+	mod_gzip_item_include file .(html?|txt|css|js|php|pl)$
+	mod_gzip_item_include handler ^cgi-script$
+	mod_gzip_item_include mime ^text/.*
+	mod_gzip_item_include mime ^application/x-javascript.*
+	mod_gzip_item_exclude mime ^image/.*
+	mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
 </IfModule>
+
+Header always append X-Frame-Options SAMEORIGIN
+Header set X-XSS-Protection "1; mode=block"
+Header set X-Content-Type-Options nosniff

@@ -6,7 +6,7 @@
 	{if !$tsAct}
 		{if !$tsAfiliados}
 			<div class="empty hero">No hay afiliados.</div>
-			<input type="button"  onclick="afiliado.nuevo(); return false" value="Agregar nuevo afiliado" class="btn btnOk"/>
+			<input type="button"  onclick="afiliado.nuevo('dashboard'); return false" value="Agregar nuevo afiliado" class="btn btnOk"/>
 		{else}
 			<table class="admin_table">
 				<thead>
@@ -28,15 +28,15 @@
 						<td id="status_afiliado_{$af.aid}">{if $af.a_active == 0}<font color="purple">Inactivo</font>{else}<font color="green">Activo</font>{/if}</td>
 						<td class="admin_actions">
 							<a href="{$tsConfig.url}/admin/afs/?act=editar&aid={$af.aid}" title="Editar">{uicon name="pen" class="pe-none"}</a>
-							<span role="button" onclick="ad_afiliado.detalles({$af.aid}); return false;" title="Detalles">{uicon name="clipboard_notes" class="pe-none"}</span>
-							<span role="button" onclick="admin.afs.accion({$af.aid}); return false" title="Activar/Desactivar Afiliado">{uicon name="pen" class="pe-none"}</span>
-							<span onclick="admin.afs.borrar({$af.aid}); return false" title="Eliminar">{uicon name="undo_history" class="pe-none"}</span>
+							<span role="button" onclick="afiliado.detalles({$af.aid}, 'dashboard'); return false;" title="Detalles">{uicon name="clipboard_notes" class="pe-none"}</span>
+							<span role="button" onclick="admin.afs.accion({$af.aid}); return false" title="Activar/Desactivar Afiliado">{uicon name="undo_history" class="pe-none"}</span>
+							<span onclick="admin.afs.borrar({$af.aid}); return false" title="Eliminar">{uicon name="trash" class="pe-none"}</span>
 						</td>
 					</tr>{/foreach}
 				</tbody>
 			</table>
 			<br />
-			<input type="button" onclick="afiliado.nuevo(); return false" value="Agregar nuevo afiliado" class="btn btnOk" />
+			<input type="button" onclick="afiliado.nuevo('dashboard'); return false" value="Agregar nuevo afiliado" class="btn btnOk" />
 		{/if}
 	{elseif $tsAct == 'editar'}
 		<form action="" method="post" autocomplete="off">

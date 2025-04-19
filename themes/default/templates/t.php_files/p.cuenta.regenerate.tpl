@@ -38,4 +38,4 @@
 	}
 }
 </style>
-<script src="{$tsRoutes.theme.js}/verifiedOPT.js?{$smarty.now}"></script>
+<script src="{$tsRoutes.assets.js}/verifiedOPT.js?{$smarty.now}"></script>

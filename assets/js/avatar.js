@@ -12,6 +12,7 @@ var avatar = {
 			body: data
 		});
 		const response = await uploader.json();
+			console.log(response)
 		return response;
 	},
 	subir: async (type = 'desktop') => {
@@ -19,8 +20,8 @@ var avatar = {
 		const myInput = $(`input.browse[name=${type}]`);
 		const datoUrl = new FormData();
 		datoUrl.append('url', (type === 'url') ? myInput.val() : myInput[0].files[0]);
-		const Response = await avatar.fetching('avatar', datoUrl);
 		
+		const Response = await avatar.fetching('avatar', datoUrl);
 		if(!empty(Response)) avatar.subida_exitosa(Response);
 	},
 	subida_exitosa: rsp => {
@@ -30,7 +31,9 @@ var avatar = {
          avatar.key = rsp.key;
          avatar.ext = rsp.ext;
          avatar.cortar(rsp.msg);
-		} else UPModal.alert('Avatar Error', rsp.error, false);
+		} else {
+			UPModal.alert('Avatar Error', rsp.error, false);
+		}
 		$(".avatar-loading").hide();
 	},
 	cortar: img => {

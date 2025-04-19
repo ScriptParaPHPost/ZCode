@@ -4,7 +4,7 @@
  * @package ZCode
  * @author Miguel92
  * @copyright 2024 - 2025
- * @version 2.1.15
+ * @version 3.1.18
  * @link https://zcodev.alwaysdata.net/ (DEMO)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
@@ -38,20 +38,17 @@ if (!function_exists('safe_unserialize')) {
    }
 }
 
-$fileenv = dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env';
-if (file_exists($fileenv) && is_readable($fileenv)) {
-   $dotenv = fopen($fileenv, 'r');
-   if ($dotenv) {
-      while (($line = fgets($dotenv)) !== false) {
-         // Ignorar comentarios y líneas vacías
-         $trimmedLine = trim($line);
-         if ($trimmedLine === '' || strpos($trimmedLine, '#') === 0) {
-            continue;
-         }
-         if (preg_match('/\A([a-zA-Z0-9_]+)=(.*)\z/', $trimmedLine, $matches)) {
-            $_ENV[$matches[1]] = $matches[2];
-         }
-      }
-      fclose($dotenv);
+if(file_exists(__DIR__ . '/../.env')) {
+   $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../', null, false, null);
+   $dotenv->load();
+}
+
+function env(string $key, $default = null) {
+   if (isset($_ENV[$key])) return $_ENV[$key];
+   if (isset($_SERVER[$key])) return $_SERVER[$key];
+   if (function_exists('getenv')) {
+      $value = getenv($key);
+      if ($value !== false) return $value;
    }
+   return $default;
 }

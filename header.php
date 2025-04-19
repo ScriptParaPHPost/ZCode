@@ -1,21 +1,25 @@
 <?php
 
 /**
- * @package ZCode
- * @author Miguel92
- * @copyright 2024 - 2025
- * @version 2.1.15
- * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
- * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+ * #==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#
+ * @package     ZCode
+ * @author      Miguel92
+ * @copyright   2024 - 2025
+ * @version     3.1.18
+ * @link        https://zcodev.alwaysdata.net/ (DEMO)
+ * @link        https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link        https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+ * #==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#
 **/
 
-if( !defined('ZCODE2') ) define('ZCODE2', TRUE);
+if( !defined('ZCODEV3') ) define('ZCODEV3', TRUE);
 if( !defined('ACCESS_ROOT_PATHS') ) define('ACCESS_ROOT_PATHS', TRUE);
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'Polyfill.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'AppVarsGlobal.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'AppRoutesGlobal.php';
+require_once __DIR__ . '/vendor/autoload.php';
+
+require_once __DIR__ . '/config/Polyfill.php';
+require_once __DIR__ . '/config/AppVarsGlobal.php';
+require_once __DIR__ . '/config/AppRoutesGlobal.php';
 
 // Sesi�n
 session_name($_ENV['SESSION_NAME']);
@@ -36,37 +40,27 @@ set_time_limit(300);
  * -------------------------------------------------------------------
 */
 
-include TS_EXTRA . 'functions.php';
-include TS_MODELS . 'c.core.php';
-include TS_MODELS . 'c.user.php';
-include TS_MODELS . 'c.monitor.php';
-include TS_MODELS . 'c.actividad.php';
-include TS_MODELS . 'c.mensajes.php';
-include TS_MODELS . 'c.smarty.php';
-include TS_EXTRA . 'QueryString.php';
-include TS_ZCODE . 'Images.php';
-include TS_ZCODE . 'ZCode.php';
+include TS_UTILS . 'Functions.php';
 
-include TS_ZCODE . 'Avatar.php';
-$Avatar = new Avatar(new tsZCode);
+use app\models\{Core,User,Monitor,Actividad,Mensajes,Smarty};
+use app\utils\{LimpiarSolicitud,OAuthentication,Theme,Zcode};
 
-include TS_ZCODE . 'Theme.php';
-$Theme = new Theme;
-
-include TS_ZCODE . 'menu_user_account.php';
 
 /**
  * -------------------------------------------------------------------
  *  Inicializamos los objetos principales
  * -------------------------------------------------------------------
  */
-$tsCore = new tsCore;
-$tsZCode = new tsZCode;
-$tsUser = new tsUser;
-$tsImages = new Images;
-$tsMonitor = new tsMonitor;
-$tsActividad = new tsActividad;
-$tsMP = new tsMensajes;
+$solicitudes = new LimpiarSolicitud;
+$solicitudes->run(); 
+
+$tsCore = new Core;
+$tsZCode = new Zcode($tsCore);
+$tsUser = new User;
+$tsMonitor = new Monitor;
+$tsActividad = new Actividad;
+$tsMP = new Mensajes;
+$Theme = new Theme;
 
 // Definimos el template a utilizar
 $tsTema = $tsCore->settings['tema'];
@@ -74,18 +68,17 @@ if(empty($tsTema)) $tsTema = 'default';
 define('TS_TEMA', $tsTema);
 
 // Smarty
-$smarty = new tsSmarty();
+$smarty = new Smarty();
 // Nueva configuraci�n
 $smarty->output(false);
+
 
 /**
  * -------------------------------------------------------------------
  *  Asignaci�n de variables
  * -------------------------------------------------------------------
  */
-require_once TS_ZCODE . 'Authentication.php';
-$OAuthentication = new OAuthentication;
-$smarty->assign('SocialMager', $OAuthentication->OAuth());
+$smarty->assign('SocialMager', (new OAuthentication)->OAuth());
 
 // Configuraciones
 $smarty->assign('tsConfig', $tsCore->settings);
@@ -116,7 +109,8 @@ $smarty->assign('tsMPs', $tsMP->mensajes);
 $smarty->assign('Theme', $Theme);
 $smarty->assign('tsThemeBox', $Theme->getSettingPageBox());
 
-$smarty->assign('tsMenuCuenta', $menu_cuenta);
+include TS_JUNK . 'MenuUserAccount.php';
+$smarty->assign('tsMenuCuenta', $MenuCuenta);
 
 if (!extension_loaded('gd') && !function_exists('gd_info')) {
 	$smarty->assign('gd_info', 'La extensi&oacute;n GD no est&aacute; habilitada en tu servidor.');
@@ -127,3 +121,8 @@ $tsZCode->verifiedIP($smarty);
 
 // Online/Offline
 $tsZCode->verifiedMaintenance($smarty);
+
+if (!isset($_SESSION['csrf'])) {
+   $_SESSION['csrf'] = bin2hex(random_bytes(32));
+}
+$smarty->assign('csrf_token', $_SESSION['csrf'] ?? null);

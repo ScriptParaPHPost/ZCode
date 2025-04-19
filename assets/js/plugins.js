@@ -15,37 +15,38 @@ function string_random(random_char_size = 10) {
  * Ahora verifica si ya fue importado
 */
 const importedFiles = new Map();
-async function iModule(filePath = '', functionName, parameters) {
-   let javascriptFile;
-   try {
-      // Construcción del nombre del archivo con una versión aleatoria para evitar cachés
-      javascriptFile = `${ZCodeApp.assets}/fs/__fs${filePath}?v` + string_random(4);
-      // Verificar si ya fue importado
-      if (importedFiles.has(javascriptFile)) {
-         console.log(`Archivo ${javascriptFile} ya ha sido importado.`);
-         return;
-      }
-      // Intentar importar el archivo dinámicamente
-      const module = await import(javascriptFile);
-      importedFiles.set(javascriptFile, true); // Marcar como importado
-      // Ejecutar las funciones especificadas
-      const executeFunction = (fn) => {
-         if (module[fn]) {
-            module[fn](parameters);
-         } else {
-            console.error(`Function ${fn} no se encontró en ${javascriptFile}`);
-         }
-      };
-      // Verificar si functionName es un array y recorrerlo, o ejecutar directamente si es único
-      if (Array.isArray(functionName)) {
-         functionName.forEach(executeFunction);
-      } else {
-         executeFunction(functionName);
-      }
-   } catch (error) {
-      console.error(`Error al importar el archivo ${javascriptFile}:`, error);
-      throw error;
-   }
+
+async function iModule(filePath = '', functionName, parameters = {}, options = {}) {
+	const { forceReload = false } = options;
+
+	try {
+		// Construcción de la URL con un string aleatorio como versión
+		const version = string_random(4);
+		const fullPath = `${ZCodeApp.assets}/fs/__fs${filePath}`;
+		const url = `${fullPath}?v=${version}`;
+
+		if (importedFiles.has(fullPath) && !forceReload) {
+			console.info(`🟡 El archivo ${filePath} ya fue importado. Usa forceReload para recargar.`);
+			return;
+		}
+
+		const module = await import(url);
+		importedFiles.set(fullPath, true); // Marca como cargado
+
+		const callFn = (fn) => {
+			if (typeof module[fn] === 'function') {
+				module[fn](parameters);
+			} else {
+				console.warn(`⚠️ Función '${fn}' no encontrada en ${filePath}`);
+			}
+		};
+
+		Array.isArray(functionName) ? functionName.forEach(callFn) : callFn(functionName);
+
+	} catch (err) {
+		console.error(`❌ Error importando ${filePath}`, err);
+		throw err;
+	}
 }
 
 

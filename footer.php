@@ -1,16 +1,18 @@
 <?php 
 
-if (!defined('ZCODE2')) exit('No se permite el acceso directo al script');
-
 /**
- * @package ZCode
- * @author Miguel92
- * @copyright 2024 - 2025
- * @version 2.1.15
- * @link https://zcodev.alwaysdata.net/ (DEMO)
- * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
- * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+ * #==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#
+ * @package     ZCode
+ * @author      Miguel92
+ * @copyright   2024 - 2025
+ * @version     3.1.18
+ * @link        https://zcodev.alwaysdata.net/ (DEMO)
+ * @link        https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
+ * @link        https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
+ * #==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#
 **/
+
+if (!defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 // P�gina solicitada
 $smarty->assign("tsPage", $tsPage);

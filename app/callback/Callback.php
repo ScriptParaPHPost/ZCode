@@ -4,13 +4,13 @@
  * @package ZCode
  * @author Miguel92
  * @copyright 2024 - 2025
- * @version 2.1.15
+ * @version 3.1.18
  * @link https://zcodev.alwaysdata.net/ (DEMO)
  * @link https://github.com/ScriptParaPHPost/zcode (Repositorio Github)
  * @link https://sourceforge.net/projects/zcodephp/ (Repositorio Sourceforge)
 **/
 
-require realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
+namespace app\callback;
 
 class Callback {
 
@@ -54,11 +54,18 @@ class Callback {
 	*/
 	public function buildQuery() {
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT social_name, social_client_id, social_client_secret, social_redirect_uri FROM @social WHERE social_name = '{$this->social}'"));
+		// Acepta letras, números y caracteres seguros comunes en tokens
+		$rawCode = filter_input(INPUT_GET, 'code', FILTER_SANITIZE_STRING);
+		$code = isset($rawCode) && preg_match('/^[a-zA-Z0-9\-_.\/=]+$/', $rawCode) ? $rawCode : null;
+
+		if (!$code) {
+		   throw new Exception("Código de autorización inválido.");
+		}
 		$param = [
 		 	'client_id' => $data['social_client_id'],
 		 	'client_secret' => $data['social_client_secret'],
 		 	'grant_type' => 'authorization_code',
-		 	'code' => $_GET['code'],
+		 	'code' => $code, // sanitizado
 		 	'redirect_uri' => $data['social_redirect_uri']
 		];
 		// Quitamos 'grant_type'
