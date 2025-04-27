@@ -67,7 +67,7 @@ class tsMonitor {
 			5 => ['text' => 'cre&oacute; un nuevo', 'ln_text' => 'post', 'css' => 'post'],
 			6 => ['text' => ['te recomienda un', '_REP_ usuarios te recomiendan un'], 'ln_text' => 'post', 'css' => 'share'],
 			7 => ['text' => ['coment&oacute; en un', '_REP_ nuevos comentarios en el'], 'ln_text' => 'post', 'extra' => 'que sigues', 'css' => 'blue_ball'],
-			8 => ['text' => ['reaccion&oacute; tu', '_REP_ nuevas reacciones a tu'], 'ln_text' => 'comentario', 'css' => 'reaction'],
+			8 => ['text' => ['reaccion&oacute; con un', '_REP_ nuevas reacciones a tu'], 'ln_text' => 'comentario', 'css' => 'reaction'],
 			9 => ['text' => ['respondi&oacute; tu', '_REP_ nuevas respuestas a tu'], 'ln_text' => 'comentario', 'css' => 'comment_resp'],
 			10 => ['text' => 'subi&oacute; una nueva', 'ln_text' => 'foto', 'css' => 'photo'],
 			11 => ['text' => ['coment&oacute; tu','_REP_ nuevos comentarios en tu'], 'ln_text' => 'foto', 'css' => 'photo'],
@@ -365,7 +365,7 @@ class tsMonitor {
 				return "SELECT p.post_id, p.post_user, p.post_title, c.c_seo FROM @posts AS p LEFT JOIN @posts_categorias AS c ON p.post_category = c.cid WHERE p.post_id = {$data['obj_uno']} LIMIT 1";
 			break;
 			case 8:
-				return "SELECT p.post_id, p.post_user, p.post_title, cat.c_seo, com.cid, com.c_post_id, com.c_user, r.r_comment_id, r.r_user_id, r.r_reaction FROM @posts AS p LEFT JOIN @posts_categorias AS cat ON cat.cid = p.post_category LEFT JOIN @posts_comentarios AS com ON com.c_post_id = p.post_id LEFT JOIN @comentarios_reaccion AS r ON com.cid = r.r_comment_id WHERE p.post_id = {$data['obj_uno']} AND com.cid = {$data['obj_dos']} LIMIT 1";
+				return "SELECT p.post_id, p.post_title, ct.c_seo, r.r_comment_id, r.r_reaction FROM @posts AS p LEFT JOIN @posts_categorias AS ct ON p.post_category = ct.cid LEFT JOIN @posts_comentarios AS c ON c.c_post_id = p.post_id LEFT JOIN @comentarios_reaccion AS r ON r.r_comment_id = c.cid WHERE p.post_id = {$data['obj_uno']} LIMIT 1";
 			break;
 			case 10:
 			case 11:
@@ -504,8 +504,10 @@ class tsMonitor {
 				if((int)$no_total > 1) {
 					$text = $this->monitor[$no_type]['text'][1].$txt_extra;
 					$oracion['text'] = $this->setReplace($no_total, $text);
-				} else $oracion['text'] = $this->monitor[$no_type]['text'][0].$txt_extra;
-			
+				} else {
+					#$oracion['text'] = $this->monitor[$no_type]['text'][0].$txt_extra;
+					$oracion['text'] = $this->monitor[$no_type]['text'][0]." <strong>{$data['r_reaction']}</strong> ".$txt_extra;
+				}
 				$oracion['link'] = $tsCore->createLink('post', $data['post_id'], $id_comment);
 				$oracion['ltext'] = ($this->show_type == 1) ? $ln_text : $data['post_title'];
 				$oracion['ltit'] = ($this->show_type == 1) ? $data['post_title'] : '';
