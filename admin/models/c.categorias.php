@@ -8,7 +8,7 @@
 
 class tsCategorias {
 
-		# ===================================================
+	# ===================================================
 	# CATEGORIAS
 	# * dataCat() :: Armamos el array para saveCat() & newCat()
 	# * saveOrden() :: Guardamos el orden de las categorias
