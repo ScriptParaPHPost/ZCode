@@ -171,9 +171,13 @@ class BBCode {
 			['tag' => 'url', 'replace' => '<a href="{param}" target="_blank"'.$leaving.'>{param}</a>', 'parse' => false, 'validParam' => $urlValidator],
 			['tag' => 'url', 'replace' => '<a href="{option}" target="_blank"'.$leaving.'>{param}</a>', 'option' => true, 'validOption' => $urlValidator],
 			['tag' => 'img', 'replace' => '<img src="{param}" class="wysibb--image w-100 object-fit-cover rounded border"/>', 'parse' => false, 'validParam' => $imgValidator],
+			// Fuentes
 			['tag' => 'color', 'replace' => '<span style="color: {option}">{param}</span>', 'option' => true, 'validOption' => $colorValidator],
 			['tag' => 'size', 'replace' => '<span style="font-size: {option}pt; line-height: {option}pt">{param}</span>', 'option' => true, 'validOption' => $sizeValidator],
 			['tag' => 'align', 'replace' => '<div style="text-align: {option}">{param}</div>', 'option' => true, 'validOption' => $alignValidator],
+			['tag' => 'left', 'replace' => '<div style="text-align:left">{param}</div>', 'option' => true, 'validOption' => $alignValidator],
+			['tag' => 'center', 'replace' => '<div style="text-align:center">{param}</div>', 'option' => true, 'validOption' => $alignValidator],
+			['tag' => 'right', 'replace' => '<div style="text-align:right">{param}</div>', 'option' => true, 'validOption' => $alignValidator],
 			['tag' => 'font', 'replace' => '<span style="font-family: {option}">{param}</span>', 'option' => true, 'validOption' =>$fontValidator],
 			['tag' => 'code', 'replace' => '<pre><code>{param}</code></pre>', 'parse' => true, 'limit' => 1],
 			['tag' => 'spoiler', 'replace' => '<div class="spoiler"><div class="title"><a href="#" onclick="spoiler($(this)); return false;">Spoiler:</a></div><div class="body">{param}</div></div>'],

@@ -27,8 +27,8 @@ define('SCRIPT_AUTHOR', 'Miguel92');
 define('SCRIPT_VERSION', file_get_contents(TS_ROOT . '.version'));
 
 // Reporte de errores
-error_reporting(($_ENV['DEBUG_MODE'] === 'true' ? E_ALL ^ E_WARNING ^ E_NOTICE : 0));
+error_reporting(($_ENV['DEBUG_MODE'] === '1' ? E_ALL ^ E_WARNING ^ E_NOTICE : 0));
 
-ini_set('display_errors', ($_ENV['DEBUG_MODE'] === 'true'));
+ini_set('display_errors', ($_ENV['DEBUG_MODE'] === '1'));
 
-ini_set('log_errors', ($_ENV['DEBUG_MODE'] === 'false'));
+ini_set('log_errors', ($_ENV['DEBUG_MODE'] === '0'));

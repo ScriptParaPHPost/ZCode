@@ -59,7 +59,7 @@ class tsForo {
 		global $tsCore;
 		# Insertamos los datos
 		if(isset($_POST['save'])) unset($_POST['save']);
-		if (insertDataInBase([__FILE__, __LINE__], '@posts_supercategorias', $_POST)) return true;
+		if (addDataToTable([__FILE__, __LINE__], '@posts_supercategorias', $_POST)) return true;
 	}
 
 	public function delCategoria() {

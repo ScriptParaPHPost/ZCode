@@ -26,7 +26,7 @@
 		</div>
 	</div>
 	<small class="upform-status help"></small>
-	<small class="block text-align-center" data-toggle="forget_password" style="float:right;">¿Olvidaste tu contraseña?</small>	
+	<small class="block text-align-center" data-toggle="forget_password" onclick="login.multiOptions('password', false)" style="float:right;">¿Olvidaste tu contraseña?</small>	
 </div>
 
 <div class="upform-check">

@@ -198,7 +198,7 @@ class tsAdmin {
 		global $tsCore, $tsUser;
 		//
 		if (!empty($_POST['not_body'])) {
-			if(insertDataInBase([__FILE__, __LINE__], '@noticias', $this->sameNoticeSave(), 'not_')) return true;
+			if(addDataToTable([__FILE__, __LINE__], '@noticias', $this->sameNoticeSave(), 'not_')) return true;
 		}
 		//
 		return false;
@@ -279,7 +279,7 @@ class tsAdmin {
 		// Comprobamos que sea seguro
 		foreach ($tema as $key => $val) $tema[$key] = $tsCore->setSecure($val);
 		// Instalamos...
-		return (insertDataInBase([__FILE__, __LINE__], '@temas', ['name' => $tema['nombre'], 'url' => $tema['url'], 'path' => $tema_path, 'copy' => $tema['copy']], 't_')) ? '1: Tema instalado correctamente.' : '0: Ocurri&oacute; un error durante la instalaci&oacute;n.';
+		return (addDataToTable([__FILE__, __LINE__], '@temas', ['name' => $tema['nombre'], 'url' => $tema['url'], 'path' => $tema_path, 'copy' => $tema['copy']], 't_')) ? '1: Tema instalado correctamente.' : '0: Ocurri&oacute; un error durante la instalaci&oacute;n.';
 	}
 	# ===================================================
 	# PUBLICIDADES
@@ -394,7 +394,7 @@ class tsAdmin {
 		global $tsCore;
 		$r = $this->sameArrayRango($_POST);
 		// Insertamos los datos
-		if (insertDataInBase([__FILE__, __LINE__], '@rangos', $r, 'r_')) return true;
+		if (addDataToTable([__FILE__, __LINE__], '@rangos', $r, 'r_')) return true;
 	}
 	public function delRango() {
 		global $tsCore;
@@ -489,7 +489,8 @@ class tsAdmin {
 	}
 	public function setUserData(int $user_id = 0) {
 		global $tsCore;
-		$user_id = (int)$_GET['uid'];
+		$user_id = (int)$_GET['uid'] ?? $user_id;
+	
 		# DATA
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT `user_name`, `user_email`, `user_password` FROM @miembros WHERE user_id = $user_id"));
 		# DATOS LOCALES
@@ -511,6 +512,7 @@ class tsAdmin {
 		// PUNTOS PARA DAR
 		if ($pointsxdar >= 0) $pxd = ", user_puntosxdar = $pointsxdar";
 		else return 'Los puntos para dar no se reconocen';
+	
 		// CONTRASEÑA
 		if (!empty($password) AND !empty($cpassword)) {
 			if (strlen($user_nick) < 4) return 'Nick demasiado corto.';
@@ -522,7 +524,7 @@ class tsAdmin {
 			if ($password != $cpassword) return 'Las contrase&ntilde;as no coinciden';
 			$new_key = $tsCore->createPassword($user_nick, $password);
 			$db_key = ", user_password = '$new_key'";
-		}
+		}	
 		// ACTUALIZAMOS LA TABLA
 		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_email = '$email'$changedis$new_nick$pxd$apoints$db_key WHERE user_id = $user_id")) {
 			if ($_POST['sendata']) {
@@ -595,7 +597,7 @@ class tsAdmin {
 		  		removeDataById([__FILE__, __LINE__], '@visitas', "`for` = $user_id && type = 1");
 		  	}
 		  	$avBody = "Hola, le informamos que el administrador {$tsUser->nick} ({$tsUser->uid}) ha eliminado ".($c ? 'la cuenta' : 'varios contenidos')." de {$data[0]}.";
-		  	insertDataInBase([__FILE__, __LINE__], '@avisos', [
+		  	addDataToTable([__FILE__, __LINE__], '@avisos', [
 		  		'user_id' => 1,
 		  		'av_subject' => 'Contenido eliminado',
 		  		'av_body' => $avBody,
@@ -975,7 +977,7 @@ class tsAdmin {
 		// Ya existe el bloqueo?...
 		if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM @blacklist WHERE type = $type && value = '$value'"))) return 'Ya existe un bloqueo as&iacute;';
 		// Insertamos los datos
-		if (insertDataInBase([__FILE__, __LINE__], '@blacklist', ['type' => $type, 'value' => $value, 'reason' => $reason, 'author' => $tsUser->uid, 'date' => time()])) return true;
+		if (addDataToTable([__FILE__, __LINE__], '@blacklist', ['type' => $type, 'value' => $value, 'reason' => $reason, 'author' => $tsUser->uid, 'date' => time()])) return true;
 	}
 	public function deleteBlock() {
 		$id = (int)$_POST['bid'];

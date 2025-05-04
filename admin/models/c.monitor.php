@@ -95,7 +95,7 @@ class tsMonitor {
 		# NO PODEMOS ENVIAR A UN USUARIO BANEADO
 		if($data['user_baneado'] === 1) return true;
 		# INSERTAMOS EL AVISO
-		return (insertDataInBase([__FILE__, __LINE__], '@avisos', ['user_id' => $user_id, 'av_subject' => $tsCore->setSecure($subject), 'av_body' => $tsCore->setSecure($body), 'av_date' => time(), 'av_type' => $type])) ? true : false;
+		return (addDataToTable([__FILE__, __LINE__], '@avisos', ['user_id' => $user_id, 'av_subject' => $tsCore->setSecure($subject), 'av_body' => $tsCore->setSecure($body), 'av_date' => time(), 'av_type' => $type])) ? true : false;
 	}
 
 	/**
@@ -195,7 +195,7 @@ class tsMonitor {
 				]);
 				$sql = db_exec([__FILE__, __LINE__], 'query', "UPDATE @monitor SET $sql WHERE not_id = {$not_data['not_id']}");
 			} else {
-				$sql = insertDataInBase([__FILE__, __LINE__], '@monitor', [
+				$sql = addDataToTable([__FILE__, __LINE__], '@monitor', [
 					'user_id' => $user_id,
 					'obj_user' => $obj_user,
 					'obj_uno' => $obj_uno,
@@ -609,7 +609,7 @@ class tsMonitor {
 		// SEGUIR
 		if(empty($data['follow_id'])){
 			if($tsUser->uid == $fw['obj'] && $fw['type'] == 1) return "1-{$fw['obj']}-0-No puedes seguirte a ti mismo.";
-			if(insertDataInBase([__FILE__, __LINE__], '@follows', ['user' => $tsUser->uid, 'id' => $fw['obj'], 'type' => $fw['type'], 'date' => time()], 'f_')){
+			if(addDataToTable([__FILE__, __LINE__], '@follows', ['user' => $tsUser->uid, 'id' => $fw['obj'], 'type' => $fw['type'], 'date' => time()], 'f_')){
 				// MONITOR?
 				if($fw['notUser'] > 0) 
 					$this->setNotificacion($notType, $fw['notUser'], $tsUser->uid);
@@ -749,7 +749,7 @@ class tsMonitor {
 		//
 		if($tsUser->uid != $data['post_user']) {
 			// GUARDAMOS EN FOLLOWS PUES ES LA RECOMENDACION PARA SU SEGUIDORES! xD
-			insertDataInBase([__FILE__, __LINE__], '@follows', ['id' => $postid, 'user' => $tsUser->uid, 'type' => 3, 'date' => time()], 'f_');
+			addDataToTable([__FILE__, __LINE__], '@follows', ['id' => $postid, 'user' => $tsUser->uid, 'type' => 3, 'date' => time()], 'f_');
 			// NOTIFICAR
 			if($this->setFollowNotificacion(6, 1, $tsUser->uid, $postid)) {
 				$tsActividad->setActividad(4, $postid);

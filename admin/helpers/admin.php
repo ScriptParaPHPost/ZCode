@@ -346,7 +346,7 @@
 	} elseif($action === 'rangos') {
 		$tsTitle = 'Todos los Rangos';
 		// PORTADA
-		if(empty($act)) $smarty->assign("tsRangos",$tsAdmin->getRangos());
+		if(empty($act)) $smarty->assign("tsRangos", $tsAdmin->getRangos());
 		// LISTAR USUARIOS DEPENDIENDO EL RANGO
 		elseif($act === 'list') {
 			$smarty->assign("tsMembers", $tsAdmin->getRangoUsers());

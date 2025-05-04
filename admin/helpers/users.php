@@ -20,9 +20,10 @@ if(empty($act)) {
 				require TS_ZCODE . 'ContentUserInfo.php';
 				$smarty->assign("contentUser", $contentUser);
 			}
+         $url = $tsCore->settings['url'].'/admin/users/show?uid='.$user_id.'&save=true';
   	      if(!empty($_POST['save'])) {
   	         $both = ($do === 5) ? $tsAdmin->setUserPrivacidad($user_id) : ($do === 7 ? $tsAdmin->setUserRango($user_id) : ($do === 8 ? $tsAdmin->setUserFirma($user_id) : $tsAdmin->deleteContent($user_id)));
-  	         if($both === 'OK') $tsCore->redireccionar('admin', $action, "act=show&uid=$user_id&save=true");
+  	         if($both === 'OK') $tsCore->redirectTo($url);
             else $smarty->assign("tsError", $both);
          }
          if($do === 7) {
@@ -38,7 +39,7 @@ if(empty($act)) {
       default:
          if(!empty($_POST['save'])){
   	       	$update = $tsAdmin->setUserData($user_id);
-  	       	if($update === 'OK') $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
+  	       	if($update === 'OK') $tsCore->redirectTo($url);
             else $smarty->assign("tsError",$update);
          }
        	$smarty->assign("tsUserD",$tsAdmin->getUserData());

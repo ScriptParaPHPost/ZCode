@@ -35,7 +35,7 @@ class tsAfiliado {
 		// FILTRAMOS URL
 		if(!filter_var($dataIn['url'], FILTER_VALIDATE_URL)) die('0: Url incorrecta'); 
 		//
-		if(insertDataInBase([__FILE__, __LINE__], '@afiliados', $dataIn, 'a_')) {
+		if(addDataToTable([__FILE__, __LINE__], '@afiliados', $dataIn, 'a_')) {
 			$afid = db_exec('insert_id');
 		  	// AVISO
 			$aviso = "<center><a href=\"{$dataIn['url']}\"><img src=\"{$dataIn['banner']}\" title=\"{$dataIn['titulo']}\"/></a></center><br />{$dataIn['titulo']} quiere ser su afiliado, dir&iacute;jase a la administraci&oacute;n para aceptar o cancelarla.";

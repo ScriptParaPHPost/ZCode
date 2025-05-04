@@ -86,7 +86,7 @@ class tsCategorias {
 		$orden = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(cid) AS total FROM @posts_categorias'))['total'] + 1;
 		# Insertamos los datos
 		$categoria = $this->dataCat('nueva', $orden);
-		if (insertDataInBase([__FILE__, __LINE__], '@posts_categorias', $categoria, 'c_')) return true;
+		if (addDataToTable([__FILE__, __LINE__], '@posts_categorias', $categoria, 'c_')) return true;
 	}
 	public function delCat() {
 		global $tsCore;

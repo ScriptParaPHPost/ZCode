@@ -76,7 +76,7 @@
 			$smarty->assign('tsAviso', array('titulo' => 'Ok', 'mensaje' => 'Contrase&ntilde;a actualizada', 'but' => 'Ir a la p&aacute;gina principal'));
 			}
 		}else{
-			$smarty->assign('tsAviso', array('titulo' => 'Actualizar contrase&ntilde;a', 'mensaje' => '<form method="post">Escribe tu nueva contrase&ntilde;a: <input type="password" name="pass" required/><input type="submit" class="mBtn btnOk" value="Reestablecer contrase&ntilde;a" id="shit" /></form><style type="text/css">#shit{margin-bottom:-45px}</style>'));
+			$smarty->assign('tsAviso', array('titulo' => 'Actualizar contrase&ntilde;a', 'mensaje' => '<form method="post"><div class="upform-group"><label class="upform-label" for="pass">Escribe tu nueva contrase&ntilde;a</label><input type="password" name="pass" class="upform-input" required/></div><input type="submit" class="btn btnOk" value="Reestablecer contrase&ntilde;a" id="shit" /></form><style type="text/css">#shit{margin-bottom:-45px}</style>'));
 		}
 	  }
 	}

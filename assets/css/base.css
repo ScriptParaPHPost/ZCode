@@ -6308,37 +6308,53 @@ lite-youtube.lyt-activated > .lty-playbtn {
 	font-weight: 500;
 	width: max-content;
 }
+.UPModal-dialog.UPModal-alert .UPModal-body {
+	text-align: center;
+}
+.UPModal-dialog.UPModal-alert .UPModal-buttons {
+	align-items: flex-end;
+}
+.UPModal-dialog.UPModal-alert .UPModal-buttons .UPModal-button {
+	width: max-content;
+	padding: .5rem 1.5rem;
+}
+.UPModal-dialog.UPModal-lg .UPModal-buttons {
+	gap: .5rem;
+	flex-direction: row;
+}
+.UPModal-dialog.UPModal-lg .UPModal-buttons .UPModal-button {
+	margin-bottom: 0;
+	padding: .5rem 1.5rem;
+}
+.UPModal-dialog .UPModal-buttons .UPModal-button:last-child {
+	margin-bottom: 0;
+}
 .UPModal-dialog .UPModal-buttons .UPModal-button-success {
-	--modal-button: var(--modal-button-success);
-	&:hover {
-		--modal-button: var(--modal-button-success-hover);
-	}
-	&:active {
-		--modal-button: var(--modal-button-success-active);
-	}
+	--btn-border-bg: var(--btn-success);
+}
+.UPModal-dialog .UPModal-buttons .UPModal-button-success:hover {
+	--btn-border-bg: var(--btn-success-hover);
+}
+.UPModal-dialog .UPModal-buttons .UPModal-button-success:active {
+	--btn-border-bg: var(--btn-success-active);
 }
 .UPModal-dialog .UPModal-buttons .UPModal-button-danger {
-	--modal-button: var(--modal-button-danger);
-	color: #FFF;
-	&:hover {
-		--modal-button: var(--modal-button-danger-hover);
-	}
-	&:active {
-		--modal-button: var(--modal-button-danger-active);
-	}
+	--btn-border-bg: var(--btn-danger);
+}
+.UPModal-dialog .UPModal-buttons .UPModal-button-danger:hover {
+	--btn-border-bg: var(--btn-danger-hover);
+}
+.UPModal-dialog .UPModal-buttons .UPModal-button-danger:active {
+	--btn-border-bg: var(--btn-danger-active);
 }
 .UPModal-dialog .UPModal-buttons .UPModal-button-warning {
-	--modal-button: var(--modal-button-warning);
-	&:hover {
-		--modal-button: var(--modal-button-warning-hover);
-	}
-	&:active {
-		--modal-button: var(--modal-button-warning-active);
-	}
+	--btn-border-bg: var(--btn-warning);
 }
-
-.UPModal-dialog.UPModal-alert .UPModal-dialog .UPModal-body {
-	padding: .765rem 1rem;
+.UPModal-dialog .UPModal-buttons .UPModal-button-warning:hover {
+	--btn-border-bg: var(--btn-warning-hover);
+}
+.UPModal-dialog .UPModal-buttons .UPModal-button-warning:active {
+	--btn-border-bg: var(--btn-warning-active);
 }
 
 .upform-group {

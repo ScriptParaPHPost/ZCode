@@ -24,7 +24,7 @@ class tsSocials {
 		foreach($_POST = (isset($_POST['save']) ? array_slice($_POST, 0, -1) : $_POST) as $key => $val) $_POST[$key] = is_numeric($val) ? (int)$val : $tsCore->setSecure($val);
 		// Guardamos
 		$name = $tsCore->setSecure($_POST["social_name"]);
-		if(insertDataInBase([__FILE__, __LINE__], '@social', [
+		if(addDataToTable([__FILE__, __LINE__], '@social', [
 			'name' => $name,
 			'client_id' => $tsCore->setSecure($_POST["social_client_id"]),
 			'client_secret' => $tsCore->setSecure($_POST["social_client_secret"]),

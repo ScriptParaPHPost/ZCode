@@ -6,7 +6,7 @@
  * @author  Miguel92
  */
 
-class tsCore {
+class tsCore extends tsZCode {
 
 	public $settings;	// CONFIGURACIONES DEL SITIO
 

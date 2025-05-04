@@ -26,7 +26,7 @@
 					<td><a href="{$tsConfig.url}/moderacion/buscador/1/1/{$m.user_last_ip}" class="geoip" target="_blank">{$m.user_last_ip}</a></td>
 					<td id="status_user_{$m.user_id}">{if $m.user_baneado == 1}<font color="red">Suspendido</font>{elseif $m.user_activo == 0}<font color="purple">Inactivo</font>{else}<font color="green">Activo</font>{/if}</td>
 					<td class="admin_actions">
-						<a href="{$tsConfig.url}/admin/users?act=show&uid={$m.user_id}" title="Editar Usuario">{uicon name="pen"}</a>
+						<a href="{$tsConfig.url}/admin/users/show?uid={$m.user_id}" title="Editar Usuario">{uicon name="pen"}</a>
 						<span role="button" onclick="admin.users.setInActive({$m.user_id}); return false;" title="Activar/Desactivar Usuario">{uicon name="refresh-alt"}</span>
 						<span role="button" onclick="mod.users.action({$m.user_id}, 'aviso', false); return false;" title="Enviar Alerta">{uicon name="warning-triangle"}</span>
 						<span role="button" onclick="mod.{if $m.user_baneado == 1}reboot({$m.user_id}, 'users', 'unban', false){else}users.action({$m.user_id}, 'ban', false){/if}; return false;" title="{if $m.user_baneado == 1}Reactivar{else}Suspender{/if} Usuario">{uicon name="no-sign"}</span>
@@ -43,7 +43,7 @@
 <div class="d-flex justify-content-between align-items-center w-100">
 	<h4>Administrar: <strong>{$tsUsername}</strong></h4>
 	<div><strong>Seleccionar:</strong> 
-		<select onchange="location.href='{$tsConfig.url}/admin/users?act=show&uid={$tsUserID}&t=' + this.value;">
+		<select onchange="location.href='{$tsConfig.url}/admin/users/show?uid={$tsUserID}&t=' + this.value;">
 			<option value="1"{if $tsType == 1} selected{/if}>Vista general</option>
 			<option value="5"{if $tsType == 5} selected{/if}>Preferencias</option>
 			<option value="6"{if $tsType == 6} selected{/if}>Borrar Contenido</option>
@@ -101,7 +101,7 @@
 		</dl>
 		 <dl id="sendata" style="display:none;">
 			<dt><label for="sendata">Informar al usuario</label><span>Marque esta casilla si quiere enviar un e-mail al usuario con los nuevos datos</span></dt>
-			<dd><input type="checkbox" name="sendata"/></dd>
+			<dd>{checkbox id="sendata" name="sendata" label="Informar"}</dd>
 		</dl>
 	{elseif $tsType == 5}
 		<legend>Modificar privacidad del usuario</legend>

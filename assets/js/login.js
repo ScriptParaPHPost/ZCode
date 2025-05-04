@@ -28,6 +28,7 @@ const login = (() => {
 			const r_email = $('#r_email').val();
 			UPModal.proccess_start();
 			$.post(ZCodeApp.url + '/recover-'+page+'.php', { r_email }, receive => {
+				console.log(receive)
 				UPModal.proccess_end(2);
 				UPModal.setModal({
 					status: (receive.charAt(0) == '0' ? 'danger' : 'success'),
@@ -163,6 +164,7 @@ $(document).on('keydown', function(event) {
 });
 
 $('span[data-toggle="forget_password"]').on('click', function() {
+	console.log('hizo clickk')
 	login.multiOptions('password', false);
 });
 

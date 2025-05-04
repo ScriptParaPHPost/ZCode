@@ -20,20 +20,20 @@
 				<tbody>
 				 	{foreach from=$tsRangos.regular item=r}
 					<tr>
-						<td><a href="{$tsConfig.url}/admin/rangos/?act=list&rid={$r.id}&t=r"  class="text-decoration-none fw-500"style="color:#{$r.color}">{$r.name}</a></td>
+						<td><a href="{$tsConfig.url}/admin/rangos/list?rid={$r.id}&t=r"  class="text-decoration-none fw-500"style="color:#{$r.color}">{$r.name}</a></td>
 						<td>{$r.num_members}</td>
 						<td>{$r.user_puntos}</td>
 						<td>{$r.max_points}</td>
 						<td><img src="{$tsConfig.assets}/images/rangos/{$r.imagen}" class="avatar avatar-2" /></td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=s" title="Editar Rango">{uicon name="pen" class="pe-none"}</a>
+							<a href="{$tsConfig.url}/admin/rangos/editar?rid={$r.id}&t=s" title="Editar Rango">{uicon name="pen" class="pe-none"}</a>
 							{if $r.id > 3}
-								<a href="{$tsConfig.url}/admin/rangos/?act=borrar&rid={$r.id}" title="Borrar Rango">{uicon name="trash-alt" class="pe-none"}</a>
+								<a href="{$tsConfig.url}/admin/rangos/borrar?rid={$r.id}" title="Borrar Rango">{uicon name="trash-alt" class="pe-none"}</a>
 							{/if}
 							{if $tsConfig.c_reg_rango == $r.id}
 								{uicon name="clipboard-check" class="pe-none" title="Rango Predeterminado al registro"}
 							{else}
-								<a href="{$tsConfig.url}/admin/rangos/?act=setdefault&rid={$r.id}" title="Establecer Predeterminado">{uicon name="flame-alt" class="pe-none"}</a>
+								<a href="{$tsConfig.url}/admin/rangos/setdefault?rid={$r.id}" title="Establecer Predeterminado">{uicon name="flame-alt" class="pe-none"}</a>
 							{/if}
 						</td>
 					</tr>
@@ -41,7 +41,7 @@
 				</tbody>
 				<tfoot>
 					<td colspan="6" style="text-align:right">
-						<a class="me-2 btn" href="{$tsConfig.url}/admin/rangos/?act=nuevo&t=s">Agregar nuevo rango &raquo;</a>
+						<a class="me-2 btn" href="{$tsConfig.url}/admin/rangos/nuevo?t=s">Agregar nuevo rango &raquo;</a>
 					</td>
 				</tfoot>
 			</table>
@@ -63,7 +63,7 @@
 			 	<tbody>
 			 		{foreach from=$tsRangos.post item=r}
 					<tr>
-						<td><a href="{$tsConfig.url}/admin/rangos/?act=list&rid={$r.id}&t=p" class="text-decoration-none fw-500" style="color:#{$r.color}">{$r.name}</a></td>
+						<td><a href="{$tsConfig.url}/admin/rangos/list?rid={$r.id}&t=p" class="text-decoration-none fw-500" style="color:#{$r.color}">{$r.name}</a></td>
 						<td>{$r.num_members}</td>
 						<td>{if $r.type == 1}Puntos{elseif $r.type == 2}Posts{elseif $r.type == 3}Fotos{elseif $r.type == 4}Comentarios{/if}</td>
 						<td>{$r.cant}</td>
@@ -71,9 +71,9 @@
 						<td>{$r.max_points}</td>
 						<td><img src="{$tsConfig.assets}/images/rangos/{$r.imagen}" class="avatar avatar-2" /></td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=p" title="Editar Rango">{uicon name="pen" class="pe-none"}</a>
+							<a href="{$tsConfig.url}/admin/rangos/editar?rid={$r.id}&t=p" title="Editar Rango">{uicon name="pen" class="pe-none"}</a>
 							{if $r.id > 3}
-								<a href="{$tsConfig.url}/admin/rangos/?act=borrar&rid={$r.id}" title="Borrar Rango">{uicon name="trash-alt" class="pe-none"}</a>
+								<a href="{$tsConfig.url}/admin/rangos/borrar?rid={$r.id}" title="Borrar Rango">{uicon name="trash-alt" class="pe-none"}</a>
 							{/if}
 						</td>
 					</tr>
@@ -81,7 +81,7 @@
 			 	</tbody>
 			 	<tfoot>
 					<td colspan="8" style="text-align:right">
-						<a class="me-2 btn" href="{$tsConfig.url}/admin/rangos/?act=nuevo">Agregar nuevo rango &raquo;</a>
+						<a class="me-2 btn" href="{$tsConfig.url}/admin/rangos/nuevo">Agregar nuevo rango &raquo;</a>
 					</td>
 			 	</tfoot>
 			</table>
@@ -106,7 +106,7 @@
 						<td>{$m.user_lastlogin|hace:true}</td>
 						<td>{$m.user_registro|date_format:"%d/%m/%Y"}</td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/users?act=show&uid={$m.user_id}&t=7"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar rango" /></a>
+							<a href="{$tsConfig.url}/admin/users/show?uid={$m.user_id}&t=7"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar rango" /></a>
 						</td>
 					</tr>
 					{/foreach}

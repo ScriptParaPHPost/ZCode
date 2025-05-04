@@ -375,6 +375,9 @@ wbbdebug = false;
 						title: "Arial",
 						exvalue: "Arial"
 					}, {
+						title: "Arial Black",
+						exvalue: "Arial Black"
+					}, {
 						title: "Comic Sans MS",
 						exvalue: "Comic Sans MS"
 					}, {
@@ -421,6 +424,7 @@ wbbdebug = false;
 					buttonHTML: '<span class="wysibb-icon wysibb-icon-textleft"></span>',
 					groupkey: 'align',
 					transform: {
+						'<div style="text-align:left">{SELTEXT}</div>': '[left]{SELTEXT}[/left]',
 						'<div style="text-align:left">{SELTEXT}</div>': '[align=left]{SELTEXT}[/align]'
 					}
 				},
@@ -429,6 +433,7 @@ wbbdebug = false;
 					buttonHTML: '<span class="wysibb-icon wysibb-icon-textright"></span>',
 					groupkey: 'align',
 					transform: {
+						'<div style="text-align:right">{SELTEXT}</div>': '[right]{SELTEXT}[/right]',
 						'<div style="text-align:right">{SELTEXT}</div>': '[align=right]{SELTEXT}[/align]'
 					}
 				},
@@ -437,6 +442,7 @@ wbbdebug = false;
 					buttonHTML: '<span class="wysibb-icon wysibb-icon-textcenter"></span>',
 					groupkey: 'align',
 					transform: {
+						'<div style="text-align:center">{SELTEXT}</div>': '[center]{SELTEXT}[/center]',
 						'<div style="text-align:center">{SELTEXT}</div>': '[align=center]{SELTEXT}[/align]'
 					}
 				},
@@ -477,6 +483,7 @@ wbbdebug = false;
 					excmd: 'fontSize',
 					exvalue: "1",
 					transform: {
+						'<div style="font-size: 10px;">{SELTEXT}</div>': '[size=1]{SELTEXT}[/size]',
 						'<span style="font-size: 10px;">{SELTEXT}</span>': '[size=10]{SELTEXT}[/size]',
 						'<font size="1">{SELTEXT}</font>': '[size=10]{SELTEXT}[/size]'
 					}
@@ -487,6 +494,7 @@ wbbdebug = false;
 					excmd: 'fontSize',
 					exvalue: "2",
 					transform: {
+						'<div style="font-size: 12px;">{SELTEXT}</div>': '[size=2]{SELTEXT}[/size]',
 						'<span style="font-size: 12px;">{SELTEXT}</span>': '[size=12]{SELTEXT}[/size]',
 						'<font size="2">{SELTEXT}</font>': '[size=12]{SELTEXT}[/size]'
 					}
@@ -497,9 +505,9 @@ wbbdebug = false;
 					excmd: 'fontSize',
 					exvalue: "3",
 					transform: {
+						'<div style="font-size: 16px;">{SELTEXT}</div>': '[size=3]{SELTEXT}[/size]',
 						'<span style="font-size: 16px;">{SELTEXT}</span>': '[size=16]{SELTEXT}[/size]',
-						'<font size="3">{SELTEXT}</font>': '[size=16]{SELTEXT}[/size]',
-						'<span style="font-size: {SIZE}px;">{SELTEXT}</span>': '[size={SIZE}]{SELTEXT}[/size]'
+						'<font size="3">{SELTEXT}</font>': '[size=16]{SELTEXT}[/size]'
 					}
 				},
 				fs_big: {
@@ -508,6 +516,7 @@ wbbdebug = false;
 					excmd: 'fontSize',
 					exvalue: "4",
 					transform: {
+						'<div style="font-size: 18px;">{SELTEXT}</div>': '[size=4]{SELTEXT}[/size]',
 						'<span style="font-size: 18px;">{SELTEXT}</span>': '[size=18]{SELTEXT}[/size]',
 						'<font size="4">{SELTEXT}</font>': '[size=18]{SELTEXT}[/size]'
 					}
@@ -518,6 +527,7 @@ wbbdebug = false;
 					excmd: 'fontSize',
 					exvalue: "5",
 					transform: {
+						'<div style="font-size: 24px;">{SELTEXT}</div>': '[size=5]{SELTEXT}[/size]',
 						'<span style="font-size: 24px;">{SELTEXT}</span>': '[size=24]{SELTEXT}[/size]',
 						'<font size="5">{SELTEXT}</font>': '[size=24]{SELTEXT}[/size]'
 					}

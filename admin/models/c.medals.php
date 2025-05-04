@@ -141,7 +141,7 @@ class tsMedal {
 		if(is_numeric($medalla['type']) && is_numeric($medalla['cond_user']) && is_numeric($medalla['cond_user_rango']) && is_numeric($medalla['cond_post']) && is_numeric($medalla['cond_foto'])) {
 			// INSERTAR
         	if($this->sameCheck($medalla) !== true) return 'Ya existe una medalla con esas caracter&iacute;sticas';
-			if(insertDataInBase([__FILE__, __LINE__], '@medallas', $medalla, 'm_')) return true;
+			if(addDataToTable([__FILE__, __LINE__], '@medallas', $medalla, 'm_')) return true;
        	else return 'No se pudo insertar la medalla';
 			
 		} else return 'Introduzca valores num&eacute;ricos';
@@ -151,7 +151,7 @@ class tsMedal {
 		if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM @medallas_assign WHERE medal_id = $medalla && medal_for = $id LIMIT 1"))) return '0: El usuario ya tiene esa medalla';
 		// Asignamos la asignacion de la medalla
 		$medAss['for'] = $id;
-		if(!insertDataInBase([__FILE__, __LINE__], '@medallas_assign', $medAss, 'medal_')) {
+		if(!addDataToTable([__FILE__, __LINE__], '@medallas_assign', $medAss, 'medal_')) {
 			return '0: Ocurri&oacute; un error al asignar la medalla';
 		}
 	}
@@ -162,7 +162,7 @@ class tsMedal {
 		if(!empty($obj_dos)) $medMon['obj_dos'] = $obj_dos; 
 		$medMon['not_type'] = $type; 
 		$medMon['not_date'] = time();
-		if(!insertDataInBase([__FILE__, __LINE__], '@monitor', $medMon)) {
+		if(!addDataToTable([__FILE__, __LINE__], '@monitor', $medMon)) {
 			return '0: Ocurri&oacute; un error al notificar al usuario';
 		}
 		// Debe continuar...
