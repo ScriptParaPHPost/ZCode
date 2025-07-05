@@ -177,7 +177,7 @@
 						<fieldset>
 							<legend>{$nameOpt}</legend>
 							{foreach $options item=opt}
-								{checkbox id=$opt.id name=$opt.name checked=$opt.checked label=$opt.label optional=$opt.optional}
+								{zcode_checkbox id=$opt.id name=$opt.name checked=$opt.checked label=$opt.label optional=$opt.optional}
 							{/foreach}
 						</fieldset>
 					{/foreach}

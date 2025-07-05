@@ -1,1 +1,0 @@
-<span class="flex-grow-1 d-block text-center rounded py-1" role="button" data-active="{$active}" data-category="{$category}" data-box="{$box}" data-period="{$period}">{$label}</span>

@@ -99,15 +99,20 @@ class Smarty extends SmartyEngine implements SmartyInterface {
 	}
 
 	private function listDirectories() {
-		return [
+		$data = [
 			'root' => BASEPATH,
 			'assets' => TS_ASSETS,
-			'elements' => TS_ASSETS . 'elements' . DIRECTORY_SEPARATOR,
+			'components' => TS_THEMES . 'components' . DIRECTORY_SEPARATOR,
 			'views' => TS_ASSETS . 'views' . DIRECTORY_SEPARATOR,
 			'dashboard' => TS_ADMIN,
 			'admin_mods' => TS_ADMIN . 'admin_mods' . DIRECTORY_SEPARATOR,
 			'access' => TS_AUTH
 		];
+		foreach(scandir($data['components']) as $k => $component) {
+			if(in_array($component, ['.', '..'])) continue;
+			$data[$component] = $data['components'] . $component . DIRECTORY_SEPARATOR;
+		}
+		return $data;
 	}
 
 	/**
@@ -120,13 +125,6 @@ class Smarty extends SmartyEngine implements SmartyInterface {
 		$templates = TS_THEMES . $tema . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR;
 		$sections = $templates . 'sections' . DIRECTORY_SEPARATOR;
 		$modules = $templates . 'modules' . DIRECTORY_SEPARATOR;
-		$blocks = $templates . 'blocks' . DIRECTORY_SEPARATOR;
-
-		$addFolder = [];
-		foreach(scandir($blocks) as $k => $component) {
-			if(in_array($component, ['.', '..'])) continue;
-			$addFolder[$component] = $blocks . $component . DIRECTORY_SEPARATOR;
-		}
 
 		$directorios = array_merge([
 			'tema' => TS_THEMES . $tema,
@@ -136,7 +134,7 @@ class Smarty extends SmartyEngine implements SmartyInterface {
 			'pagina' => $modules . $tsPage . DIRECTORY_SEPARATOR,
 			'global' => $modules . 'global' . DIRECTORY_SEPARATOR,
 			'php_files' => $templates . 't.php_files' . DIRECTORY_SEPARATOR
-		], $this->listDirectories(), $addFolder);
+		], $this->listDirectories());
 		$this->addTemplateDir($directorios);
 	}
 

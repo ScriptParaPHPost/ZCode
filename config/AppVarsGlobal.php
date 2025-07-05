@@ -17,13 +17,11 @@ if ( ! defined('ZCODEV3')) exit('No direct script access allowed');
 // DEFINICION DE CONSTANTES
 define('BASEPATH', realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR);
 
-define('ERROR_DIRECTORY', BASEPATH . 'storage' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR);
-
-$endlog = date('dmy') . '.log';
-define('ERROR_LOG', ERROR_DIRECTORY . 'script' . $endlog);
-define('DASHBOARD_LOG', ERROR_DIRECTORY . 'admod' . $endlog);
-define('MYSQLI_LOG', ERROR_DIRECTORY . 'database' . $endlog);
-define('EMAIL_LOG', ERROR_DIRECTORY . 'email' . $endlog);
+$endlog = '_' . date('d_m_y') . '.log';
+define('ERROR_LOG',     __DIR__ . '/../storage/logs/App' . $endlog);
+define('DASHBOARD_LOG', __DIR__ . '/../storage/logs/Admod' . $endlog);
+define('MYSQLI_LOG',    __DIR__ . '/../storage/logs/DB' . $endlog);
+define('EMAIL_LOG',     __DIR__ . '/../storage/logs/Email' . $endlog);
 define('DEBUG', true);
 define('DEBUG_FULL', true);
 define('DEBUG_PRINT_SCREEN', true);
@@ -31,7 +29,7 @@ define('DEBUG_PRINT_SCREEN', true);
 // SCRIPT INFO
 define('SCRIPT_NAME', 'ZCode');
 define('SCRIPT_AUTHOR', 'Miguel92');
-define('SCRIPT_VERSION', file_get_contents(BASEPATH . '.version'));
+define('SCRIPT_VERSION', file_get_contents(__DIR__ . '/../.version'));
 
 // Reporte de errores
 error_reporting(DEBUG_FULL ? E_ALL : (DEBUG ? (E_ALL & ~E_WARNING & ~E_NOTICE & ~E_DEPRECATED) : 0));
@@ -80,7 +78,7 @@ register_shutdown_function(function() {
 });
 
 $days = 3;
-$logFiles = glob(ERROR_DIRECTORY . '*.log'); // Obtiene todos los archivos .log
+$logFiles = glob(__DIR__ . '/../storage/logs/*.log'); // Obtiene todos los archivos .log
 $oneWeekAgo = time() - ($days * 24 * 60 * 60); // x Tiempo
 foreach ($logFiles as $file) {
    if (filemtime($file) < $oneWeekAgo) { // Si el archivo es más antiguo que una semana

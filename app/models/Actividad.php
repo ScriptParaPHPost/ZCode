@@ -50,7 +50,7 @@ class Actividad implements ActividadInterface {
 			3 => ['text' => ['Vot&oacute;', 'el post'], 'css' => 'voto_'],
 			4 => ['text' => 'Recomend&oacute; el post', 'css' => 'share'],
 			5 => ['text' => ['Coment&oacute;', 'el post'], 'css' => 'comment_post'],
-			6 => ['text' => ['Vot&oacute;', 'un comentario en el post'], 'css' => 'voto_'],
+			6 => ['text' => ['Reaccion&oacute; con un', 'un comentario en el post'], 'css' => 'reaction'],
 			7 => ['text' => 'Est&aacute; siguiendo el post', 'css' => 'follow_post'],
 			// FOLLOWS
 			8 => ['text' => 'Est&aacute; siguiendo a', 'css' => 'follow'],
@@ -216,7 +216,6 @@ class Actividad implements ActividadInterface {
 			case 3:
 			case 4:
 			case 5:
-			case 6:
 			case 7:
 				return 'SELECT p.post_id, p.post_title, c.c_seo FROM @posts AS p LEFT JOIN @posts_categorias AS c ON p.post_category = c.cid WHERE p.post_id = \''.(int)$data['obj_uno'].'\' LIMIT 1';
 			break;
@@ -237,8 +236,9 @@ class Actividad implements ActividadInterface {
 				 	return 'SELECT c.pub_id, c.c_body, u.user_name FROM @muro_comentarios AS c LEFT JOIN @muro AS p ON c.pub_id = p.pub_id LEFT JOIN @miembros AS u ON p.p_user = u.user_id WHERE cid = \''.(int)$data['obj_uno'].'\' LIMIT 1';
 				}
 			break;
+			case 6:
 			case 12:
-				return 'SELECT p.post_id, p.post_title, c.c_seo, r.r_comment_id, r.r_user_id, r.r_reaction FROM @posts AS p LEFT JOIN @posts_categorias AS c ON p.post_category = c.cid LEFT JOIN @comentarios_reaccion AS r ON r.r_comment_id = c.cid WHERE p.post_id = \''.(int)$data['obj_uno'].'\' LIMIT 1';
+				return 'SELECT p.post_id, p.post_title, ct.c_seo, r.r_comment_id, r.r_reaction FROM @posts AS p LEFT JOIN @posts_categorias AS ct ON p.post_category = ct.cid LEFT JOIN @posts_comentarios AS c ON c.c_post_id = p.post_id LEFT JOIN @comentarios_reaccion AS r ON r.r_comment_id = c.cid WHERE p.post_id = \''.(int)$data['obj_uno'].'\' LIMIT 1;';
 			break;
 		}
 	}
@@ -272,7 +272,6 @@ class Actividad implements ActividadInterface {
 			case 2:
 			case 4:
 			case 7:
-			case 12:
 				$oracion['text'] = $this->actividad[$ac_type]['text'];
 				$oracion['link'] = $this->linkMonitorOfPost([
 					'c_seo' => $data['c_seo'],
@@ -284,7 +283,6 @@ class Actividad implements ActividadInterface {
 			# DEL TIPO 3, 5 y 6 USAMOS EL MISMO
 			case 3:
 			case 5:
-			case 6:
 				//
 				if($ac_type == 3) $extra_text = ($data['obj_dos'] == 2) ? 'negativo' : 'positivo';
 				elseif($ac_type == 5) $extra_text = ($data['obj_dos'] == 0) ? '' : ($data['obj_dos']+1).' veces';
@@ -299,6 +297,16 @@ class Actividad implements ActividadInterface {
 				$oracion['ltext'] = $data['post_title'];
 				// ESTILO
 				$oracion['style'] = ($ac_type === 3 || $ac_type === 6) ? 'voto_'.$extra_text : $oracion['style']; 
+			break;
+			case 6:
+			case 12:
+				$oracion['text'] = $this->actividad[$ac_type]['text'][0]." <strong>{$data['r_reaction']}</strong> ".$this->actividad[$ac_type]['text'][1];
+				$oracion['link'] = $this->linkMonitorOfPost([
+					'c_seo' => $data['c_seo'],
+					'post_id' => $data['post_id'],
+					'post_title' => $data['post_title']
+				]);
+				$oracion['ltext'] = $data['post_title'];
 			break;
 			# ESTA SIGUIENDO A..
 			case 8:

@@ -18,21 +18,16 @@ const importedFiles = new Map();
 
 async function iModule(filePath = '', functionName, parameters = {}, options = {}) {
 	const { forceReload = false } = options;
-
 	try {
 		// Construcción de la URL con un string aleatorio como versión
 		const version = string_random(4);
 		const fullPath = `${ZCodeApp.assets}/fs/__fs${filePath}`;
 		const url = `${fullPath}?v=${version}`;
-
 		if (importedFiles.has(fullPath) && !forceReload) {
-			console.info(`🟡 El archivo ${filePath} ya fue importado. Usa forceReload para recargar.`);
 			return;
 		}
-
 		const module = await import(url);
 		importedFiles.set(fullPath, true); // Marca como cargado
-
 		const callFn = (fn) => {
 			if (typeof module[fn] === 'function') {
 				module[fn](parameters);
@@ -40,9 +35,7 @@ async function iModule(filePath = '', functionName, parameters = {}, options = {
 				console.warn(`⚠️ Función '${fn}' no encontrada en ${filePath}`);
 			}
 		};
-
 		Array.isArray(functionName) ? functionName.forEach(callFn) : callFn(functionName);
-
 	} catch (err) {
 		console.error(`❌ Error importando ${filePath}`, err);
 		throw err;

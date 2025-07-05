@@ -1,1 +1,0 @@
-<a class="up-dropdown--item text-decoration-none fw-semibold rounded py-4 px-2 my-1 hover:main-bg active:main-bg hover:main-color d-flex justify-content-start align-items-center gap-2 mx-0" title="{$title}" href="{$tsConfig.url}{$link}">{uicon class="box iconify-28" name=$icon} {$title}</a>

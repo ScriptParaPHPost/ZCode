@@ -1,1 +1,0 @@
-<a class="d-block d-lg-inline-block text-decoration-none fw-semibold" rel="internal" href="{$tsConfig.url}/{$url}" title="{$title}">{$title}</a>

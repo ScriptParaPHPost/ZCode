@@ -16,12 +16,10 @@ if( !defined('ZCODEV3') ) define('ZCODEV3', TRUE);
 if( !defined('ACCESS_ROOT_PATHS') ) define('ACCESS_ROOT_PATHS', TRUE);
 
 require_once __DIR__ . '/../vendor/autoload.php';
-
 //
-require_once __DIR__ . '/Polyfill.php';
-require_once __DIR__ . '/app-vars-global.php';
-require_once __DIR__ . '/app-routes.php';
-require_once __DIR__ . '/configs.php';
+require_once __DIR__ . '/../config/Polyfill.php';
+require_once __DIR__ . '/../config/AppVarsGlobal.php';
+require_once __DIR__ . '/AppRoutes.php';
 
 // Sesión
 session_name('ADMIN_' . env('SESSION_NAME'));
@@ -34,7 +32,7 @@ header("Cache-Control: max-age=31536000");
 
 // Límite de ejecución
 set_time_limit(300);
-define('TS_TEMA', '');
+define('TS_TEMA', 'default');
 
 /*
  * -------------------------------------------------------------------
@@ -72,5 +70,5 @@ $smarty->assign('tsNots', $tsMonitor->notificaciones);
 // Mensajes
 $smarty->assign('tsMPs', $tsMP->mensajes);
 
-include TS_JUNK . 'menu_user_account.php';
-$smarty->assign('tsMenuCuenta', $menu_cuenta);
+include TS_JUNK . 'MenuUserAccount.php';
+$smarty->assign('tsMenuCuenta', $MenuCuenta);

@@ -24,7 +24,7 @@ $action = htmlspecialchars($_GET['action'] ?? '');
 $action_type = explode('-', $action)[0];
 
 // Determinar el archivo necesario
-$file = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ajax/ajax.' . $action_type . '.php';
+$file = __DIR__ . '/../../app/ajax/ajax.' . $action_type . '.php';
 
 // Verificar si el archivo existe y luego incluirlo
 if ($file AND file_exists($file)) {

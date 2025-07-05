@@ -30,34 +30,17 @@ $smarty->setCompileCheck(TRUE);
 $smarty->setCompileDir(TS_CACHE . 'admin');
 
 // Registramos plugins
-$pluginDirs = [
-	'function' => TS_PLUGINS . 'function.*.php',
-	'modifier' => TS_PLUGINS . 'modifier.*.php'
-];
-// Iterar sobre las categorías de plugins
-foreach ($pluginDirs as $type => $pattern) {
-	// Buscar todos los archivos correspondientes en el directorio
-	$files = glob($pattern);
-	foreach ($files as $file) {
-		require_once $file;
-		// Extraer el nombre del plugin (sin la extensión .php)
-		$pluginName = explode('.', basename($file, '.php'))[1];
-		// Registrar el plugin de acuerdo al tipo
-		$smarty->registerPlugin($type, $pluginName, "smarty_{$type}_{$pluginName}");
-	}
-}
-require_once TS_APP . 'extensiones' . DIRECTORY_SEPARATOR . 'zCodeExtensiones.php';
-$smarty->addExtension(new zCodeExtensiones());
-
-// Suprime advertencias de variables indefinidas o nulas
-$smarty->muteUndefinedOrNullWarnings();
-
 $dirs['root'] = BASEPATH;
 $dirs['assets'] = TS_ASSETS;
-$dirs['elements'] = TS_ASSETS . 'elements' . DIRECTORY_SEPARATOR;
+$dirs['components'] = TS_THEMES . 'components' . DIRECTORY_SEPARATOR;
 $dirs['templates'] = TS_ADMIN . 'templates' . DIRECTORY_SEPARATOR;
 $dirs['admin'] = $dirs['templates'] . 'admin' . DIRECTORY_SEPARATOR;
 $dirs['moderacion'] = $dirs['templates'] . 'moderacion' . DIRECTORY_SEPARATOR;
+
+foreach(scandir($dirs['components']) as $k => $component) {
+	if(in_array($component, ['.', '..'])) continue;
+	$dirs[$component] = $dirs['components'] . $component . DIRECTORY_SEPARATOR;
+}
 
 $smarty->addTemplateDir($dirs);
 if($tsUser->is_member <= 0) header("Location: ../login/");
@@ -75,5 +58,5 @@ try {
 	Lo sentimos, se produjo un error al cargar la plantilla <strong>$template</strong>.
 	<br>Debido al error:<br> <code style="font-size:1rem;line-height: 1.3rem;color: #d971ad;word-wrap: break-word;background: rgba(217, 113, 173, .12);display:block;padding:.5em;">$message_2</code>
 COMENTARIO;
-	echo htmlspecialchars($show);
+	echo $show;
 }

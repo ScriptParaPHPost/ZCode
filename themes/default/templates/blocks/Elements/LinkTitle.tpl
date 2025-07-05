@@ -1,1 +1,0 @@
-<a href="{$href}" class="{if $truncate}text-truncate {/if}{if $block}d-block {/if}{if $bold}fw-bold {/if}{if $semibold}fw-semibold {/if}{$class}"{if $blank} target="_blank"{/if}{if $rel} rel="{$rel}"{/if} title="{$label}">{$label}</a>

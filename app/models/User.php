@@ -17,7 +17,7 @@ namespace app\models;
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 use app\interfaces\UserInterface;
-use app\models\{Autenticar,Session,Email};
+use app\models\{Autenticar,Core,Session,Email};
 
 use app\services\TotpService;
 
@@ -56,15 +56,18 @@ class User implements UserInterface {
 
 	// Usado por el login
 	public $is_type;
-	
-	public $autenticar;
 
-	private $session;
+	protected Autenticar $autenticar;
+
+	protected Core $core;
+
+	protected Session $session;
 
 	public function __construct() {
-		global $tsCore, $tsMedal;
+		global $tsMedal;
 		/* CARGAR SESSION */
 		$this->autenticar = new Autenticar;
+		$this->core = new Core;
     	$this->session = new Session;
 		// ACTUALIZAR PUNTOS POR DIA :D
 		if($this->is_member) $this->puntos_actualizados();
@@ -75,7 +78,6 @@ class User implements UserInterface {
 	 * Puntos Actualizados
 	*/
 	public function puntos_actualizados() {
-		global $tsCore;
 		// HORA EN LA CUAL RECARGAR PUNTOS 0 = MEDIA NOCHE DEL SERVIDOR
 		$ultimaRecarga = $this->info['user_nextpuntos'];
 		$tiempoActual = time();
@@ -84,7 +86,7 @@ class User implements UserInterface {
 			// CALCULAR LA SIGUIENTE RECARGA A LAS 24 HRS
 			$sigRecarga = strtotime('tomorrow', $tiempoActual);
 			// ACTUALIZAR LA BASE DE DATOS
-			$puntosxdar = $tsCore->settings['c_keep_points'] == 0 ? $this->permisos['gopfd'] : 'user_puntosxdar + '.$this->permisos['gopfd'];
+			$puntosxdar = $this->core->settings['c_keep_points'] == 0 ? $this->permisos['gopfd'] : 'user_puntosxdar + '.$this->permisos['gopfd'];
 			db_exec([__FILE__, __LINE__], 'query', 'UPDATE @miembros SET user_puntosxdar = '.$puntosxdar.', user_nextpuntos = '.$sigRecarga.' WHERE user_id = \''.$this->uid.'\'');
 			// VAMONOS
 			return true;
@@ -233,7 +235,7 @@ class User implements UserInterface {
 	}
 
 	private function deleteContent(int $user_id = 0){
-		global $tsCore, $tsUser;
+		global $tsUser;
 		
 		$tablas = [
 			['@posts', "post_user"],
@@ -282,9 +284,8 @@ class User implements UserInterface {
 	 * 
 	*/
 	public function unlinkAccount() {
-		global $tsCore;
 		# Buscamos para desactivar
-		$delete = $tsCore->setSecure($_POST['social']);
+		$delete = $this->core->setSecure($_POST['social']);
 		if($this->is_member) {
 			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, m.social_id, m.social_name FROM @miembros AS u LEFT JOIN @miembros_social AS m ON m.social_user_id = u.user_id WHERE u.user_id = {$this->uid} AND m.social_name = '$delete' LIMIT 1"));
 			$sid = (int)$data['social_id'];
@@ -315,10 +316,9 @@ class User implements UserInterface {
 	 * Función para validar el código de autentificación 
 	*/
 	public function validateTwoFactor() {
-	   global $tsCore;
 
 	   // Limpiar el nombre de usuario y obtener el estado de la sesión
-	   $nick = $tsCore->setSecure($_POST['nick']);
+	   $nick = $this->core->setSecure($_POST['nick']);
 	   $rem = ($_POST['rem'] === 'true');
 
 	   // Obtener el secret y el código de recuperación del usuario desde la base de datos
@@ -343,27 +343,25 @@ class User implements UserInterface {
 		logoutUser($redirectTo)
 	*/
 	public function logoutUser(int $user_id = 0, bool $redirectTo = false){
-		global $tsCore;
 		$this->autenticar->logout();
 		/* LIMPIAR VARIABLES */
 		$this->info = '';
 		$this->is_member = 0;
 		# UPDATE
-		$last_active = ((int)$tsCore->settings['c_last_active'] * 60);
+		$last_active = ((int)$this->core->settings['c_last_active'] * 60);
 		$last_active = time() - ($last_active * 3);
 		db_exec([__FILE__, __LINE__], 'query', "UPDATE @miembros SET user_lastactive = $last_active WHERE user_id = $user_id");
 		/* REDERIGIR */
-		if($redirectTo) header("Location: {$tsCore->settings['url']}");	// REDIRIGIR
+		if($redirectTo) header("Location: {$this->core->settings['url']}");	// REDIRIGIR
 		return true;
 	}
 	/*
 		userActivate()
 	*/
 	public function userActivate(int $tsUserID = 0, string $tsKey = '') {
-	   global $tsCore;
 	   // Obtener userID y key de $_GET si no se proporcionan
 	   if ($tsUserID === 0) $tsUserID = (int)$_GET['uid'];
-	   if (empty($tsKey)) $tsKey = $tsCore->setSecure($_GET['key']);
+	   if (empty($tsKey)) $tsKey = $this->core->setSecure($_GET['key']);
 	   // Consulta para obtener datos del usuario
 	   $query = db_exec([__FILE__, __LINE__], 'query', "SELECT user_name, user_password, user_registro FROM @miembros WHERE user_id = $tsUserID LIMIT 1");
 	   $tsData = db_exec('fetch_assoc', $query);
@@ -393,8 +391,7 @@ class User implements UserInterface {
 		getUserID($tsUsername)
 	*/
 	public function getUserID(string $tsUser = ''): int {
-		global $tsCore;
-		$tsUser = $tsCore->setSecure($tsUser);
+		$tsUser = $this->core->setSecure($tsUser);
 		$tsUser = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM @miembros WHERE user_name = '$tsUser' LIMIT 1"));
 		$tsUserID = (int)$tsUser['user_id'] ?? 0;
 		return $tsUserID;
@@ -441,11 +438,11 @@ class User implements UserInterface {
 		getUsuarios()
 	*/
 	public function getUsuarios(){
-		global $tsCore, $tsZCode;
+		global $tsZCode;
 		// FILTROS ||
 		$filter = '';
-		$active = $tsCore->lastActive();
-		foreach($_GET as $newVar => $valueOfGet) $$newVar = $tsCore->setSecure($valueOfGet);
+		$active = $this->core->lastActive();
+		foreach($_GET as $newVar => $valueOfGet) $$newVar = $this->core->setSecure($valueOfGet);
 		// ONLINE?
 		if($online === 'true') $filter .= "AND u.user_lastactive > {$active['online']}";
 		// CON FOTO O SIN FOTO
@@ -460,18 +457,18 @@ class User implements UserInterface {
 		$total = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(u.user_id) AS total FROM @miembros AS u LEFT JOIN @perfil AS p ON u.user_id = p.user_id WHERE u.user_activo = 1 && u.user_baneado = 0 $filter"));
 		$total = $total['total'];
 		  
-		$pages = $tsCore->getPagination($total, 12);
+		$pages = $this->core->getPagination($total, 12);
 		// CONSULTA
 		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, p.user_pais, p.user_sexo, p.p_avatar, p.p_mensaje, u.user_rango, u.user_puntos, u.user_comentarios, u.user_posts, u.user_lastactive, u.user_baneado, r.r_name, r.r_color, r.r_image FROM @miembros AS u LEFT JOIN @perfil AS p ON u.user_id = p.user_id LEFT JOIN @rangos AS r ON r.rango_id = u.user_rango WHERE u.user_activo = 1 && u.user_baneado = 0 $filter ORDER BY u.user_id DESC LIMIT {$pages['limit']}");
 		// PARA ASIGNAR SI ESTA ONLINE HACEMOS LO SIGUIENTE
 		$SVG_FLAGS_ALL = json_decode(file_get_contents(TS_ASSETS . 'icons/flags.json'), true);
 		while($row = db_exec('fetch_assoc', $query)) {
-			$row['status'] = $tsCore->statusUser($row['user_id']);
+			$row['status'] = $this->core->statusUser($row['user_id']);
 			// RANGO
 			$row['rango'] = [
 				'title' => $row['r_name'], 
 				'color' => $row['r_color'], 
-				'image' => $tsCore->settings['assets'] . "/images/rangos/{$row['r_image']}"
+				'image' => $this->core->settings['assets'] . "/images/rangos/{$row['r_image']}"
 			];
 			$row['pais'] = strtolower($row['user_pais'] ?? 'xx');
 			$row['pais_image'] = $SVG_FLAGS_ALL[$row['pais']];

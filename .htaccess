@@ -93,7 +93,6 @@ RewriteRule ^(login|registro)/?$ app/controller/access.php?action=$1 [QSA,L]
 RewriteRule ^(admin|moderacion)/?([A-Za-z0-9_-]+)?/?([A-Za-z0-9_-]+)?/?([0-9]+)?$ admin/controller/$1.php?template=$1&action=$2&act=$3&id=$4 [QSA,L]
 
 # EXTRAS
-#RewriteRule ^dashboard/([A-Za-z0-9_-]+).php$ admin/controller/ajax.php?action=$1 [QSA,L]
 RewriteRule ^([A-Za-z0-9_-]+).php$ app/ajax/index.php?action=$1 [QSA,L]
 RewriteRule ^([A-Za-z0-9_-]+)/$ app/controller/$1.php [QSA,L]
 RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ app/controller/$1.php?action=$2 [QSA,L]

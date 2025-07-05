@@ -1,6 +1,6 @@
 <?php
 
-$custom_menu = [
+$CustomAdminMenu = [
 	'' => [
 		'icon' => 'home-smile',
 		'text' => 'Administración'

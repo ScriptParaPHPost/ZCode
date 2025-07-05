@@ -25,7 +25,7 @@ define('TS_ADMIN', 		BASEPATH . 'admin' . DIRECTORY_SEPARATOR);
  */
 define('TS_APP', 		 	BASEPATH . 'app' . DIRECTORY_SEPARATOR);
 define('TS_PLUGINS',  	TS_APP . 'plugins' . DIRECTORY_SEPARATOR);
-define('TS_JUNK', 	 	TS_APP . 'Junk' . DIRECTORY_SEPARATOR);
+define('TS_JUNK', 	 	TS_APP . 'junk' . DIRECTORY_SEPARATOR);
 define('TS_UTILS', 	 	TS_APP . 'utils' . DIRECTORY_SEPARATOR);
 
 /**

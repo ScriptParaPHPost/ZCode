@@ -16,7 +16,7 @@ if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 use app\core\Helper;
 
-Helper::ensureLogDirectoryExists(ERROR_DIRECTORY);
+Helper::ensureLogDirectoryExists(__DIR__ . '/../storage/logs/');
 if(Helper::isInstallerNeeded()) {
    header("Location: ./install/");
    exit;

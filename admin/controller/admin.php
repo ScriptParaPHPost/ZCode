@@ -59,9 +59,10 @@ use admin\models\{Admin,Afiliado,Database,Favicon,Foro,Medal,Mensajes,Seo,Social
 	// ACTION 2
 	$act = htmlspecialchars($_GET['act'] ?? '');
 	// CLASE POSTS
+	$tsAdmin = new Admin;
 
-	include TS_ADMIN . 'menu-admin.php';
-   $smarty->assign('custom_menu', $custom_menu);
+	include __DIR__ . '/../CustomAdminMenu.php';
+   $smarty->assign('custom_menu', $CustomAdminMenu);
 
 	// Bienvenida
 	if($action === '') {

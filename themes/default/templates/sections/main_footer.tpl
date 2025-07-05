@@ -21,7 +21,7 @@
 					</div>
 				</div>
 				<div class="footer-copyright text-center translucent-bg text-uppercase border-top small py-3">
-					<a class="text-decoration-none fw-semibold hover:main-bg-color active:main-bg-color" href="{$tsConfig.url}" rel="internal" title="{$tsConfig.titulo} - {$tsConfig.slogan}">{$tsConfig.titulo}</a> &copy; {$smarty.now|date_format:"Y"} | versión: <strong>{SCRIPT_VERSION}</strong> - <a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color" rel="internal" href="{$tsConfig.url}/status.html">Estado operativo</a> - <a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color pt-3" rel="external" target="_blank" href="https://discord.gg/mx25MxAwRe">{uicon name="discord" folder="social" class="pe-none"}</a>
+					<a class="text-decoration-none fw-semibold hover:main-bg-color active:main-bg-color" href="{$tsConfig.url}" rel="internal" title="{$tsConfig.titulo} - {$tsConfig.slogan}">{$tsConfig.titulo}</a> &copy; {$smarty.now|date_format:"Y"} | versión: <strong>{SCRIPT_VERSION}</strong> - <a class="text-decoration-none d-block d-lg-inline fw-semibold hover:main-bg-color active:main-bg-color pt-3" rel="external" target="_blank" href="https://discord.gg/mx25MxAwRe">{uicon name="discord" folder="social" class="pe-none"}</a>
 				</div>
 				<template id="verification-install">
 					<p>Esto es solamente para verificar tú versión con la versión actual.</p>

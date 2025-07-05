@@ -49,23 +49,24 @@ $params = http_build_query([
    'verification' => base64_encode($_ENV['ZCODE_SCRIPT_KEY']),
    'type' => explode('-', $action)[1] ?? '',
 ]);
+$endpoint = ($_ENV['ENVIRONMENT'] === 'DEVELOPMENT' ? 'http://localhost' : 'https://zcodev.alwaysdata.net') . '/feed/index.php';
+
+if($action === 'feed-support' && $action === 'feed-version') {
+	$json = $tsCore->getUrlContent("$endpoint?$params");
+	echo $json;
+}
+
 // CODIGO
-switch($action){
-	case 'feed-support':
-		$json = $tsCore->getUrlContent("http://localhost/feed/index.php?$params");
-		echo $json;
-	break;
+switch($action) {
 	case 'feed-version':
 		$time = time();
 		$version_now = SCRIPT_NAME . ' ' . SCRIPT_VERSION;
 		$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 		# ACTUALIZAR VERSIÓN
-		if($tsCore->settings['version'] != $version_now){
+		if($tsCore->settings['version'] !== $version_now){
 			db_exec([__FILE__, __LINE__], 'query', "UPDATE @configuracion SET version = '$version_now', version_code = '$version_code' WHERE tscript_id = 1 LIMIT 1");
 			db_exec([__FILE__, __LINE__], 'query', "UPDATE @stats SET stats_time_upgrade = $time WHERE stats_no = 1 LIMIT 1");
 		}
-		$json = $tsCore->getUrlContent("http://localhost/feed/index.php?$params");
-		echo $json;
 	break;
 	default:
 		die('0: Este archivo no existe.');

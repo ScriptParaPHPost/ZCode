@@ -9,6 +9,7 @@
 */
 
 //namespace app\Plugins\zCode;
+use admin\models\Core;
 
 class SmartyZCode extends \Smarty\Smarty {
 
@@ -42,16 +43,18 @@ class SmartyZCode extends \Smarty\Smarty {
 
   	private $page_wysibb = ['agregar', 'posts', 'fotos', 'mensajes'];
 
+  	protected Core $core;
+
   	/**
   	 * @access public
   	 * 
   	*/
   	public function __construct() {
-  		global $tsCore;
+  		$this->core = new Core;
   		
   		foreach($this->access as $class) $this->nucleo[$class] = $GLOBALS[$class] ?? null;
-
-  		$this->allRoutes = $this->getRoutesOfDirectories($tsCore->setRoutes(), $this->listDirectories());
+  	
+  		$this->allRoutes = $this->getRoutesOfDirectories($this->core->setRoutes(), $this->listDirectories());
   	}
 
   	private function listDirectories() {
@@ -125,9 +128,8 @@ class SmartyZCode extends \Smarty\Smarty {
 	 * @return bool Verdadero si el permiso se cumple, falso en caso contrario.
 	*/
 	public function setPermisson(string $choice = '', string $subchoice = ''): bool {
-	   global $tsCore;
 	   $permisos = [
-	      'live' => (int)$tsCore->settings['c_allow_live'] === 1,
+	      'live' => (int)$this->core->settings['c_allow_live'] === 1,
 	      'notLive' => !in_array($this->nucleo['tsPage'], ['login', 'registro']),
 	      'admin' => $this->nucleo['tsPage'] === $choice && $this->nucleo['action'] === $subchoice,
 	      'php_files' => $this->nucleo['tsPage'] === "php_files/p.$subchoice.home"
@@ -187,7 +189,6 @@ class SmartyZCode extends \Smarty\Smarty {
 	 * @return void
 	*/
 	private function getVariables(array &$claves): void {
-  		global $tsCore;
   		if(isset($this->nucleo['tsPost']['post_id'])) {
 			$claves['postid'] = (int)$this->nucleo['tsPost']['post_id'];
 			$claves['autor'] = (int)$this->nucleo['tsPages']['autor'];
@@ -196,7 +197,7 @@ class SmartyZCode extends \Smarty\Smarty {
 			$claves['fotoid'] = (int)$this->nucleo['tsFoto']['foto']['foto_id'];
 		}
 		if($this->nucleo['tsPage'] === 'access' AND $_GET['action'] === 'registro') {
-			$claves['pkey'] = $tsCore->settings['pkey'];
+			$claves['pkey'] = $this->core->settings['pkey'];
 		}
   	}
 
@@ -382,7 +383,7 @@ class SmartyZCode extends \Smarty\Smarty {
   	 * Añadimos variables globales antes de los javascripts
   	*/
   	public function setScriptLineGlobal($data = null) {
-  		global $tsCore, $tsUser;
+  		global $tsUser;
   		$claves = [];
   		if($tsUser->uid !== 0) {
   			$claves['user_key'] = $tsUser->uid;
@@ -390,17 +391,17 @@ class SmartyZCode extends \Smarty\Smarty {
 		$this->getVariables($claves);
 		// Siempre
 		foreach (['url', 'domain', 'titulo', 'slogan', 'version'] as $other) {
-			$claves[$other] = $tsCore->settings[$other];
+			$claves[$other] = $this->core->settings[$other];
 		}
 		if($this->nucleo["tsPage"] === 'admin' OR $this->nucleo["tsPage"] === 'moderacion') {
 			$claves['ajax'] = $claves['url'] . '/dashboard';
 		}
 		$claves['images'] = [
-			'assets' => $tsCore->setRoutes('assets', 'images'),
-			'tema' => $tsCore->setRoutes('tema', 'images')
+			'assets' => $this->core->setRoutes('assets', 'images'),
+			'tema' => $this->core->setRoutes('tema', 'images')
 		];
-		$claves['tema'] = $tsCore->setRoutes('tema', 'base');
-		$claves['assets'] = $tsCore->setRoutes('assets', 'base');
+		$claves['tema'] = $this->core->setRoutes('tema', 'base');
+		$claves['assets'] = $this->core->setRoutes('assets', 'base');
 		ksort($claves);
 		return "<script>\n{$this->createObject($claves, $data)}\n</script>";
   	}

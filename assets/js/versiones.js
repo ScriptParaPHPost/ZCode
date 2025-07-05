@@ -1,6 +1,6 @@
 // FEED SUPPORT
 $(() => {
-	$.getJSON(ZCodeApp.ajax + "/feed-support.php", response => {
+	$.getJSON(ZCodeApp.url + "/feed-support.php", response => {
 		$('#ulitmas_noticias').html('<div class="empty">Obteniendo información...</div>');
 		if(Array.isArray(response)) {
 			$('#ulitmas_noticias').html('');
@@ -19,7 +19,7 @@ $(() => {
 	});
 
 	//
-	$.getJSON(ZCodeApp.ajax + "/feed-version.php", response => {
+	$.getJSON(ZCodeApp.url + "/feed-version.php", response => {
 		const { version, status, color } = response;
 		// Clonamos
 	  	let clonar = $('.list-clone').first().clone();
@@ -37,21 +37,21 @@ $(() => {
 	  	$('#ultima_version').append(clonar);
 	});
 
-	function changeBranch(branch = 'main') {
-		$.post(ZCodeApp.ajax + '/github-api.php', { branch }, ghRqs => {
-			if(ghRqs === null) {
+	function changeBranch(branch = 'v3-dev') {
+		$.post(ZCodeApp.url + '/github-api.php', { branch }, response => {
+			if(response === null || response.state === 0) {
 				$('#lastCommit').html('<div class="empty">No se puede cargar el último commit...</div>');
 				return;
 			}
 			const { 
 				sha: commit_sha_code, 
 				html_url: link_last_commit,
-				commit: { 
-					message, 
-					author: { date: AuthorDate },
-					verification: { reason, verified }
-				} 
-			} = ghRqs;
+				message,
+				author,
+				date: AuthorDate,
+				verified,
+				reason
+			} = response.data;
 			//
 			$('#lastCommit').html('');
 			// Creamos la plantilla para mostrar la infomación del mismo
@@ -67,7 +67,7 @@ $(() => {
 		
 			let toImageTemplate = `<div class="data-github py-3 position-relative">${contentNew}</div>
 			<div class="d-flex justify-content-between align-items-center px-2 py-1 border-top translucent-bg">
-				<span>Sha: <a href="${link_last_commit}" class="text-decoration-none text-primary" rel="noreferrer" target="_blank">${commit_sha_code.substring(0, 7)}...</a></span>
+				<span>Sha: <a href="${link_last_commit}" class="text-decoration-none text-primary" rel="noreferrer" target="_blank">${commit_sha_code.substring(0, 8)}...</a></span>
 				<time class="fst-italic small">${$.timeago(AuthorDate)}</time>
 			</div>`;
 

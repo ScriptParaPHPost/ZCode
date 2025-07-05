@@ -13,12 +13,10 @@
  * Solo administración
 **/
 
-use app\models\Actualizacion;
-
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 $files = [
-   'github-api' => ['n' => 2, 'p' => ''],
+	'github-api' => ['n' => 2, 'p' => ''],
 ];
 
 // REDEFINIR VARIABLES
@@ -33,18 +31,53 @@ if($tsLevelMsg != 1):
 	die();
 endif;
 
-$tsActualizacion = new Actualizacion;
-
 // CODIGO
 switch($action){
 	case 'github-api':
 
-		$tsActualizacion->BRANCH = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'main';
+		$rama = $tsCore->setSecure(filter_input(INPUT_POST, 'branch', FILTER_UNSAFE_RAW) ?? 'main');
 
-		$last = $tsActualizacion->getLastCommit();
-		$response = $tsActualizacion->api_response('info');
-	
-		echo json_encode($response->commit);
+		$url = 'https://api.github.com/repos/ScriptParaPHPost/zcode/commits?sha=' . $rama;
+		$options = [
+			 'http' => [
+				  'method' => 'GET',
+				  'header' => [
+						'User-Agent: ZCodeApp', // GitHub requiere un User-Agent personalizado
+						'Accept: application/vnd.github.v3+json'
+				  ]
+			 ]
+		];
+
+		$context = stream_context_create($options);
+		$response = file_get_contents($url, false, $context);
+
+		if ($response === FALSE) {
+			 die('Error al conectarse a la API de GitHub');
+		}
+
+		$data = json_decode($response, true);
+		// Mostrar el último commit
+		if (!empty($data)) {
+		   $ultimoCommit = $data[0];
+		   $state = 1;
+		   
+		   $newData = [
+		   	'sha' => $ultimoCommit['sha'],
+		   	'html_url' => $ultimoCommit['html_url'],
+		   	'author' => $ultimoCommit['commit']['author']['name'],
+		   	'message' => $ultimoCommit['commit']['message'],
+		   	'date' => $ultimoCommit['commit']['author']['date'],
+		   	'verified' => $ultimoCommit['commit']['verification']['verified'],
+		   	'reason' => $ultimoCommit['commit']['verification']['reason']
+		   ];
+		} else {
+		   $state = 0;
+		   $newData = 'No hay commits en la rama.';
+		}
+		echo json_encode([
+			'state' => $state, 
+			'data' => $newData
+		]);
 
 	break;
 }

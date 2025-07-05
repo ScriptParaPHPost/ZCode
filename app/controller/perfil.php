@@ -71,7 +71,7 @@ if($tsContinue) {
 		$tsInfo = $tsCuenta->loadHeadInfo($usuario['user_id']);
 		$tsInfo['uid'] = $usuario['user_id'];
 		// IS ONLINE?
-		$tsInfo['status'] = $tsZCode->statusUser($usuario['user_id']);
+		$tsInfo['status'] = $tsCore->statusUser($usuario['user_id']);
 		// GENERAL
 		$tsGeneral = $tsCuenta->loadGeneral($usuario['user_id']);
 	 	$tsInfo['nick'] = $tsInfo['user_name'];
