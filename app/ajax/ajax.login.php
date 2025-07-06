@@ -12,7 +12,7 @@
  * #==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#==#
 **/
 
-use app\models\OAuthentication;
+use app\utils\OAuthentication;
 
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 

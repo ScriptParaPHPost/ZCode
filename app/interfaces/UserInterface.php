@@ -19,7 +19,7 @@ if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 interface UserInterface {
     public function puntos_actualizados();
     public function DarMedalla();
-    public function loadUser($login = FALSE);
+    public function loadUser(bool $login = FALSE);
     public function deleteUserOutTime(int $opcion = 0, int $time = 0);
     public function unlinkAccount();
     public function validateTwoFactor();

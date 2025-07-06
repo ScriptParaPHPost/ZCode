@@ -18,15 +18,15 @@ if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 interface UploadInterface {
     public function newUpload(int $type = 1);
-    public function uploadFile($file, string $type = 'file');
+    public function uploadFile(array $file = [], string $type = 'file');
     public function uploadUrl();
-    public function validFile($file, string $type = 'file');
-    public function sendFile($file, string $name = '');
-    public function copyFile($file, string $name = '');
-    public function createImage($file, string $name = '');
+    public function validFile(array $file = [], string $type = 'file');
+    public function sendFile(array $file = [], string $name = '');
+    public function copyFile(array $file = [], string $name = '');
+    public function createImage(array $file = [], string $name = '');
     public function cropAvatar(string $key = '');
     public function deleteFile(string $file = '');
-    public function uploadImagen($params);
-    public function setParams($url);
-    public function getImagenUrl($code);
+    public function uploadImagen(string $params = '');
+    public function setParams(string $url = '');
+    public function getImagenUrl(string $code = '');
 }

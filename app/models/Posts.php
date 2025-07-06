@@ -344,7 +344,7 @@ class Posts implements PostsInterface {
 	/*
 		getRelated()
 	*/
-	public function getRelated($tags = null) {
+	public function getRelated(string $tags = '') {
 		// ES UN ARRAY AHORA A UNA CADENA
 		$search = !empty($tags) ? implode(",", $tags) : str_replace('-', ' ', $this->core->setSecure($_GET['title']));
 		$match = !empty($tags) ? 'post_tags' : 'post_title';
@@ -416,7 +416,7 @@ class Posts implements PostsInterface {
 	/*
 		subirRango()
 	*/
-	public function subirRango($user_id, $post_id = false) {
+	public function subirRango(int $user_id = 0, int $post_id = 0) {
 	   $data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_puntos, u.user_rango, r.r_type FROM 	@miembros AS u LEFT JOIN @rangos AS r ON u.user_rango = r.rango_id WHERE u.user_id = $user_id LIMIT 1"));
 	   if (empty($data['r_type']) AND $data['user_rango'] !== 3) return true;
 	   if (!empty($post_id) AND (int)$this->core->settings['c_newr_type'] === 0) {

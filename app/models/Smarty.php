@@ -84,11 +84,11 @@ class Smarty extends SmartyEngine implements SmartyInterface {
 	 *
 	 * @param bool $loadFilter Determina si aplicar el filtro de eliminación de espacios en blanco
 	*/
-	public function output($loadFilter = false) {
+	public function output(bool $loadFilter = false) {
 		if ($loadFilter) $this->loadFilter('output', 'trimwhitespace');
 	}
 
-	private function getPage($page) {
+	private function getPage(string $page = '') {
 		$page = match ($page) {
 			'admin', 'moderacion' => 'main.tpl',
 			'saliendo' => 'assets/views/saliendo.html',
@@ -121,7 +121,7 @@ class Smarty extends SmartyEngine implements SmartyInterface {
 	 * @param string $tema   Nombre del tema a cargar
 	 * @param string $tsPage Nombre de la página actual
 	 */
-	public function loadAllTemplates($tema, $tsPage = '') {
+	public function loadAllTemplates(string $tema = '', string $tsPage = '') {
 		$templates = TS_THEMES . $tema . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR;
 		$sections = $templates . 'sections' . DIRECTORY_SEPARATOR;
 		$modules = $templates . 'modules' . DIRECTORY_SEPARATOR;
@@ -143,7 +143,7 @@ class Smarty extends SmartyEngine implements SmartyInterface {
 	 *
 	 * @param string $page Nombre de la plantilla a cargar
 	 */
-	public function loadTemplate($page) {
+	public function loadTemplate(string $page = '') {
 		try {
 			$this->display($this->getPage($page));
 		} catch (Exception $e) {
@@ -164,7 +164,7 @@ class Smarty extends SmartyEngine implements SmartyInterface {
 	 *
 	 * @param string $template Nombre de la plantilla compilada a borrar
 	*/
-	public function clearCompiled($template) {
+	public function clearCompiled(string $template = '') {
 		$this->clearCompiledTemplate($template);
 	}
 

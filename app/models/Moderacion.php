@@ -44,7 +44,7 @@ class Moderacion implements ModeracionInterface {
 	/*
 	 getDenuncias()
 	*/
-	public function getDenuncias($type = 'posts') {
+	public function getDenuncias(string $type = 'posts') {
 		global $tsZCode;
 		// TIPO DE DENUNCIAS
 		switch ($type) {
@@ -72,7 +72,7 @@ class Moderacion implements ModeracionInterface {
 	/*
 	 getDenuncia()
 	*/
-	public function getDenuncia($type = 'posts') {
+	public function getDenuncia(string $type = 'posts') {
 		global $tsCore;
 		// VARIABLES
 		$obj = (int)$_GET['obj'];
@@ -492,7 +492,7 @@ class Moderacion implements ModeracionInterface {
 	  * @param int
 	  * @return string
 	  */
-	 public function setHistory($action, $type, $data)  {
+	 public function setHistory(string $action = '', string $type = '', int $data = 0) {
 		  global $tsUser, $tsMonitor, $tsCore;
 		  //
 		  if ($type == 'post')
@@ -674,7 +674,7 @@ class Moderacion implements ModeracionInterface {
 	  * @param
 	  * @return array
 	  */
-	 public function getHistory($type)
+	 public function getHistory(int $type = 0)
 	 {
 		  global $tsUser, $tsCore;
 		  //

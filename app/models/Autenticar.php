@@ -82,7 +82,7 @@ class Autenticar implements AutenticarInterface {
     * @param bool $recordar Recordar sesión (autologin)
     * @return array
     */
-   public function login(string $usuario = '', string $password = '', $recordar = false, $redirectTo = false) {
+   public function login(string $usuario = '', string $password = '', bool $recordar = false, bool $redirectTo = false) {
    	global $tsZCode;
       $user = $this->getUserLoginData($usuario);
      

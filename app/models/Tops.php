@@ -60,7 +60,7 @@ class Tops implements TopsInterface {
 	 /*
 		  getTopUsers()
 	 */
-	 function getTopUsers($fecha, $cat){
+	public function getTopUsers(int $fecha = 0, int $cat = 0) {
 		  //
 		  $data = $this->setTime($fecha);
 		  $category = empty($cat) ? '' : 'AND post_category = '.$cat;
@@ -85,7 +85,7 @@ class Tops implements TopsInterface {
 	/*
 		getTopPosts()
 	*/
-	function getTopPosts($fecha, $cat){
+	public function getTopPosts(int $fecha = 0, int $cat = 0){
 		// PUNTOS
 		$data['puntos'] = $this->getTopPostsVars($fecha, $cat, 'puntos');
 		// SEGUIDORES
@@ -100,7 +100,7 @@ class Tops implements TopsInterface {
 	/*
 		setTopPostsVars($text, $type)
 	*/
-	function getTopPostsVars($fecha, $cat, $type){
+	private function getTopPostsVars(int $fecha = 0, int $cat = 0, string $type = '') {
 		//
 		$data = $this->setTime($fecha);
 		if(!empty($cat)) $data['scat'] = 'AND c.cid = '.$cat;
@@ -113,7 +113,7 @@ class Tops implements TopsInterface {
 	/*
 		getTopPostsQuery($data)
 	*/
-	public function getTopPostsQuery($data) {
+	public function getTopPostsQuery(array $data = []) {
 		$data['scat'] = isset($data['scat']) ? $data['scat'] : '';
 		$datos = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, p.post_portada, '.$data['type'].', p.post_puntos, p.post_title, c.c_seo, c.c_img FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = \'0\' AND p.post_date BETWEEN '.$data['start'].' AND '.$data['end'].' '.$data['scat'].' ORDER BY '.$data['type'].' DESC LIMIT 10'));
 		foreach($datos as $pid => $post) {
@@ -125,7 +125,7 @@ class Tops implements TopsInterface {
 	/*
 		getHomeTopPostsQuery($data)
 	*/
-	public function getHomeTopPostsQuery($date){
+	public function getHomeTopPostsQuery(array $date = []) {
 		global $tsZCode;
 		//
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, p.post_portada, p.post_title, p.post_puntos, c.c_seo FROM @posts AS p LEFT JOIN @posts_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = 0 AND p.post_date BETWEEN \''.$date['start'].'\' AND \''.$date['end'].'\' ORDER BY p.post_puntos DESC LIMIT 15'));
@@ -142,7 +142,7 @@ class Tops implements TopsInterface {
 	/*
 		getHomeTopUsersQuery($date)
 	*/
-	public function getHomeTopUsersQuery($date){
+	public function getHomeTopUsersQuery(array $date = []){
 		// PUNTOS
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT SUM(p.post_puntos) AS total, u.user_id, u.user_name FROM @posts AS p LEFT JOIN @miembros AS u ON p.post_user = u.user_id WHERE p.post_status = 0  AND p.post_date BETWEEN \''.$date['start'].'\' AND \''.$date['end'].'\' GROUP BY p.post_user ORDER BY total DESC LIMIT 10'));
 		return $data;
@@ -223,7 +223,7 @@ class Tops implements TopsInterface {
 	/*
 		setTime($fecha)
 	*/
-	public function setTime($fecha){
+	public function setTime(int $fecha = 0){
 		// Obtiene la fecha actual en formato UNIX
 		$tiempo = strtotime('now');
 

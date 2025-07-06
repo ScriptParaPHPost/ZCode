@@ -17,7 +17,7 @@ namespace app\interfaces;
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 interface CuentaInterface {
-    public function loadPerfil($user_id = 0);
+    public function loadPerfil(int $user_id = 0);
     public function setSocialData(&$data, bool $n = false);
     public function loadHeadInfo(int $user_id = 0);
     public function getAvatarSocials();

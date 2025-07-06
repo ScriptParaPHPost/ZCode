@@ -44,7 +44,7 @@ class Home implements HomeInterface {
 	 * @access public
 	 * @return array
 	*/
-	public function getCatData(string $category = '') {
+	public function getCatData(string $category = ''): array {
 		// Obtenemos categoría
 		$category = $this->core->setSecure($category);
 		$mostramos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c_nombre, c_seo, c_img, c_color, c_descripcion FROM @posts_categorias WHERE c_seo = '{$category}' LIMIT 1"));
@@ -52,7 +52,7 @@ class Home implements HomeInterface {
 		return $mostramos;
 	}
 
-	private function getLastForeach($postData) {
+	private function getLastForeach(array $postData = []): array {
 		foreach ($postData as $pid => $post) {
 			# URL completa de la portada del post!
 			$this->access->general($postData[$pid], $post['post_id'], $post['post_title']);
@@ -88,7 +88,7 @@ class Home implements HomeInterface {
 		return $data;
 	}
 
-	public function getLastPosts(?string $category = NULL) {
+	public function getLastPosts(string $category = '') {
 		$cacheService = new CacheService();
 
 	   // Configuración inicial

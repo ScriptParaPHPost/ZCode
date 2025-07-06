@@ -19,8 +19,8 @@ if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 interface ModeracionInterface {
     public function multiAction(string $action = '');
     public function getMods();
-    public function getDenuncias($type = 'posts');
-    public function getDenuncia($type = 'posts');
+    public function getDenuncias(string $type = 'posts');
+    public function getDenuncia(string $type = 'posts');
     public function getContenido();
     public function getPreview(int $pid = 0);
     public function rebootPost(int $pid = 0);
@@ -35,10 +35,10 @@ interface ModeracionInterface {
     public function getSuspendidos();
     public function banUser(int $user_id = 0);
     public function rebootUser(int $user_id = 0, string $type = 'unban');
-    public function setHistory($action, $type, $data);
+    public function setHistory(string $action = '', string $type = '', int $data = 0);
     public function getPospelera();
     public function getFopelera();
     public function getComentariosD();
     public function getPostsD();
-    public function getHistory($type);
+    public function getHistory(int $type = 0);
 }

@@ -18,7 +18,7 @@ if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 interface BorradoresInterface {
 
-	public function newDraft($save = false);
+	public function newDraft(bool $save = false);
 
 	public function getDrafts();
 

@@ -22,7 +22,7 @@ interface FotosInterface {
     public function editFoto();
     public function getLastFotos();
     public function getLastComments();
-    public function getFotos($user_id);
+    public function getFotos(int $user_id = 0);
     public function getFoto();
     public function votarFoto();
     public function newComentario();

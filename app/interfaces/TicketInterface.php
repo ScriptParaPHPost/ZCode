@@ -20,6 +20,6 @@ interface TicketInterface {
     public function getTypeStatus(string $type = '');
     public function getTickets();
     public function getTicketsOpenHome(string $type = 'home');
-    public function getFilterTickets(int $tid = 0, int|array $see = []);
+    public function getFilterTickets(int $tid = 0, array $see = []);
     public function getTicket();
 }

@@ -15,8 +15,8 @@ namespace app\interfaces;
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 interface SmartyInterface {
-    public function output($loadFilter = false);
-    public function loadAllTemplates($tema, $tsPage = '');
-    public function loadTemplate($page);
-    public function clearCompiled($template);
+    public function output(bool $loadFilter = false);
+    public function loadAllTemplates(string $tema = '', string $tsPage = '');
+    public function loadTemplate(string $page = '');
+    public function clearCompiled(string $template = '');
 }

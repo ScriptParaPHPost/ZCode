@@ -39,7 +39,7 @@
 	   $('#super_img').on('change', () => {
 	      var icono = $("#super_img option:selected").val();
 	      $('#c_icon').css({
-	         "background": 'url(\'{$tsConfig.assets}/images/categorias/'+icono+'\') no-repeat center',
+	         "background": 'url(\'{$tsRoutes.assets.images}/categorias/'+icono+'\') no-repeat center',
 	         "background-size": '32px'
 	      })
 	   })
@@ -58,13 +58,13 @@
 	         </dl>
 	         <dl>
 	            <dt><label for="ai_super_color">Color de la categoría:</label></dt>
-	            <dd><input type="color" id="ai_super_color" name="super_color" value="{$tsForo.super_color}" /></dd>
+	            <dd><input type="color" id="ai_super_color" name="super_color" value="{$tsForo.super_color|default:'#000000'}" /></dd>
 	         </dl>
 				<dl>
 					<dt><label for="super_img">Icono de la categor&iacute;a:</label></dt>
 					<dd>
 						<div class="d-flex justify-content-start align-items-center column-gap-2">
-	                  <div style="background:url({$tsConfig.assets}/images/categorias/{if empty($tsForo.super_img)}1f30d.svg{else}{$tsForo.super_img}{/if}) no-repeat left center;" width="48" height="48" id="c_icon" class="d-block avatar avatar-3"></div>
+	                  <div style="background:url('{$tsRoutes.assets.images}/categorias/{if empty($tsForo.super_img)}1f30d.svg{else}{$tsForo.super_img}{/if}') no-repeat left center;" width="48" height="48" id="c_icon" class="d-block avatar avatar-3"></div>
 						  	<select name="super_img" id="super_img" style="width:164px">
 						  		{foreach from=$tsIcons key=i item=img}
 									<option value="{$img}"{if $tsForo.super_img == $img} selected{/if}>{$img}</option>

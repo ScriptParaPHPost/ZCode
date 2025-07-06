@@ -1,7 +1,7 @@
 <?php 
 
-require_once TS_MODELS . "c.foro.php";
-$tsForo = new tsForo;
+use admin\models\Foro;
+$tsForo = new Foro;
 
 if(empty($act)) {
 	$tsTitle = 'Gestionar Foro';

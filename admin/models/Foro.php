@@ -16,7 +16,7 @@ namespace admin\models;
 
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
-class tsForo {
+class Foro {
 
 	public function getForos() {
 		global $tsCore;

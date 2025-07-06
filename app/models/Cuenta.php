@@ -65,7 +65,7 @@ class Cuenta implements CuentaInterface {
     * @param int
     * @return array
    */
-	public function loadPerfil($user_id = 0) {
+	public function loadPerfil(int $user_id = 0) {
 		if(empty($user_id)) $user_id = $this->user->uid;
 		$perfilInfo = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT p.*, u.user_registro, u.user_lastactive, u.user_outtime_type FROM @perfil AS p LEFT JOIN @miembros AS u ON p.user_id = u.user_id WHERE p.user_id = $user_id LIMIT 1"));
 		// FECHA DE NACIMIENTO
@@ -94,7 +94,7 @@ class Cuenta implements CuentaInterface {
    /*
       loadExtras()
    */
-	private function unData($data) {
+	private function unData(array $data = []) {
 		$data['p_configs'] = safe_unserialize($data['p_configs']);
 		// Redes sociales
 		$this->setSocialData($data, true);
@@ -102,7 +102,7 @@ class Cuenta implements CuentaInterface {
 		return $data;
 	}
 
-	private function loadHits($user_id, &$data) {
+	private function loadHits(int $user_id = 0, &$data) {
 		$data['p_configs'] = safe_unserialize($data['p_configs']);
 		if(!isset($data['p_configs']['hits'])) $data['p_configs']['hits'] = 0;
 		//

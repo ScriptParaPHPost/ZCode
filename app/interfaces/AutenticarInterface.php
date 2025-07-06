@@ -24,7 +24,7 @@ interface AutenticarInterface {
 
 	public function sessionUpdate(int $id = 0, bool $rem = true, ?string $twofactor = null);
 
-	public function login(string $usuario = '', string $password = '', $recordar = false, $redirectTo = false);
+	public function login(string $usuario = '', string $password = '', bool $recordar = false, bool $redirectTo = false);
 
    public function logout();
 

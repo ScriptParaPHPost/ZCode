@@ -104,7 +104,7 @@ class Monitor implements MonitorInterface {
 	 * @return bool
 	 * @info ENVIA UN AVISO/ALERTA
 	*/
-	public function setAviso($user_id = 0, $subject = '(sin asunto)', $body = '', $type = 0){
+	public function setAviso(int $user_id = 0, string $subject = '(sin asunto)', string $body = '', int $type = 0){
 		global $tsCore;
 		# VERIFICAMOS QUE SE PUEDA ENVIAR EL AVISO
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_baneado FROM @miembros WHERE user_id = $user_id LIMIT 1"));
@@ -232,7 +232,7 @@ class Monitor implements MonitorInterface {
 	 * @return void
 	 * @info Envia notificaciones a los usuarios que siguen a un post o usuario.
 	*/
-	public function setFollowNotificacion($notType = null, int $f_type = 0, int $user_id = 0, int $obj_uno = 0, int $obj_dos = 0, array $excluir = []){
+	public function setFollowNotificacion(int $notType = 0, int $f_type = 0, int $user_id = 0, int $obj_uno = 0, int $obj_dos = 0, array $excluir = []){
 		global $tsCore;
 		# TIPO DE FOLLOW USER o POST
 		if($f_type == 1) $f_id = (int)$user_id;
@@ -284,7 +284,7 @@ class Monitor implements MonitorInterface {
 	 * @return array
 	 * @info CREAR UN ARRAY CON LAS NOTIFICAIONES DEL USUARIO
 	*/
-	public function getNotificaciones($unread = false){
+	public function getNotificaciones(bool $unread = false){
 		global $tsUser, $tsCore;
 		# SI HAY MAS DE 5 NOTIS MOSTRAMOS TODAS LAS NO LEIDAS
 		if($this->show_type == 1) {

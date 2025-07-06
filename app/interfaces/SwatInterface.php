@@ -15,5 +15,5 @@ namespace app\interfaces;
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 interface SwatInterface {
-    public function setDenuncia($obj_id, $type = 'posts');
+    public function setDenuncia(int $obj_id = 0, string $type = 'posts');
 }

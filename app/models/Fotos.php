@@ -258,7 +258,7 @@ class Fotos implements FotosInterface {
 	 /*
 		  getFotos($user_id)
 	 */
-	public function getFotos($user_id) {
+	public function getFotos(int $user_id = 0) {
 		global $tsCore, $tsUser, $tsZCode;
 		//
 		$query = 'SELECT f.foto_id, f.f_title, f.f_date, f.f_description, f.f_url, f.f_status, u.user_id, u.user_name, u.user_activo FROM @fotos AS f LEFT JOIN @miembros AS u ON u.user_id = f.f_user WHERE f.f_user = \''.(int)$user_id.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : ' && f.f_status = \'0\' && u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY f.foto_id DESC';

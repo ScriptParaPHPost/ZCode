@@ -24,7 +24,8 @@
    "extra": {
       "patches": {
          "jbbcode/jbbcode": {
-            "Fix null input in Tokenizer": "app/patches/jbbcode-tokenizer-null-fix.patch"
+            "Fix null input in Tokenizer": "app/patches/jbbcode-tokenizer-null-fix.patch",
+            "Fix PHP 8.4 deprecated implicit nullable": "app/patches/jbbcode-parser-nullable.patch"
          }
       }
    },

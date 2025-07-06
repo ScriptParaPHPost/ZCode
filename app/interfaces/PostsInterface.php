@@ -34,12 +34,12 @@ interface PostsInterface {
 	
 	public function deleteAdminPost();
 	
-	public function getRelated($tags = null);
+	public function getRelated(string $tags = '');
 	
 	public function getPostAutor(int $uid = 0);
 	
 	public function votarPost();
 
-	public function subirRango($user_id, $post_id = false);
+	public function subirRango(int $user_id = 0, int $post_id = 0);
 
 }

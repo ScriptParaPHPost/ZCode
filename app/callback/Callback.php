@@ -11,6 +11,7 @@
 **/
 
 namespace app\callback;
+use app\utils\OAuthentication;
 
 class Callback {
 
@@ -28,7 +29,7 @@ class Callback {
 	private $auth;
 	
 	public function __construct() {
-		global $OAuthentication;
+		$OAuthentication = new OAuthentication;
 		$OAuthentication->version($this->social_version);
 		$this->auth = $OAuthentication;
 	}

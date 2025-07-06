@@ -197,7 +197,7 @@ class Mensajes implements MensajesInterface {
 		  getMensajes($type)
 		  :: FALTA LA PAGINACION :/
 	 */
-	public function getMensajes($type = 1, $unread = false, $where = 'normal'){
+	public function getMensajes(int $type = 1, bool $unread = false, string $where = 'normal'){
 		global $tsCore, $tsUser, $tsZCode;
 		// MONITOR DE MENSAJES SOLO SI HAY MAS  DE 5 NUEVOS
 		if($type == 1) {

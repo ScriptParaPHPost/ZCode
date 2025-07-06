@@ -19,11 +19,13 @@ if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 interface TopsInterface {
     public function getHomeTopPosts();
     public function getHomeTopUsers();
-    public function getTopPostsQuery($data);
-    public function getHomeTopPostsQuery($date);
-    public function getHomeTopUsersQuery($date);
+    public function getTopUsers(int $fecha = 0, int $cat = 0);
+    public function getTopPosts(int $fecha = 0, int $cat = 0);
+    public function getTopPostsQuery(array $data = []);
+    public function getHomeTopPostsQuery(array $date = []);
+    public function getHomeTopUsersQuery(array $date = []);
     public function getStats();
     public function updateActivity();
     public function cleanInactiveUsers();
-    public function setTime($fecha);
+    public function setTime(int $fecha = 0);
 }

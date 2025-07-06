@@ -116,7 +116,7 @@ use admin\models\{Admin,Afiliado,Database,Favicon,Foro,Medal,Mensajes,Seo,Social
 	// Redes sociales
 	} elseif($action === 'socials') {
     	// CLASE MEDAL
-    	require_once TS_MODELS . "c.socials.php";
+    	$tsSocials = new Socials;
     	$smarty->assign('tsNetsSocials', [
     		'discord' => 'Discord',
     		'facebook' => 'Facebook',

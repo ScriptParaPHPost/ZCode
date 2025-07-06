@@ -18,9 +18,9 @@ if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 interface ActividadInterface {
 
-	public function setActividad($ac_type = NULL, $obj_uno = NULL, $obj_dos = 0);
+	public function setActividad(int $ac_type = 0, int $obj_uno = 0, int $obj_dos = 0);
 
-	public function getActividad(int $user_id = 0, $ac_type = 0, $start = 0, $v_type = NULL);
+	public function getActividad(int $user_id = 0, int $ac_type = 0, int $start = 0);
 
 	public function getActividadFollows(int $start = 0);
 

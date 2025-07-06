@@ -21,7 +21,7 @@ interface PortalInterface {
     public function savePostsConfig();
     public function composeCategories();
     public function getMyPosts();
-    public function getLastPosts($type = 'visited');
+    public function getLastPosts(string $type = 'visited');
     public function getFavorites();
     public function getFotos();
     public function getStats();

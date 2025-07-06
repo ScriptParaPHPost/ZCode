@@ -16,9 +16,9 @@ namespace app\utils;
 
 class OAuthentication {
 
-	private $version;
+	private $version = '';
 
-	public function	__construct() {
+	public function __construct() {
 	}
 
 	public function version(string $version = '') {

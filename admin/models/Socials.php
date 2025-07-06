@@ -14,54 +14,84 @@
 
 namespace admin\models;
 
+use admin\models\Core;
+
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 class Socials {
 
+	protected Core $Core;
+
+	private string $urlBase;
+
+	public function __construct() {
+		$this->Core = new Core;
+		$this->urlBase = $this->Core->setRoutes('url');
+	}
+
+	private function redirect_uri_create(string $param = '/'): string {
+		return $this->urlBase . ($param === '/' ? $param : strtolower($param) . '.php');
+	}
+
+	private function getID(): int {
+	   $input = [
+	      [INPUT_GET, 'id'],
+	      [INPUT_POST, 'social_id'],
+	      [INPUT_POST, 'id']
+	   ];
+	   foreach ($input as [$method, $key]) {
+	      $id = filter_input($method, $key, FILTER_VALIDATE_INT);
+	      if ($id !== false && $id !== null) {
+	         return (int)$id;
+	      }
+	   }
+	   return 0;
+	}
+
+	private function getData(?string $param = '') {
+		$social = [];
+		$data = ['name', 'client_id', 'client_secret'];
+		foreach($data as $item) {
+			$social[$item] = $this->Core->setSecure(filter_input(INPUT_POST, "social_$item", FILTER_UNSAFE_RAW));
+		}
+		return $social[$param];
+	}
+
 	public function getSocials() {
-		global $tsCore;
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT social_id, social_name, social_client_id, social_client_secret, social_redirect_uri FROM @social'));
 		foreach($data as $key => $social) {
-			$data[$key]['social_redirect_uri'] = $tsCore->settings['url'] . '/' . $social['social_name'] . '.php';
+			$data[$key]['social_redirect_uri'] = $this->redirect_uri_create("/{$social['social_name']}");
 		}
 		return $data;
 	}
 
 	public function newSocial() {
-		global $tsCore;
-		foreach($_POST = (isset($_POST['save']) ? array_slice($_POST, 0, -1) : $_POST) as $key => $val) $_POST[$key] = is_numeric($val) ? (int)$val : $tsCore->setSecure($val);
 		// Guardamos
-		$name = $tsCore->setSecure($_POST["social_name"]);
+		$name = $this->getData('name');
 		if(addDataToTable([__FILE__, __LINE__], '@social', [
 			'name' => $name,
-			'client_id' => $tsCore->setSecure($_POST["social_client_id"]),
-			'client_secret' => $tsCore->setSecure($_POST["social_client_secret"]),
-			'redirect_uri' => "{$tsCore->settings['url']}/" . strtolower($name) . ".php"
+			'client_id' => $this->getData('client_id'),
+			'client_secret' => $this->getData('client_secret'),
+			'redirect_uri' => $this->redirect_uri_create("/$name")
 		], 'social_')) return true;
 	}
 
 	public function getSocial() {
-		$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT social_id, social_name, social_client_id, social_client_secret, social_redirect_uri FROM @social WHERE social_id = $id"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT social_id, social_name, social_client_id, social_client_secret, social_redirect_uri FROM @social WHERE social_id = {$this->getID()}"));
 		return $data;
 	}
 
 	public function saveSocial() {
-		global $tsCore;
-		$id = isset($_POST['social_id']) ? (int)$_POST['social_id'] : (int)$_GET['id'];
-		$SCI = $tsCore->setSecure($_POST['social_client_id']);
-		$SCS = $tsCore->setSecure($_POST['social_client_secret']);
-		if(db_exec([__FILE__, __LINE__], 'query', "UPDATE @social SET social_client_id = '$SCI', social_client_secret = '$SCS' WHERE social_id = $id")) return true;
-      return false;
+		return (db_exec([__FILE__, __LINE__], 'query', "UPDATE @social SET 
+			social_client_id = '{$this->getData('client_id')}', 
+			social_client_secret = '{$this->getData('client_secret')}' 
+			WHERE social_id = {$this->getID()}"));
 	}
 
 	public function eliminarRed() {
-		$id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-		if($id == 0) return false;
-		if(db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @social WHERE social_id = $id")) {
-			return true;
-		}
-		return false;
+		$id = $this->getID();
+		if($id === 0) return false;
+		return (db_exec([__FILE__, __LINE__], 'query', "DELETE FROM @social WHERE social_id = $id"));
 	}
 
 }

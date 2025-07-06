@@ -26,7 +26,7 @@ class Borradores implements BorradoresInterface {
 	/*
 		newDraft()
 	*/
-	public function newDraft($save = false){
+	public function newDraft(bool $save = false){
 		global $tsCore, $tsUser;
 		//
 		$draftData = [

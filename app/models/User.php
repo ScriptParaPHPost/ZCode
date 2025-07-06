@@ -164,7 +164,7 @@ class User implements UserInterface {
 		CARGAR USUARIO POR SU ID
 		loadUser()
 	*/
-	public function loadUser($login = FALSE) {
+	public function loadUser(bool $login = FALSE) {
 		global $tsZCode;
 		$time = time();
 		// Cargar datos

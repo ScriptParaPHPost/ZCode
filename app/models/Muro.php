@@ -33,15 +33,15 @@ class Muro implements MuroInterface {
 	/*
 		  getPrivacity()
 	*/
-	public function getPrivacity(int $user_id = 0, string $username = null, $follow = NULL, $yfollow = NULL){
+	public function getPrivacity(int $user_id = 0, string $username = '', int $follow = 0, int $yfollow = 0){
 		global $tsCore, $tsUser;
 		$priv['m']['v'] = true;
 		$priv['mf']['v'] = true;
 		$priv['rmp']['v'] = true;
 		$is_me = ($tsUser->uid == $user_id) ? true : false;
 
-		$lesigoomesigue = ($follow == 0 && $yfollow == 0) ? false :  true;
-		$lesigoymesigue = ($follow == 1 && $yfollow == 1) ? true : false;
+		$lesigoomesigue = ($follow === 0 && $yfollow === 0) ? false :  true;
+		$lesigoymesigue = ($follow === 1 && $yfollow === 1) ? true : false;
 		  //
 		$data = db_exec('fetch_assoc',db_exec([__FILE__, __LINE__], 'query', "SELECT p_configs FROM @perfil WHERE user_id = $user_id LIMIT 1"));
 		$data['p_configs'] = safe_unserialize($data['p_configs']);
@@ -109,7 +109,7 @@ class Muro implements MuroInterface {
     * @param string|null $urlin URL opcional proporcionada directamente.
     * @return string|array Resultado de la validación en formato de cadena o array.
    */
-	public function ajaxCheck($return = false, $urlin = null) {
+	public function ajaxCheck(bool $return = false, string $urlin = '') {
       try {
          $type = $this->validateType($_GET['type']);
          $url = $this->sanitizeUrl($urlin ?? $_POST['url']);
@@ -464,7 +464,7 @@ class Muro implements MuroInterface {
 	/*
 	  getNews()
 	*/
-	public function getNews($start = 0, $limit = 10){
+	public function getNews(int $start = 0, int $limit = 10){
 		global $tsUser;
 		// SOLO MOSTRAREMOS LAS ULTIMAS 100 PUBLICACIONES
 		if($start > 90) return array('total' => '-1');
@@ -487,7 +487,7 @@ class Muro implements MuroInterface {
 	/*
 	 getWall($count)
 	*/
-	public function getWall($user_id, $start = 0){
+	public function getWall(int $user_id = 0, int $start = 0){
 		$type = '';
 		if(isset($_POST['type'])) {
 			$number = (int)$_POST['type'];
@@ -501,7 +501,7 @@ class Muro implements MuroInterface {
 	/*
 		  getPubExtras($pud_id, $type)
 	*/
-	public function getPubExtras($pub_id, $type = 'likes', $likes = 0){
+	public function getPubExtras(int $pub_id = 0, string $type = 'likes', int $likes = 0){
 		global $tsUser, $tsCore, $tsZCode;
 		  //
 		  switch($type){

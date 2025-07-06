@@ -87,7 +87,7 @@ class Upload implements UploadInterface {
 	/*
 		* uploadFiles()
 	 */
-	public function uploadFile($file, string $type = 'file'){
+	public function uploadFile(array $file = [], string $type = 'file'){
 		// VALIDAR
 		$error = $this->validFile($file, $type);
 		if(!empty($error)) return [0, $error];
@@ -116,7 +116,7 @@ class Upload implements UploadInterface {
 	/*
 		*  validFile()
 	*/
-	public function validFile($file, string $type = 'file'){
+	public function validFile(array $file = [], string $type = 'file'){
 		// ARCHIVO
 		if($type == 'file') {
 			// SE ENCONTRO EL ARCHIVO
@@ -147,7 +147,7 @@ class Upload implements UploadInterface {
 	/*
 		* sendFile($file,$name)
 	*/
-	public function sendFile($file, string $name = '') {
+	public function sendFile(array $file = [], string $name = '') {
 		$url = $this->createImage($file, $name);
 		error_log("URL: $url");
    	$response = $this->uploadImagen($this->setParams($url));
@@ -163,14 +163,15 @@ class Upload implements UploadInterface {
 	/*
 		* copyFile($file, $name)
 	*/
-	public function copyFile($file, string $name = ''){
+	public function copyFile(array $file = [], string $name = ''){
 		global $tsCore;
 		// COPIAMOS
 		copy($file['tmp_name'], TS_UPLOADS . $name);
 		// REGRESAMOS LA URL
 		return $tsCore->setRoutes('storage', 'uploads').'/'.$name;
 	}
-	private function getMimeImage(?string $type = '', ?string $image = '') {
+
+	private function getMimeImage(string $type = '', string $image = '') {
 		return match ($type) {
 			'image/url' => imagecreatefromstring($tsCore->getUrlContent($image)),
 			'image/jpeg', 'image/jpg' => imagecreatefromjpeg($image),
@@ -183,7 +184,7 @@ class Upload implements UploadInterface {
 	 /*
 		* createImage()
 	 */
-	public function createImage($file, string $name = ''){
+	public function createImage(array $file = [], string $name = ''){
 		global $tsCore;
 		// TAMAÑO
 		$size = empty($this->file_size) ? getimagesize($file['tmp_name']) : $this->file_size;
@@ -274,7 +275,7 @@ class Upload implements UploadInterface {
 	/*
 		* uploadImagen()
 	*/
-	public function uploadImagen($params){
+	public function uploadImagen(string $params = '') {
 		// User agent
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
 		// SERVIDOR
@@ -299,7 +300,7 @@ class Upload implements UploadInterface {
 	/*
 		* setParams()
 	*/
-	public function setParams($url){
+	public function setParams(string $url = '') {
 		return match($this->server){
 			'imgur' => ['image' => base64_encode(file_get_contents($url))],
 			default => null
@@ -312,7 +313,7 @@ class Upload implements UploadInterface {
 		* @return string
 		* @version 1.1
 	 */
-	public function getImagenUrl($code) {
+	public function getImagenUrl(string $code = '') {
 	   global $tsCore;
 	   $image_data = json_decode($code);
 

@@ -22,6 +22,6 @@ interface HomeInterface {
 	
 	public function getLastPostsStickys();
 	
-	public function getLastPosts(?string $category = NULL);
+	public function getLastPosts(string $category = '');
 
 }

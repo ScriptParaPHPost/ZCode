@@ -19,9 +19,9 @@ if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 interface SessionInterface { 
     public function read();
     public function create();
-    public function update($user_id = 0, $autologin = FALSE, $force_update = FALSE);
+    public function update(int $user_id = 0, bool $autologin = FALSE, bool $force_update = FALSE);
     public function destroy();
-    public function set_cookie($name, $cookiedata, $cookietime);
+    public function set_cookie(string $name = '', string $cookiedata = '', int $cookietime = 0);
     public function gen_session_id();
     public function sess_gc();
 }

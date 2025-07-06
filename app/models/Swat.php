@@ -32,7 +32,7 @@ class Swat implements SwatInterface {
 	/*
 		setDenuncia()
 	*/
-	public function setDenuncia($obj_id, $type = 'posts'){
+	public function setDenuncia(int $obj_id = 0, string $type = 'posts'){
 		global $tsCore, $tsUser;
 		// VARS
 		$this->id = $obj_id;

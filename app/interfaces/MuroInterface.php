@@ -17,11 +17,11 @@ namespace app\interfaces;
 if ( ! defined('ZCODEV3')) exit('No se permite el acceso directo al script');
 
 interface MuroInterface {
-    public function getPrivacity(int $user_id = 0, string $username = null, $follow = NULL, $yfollow = NULL);
-    public function ajaxCheck($return = false, $urlin = null);
+    public function getPrivacity(int $user_id = 0, string $username = '', int $follow = 0, int $yfollow = 0);
+    public function ajaxCheck(bool $return = false, string $urlin = '');
     public function streamPost();
-    public function getNews($start = 0, $limit = 10);
-    public function getWall($user_id, $start = 0);
-    public function getPubExtras($pub_id, $type = 'likes', $likes = 0);
+    public function getNews(int $start = 0, int $limit = 10);
+    public function getWall(int $user_id = 0, int $start = 0);
+    public function getPubExtras(int $pub_id = 0, string $type = 'likes', int $likes = 0);
     public function likePost();
 }

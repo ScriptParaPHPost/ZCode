@@ -79,7 +79,7 @@ class Actividad implements ActividadInterface {
 	 * @params none
 	 * @return void
 	 */
-	public function setActividad($ac_type = NULL, $obj_uno = NULL, $obj_dos = 0) {
+	public function setActividad(int $ac_type = 0, int $obj_uno = 0, int $obj_dos = 0) {
 		$ac_date = time();
 		# BUSCAMOS ACTIVIDADES				
 		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT `ac_id` FROM @actividad WHERE user_id = {$this->user->uid} ORDER BY ac_date DESC"));
@@ -108,7 +108,7 @@ class Actividad implements ActividadInterface {
 	 * @params int(3)
 	 * @return array
 	*/
-	public function getActividad(int $user_id = 0, $ac_type = 0, $start = 0, $v_type = NULL) {
+	public function getActividad(int $user_id = 0, int $ac_type = 0, int $start = 0) {
 		$this->makeActividad();
 		# VARIABLES LOCALES
 		$ac_type = ($ac_type !== 0) ? " AND ac_type = $ac_type" : '';

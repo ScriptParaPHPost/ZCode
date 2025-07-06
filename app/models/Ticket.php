@@ -91,7 +91,7 @@ class Ticket implements TicketInterface {
       return (int)db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(ticket_type) FROM @tickets LEFT JOIN @tickets_status ON status_id = ticket_type$leftjoin WHERE ticket_type = $type"))[0];
    }
 
-   public function getFilterTickets(int $tid = 0, int|array $see = []) {
+   public function getFilterTickets(int $tid = 0, array $see = []) {
       $status = [];
       $init = 1;
       foreach($this->getTypeStatus() as $key => $type) {

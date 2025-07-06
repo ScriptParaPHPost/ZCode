@@ -54,7 +54,7 @@ class Core implements CoreInterface {
 		return $query;
 	}
 
-	public function setRoutes(?string $param = null, ?string $extra = null): string|array {
+	public function setRoutes(string $param = '', string $extra = ''): string|array {
    	// Definir rutas base
    	$basePaths = [
    	   'tema' => "{$this->settings['url']}/themes/{$this->settings['tema']}",
@@ -177,7 +177,7 @@ class Core implements CoreInterface {
 	/*
 		setLevel($tsLevel) :: ESTABLECE EL NIVEL DE LA PAGINA | MIEMBROS o VISITANTES
 	*/
-	public function setLevel(?int $tsLevel = null, bool $message = false) {
+	public function setLevel(int $tsLevel = 0, bool $message = false) {
 		global $tsUser;
 		// Los mensajes
 		$setMessages = [
@@ -260,7 +260,7 @@ class Core implements CoreInterface {
 	 * @param bool $xss Si se debe aplicar filtrado XSS.
 	 * @return string La cadena sanitizada.
 	 */
-	public function setSecure($string = null, bool $xss = false) {
+	public function setSecure(string $string = '', bool $xss = false) {
 		if (empty($string)) {
 			return $string;
 		}
@@ -277,7 +277,7 @@ class Core implements CoreInterface {
 	/*
 		antiFlood()
 	*/
-	public function antiFlood($print = true, $type = 'post', $msg = '') {
+	public function antiFlood(bool $print = true, string $type = 'post', string $msg = '') {
 		global $tsUser;
 		//
 		$now = time();
@@ -306,7 +306,7 @@ class Core implements CoreInterface {
 	 * @param bool $lower Si se debe convertir a min�sculas.
 	 * @return string La cadena convertida.
 	 */
-	public function setSEO($string, $lower = false) {
+	public function setSEO(string $string = '', bool $lower = false) {
 	   // Convertir la cadena a UTF-8 y entidades HTML
 	   $string = mb_convert_encoding($string ?? '', 'UTF-8', 'auto');
 	   $string = htmlentities($string, ENT_QUOTES, 'UTF-8');
@@ -327,7 +327,7 @@ class Core implements CoreInterface {
 	/*
 		parseBBCode($bbcode)
 	*/
-	public function parseBBCode($bbcode, $type = 'normal') {
+	public function parseBBCode(string $bbcode = '', string $type = 'normal') {
 		// Class BBCode
 		$parser = new BBCode();
 		// Seleccionar texto
@@ -359,7 +359,7 @@ class Core implements CoreInterface {
 	 * @info Pone los links a los mencionados
 	 * @note Esta funci�n se ha reemplazado por $parser->parseMentions(). Se recomienda exclusivamente para compatibilidad en 	versiones anteriores.
 	*/
-	public function setMenciones($html) {
+	public function setMenciones(string $html = '') {
 		global $tsUser;
 		// Buscar usuarios mencionados con el patr�n @username
 		if (preg_match_all('/\B@([a-zA-Z0-9_-]{4,16})\b/', $html, $users)) {
@@ -384,7 +384,7 @@ class Core implements CoreInterface {
 	 * @param int $tsMax El n�mero m�ximo de resultados permitidos.
 	 * @return string El inicio y el l�mite de resultados como una cadena.
 	*/
-	public function setPageLimit($tsLimit, $start = false, $tsMax = 0) {
+	public function setPageLimit(int $tsLimit = 0, bool $start = false, int $tsMax = 0) {
 		// Inicializar el inicio de la paginaci�n
 		$tsStart = 0;
 		// Establecer el inicio de la paginaci�n si es necesario
@@ -458,7 +458,7 @@ class Core implements CoreInterface {
 	/*
 		getPagination($total, $per_page)
 	*/
-	public function getPagination($total, $per_page = 10){
+	public function getPagination(int $total = 0, int $per_page = 10){
 		// PAGINA ACTUAL
 		$page = empty($_GET['page']) ? 1 : (int) $_GET['page'];
 		// NUMERO DE PAGINAS
@@ -478,7 +478,7 @@ class Core implements CoreInterface {
 	}
 
 	/**/
-	public function pageIndex($base_url, $max_value, $num_per_page, $flexible_start = false) {
+	public function pageIndex(string $base_url = '', int $max_value = 0, int $num_per_page = 0, bool $flexible_start = false) {
 		// Remove the 's' parameter from the base URL
 		$base_url = $this->settings['url'] . $base_url;
 		$base_url = preg_replace('/[?&]s=\d*/', '', $base_url);
@@ -541,7 +541,7 @@ class Core implements CoreInterface {
 	/*
 		setHace()
 	*/
-	public function setHace(int $fecha = 0, $show = false){
+	public function setHace(int $fecha = 0, bool $show = false){
 		# Creamos
 		$tiempo = time() - $fecha;
 		if($fecha <= 0) return "Nunca";

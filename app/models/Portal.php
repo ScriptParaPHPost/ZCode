@@ -98,7 +98,7 @@ class Portal implements PortalInterface {
     * @param string
     * @return array
    */
-	public function getLastPosts($type = 'visited'){
+	public function getLastPosts(string $type = 'visited'){
 		global $tsCore, $tsUser, $tsImages, $tsZCode;
       //
       $dato = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT last_posts_$type FROM @portal WHERE user_id = {$tsUser->uid} LIMIT 1"));

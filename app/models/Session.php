@@ -118,7 +118,7 @@ class Session implements SessionInterface {
 	 * @access	public
 	 * @return	void
 	 */
-	public function update($user_id = 0, $autologin = FALSE, $force_update = FALSE) {
+	public function update(int $user_id = 0, bool $autologin = FALSE, bool $force_update = FALSE) {
 		// Actualizar la sesión cada x tiempo, esto es configurado en el panel de Admin
 		if(($this->userdata['session_time'] + $this->sess_time_online) >= $this->time_now AND $force_update == FALSE) {
 			return;
@@ -161,7 +161,7 @@ class Session implements SessionInterface {
 	  * @param string
 	  * @param int
 	  */
-	public function set_cookie($name, $cookiedata, $cookietime) {
+	public function set_cookie(string $name = '', string $cookiedata = '', int $cookietime = 0) {
 		$cookiename = rawurlencode($this->cookie_name . '_' . $name);
 		$cookiedata = rawurlencode($cookiedata);
 		// Establecer la cookie
