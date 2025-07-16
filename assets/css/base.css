@@ -5890,7 +5890,6 @@ lite-youtube.lyt-activated > .lty-playbtn {
 .main-color { color: var(--main-color); }
 .hover\:main-color:hover { color: var(--main-color-hover); }
 .active\:main-color:active { color: var(--main-color-active); }
-
 .main-bg-color { color: var(--main-bg); }
 .hover\:main-bg-color:hover { color: var(--main-bg-hover); }
 .active\:main-bg-color:active { color: var(--main-bg-active); }
@@ -5898,8 +5897,6 @@ lite-youtube.lyt-activated > .lty-playbtn {
 /** 
  * Background Color
 */
-.body-bg { background-color: var(--body-bg); }
-.main-bg { background-color: var(--main-bg); }
 .main-bg\:rgb { background-color: var(--main-bg-rgb); }
 .main-bg\:rgb-hover:hover { background-color: var(--main-bg-rgb); }
 .main-bg\:rgb-active:active { background-color: var(--main-bg-rgb); }

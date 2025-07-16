@@ -13,14 +13,35 @@ $reCaptcha = new reCaptcha;
 class tsRegistro {
 
 	/**
-    * @name strstr($string)
-    * @access public
-    * @param string
-    * @return string
-   */
-	private function strstr($haystack, $before_needle = true) {
-	   global $tsCore;
-	   return empty($haystack) ? '' : $tsCore->setSecure(strstr($haystack, '@', $before_needle));
+	 * @name extractEmailDomain($email, false)
+	 * @access private
+	 * @param string
+	 * @return string
+	*/
+	private function extractEmailDomain(string $email = '', bool $before = true): string  {
+		global $tsCore;
+		return empty($email) ? '' : $tsCore->setSecure(strstr($email, '@', $before));
+	}
+
+	/**
+	 * @name emailBlacklist($nickname, $email)
+	 * @access private
+	 * @param string
+	 * @param string
+	 * @return bool
+	*/
+	private function emailBlacklist(string $nickname = '', string $email = ''): bool {
+		return (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM w_blacklist WHERE (type = 3 AND value = '{$this->extractEmailDomain($email)}') OR (type = 4 AND value = '{$this->extractEmailDomain($email, true)}') OR (type = 4 AND value = '$nickname') LIMIT 1")) > 0);
+	}
+
+	/**
+	 * @name emailExists($nickname, $email)
+	 * @access private
+	 * @param string
+	 * @return bool
+	*/
+	private function emailExists(string $nickname = '', string $email = ''): bool {
+		return (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT `user_id` FROM `u_miembros` WHERE user_name = '{$nickname}' OR user_email = '{$email}' LIMIT 1")) > 0);
 	}
 
    /**
@@ -35,32 +56,17 @@ class tsRegistro {
 		$username = htmlspecialchars($_POST['nick'] ?? '');
 		$email = strtolower($_POST['email'] ?? '');
       $which = empty($username) ? 'email' : 'nick';
-      // MENSAJE
-		$valid = "1: El $which est&aacute; disponible.";	// DEFAULT
 		//
 		if (!empty($username) AND ctype_digit($username)) return "3: T&uacute; nick no pueder solo n&uacute;meros.";
-
-		if(!empty($email)) {
-      	$permitidos = 'gmail.com|hotmail.com|yahoo.com|live.com';
-			$msg = "3: Tu proveedor no est&aacute; permitido.";
-			preg_match_all('/@(' . $permitidos . ')$/i', $email, $matches);
-
-			if(empty($matches[0][0])) return $msg;
-			$decode = substr($matches[0][0], 1);
-			if(!in_array($decode, explode('|', $permitidos))) return $msg;
-		}
-		//
 		if(!empty($username) || !empty($email)) {
-			$username = $tsCore->setSecure($username);
-			$email = $tsCore->setSecure($email);
-			$q = !empty($username) ? "user_name = '$username'" : "LOWER(user_email) = '$email'";
-			$query = db_exec([__FILE__, __LINE__], 'query', "SELECT `user_id` FROM @miembros WHERE $q LIMIT 1");
-			if(db_exec('num_rows', $query) > 0) $valid = '0: El '.$which.' ya se encuentra registrado.';	// EXISTE
-         if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 
-         	"SELECT id FROM @blacklist WHERE (type = 3 && value = '{$this->strstr($email)}') || (type = 4 && value = '{$this->strstr($email, true)}') || (type = 4 && value = '$username') LIMIT 1"))) $valid = '0: Parte del '.$which.' no est&aacute; permitida';
-		} else $valid = '0: Faltan datos y no se puede procesar tu solicitud.';
-		// retornar valor
-		return $valid;
+			if($this->emailExists($username, $email)) {
+				return "0: El $which ya se encuentra registrado.";
+			}
+			if ($this->emailBlacklist($username, $email)) {
+				return "0: Parte del $which no esta permitida";
+			}
+			return "1: El $which esta disponible.";
+		} else return "0: Faltan datos y no se puede procesar tu solicitud.";
 	}
 
 	private function sendMessageWelcome(array $tsData = []) {

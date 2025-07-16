@@ -53,6 +53,7 @@ const registro = (() => {
 		nick: false,
 		password: false,
 		email: false,
+		sexo: true,
 		terminos: false
 	}
 
@@ -126,7 +127,6 @@ const registro = (() => {
    };
 
 	function verificarCampo(element) {
-		console.log(element)
 		const inputNameElement = $(element)[0].name;
 		const inputIDElement = `#${$(element)[0].id}`;
 		let inputValue = $(inputIDElement).val();

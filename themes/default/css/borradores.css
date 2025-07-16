@@ -1,0 +1,20 @@
+.post_estado {
+	--border: #CCC;
+	border-left: 4px solid var(--border);
+	.header {
+		img {
+			width: 1.875rem;
+			height: 1.875rem;
+		}
+	}
+	small {
+		bottom: 1rem;
+		right: 1rem;
+	}
+}
+.estado_borradores {
+	--border: #E5992C;
+}
+.estado_eliminados {
+	--border: #EB3131;
+}

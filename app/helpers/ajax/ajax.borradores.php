@@ -45,10 +45,6 @@
 	$tsDrafts = new tsDrafts();
 	// CODIGO
 	switch($action){
-		case 'borradores':
-				$tsBorradores = $tsDrafts->getDrafts();
-				$smarty->assign("tsDrafts",$tsBorradores);
-		break;
 		case 'borradores-get':
 				$_GET['action'] = $_POST['borrador_id'];
 				$tsBorrador = $tsDrafts->getDraft(0);
